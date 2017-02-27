@@ -1,0 +1,4 @@
+devproject/db.sqlite3
+devproject/media
+devproject/static
+django_spectator.egg-info
