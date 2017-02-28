@@ -15,6 +15,7 @@ class BookSeries(TimeStampedModelMixin, models.Model):
 
     class Meta:
         ordering = ('title',)
+        verbose_name_plural = 'Book series'
 
     def __str__(self):
         return self.title
