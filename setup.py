@@ -43,6 +43,7 @@ setup(
     ],
     tests_require=[
         'factory-boy>=2.8.1,<2.9',
+        'coverage'
     ],
     test_suite='runtests.runtests',
     include_package_data=True,
