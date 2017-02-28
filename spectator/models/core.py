@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
@@ -16,6 +18,12 @@ class Creator(TimeStampedModelMixin, models.Model):
     """
     A person or a group/company/organisation that is responsible for making all
     or part of a book, play, movie, gig, etc.
+
+    Get the things they've worked on:
+
+        creator = Creator.objects.get(pk=1)
+        for role in creator.role_set.all():
+            print(role.role_name, role.content_object.title)
     """
 
     KIND_CHOICES = (
@@ -39,6 +47,9 @@ class Creator(TimeStampedModelMixin, models.Model):
 
     class Meta:
         ordering = ('sort_name',)
+
+    def __str__(self):
+        return self.name
 
     def _make_sort_name(self, name, kind):
         """
@@ -69,15 +80,14 @@ class Creator(TimeStampedModelMixin, models.Model):
                         'I', 'II', 'III', 'IV', 'V',
                         ]
             # If a name has a capitalised particle in we use that to sort.
-            # So 'Le Carre, John'
-            # but 'Carre, John le'
+            # So 'Le Carre, John' but 'Carre, John le'.
             particles = [
                         'Le', 'La',
                         'Von', 'Van',
                         'Du', 'De',
                         ]
             surname = '' # Smith
-            names = ''   # Fred Q
+            names = ''   # Fred James
             suffix = ''  # Jr
 
             if parts[-1] in suffixes:
@@ -89,12 +99,10 @@ class Creator(TimeStampedModelMixin, models.Model):
             if len(parts) > 1:
 
                 if parts[-2] in particles:
-                    # Turns ['Aaaa', 'Bbbb', 'Le', 'Cccc']
-                    # into  ['Aaaa', 'Bbbb', 'Le Cccc']
+                    # From ['Aa', 'Bb', 'Le', 'Cc'] to  ['Aa', 'Bb', 'Le Cc']:
                     parts = parts[0:-2] + [ ' '.join(parts[-2:]) ]
 
-                # 'Faye, Alice':
-                # 'Wallace, David Foster':
+                # From 'David Foster Wallace' to 'Wallace, David Foster':
                 sort_name = '{}, {}'.format(parts[-1], ' '.join(parts[:-1]))
 
             if suffix:
@@ -102,4 +110,34 @@ class Creator(TimeStampedModelMixin, models.Model):
                 sort_name = '{} {}'.format(sort_name, suffix)
 
         return sort_name
+
+
+class Role(TimeStampedModelMixin, models.Model):
+    """
+    Linking a Creator to a Book, Concert, MovieEvent, etc.
+
+        role = Role.objects.get(pk=1)
+        print(role.creator, role.role_name, role.content_object)
+    """
+    creator = models.ForeignKey('Creator', blank=False,
+            on_delete=models.CASCADE)
+    role_name = models.CharField(null=False, blank=True, max_length=50,
+            help_text="e.g. 'Headliner', 'Support', 'Editor', 'Illustrator', 'Director', etc.")
+
+    role_order = models.PositiveSmallIntegerField(null=False, blank=False,
+            default=1,
+            help_text="The order in which the Creators will be listed.")
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        ordering = ('role_order', 'role_name',)
+
+    def __str__(self):
+        if self.role_name:
+            return '{} ({})'.format(self.creator, self.role_name)
+        else:
+            return str(self.creator)
 

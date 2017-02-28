@@ -1,11 +1,15 @@
 # coding: utf-8
 from django.test import TestCase
 
-from spectator.factories import GroupCreatorFactory, IndividualCreatorFactory
+from spectator.factories import *
 from spectator.models import Creator
 
 
 class CreatorTestCase(TestCase):
+
+    def test_str(self):
+        creator = IndividualCreatorFactory(name='Bill Brown')
+        self.assertEqual(str(creator), 'Bill Brown')
 
     def test_ordering(self):
         b = IndividualCreatorFactory(sort_name='Brown, Bill')
@@ -13,6 +17,19 @@ class CreatorTestCase(TestCase):
         creators = Creator.objects.all()
         self.assertEqual(creators[0], a)
         self.assertEqual(creators[1], b)
+
+    def test_roles(self):
+        bob = IndividualCreatorFactory(name='Bob')
+        book1 = BookFactory(title='Book 1')
+        book2 = BookFactory(title='Book 2')
+        role1 = BookRoleFactory(content_object=book1, creator=bob,
+                                                        role_name='Author')
+        role2 = BookRoleFactory(content_object=book2, creator=bob,
+                                                        role_name='Editor')
+        roles = bob.role_set.all()
+        self.assertEqual(len(roles), 2)
+        self.assertEqual(roles[0], role1)
+        self.assertEqual(roles[1], role2)
 
     def test_group_sort_name(self):
         "If name doesn't start with an article, sort_name should be identical."
@@ -69,3 +86,43 @@ class CreatorTestCase(TestCase):
         group = IndividualCreatorFactory(name='Daphne du Maurier')
         self.assertEqual(group.sort_name, 'Maurier, Daphne du')
 
+
+class RoleTestCase(TestCase):
+
+    def test_str_1(self):
+        creator = IndividualCreatorFactory(name='Bill Brown')
+        role = BookRoleFactory(creator=creator, role_name='')
+        self.assertEqual(str(role), 'Bill Brown')
+
+    def test_str_2(self):
+        creator = IndividualCreatorFactory(name='Bill Brown')
+        role = BookRoleFactory(creator=creator, role_name='Editor')
+        self.assertEqual(str(role), 'Bill Brown (Editor)')
+
+
+class BookSeriesTestCase(TestCase):
+
+    def test_str(self):
+        series = BookSeriesFactory(title='The London Review of Books')
+        self.assertEqual(str(series), 'The London Review of Books')
+
+
+class BookTestCase(TestCase):
+
+    def test_str(self):
+        book = BookFactory(title='Aurora')
+        self.assertEqual(str(book), 'Aurora')
+
+    def test_roles(self):
+        "It can have multiple Roles."
+        bob = IndividualCreatorFactory(name='Bob')
+        terry = IndividualCreatorFactory(name='Terry')
+        book = BookFactory()
+        bobs_role = BookRoleFactory(content_object=book, creator=bob,
+                                        role_name='Editor', role_order=2)
+        terrys_role = BookRoleFactory(content_object=book, creator=terry,
+                                        role_name='Author', role_order=1)
+        roles = book.roles.all()
+        self.assertEqual(len(roles), 2)
+        self.assertEqual(roles[0], terrys_role)
+        self.assertEqual(roles[1], bobs_role)
