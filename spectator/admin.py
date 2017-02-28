@@ -45,12 +45,12 @@ class BookSeriesAdmin(admin.ModelAdmin):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('title', 'kind', 'series',)
+    list_display = ('title', 'kind', 'show_creators', 'series', )
     list_filter = ('kind', 'series', )
 
     fieldsets = (
         (None, {
-            'fields': ('title', 'series',
+            'fields': ( 'title', 'kind', 'series',
                         'isbn_gb', 'isbn_us',
                         'official_url', 'notes_url', )
         }),
@@ -62,6 +62,13 @@ class BookAdmin(admin.ModelAdmin):
 
     readonly_fields = ('time_created', 'time_modified',)
 
-    inlines = [
-        RoleInline
-    ]
+    inlines = [ RoleInline, ]
+
+    def show_creators(self, instance):
+        names = [ str(r.creator) for r in instance.roles.all() ]
+        if names:
+            return ', '.join(names)
+        else:
+            return '-'
+    # show_creators.allow_tags = True
+    show_creators.short_description = 'Creators'
