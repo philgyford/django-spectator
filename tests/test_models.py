@@ -1,8 +1,9 @@
 # coding: utf-8
+from datetime import datetime
 from django.test import TestCase
 
 from spectator.factories import *
-from spectator.models import Creator
+from spectator.models import Creator, Reading
 
 
 class CreatorTestCase(TestCase):
@@ -126,3 +127,28 @@ class BookTestCase(TestCase):
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], terrys_role)
         self.assertEqual(roles[1], bobs_role)
+
+
+class ReadingTestCase(TestCase):
+
+    def test_str(self):
+        reading = ReadingFactory(
+                book=BookFactory(title='Big Book'),
+                start_date=datetime.strptime('2017-02-15', "%Y-%m-%d").date(),
+                end_date=datetime.strptime('2017-02-28', "%Y-%m-%d").date(),
+            )
+        self.assertEqual(str(reading), 'Big Book (2017-02-15 to 2017-02-28)')
+
+    def test_ordering(self):
+        reading1 = ReadingFactory(
+                start_date=datetime.strptime('2017-02-15', "%Y-%m-%d").date(),
+                end_date=datetime.strptime('2017-02-28', "%Y-%m-%d").date(),
+            )
+        reading2 = ReadingFactory(
+                start_date=datetime.strptime('2017-01-15', "%Y-%m-%d").date(),
+                end_date=datetime.strptime('2017-01-28', "%Y-%m-%d").date(),
+            )
+        readings = Reading.objects.all()
+        self.assertEqual(readings[0], reading2)
+        self.assertEqual(readings[1], reading1)
+

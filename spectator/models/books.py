@@ -60,3 +60,34 @@ class Book(TimeStampedModelMixin, models.Model):
     def __str__(self):
         return self.title
 
+
+class Reading(TimeStampedModelMixin, models.Model):
+    """
+    A period when a Book was read.
+    """
+    # Via https://www.flickr.com/services/api/misc.dates.html
+    DATE_GRANULARITIES = (
+        # (0, 'Y-m-d H:i:s'),
+        (3, 'Y-m-d'),
+        (4, 'Y-m'),
+        (6, 'Y'),
+        # (8, 'Circa...'),
+    )
+
+    book = models.ForeignKey('Book', null=False, blank=False)
+
+    start_date = models.DateField(null=True, blank=True)
+    start_granularity = models.PositiveSmallIntegerField(null=False,
+            blank=False, default=3, choices=DATE_GRANULARITIES)
+    end_date = models.DateField(null=True, blank=True)
+    end_granularity = models.PositiveSmallIntegerField(null=False,
+            blank=False, default=3, choices=DATE_GRANULARITIES)
+    is_finished = models.BooleanField(default=False,
+            help_text="Did you finish the book?")
+
+    class Meta:
+        ordering = ('end_date',)
+
+    def __str__(self):
+        return '{} ({} to {})'.format(self.book, self.start_date, self.end_date)
+

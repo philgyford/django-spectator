@@ -46,3 +46,11 @@ class RoleFactory(factory.DjangoModelFactory):
 
 class BookRoleFactory(RoleFactory):
     content_object = factory.SubFactory(BookFactory)
+
+
+class ReadingFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Reading
+
+    book = factory.SubFactory(BookFactory)
+
