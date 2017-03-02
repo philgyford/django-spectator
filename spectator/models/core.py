@@ -22,7 +22,7 @@ class BaseRole(TimeStampedModelMixin, models.Model):
                             on_delete=models.CASCADE, related_name='book_roles')
 
         book = models.ForeignKey('Book', on_delete=models.CASCADE,
-                                                    related_name='book_roles')
+                                                        related_name='roles')
     """
     role_name = models.CharField(null=False, blank=True, max_length=50,
             help_text="e.g. 'Headliner', 'Support', 'Editor', 'Illustrator', 'Director', etc. Optional.")

@@ -26,7 +26,7 @@ class ConcertRole(BaseRole):
                         on_delete=models.CASCADE, related_name='concert_roles')
 
     concert = models.ForeignKey('Concert', on_delete=models.CASCADE,
-                                                related_name='concert_roles')
+                                                        related_name='roles')
 
 
 class Concert(BaseEvent):
@@ -42,7 +42,7 @@ class Concert(BaseEvent):
             print(creator.name)
 
         # Include their roles:
-        for role in concert.concert_roles.all():
+        for role in concert.roles.all():
             print(role.concert, role.creator, role.role_name)
     """
     creators = models.ManyToManyField(Creator, through='ConcertRole',

@@ -35,6 +35,19 @@ class CreatorTestCase(TestCase):
         self.assertEqual(roles[0], role1)
         self.assertEqual(roles[1], role2)
 
+    def test_concert_roles(self):
+        bob = IndividualCreatorFactory(name='Bob')
+        concert1 = ConcertFactory()
+        concert2 = ConcertFactory()
+        role1 = ConcertRoleFactory(
+                        concert=concert1, creator=bob, role_name='Headliner')
+        role2 = ConcertRoleFactory(
+                        concert=concert2, creator=bob, role_name='Support')
+        roles = bob.concert_roles.all()
+        self.assertEqual(len(roles), 2)
+        self.assertEqual(roles[0], role1)
+        self.assertEqual(roles[1], role2)
+
     def test_group_sort_name(self):
         "If name doesn't start with an article, sort_name should be identical."
         group = GroupCreatorFactory(name='LCD Soundsystem')
@@ -136,7 +149,7 @@ class BookTestCase(TestCase):
                                         role_name='Editor', role_order=2)
         terrys_role = BookRoleFactory(book=book, creator=terry,
                                         role_name='Author', role_order=1)
-        roles = book.book_roles.all()
+        roles = book.roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], terrys_role)
         self.assertEqual(roles[1], bobs_role)
@@ -213,7 +226,7 @@ class ConcertTestCase(TestCase):
                                         role_name='Supporter', role_order=2)
         marthas_role = ConcertRoleFactory(concert=concert, creator=martha,
                                         role_name='Headliner', role_order=1)
-        roles = concert.concert_roles.all()
+        roles = concert.roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], marthas_role)
         self.assertEqual(roles[1], bobs_role)

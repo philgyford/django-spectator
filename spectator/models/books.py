@@ -29,7 +29,7 @@ class BookRole(BaseRole):
                             on_delete=models.CASCADE, related_name='book_roles')
 
     book = models.ForeignKey('Book', on_delete=models.CASCADE,
-                                                    related_name='book_roles')
+                                                        related_name='roles')
 
 
 class Book(TimeStampedModelMixin, models.Model):
@@ -45,7 +45,7 @@ class Book(TimeStampedModelMixin, models.Model):
             print(creator.name)
 
         # Include their roles:
-        for role in book.book_roles.all():
+        for role in book.roles.all():
             print(role.book, role.creator, role.role_name)
     """
 
