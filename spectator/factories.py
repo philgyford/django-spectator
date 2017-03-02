@@ -105,3 +105,44 @@ class MovieRoleFactory(factory.DjangoModelFactory):
     creator = factory.SubFactory(IndividualCreatorFactory)
     movie = factory.SubFactory(MovieFactory)
 
+
+class PlayFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Play
+
+    title = factory.Sequence(lambda n: 'Play %s' % n)
+
+
+class PlayProductionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.PlayProduction
+
+    play = factory.SubFactory(PlayFactory)
+    title = factory.Sequence(lambda n: 'Production %s' % n)
+
+
+class PlayProductionEventFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.PlayProductionEvent
+
+    production = factory.SubFactory(PlayProductionFactory)
+    venue = factory.SubFactory(VenueFactory)
+
+
+class PlayProductionRoleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.PlayProductionRole
+
+    role_name = factory.Sequence(lambda n: 'Role %s' % n)
+    creator = factory.SubFactory(IndividualCreatorFactory)
+    production = factory.SubFactory(PlayProductionFactory)
+
+
+class PlayRoleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.PlayRole
+
+    role_name = factory.Sequence(lambda n: 'Role %s' % n)
+    creator = factory.SubFactory(IndividualCreatorFactory)
+    play = factory.SubFactory(PlayFactory)
+

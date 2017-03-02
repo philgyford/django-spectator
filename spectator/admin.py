@@ -1,7 +1,10 @@
 from django.contrib import admin
 
-from .models import Book, BookRole, BookSeries, Concert, ConcertRole, Creator,\
-        Movie, MovieEvent, MovieRole, Reading, Venue
+from .models import Creator, Venue,\
+    Book, BookRole, BookSeries, Reading,\
+    Concert, ConcertRole,\
+    Movie, MovieEvent, MovieRole,\
+    Play, PlayProduction, PlayProductionEvent, PlayProductionRole, PlayRole
 
 
 class ReadingInline(admin.TabularInline):
@@ -28,6 +31,20 @@ class ConcertRoleInline(admin.TabularInline):
 
 class MovieRoleInline(admin.TabularInline):
     model = MovieRole
+    fields = ( 'creator', 'role_name', 'role_order',)
+    raw_id_fields = ('creator',)
+    extra = 1
+
+
+class PlayRoleInline(admin.TabularInline):
+    model = PlayRole
+    fields = ( 'creator', 'role_name', 'role_order',)
+    raw_id_fields = ('creator',)
+    extra = 1
+
+
+class PlayProductionRoleInline(admin.TabularInline):
+    model = PlayProductionRole
     fields = ( 'creator', 'role_name', 'role_order',)
     raw_id_fields = ('creator',)
     extra = 1
@@ -97,7 +114,6 @@ class BookAdmin(admin.ModelAdmin):
             return ', '.join(names)
         else:
             return '-'
-    # show_creators.allow_tags = True
     show_creators.short_description = 'Creators'
 
 
@@ -161,6 +177,85 @@ class MovieEventAdmin(admin.ModelAdmin):
     )
 
     raw_id_fields = ('movie', 'venue',)
+    readonly_fields = ('time_created', 'time_modified',)
+
+
+@admin.register(Play)
+class PlayAdmin(admin.ModelAdmin):
+    list_display = ('title', 'show_creators')
+    search_fields = ('title',)
+
+    fieldsets = (
+        (None, {
+            'fields': ( 'title', )
+        }),
+        ('Times', {
+            'classes': ('collapse',),
+            'fields': ('time_created', 'time_modified',)
+        }),
+    )
+
+    readonly_fields = ('time_created', 'time_modified',)
+
+    inlines = [ PlayRoleInline, ]
+
+    def show_creators(self, instance):
+        names = [ str(r.creator) for r in instance.roles.all() ]
+        if names:
+            return ', '.join(names)
+        else:
+            return '-'
+    show_creators.short_description = 'Creators'
+
+
+@admin.register(PlayProduction)
+class PlayProductionAdmin(admin.ModelAdmin):
+    list_display = ('play', 'title', 'show_creators')
+    search_fields = ('title',)
+
+    fieldsets = (
+        (None, {
+            'fields': ( 'play', 'title', )
+        }),
+        ('Times', {
+            'classes': ('collapse',),
+            'fields': ('time_created', 'time_modified',)
+        }),
+    )
+
+    readonly_fields = ('time_created', 'time_modified',)
+
+    inlines = [ PlayProductionRoleInline, ]
+
+    def show_creators(self, instance):
+        names = [ str(r.creator) for r in instance.roles.all() ]
+        if len(names) == 0:
+            return '-'
+        elif len(names) <= 3:
+            return ', '.join(names)
+        else:
+            # Too many to list them all.
+            return '{} et al.'.format(names[0])
+    show_creators.short_description = 'Creators'
+
+
+@admin.register(PlayProductionEvent)
+class PlayProdutionEventAdmin(admin.ModelAdmin):
+    list_display = ('production', 'date', 'venue',)
+    list_filter = ('date',)
+    search_fields = ('production__title', 'production__play__title')
+
+    fieldsets = (
+        (None, {
+            'fields': ( 'production', 'date', 'venue',)
+        }),
+        ('Times', {
+            'classes': ('collapse',),
+            'fields': ('time_created', 'time_modified',)
+        }),
+    )
+
+    raw_id_fields = ('production', 'venue',)
     readonly_fields = ('time_created', 'time_modified',)
 
 

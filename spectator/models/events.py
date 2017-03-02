@@ -23,8 +23,8 @@ class BaseEvent(TimeStampedModelMixin, models.Model):
 
 class ConcertRole(BaseRole):
     """
-    Linking a creator to a Concert, optionally via their role (e.g.
-    'Headliner', 'Support', etc.)
+    Through model for linking a creator to a Concert, optionally via their role
+    (e.g. 'Headliner', 'Support', etc.)
     """
     creator = models.ForeignKey('Creator', blank=False,
                         on_delete=models.CASCADE, related_name='concert_roles')
@@ -56,24 +56,24 @@ class Concert(BaseEvent):
         if self.title:
             return self.title
         else:
-            creators = list(self.creators.all())
-            if len(creators) == 0:
+            roles = list(self.roles.all())
+            if len(roles) == 0:
                 return 'Concert <{}>'.format(self.pk)
-            elif len(creators) == 1:
-                return str(creators[0])
+            elif len(roles) == 1:
+                return str(roles[0].creator.name)
             else:
-                creators = [str(c) for c in creators]
+                roles = [r.creator.name for r in roles]
                 # Join with commas but 'and' for the last one:
                 return '{} and {}'.format(
-                            ', '.join(creators[:-1]),
-                            creators[-1]
+                            ', '.join(roles[:-1]),
+                            roles[-1]
                         )
 
 
 class MovieRole(BaseRole):
     """
-    Linking a creator to a Movie, optionally via their role (e.g.  'Director',
-    'Actor', etc.)
+    Through model for linking a creator to a Movie, optionally via their role
+    (e.g.  'Director', 'Actor', etc.)
     """
     creator = models.ForeignKey('Creator', blank=False,
                         on_delete=models.CASCADE, related_name='movie_roles')
@@ -86,7 +86,7 @@ class Movie(TimeStampedModelMixin, models.Model):
     """
     A movie itself, not an occasion on which it was watched.
 
-    Get a MovieEvent's creators:
+    Get a Movie's creators:
 
         movie = Movie.objects.get(pk=1)
 
@@ -139,6 +139,112 @@ class MovieEvent(BaseEvent):
 
     def __str__(self):
         return "{} on {}".format(self.movie, self.date)
+
+
+class PlayRole(BaseRole):
+    """
+    Through model for linking a creator to a Play, optionally via their role
+    (e.g. 'Author'.)
+    """
+    creator = models.ForeignKey('Creator', blank=False,
+                        on_delete=models.CASCADE, related_name='play_roles')
+
+    play = models.ForeignKey('Play', on_delete=models.CASCADE,
+                                                        related_name='roles')
+
+
+class Play(TimeStampedModelMixin, models.Model):
+    """
+    A play itself, not an occasion on which it was watched.
+
+    Get a Play's creators:
+
+        play = Play.objects.get(pk=1)
+
+        # Just the creators:
+        for creator in play.creators.all():
+            print(creator.name)
+
+        # Include their roles:
+        for role in play.roles.all():
+            print(role.play, role.creator, role.role_name)
+    """
+    title = models.CharField(null=False, blank=False, max_length=255)
+    creators = models.ManyToManyField(Creator, through='PlayRole',
+                                                        related_name='plays')
+
+    class Meta:
+        ordering = ('title',)
+
+    def __str__(self):
+        return self.title
+
+
+class PlayProductionRole(BaseRole):
+    """
+    Through model for linking a creator to a particular production of a Play,
+    optionally via their role (e.g. 'Director' or 'Actor'.)
+    """
+    creator = models.ForeignKey('Creator', blank=False,
+                on_delete=models.CASCADE, related_name='play_production_roles')
+
+    production = models.ForeignKey('PlayProduction', on_delete=models.CASCADE,
+                                                related_name='roles')
+
+
+class PlayProduction(TimeStampedModelMixin, models.Model):
+    """
+    A particular production of a play by a certain company/director/etc.
+
+    Get a PlayProduction's creators:
+
+        production = PlayProduction.objects.get(pk=1)
+
+        # Just the creators:
+        for creator in production.creators.all():
+            print(creator.name)
+
+        # Include their roles:
+        for role in production.roles.all():
+            print(role.production.play, role.production.title,\
+                    role.creator, role.role_name)
+    """
+    play = models.ForeignKey('Play', null=False, blank=False)
+
+    title = models.CharField(null=False, blank=True, max_length=255,
+            help_text="Optional title of this production of the play.")
+
+    creators = models.ManyToManyField('Creator', through='PlayProductionRole',
+                    related_name='play_productions',
+                    help_text="The director, actors, etc. in this production.")
+
+    class Meta:
+        ordering = ('play__title',)
+
+    def __str__(self):
+        if self.title:
+            return '{} ({})'.format(self.play, self.title)
+        else:
+            roles = list(self.roles.all())
+            if len(roles) == 0:
+                return 'Production of {}'.format(self.play)
+            elif len(roles) == 1:
+                return '{} by {}'.format(self.play, roles[0].creator)
+            else:
+                return '{} by {} et al.'.format(
+                            self.play,
+                            roles[0].creator.name
+                        )
+
+
+class PlayProductionEvent(BaseEvent):
+    """
+    An occasion on which a PlayProduction was watched.
+    """
+    production = models.ForeignKey('PlayProduction', blank=False)
+
+    def __str__(self):
+        return "{} on {}".format(self.production, self.date)
 
 
 class Venue(TimeStampedModelMixin, models.Model):

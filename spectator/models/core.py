@@ -67,6 +67,13 @@ class Creator(TimeStampedModelMixin, models.Model):
         for role in creator.movie_roles.all():
             print(role.movie, role.creator, role.role_name)
 
+        # And for Plays:
+        for role in creator.play_roles.all():
+            print(role.play, role.creator, role.role_name)
+
+        # And for PlaysProductions:
+        for role in creator.play_production_roles.all():
+            print(role.production, role.production.play, role.creator, role.role_name)
     """
 
     KIND_CHOICES = (
