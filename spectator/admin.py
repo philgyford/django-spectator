@@ -92,7 +92,7 @@ class BookAdmin(admin.ModelAdmin):
     inlines = [ BookRoleInline, ReadingInline, ]
 
     def show_creators(self, instance):
-        names = [ str(r.creator) for r in instance.book_roles.all() ]
+        names = [ str(r.creator) for r in instance.roles.all() ]
         if names:
             return ', '.join(names)
         else:
