@@ -3,7 +3,8 @@ from datetime import datetime
 from django.test import TestCase
 
 from spectator.factories import *
-from spectator.models import Book, Concert, Creator, Reading, Venue
+from spectator.models import Book, Concert, Creator, Movie, MovieEvent,\
+        Reading, Venue
 
 
 def make_date(d):
@@ -34,6 +35,8 @@ class CreatorTestCase(TestCase):
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], role1)
         self.assertEqual(roles[1], role2)
+        self.assertEqual(roles[0].role_name, 'Author')
+        self.assertEqual(roles[1].role_name, 'Editor')
 
     def test_concert_roles(self):
         bob = IndividualCreatorFactory(name='Bob')
@@ -47,6 +50,25 @@ class CreatorTestCase(TestCase):
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], role1)
         self.assertEqual(roles[1], role2)
+        self.assertEqual(roles[0].role_name, 'Headliner')
+        self.assertEqual(roles[1].role_name, 'Support')
+
+    def test_movie_roles(self):
+        bob = IndividualCreatorFactory(name='Bob')
+        movie1 = MovieFactory()
+        movie2 = MovieFactory()
+        role1 = MovieRoleFactory(
+                        movie=movie1, creator=bob,
+                        role_name='Director', role_order=1)
+        role2 = MovieRoleFactory(
+                        movie=movie2, creator=bob,
+                        role_name='Actor', role_order=2)
+        roles = bob.movie_roles.all()
+        self.assertEqual(len(roles), 2)
+        self.assertEqual(roles[0], role1)
+        self.assertEqual(roles[1], role2)
+        self.assertEqual(roles[0].role_name, 'Director')
+        self.assertEqual(roles[1].role_name, 'Actor')
 
     def test_group_sort_name(self):
         "If name doesn't start with an article, sort_name should be identical."
@@ -153,6 +175,8 @@ class BookTestCase(TestCase):
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], terrys_role)
         self.assertEqual(roles[1], bobs_role)
+        self.assertEqual(roles[0].role_name, 'Author')
+        self.assertEqual(roles[1].role_name, 'Editor')
 
 
 class ReadingTestCase(TestCase):
@@ -230,6 +254,62 @@ class ConcertTestCase(TestCase):
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], marthas_role)
         self.assertEqual(roles[1], bobs_role)
+        self.assertEqual(roles[0].role_name, 'Headliner')
+        self.assertEqual(roles[1].role_name, 'Supporter')
+
+
+class MovieTestCase(TestCase):
+
+    def test_str_with_year(self):
+        movie = MovieFactory(title='Trust', year=1991)
+        self.assertEqual(str(movie), 'Trust (1991)')
+
+    def test_str_without_year(self):
+        movie = MovieFactory(title='Trust')
+        self.assertEqual(str(movie), 'Trust')
+
+    def test_ordering(self):
+        m3 = MovieFactory(title='Movie C')
+        m1 = MovieFactory(title='Movie A')
+        m2 = MovieFactory(title='Movie B')
+        movies = Movie.objects.all()
+        self.assertEqual(movies[0], m1)
+        self.assertEqual(movies[1], m2)
+        self.assertEqual(movies[2], m3)
+
+    def test_roles(self):
+        "It can have multiple MovieRoles."
+        bob = IndividualCreatorFactory(name='Bob')
+        terry = IndividualCreatorFactory(name='Terry')
+        movie = MovieFactory()
+        bobs_role = MovieRoleFactory(movie=movie, creator=bob,
+                                        role_name='Actor', role_order=2)
+        terrys_role = MovieRoleFactory(movie=movie, creator=terry,
+                                        role_name='Director', role_order=1)
+        roles = movie.roles.all()
+        self.assertEqual(len(roles), 2)
+        self.assertEqual(roles[0], terrys_role)
+        self.assertEqual(roles[1], bobs_role)
+        self.assertEqual(roles[0].role_name, 'Director')
+        self.assertEqual(roles[1].role_name, 'Actor')
+
+
+class MovieEventTestCase(TestCase):
+
+    def test_str(self):
+        m = MovieFactory(title="Trust")
+        me = MovieEventFactory(movie=m, date=make_date('2017-02-28'))
+        self.assertEqual(str(me), 'Trust on 2017-02-28')
+
+    def test_ordering(self):
+        "Should order by date"
+        me3 = MovieEventFactory(date=make_date('2017-02-28'))
+        me1 = MovieEventFactory(date=make_date('2016-06-28'))
+        me2 = MovieEventFactory(date=make_date('2016-12-28'))
+        movie_events = MovieEvent.objects.all()
+        self.assertEqual(movie_events[0], me1)
+        self.assertEqual(movie_events[1], me2)
+        self.assertEqual(movie_events[2], me3)
 
 
 class VenueTestCase(TestCase):

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Book, BookRole, BookSeries, Concert, ConcertRole, Creator,\
-        Reading, Venue
+        Movie, MovieEvent, MovieRole, Reading, Venue
 
 
 class ReadingInline(admin.TabularInline):
@@ -21,6 +21,13 @@ class BookRoleInline(admin.TabularInline):
 
 class ConcertRoleInline(admin.TabularInline):
     model = ConcertRole
+    fields = ( 'creator', 'role_name', 'role_order',)
+    raw_id_fields = ('creator',)
+    extra = 1
+
+
+class MovieRoleInline(admin.TabularInline):
+    model = MovieRole
     fields = ( 'creator', 'role_name', 'role_order',)
     raw_id_fields = ('creator',)
     extra = 1
@@ -114,6 +121,47 @@ class ConcertAdmin(admin.ModelAdmin):
     readonly_fields = ('time_created', 'time_modified',)
 
     inlines = [ ConcertRoleInline, ]
+
+
+@admin.register(Movie)
+class MovieAdmin(admin.ModelAdmin):
+    list_display = ('title', 'year')
+    list_filter = ('year',)
+    search_fields = ('title',)
+
+    fieldsets = (
+        (None, {
+            'fields': ( 'title', 'year', 'imdb_id',)
+        }),
+        ('Times', {
+            'classes': ('collapse',),
+            'fields': ('time_created', 'time_modified',)
+        }),
+    )
+
+    readonly_fields = ('time_created', 'time_modified',)
+
+    inlines = [ MovieRoleInline, ]
+
+
+@admin.register(MovieEvent)
+class MovieEventAdmin(admin.ModelAdmin):
+    list_display = ('movie', 'date', 'venue',)
+    list_filter = ('date',)
+    search_fields = ('movie__title',)
+
+    fieldsets = (
+        (None, {
+            'fields': ( 'movie', 'date', 'venue',)
+        }),
+        ('Times', {
+            'classes': ('collapse',),
+            'fields': ('time_created', 'time_modified',)
+        }),
+    )
+
+    raw_id_fields = ('movie', 'venue',)
+    readonly_fields = ('time_created', 'time_modified',)
 
 
 @admin.register(Venue)

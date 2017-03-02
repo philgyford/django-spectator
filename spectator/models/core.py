@@ -51,17 +51,21 @@ class Creator(TimeStampedModelMixin, models.Model):
 
         creator = Creator.objects.get(pk=1)
 
-        # Just book titles:
+        # Just Book titles:
         for book in creator.books.all():
             print(book.title)
 
-        # Include the creator and their role:
+        # Or Books including the Creator and their role:
         for role in creator.book_roles.all():
             print(role.book, role.creator, role.role_name)
 
-        # Similarly for concerts:
+        # Similarly for Concerts:
         for role in creator.concert_roles.all():
             print(role.concert, role.creator, role.role_name)
+
+        # And for Movies:
+        for role in creator.movie_roles.all():
+            print(role.movie, role.creator, role.role_name)
 
     """
 
