@@ -3,7 +3,12 @@ from datetime import datetime
 from django.test import TestCase
 
 from spectator.factories import *
-from spectator.models import Creator, Reading
+from spectator.models import Book, Concert, Creator, Reading, Venue
+
+
+def make_date(d):
+    "For convenience."
+    return datetime.strptime(d, "%Y-%m-%d").date()
 
 
 class CreatorTestCase(TestCase):
@@ -112,6 +117,16 @@ class BookTestCase(TestCase):
         book = BookFactory(title='Aurora')
         self.assertEqual(str(book), 'Aurora')
 
+    def test_ordering(self):
+        "Should order by book title."
+        b3 = BookFactory(title='Book C')
+        b1 = BookFactory(title='Book A')
+        b2 = BookFactory(title='Book B')
+        books = Book.objects.all()
+        self.assertEqual(books[0], b1)
+        self.assertEqual(books[1], b2)
+        self.assertEqual(books[2], b3)
+
     def test_roles(self):
         "It can have multiple BookRoles."
         bob = IndividualCreatorFactory(name='Bob')
@@ -132,21 +147,91 @@ class ReadingTestCase(TestCase):
     def test_str(self):
         reading = ReadingFactory(
                 book=BookFactory(title='Big Book'),
-                start_date=datetime.strptime('2017-02-15', "%Y-%m-%d").date(),
-                end_date=datetime.strptime('2017-02-28', "%Y-%m-%d").date(),
+                start_date=make_date('2017-02-15'),
+                end_date=make_date('2017-02-28'),
             )
         self.assertEqual(str(reading), 'Big Book (2017-02-15 to 2017-02-28)')
 
     def test_ordering(self):
         reading1 = ReadingFactory(
-                start_date=datetime.strptime('2017-02-15', "%Y-%m-%d").date(),
-                end_date=datetime.strptime('2017-02-28', "%Y-%m-%d").date(),
+                start_date=make_date('2017-02-15'),
+                end_date=make_date('2017-02-28'),
             )
         reading2 = ReadingFactory(
-                start_date=datetime.strptime('2017-01-15', "%Y-%m-%d").date(),
-                end_date=datetime.strptime('2017-01-28', "%Y-%m-%d").date(),
+                start_date=make_date('2017-01-15'),
+                end_date=make_date('2017-01-28'),
             )
         readings = Reading.objects.all()
         self.assertEqual(readings[0], reading2)
         self.assertEqual(readings[1], reading1)
+
+
+class ConcertTestCase(TestCase):
+
+    def test_str_with_title(self):
+        "If concert has a title, that should be used."
+        band = GroupCreatorFactory(name='Martha')
+        concert = ConcertFactory(title='Indietracks 2017')
+        ConcertRoleFactory(concert=concert, creator=band)
+        self.assertEqual(str(concert), 'Indietracks 2017')
+
+    def test_str_with_no_title(self):
+        "If concert has no title, band names should be used."
+        b1 = GroupCreatorFactory(name='Martha')
+        b2 = GroupCreatorFactory(name='Milky Wimpshake')
+        b3 = GroupCreatorFactory(name='The Tuts')
+        concert = ConcertFactory(title='')
+        ConcertRoleFactory(concert=concert, creator=b1, role_name='Headliner',
+                role_order=1)
+        ConcertRoleFactory(concert=concert, creator=b2, role_name='Support',
+                role_order=2)
+        ConcertRoleFactory(concert=concert, creator=b3, role_name='Support',
+                role_order=3)
+        self.assertEqual(str(concert), 'Martha, Milky Wimpshake and The Tuts')
+
+    def test_str_with_no_title_or_creators(self):
+        "With no title or band names, it still has a __str__"
+        concert = ConcertFactory(title='')
+        self.assertEqual(str(concert), 'Concert <{}>'.format(concert.pk))
+
+    def test_ordering(self):
+        "Should order by date"
+        c3 = ConcertFactory(date=make_date('2017-02-28'))
+        c1 = ConcertFactory(date=make_date('2016-06-28'))
+        c2 = ConcertFactory(date=make_date('2016-12-28'))
+        concerts = Concert.objects.all()
+        self.assertEqual(concerts[0], c1)
+        self.assertEqual(concerts[1], c2)
+        self.assertEqual(concerts[2], c3)
+
+    def test_roles(self):
+        "It can have multiple ConcertRoles."
+        bob = IndividualCreatorFactory(name='Bob')
+        martha = GroupCreatorFactory(name='Martha')
+        concert = ConcertFactory()
+        bobs_role = ConcertRoleFactory(concert=concert, creator=bob,
+                                        role_name='Supporter', role_order=2)
+        marthas_role = ConcertRoleFactory(concert=concert, creator=martha,
+                                        role_name='Headliner', role_order=1)
+        roles = concert.concert_roles.all()
+        self.assertEqual(len(roles), 2)
+        self.assertEqual(roles[0], marthas_role)
+        self.assertEqual(roles[1], bobs_role)
+
+
+class VenueTestCase(TestCase):
+
+    def test_str(self):
+        venue = VenueFactory(name='My Venue')
+        self.assertEqual(str(venue), 'My Venue')
+
+    def test_ordering(self):
+        "Should order by venue name."
+        v3 = VenueFactory(name='Venue C')
+        v1 = VenueFactory(name='Venue A')
+        v2 = VenueFactory(name='Venue B')
+        venues = Venue.objects.all()
+        self.assertEqual(venues[0], v1)
+        self.assertEqual(venues[1], v2)
+        self.assertEqual(venues[2], v3)
 

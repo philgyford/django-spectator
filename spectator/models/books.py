@@ -46,7 +46,7 @@ class Book(TimeStampedModelMixin, models.Model):
 
         # Include their roles:
         for role in book.book_roles.all():
-            print(role.book.title, role.creator.name, role.role_name)
+            print(role.book, role.creator, role.role_name)
     """
 
     KIND_CHOICES = (

@@ -57,7 +57,11 @@ class Creator(TimeStampedModelMixin, models.Model):
 
         # Include the creator and their role:
         for role in creator.book_roles.all():
-            print(role.book.title, role.creator.name, role.role_name)
+            print(role.book, role.creator, role.role_name)
+
+        # Similarly for concerts:
+        for role in creator.concert_roles.all():
+            print(role.concert, role.creator, role.role_name)
 
     """
 

@@ -36,7 +36,7 @@ class BookFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Book
 
-    title = factory.Sequence(lambda n: 'Book Title %s' % n)
+    title = factory.Sequence(lambda n: 'Book %s' % n)
     series = factory.SubFactory(BookSeriesFactory)
 
 
@@ -54,4 +54,30 @@ class ReadingFactory(factory.DjangoModelFactory):
         model = models.Reading
 
     book = factory.SubFactory(BookFactory)
+
+
+# Factories for event models.
+
+class VenueFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Venue
+
+    name = factory.Sequence(lambda n: 'Venue %s' % n)
+
+
+class ConcertFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Concert
+
+    title = factory.Sequence(lambda n: 'Concert %s' % n)
+    venue = factory.SubFactory(VenueFactory)
+
+
+class ConcertRoleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ConcertRole
+
+    role_name = factory.Sequence(lambda n: 'Role %s' % n)
+    creator = factory.SubFactory(IndividualCreatorFactory)
+    concert = factory.SubFactory(ConcertFactory)
 

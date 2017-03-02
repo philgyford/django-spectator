@@ -1,31 +1,27 @@
 from django.contrib import admin
 
-from .models import BaseRole, Book, BookRole, BookSeries, Creator, Reading
+from .models import Book, BookRole, BookSeries, Concert, ConcertRole, Creator,\
+        Reading, Venue
 
 
 class ReadingInline(admin.TabularInline):
     model = Reading
-
-    fieldsets = (
-        (None, {
-            'fields': ( 'book', 'start_date', 'end_date', 'is_finished',
+    fields = ('book', 'start_date', 'end_date', 'is_finished',
                         'start_granularity', 'end_granularity',)
-        }),
-    )
-
     raw_id_fields = ('book',)
     extra = 1
 
 
 class BookRoleInline(admin.TabularInline):
     model = BookRole
+    fields = ( 'creator', 'role_name', 'role_order',)
+    raw_id_fields = ('creator',)
+    extra = 1
 
-    fieldsets = (
-        (None, {
-            'fields': ( 'creator', 'role_name', 'role_order',)
-        }),
-    )
 
+class ConcertRoleInline(admin.TabularInline):
+    model = ConcertRole
+    fields = ( 'creator', 'role_name', 'role_order',)
     raw_id_fields = ('creator',)
     extra = 1
 
@@ -98,22 +94,41 @@ class BookAdmin(admin.ModelAdmin):
     show_creators.short_description = 'Creators'
 
 
-# @admin.register(Reading)
-# class ReadingAdmin(admin.ModelAdmin):
-    # list_display = ('book', 'start_date', 'end_date', 'is_finished',)
-    # list_filter = ('end_date',)
+@admin.register(Concert)
+class ConcertAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'date', 'venue',)
+    list_filter = ('date',)
+    search_fields = ('title',)
 
-    # fieldsets = (
-        # (None, {
-            # 'fields': ( 'book', 'start_date', 'end_date', 'is_finished',
-                        # 'start_granularity', 'end_granularity',)
-        # }),
-        # ('Times', {
-            # 'classes': ('collapse',),
-            # 'fields': ('time_created', 'time_modified',)
-        # }),
-    # )
+    fieldsets = (
+        (None, {
+            'fields': ( 'title', 'date', 'venue',)
+        }),
+        ('Times', {
+            'classes': ('collapse',),
+            'fields': ('time_created', 'time_modified',)
+        }),
+    )
 
-    # raw_id_fields = ('book',)
-    # readonly_fields = ('time_created', 'time_modified',)
+    raw_id_fields = ('venue',)
+    readonly_fields = ('time_created', 'time_modified',)
 
+    inlines = [ ConcertRoleInline, ]
+
+
+@admin.register(Venue)
+class VenueAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+
+    fieldsets = (
+        (None, {
+            'fields': ( 'name', 'latitude', 'longitude',)
+        }),
+        ('Times', {
+            'classes': ('collapse',),
+            'fields': ('time_created', 'time_modified',)
+        }),
+    )
+
+    readonly_fields = ('time_created', 'time_modified',)
