@@ -1,7 +1,6 @@
 from django.contrib import admin
-from django.contrib.contenttypes.admin import GenericTabularInline
 
-from .models import Creator, Book, BookSeries, Reading, Role
+from .models import BaseRole, Book, BookRole, BookSeries, Creator, Reading
 
 
 class ReadingInline(admin.TabularInline):
@@ -18,8 +17,14 @@ class ReadingInline(admin.TabularInline):
     extra = 1
 
 
-class RoleInline(GenericTabularInline):
-    model = Role
+class BookRoleInline(admin.TabularInline):
+    model = BookRole
+
+    fieldsets = (
+        (None, {
+            'fields': ( 'creator', 'role_name', 'role_order',)
+        }),
+    )
 
     raw_id_fields = ('creator',)
     extra = 1
@@ -81,10 +86,10 @@ class BookAdmin(admin.ModelAdmin):
 
     readonly_fields = ('time_created', 'time_modified',)
 
-    inlines = [ RoleInline, ReadingInline, ]
+    inlines = [ BookRoleInline, ReadingInline, ]
 
     def show_creators(self, instance):
-        names = [ str(r.creator) for r in instance.roles.all() ]
+        names = [ str(r.creator) for r in instance.book_roles.all() ]
         if names:
             return ', '.join(names)
         else:

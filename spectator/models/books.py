@@ -1,7 +1,6 @@
-from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
-from . import TimeStampedModelMixin, Role
+from . import BaseRole, Creator, TimeStampedModelMixin
 
 
 class BookSeries(TimeStampedModelMixin, models.Model):
@@ -21,14 +20,33 @@ class BookSeries(TimeStampedModelMixin, models.Model):
         return self.title
 
 
+class BookRole(BaseRole):
+    """
+    Linking a creator to a book, optionally via their role (e.g. 'Author',
+    'Editor', etc.)
+    """
+    creator = models.ForeignKey('Creator', blank=False,
+                            on_delete=models.CASCADE, related_name='book_roles')
+
+    book = models.ForeignKey('Book', on_delete=models.CASCADE,
+                                                    related_name='book_roles')
+
+
 class Book(TimeStampedModelMixin, models.Model):
     """
-    Not jut books, but magazines etc too.
+    Not just books, but magazines etc too.
 
-    A Book's creators:
+    Get a Book's creators:
+
         book = Book.objects.get(pk=1)
-        for r in book.roles.all():
-            print(r.creator, r.role_name)
+
+        # Just the creators:
+        for creator in book.creators.all():
+            print(creator.name)
+
+        # Include their roles:
+        for role in book.book_roles.all():
+            print(role.book.title, role.creator.name, role.role_name)
     """
 
     KIND_CHOICES = (
@@ -52,7 +70,8 @@ class Book(TimeStampedModelMixin, models.Model):
     notes_url = models.URLField(null=False, blank=True, max_length=255,
             verbose_name='Notes URL', help_text="URL of your notes/review.")
 
-    roles = GenericRelation('Role', related_query_name='books')
+    creators = models.ManyToManyField(Creator, through='BookRole',
+                                                        related_name='books')
 
     class Meta:
         ordering = ('title',)

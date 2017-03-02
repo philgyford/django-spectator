@@ -1,2 +1,2 @@
-from .core import TimeStampedModelMixin, Creator, Role
-from .books import BookSeries, Book, Reading
+from .core import BaseRole, Creator, TimeStampedModelMixin
+from .books import Book, BookRole, BookSeries, Reading

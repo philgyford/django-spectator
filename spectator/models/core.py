@@ -1,5 +1,3 @@
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
@@ -14,6 +12,36 @@ class TimeStampedModelMixin(models.Model):
         abstract = True
 
 
+class BaseRole(TimeStampedModelMixin, models.Model):
+    """
+    Base class for linking a Creator to a Book, Concert, MovieEvent, etc.
+
+    Child classes should add fields like:
+
+        creator = models.ForeignKey('Creator', blank=False,
+                            on_delete=models.CASCADE, related_name='book_roles')
+
+        book = models.ForeignKey('Book', on_delete=models.CASCADE,
+                                                    related_name='book_roles')
+    """
+    role_name = models.CharField(null=False, blank=True, max_length=50,
+            help_text="e.g. 'Headliner', 'Support', 'Editor', 'Illustrator', 'Director', etc. Optional.")
+
+    role_order = models.PositiveSmallIntegerField(null=False, blank=False,
+            default=1,
+            help_text="The order in which the Creators will be listed.")
+
+    class Meta:
+        abstract = True
+        ordering = ('role_order', 'role_name',)
+
+    def __str__(self):
+        if self.role_name:
+            return '{} ({})'.format(self.creator, self.role_name)
+        else:
+            return str(self.creator)
+
+
 class Creator(TimeStampedModelMixin, models.Model):
     """
     A person or a group/company/organisation that is responsible for making all
@@ -22,8 +50,15 @@ class Creator(TimeStampedModelMixin, models.Model):
     Get the things they've worked on:
 
         creator = Creator.objects.get(pk=1)
-        for role in creator.role_set.all():
-            print(role.role_name, role.content_object.title)
+
+        # Just book titles:
+        for book in creator.books.all():
+            print(book.title)
+
+        # Include the creator and their role:
+        for role in creator.book_roles.all():
+            print(role.book.title, role.creator.name, role.role_name)
+
     """
 
     KIND_CHOICES = (
@@ -110,34 +145,4 @@ class Creator(TimeStampedModelMixin, models.Model):
                 sort_name = '{} {}'.format(sort_name, suffix)
 
         return sort_name
-
-
-class Role(TimeStampedModelMixin, models.Model):
-    """
-    Linking a Creator to a Book, Concert, MovieEvent, etc.
-
-        role = Role.objects.get(pk=1)
-        print(role.creator, role.role_name, role.content_object)
-    """
-    creator = models.ForeignKey('Creator', blank=False,
-            on_delete=models.CASCADE)
-    role_name = models.CharField(null=False, blank=True, max_length=50,
-            help_text="e.g. 'Headliner', 'Support', 'Editor', 'Illustrator', 'Director', etc.")
-
-    role_order = models.PositiveSmallIntegerField(null=False, blank=False,
-            default=1,
-            help_text="The order in which the Creators will be listed.")
-
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-
-    class Meta:
-        ordering = ('role_order', 'role_name',)
-
-    def __str__(self):
-        if self.role_name:
-            return '{} ({})'.format(self.creator, self.role_name)
-        else:
-            return str(self.creator)
 

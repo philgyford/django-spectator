@@ -19,15 +19,13 @@ class CreatorTestCase(TestCase):
         self.assertEqual(creators[0], a)
         self.assertEqual(creators[1], b)
 
-    def test_roles(self):
+    def test_book_roles(self):
         bob = IndividualCreatorFactory(name='Bob')
         book1 = BookFactory(title='Book 1')
         book2 = BookFactory(title='Book 2')
-        role1 = BookRoleFactory(content_object=book1, creator=bob,
-                                                        role_name='Author')
-        role2 = BookRoleFactory(content_object=book2, creator=bob,
-                                                        role_name='Editor')
-        roles = bob.role_set.all()
+        role1 = BookRoleFactory(book=book1, creator=bob, role_name='Author')
+        role2 = BookRoleFactory(book=book2, creator=bob, role_name='Editor')
+        roles = bob.book_roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], role1)
         self.assertEqual(roles[1], role2)
@@ -88,7 +86,7 @@ class CreatorTestCase(TestCase):
         self.assertEqual(group.sort_name, 'Maurier, Daphne du')
 
 
-class RoleTestCase(TestCase):
+class BookRoleTestCase(TestCase):
 
     def test_str_1(self):
         creator = IndividualCreatorFactory(name='Bill Brown')
@@ -115,15 +113,15 @@ class BookTestCase(TestCase):
         self.assertEqual(str(book), 'Aurora')
 
     def test_roles(self):
-        "It can have multiple Roles."
+        "It can have multiple BookRoles."
         bob = IndividualCreatorFactory(name='Bob')
         terry = IndividualCreatorFactory(name='Terry')
         book = BookFactory()
-        bobs_role = BookRoleFactory(content_object=book, creator=bob,
+        bobs_role = BookRoleFactory(book=book, creator=bob,
                                         role_name='Editor', role_order=2)
-        terrys_role = BookRoleFactory(content_object=book, creator=terry,
+        terrys_role = BookRoleFactory(book=book, creator=terry,
                                         role_name='Author', role_order=1)
-        roles = book.roles.all()
+        roles = book.book_roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], terrys_role)
         self.assertEqual(roles[1], bobs_role)

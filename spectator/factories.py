@@ -3,7 +3,10 @@ import factory
 from . import models
 
 
+# Factories for core models.
+
 class IndividualCreatorFactory(factory.DjangoModelFactory):
+    "A creator that is an individual person."
     class Meta:
         model = models.Creator
 
@@ -12,6 +15,7 @@ class IndividualCreatorFactory(factory.DjangoModelFactory):
 
 
 class GroupCreatorFactory(factory.DjangoModelFactory):
+    "A creator that is a group/organisation/etc."
     class Meta:
         model = models.Creator
 
@@ -19,6 +23,7 @@ class GroupCreatorFactory(factory.DjangoModelFactory):
     kind = 'group'
 
 
+# Factories for book models.
 
 class BookSeriesFactory(factory.DjangoModelFactory):
     class Meta:
@@ -35,17 +40,13 @@ class BookFactory(factory.DjangoModelFactory):
     series = factory.SubFactory(BookSeriesFactory)
 
 
-class RoleFactory(factory.DjangoModelFactory):
-    "You probably want to use a child of this class."
+class BookRoleFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.Role
+        model = models.BookRole
 
-    creator = factory.SubFactory(IndividualCreatorFactory)
     role_name = factory.Sequence(lambda n: 'Role %s' % n)
-
-
-class BookRoleFactory(RoleFactory):
-    content_object = factory.SubFactory(BookFactory)
+    creator = factory.SubFactory(IndividualCreatorFactory)
+    book = factory.SubFactory(BookFactory)
 
 
 class ReadingFactory(factory.DjangoModelFactory):
