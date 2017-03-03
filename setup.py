@@ -37,6 +37,7 @@ setup(
     version=get_version(),
     packages=['spectator'],
     install_requires=[
+        'django-polymorphic>=1.1,<1.2',
         'pytz',
     ],
     dependency_links=[

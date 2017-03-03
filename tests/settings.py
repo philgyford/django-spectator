@@ -16,7 +16,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'spectator'
+    'polymorphic',
+    'spectator',
 )
 
 ROOT_URLCONF = 'tests.urls'

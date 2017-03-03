@@ -203,31 +203,39 @@ class ReadingTestCase(TestCase):
         self.assertEqual(readings[1], reading1)
 
 
+class EventTestCase(TestCase):
+    "Testing the parent class."
+
+    def test_str_with_no_title(self):
+        e = EventFactory()
+        self.assertEqual(str(e), 'Event #{}'.format(e.pk))
+
+
 class ConcertTestCase(TestCase):
 
-    def test_str_with_title(self):
-        "If concert has a title, that should be used."
+    def test_str_with_concert_title(self):
+        "If concert has a concert_title, that should be used."
         band = GroupCreatorFactory(name='Martha')
-        concert = ConcertFactory(title='Indietracks 2017')
+        concert = ConcertFactory(concert_title='Indietracks 2017')
         ConcertRoleFactory(concert=concert, creator=band)
         self.assertEqual(str(concert), 'Indietracks 2017')
 
-    def test_str_with_no_title_or_creators(self):
-        "With no title or band names, it still has a __str__"
-        concert = ConcertFactory(title='')
-        self.assertEqual(str(concert), 'Concert <{}>'.format(concert.pk))
+    def test_str_with_no_concert_title_or_creators(self):
+        "With no concert_title or band names, it still has a __str__"
+        concert = ConcertFactory(concert_title='')
+        self.assertEqual(str(concert), 'Concert #{}'.format(concert.pk))
 
-    def test_str_with_no_title_one_creator(self):
-        concert = ConcertFactory(title='')
+    def test_str_with_no_concert_title_one_creator(self):
+        concert = ConcertFactory(concert_title='')
         ConcertRoleFactory(
                 concert=concert,
                 creator=GroupCreatorFactory(name='Martha'),
                 role_name='Headliner')
         self.assertEqual(str(concert), 'Martha')
 
-    def test_str_with_no_title_several_creators(self):
-        "If concert has no title, band names should be used."
-        concert = ConcertFactory(title='')
+    def test_str_with_no_concert_title_several_creators(self):
+        "If concert has no concert_title, band names should be used."
+        concert = ConcertFactory(concert_title='')
         ConcertRoleFactory(
                 concert=concert,
                 creator=GroupCreatorFactory(name='Milky Wimpshake'),
@@ -251,6 +259,11 @@ class ConcertTestCase(TestCase):
         self.assertEqual(concerts[0], c1)
         self.assertEqual(concerts[1], c2)
         self.assertEqual(concerts[2], c3)
+
+    def test_save_sets_title(self):
+        "On save, the title should be set."
+        c = ConcertFactory(concert_title="My Concert")
+        self.assertEqual(c.title, str(c))
 
     def test_roles(self):
         "It can have multiple ConcertRoles."
@@ -310,7 +323,7 @@ class MovieEventTestCase(TestCase):
     def test_str(self):
         m = MovieFactory(title="Trust")
         me = MovieEventFactory(movie=m, date=make_date('2017-02-28'))
-        self.assertEqual(str(me), 'Trust on 2017-02-28')
+        self.assertEqual(str(me), 'Trust')
 
     def test_ordering(self):
         "Should order by date"
@@ -321,6 +334,11 @@ class MovieEventTestCase(TestCase):
         self.assertEqual(movie_events[0], me1)
         self.assertEqual(movie_events[1], me2)
         self.assertEqual(movie_events[2], me3)
+
+    def test_save_sets_title(self):
+        "On save, the title should be set."
+        me = MovieEventFactory()
+        self.assertEqual(me.title, str(me))
 
 
 class PlayTestCase(TestCase):
@@ -361,7 +379,7 @@ class PlayProductionTestCase(TestCase):
         production = PlayProductionFactory(
                             play=PlayFactory(title='Twelfth Night'),
                             title='Special Production')
-        self.assertEqual(str(production), 'Twelfth Night (Special Production)')
+        self.assertEqual(str(production), 'Special Production')
 
     def test_str_with_no_title_no_creators(self):
         production = PlayProductionFactory(
@@ -418,13 +436,9 @@ class PlayProductionTestCase(TestCase):
 class PlayProductionEventTestCase(TestCase):
 
     def test_str(self):
-        pp = PlayProductionFactory(
-                                    play=PlayFactory(title="Twelfth Night"),
-                                    title='Special Production')
-        ppe = PlayProductionEventFactory(production=pp,
-                                            date=make_date('2017-02-28'))
-        self.assertEqual(str(ppe),
-                            'Twelfth Night (Special Production) on 2017-02-28')
+        pp = PlayProductionFactory(title='Special Production')
+        ppe = PlayProductionEventFactory(production=pp)
+        self.assertEqual(str(ppe), 'Special Production')
 
     def test_ordering(self):
         "Should order by date"
@@ -435,6 +449,11 @@ class PlayProductionEventTestCase(TestCase):
         self.assertEqual(production_events[0], ppe1)
         self.assertEqual(production_events[1], ppe2)
         self.assertEqual(production_events[2], ppe3)
+
+    def test_save_sets_title(self):
+        "On save, the title should be set."
+        ppe = PlayProductionEventFactory()
+        self.assertEqual(ppe.title, str(ppe))
 
 
 class VenueTestCase(TestCase):

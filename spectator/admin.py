@@ -1,11 +1,16 @@
 from django.contrib import admin
 
-from .models import Creator, Venue,\
+from polymorphic.admin import PolymorphicParentModelAdmin,\
+    PolymorphicChildModelAdmin
+
+from .models import Event, Creator, Venue,\
     Book, BookRole, BookSeries, Reading,\
     Concert, ConcertRole,\
     Movie, MovieEvent, MovieRole,\
     Play, PlayProduction, PlayProductionEvent, PlayProductionRole, PlayRole
 
+
+# ALL INLINES.
 
 class ReadingInline(admin.TabularInline):
     model = Reading
@@ -50,6 +55,8 @@ class PlayProductionRoleInline(admin.TabularInline):
     extra = 1
 
 
+# CORE MODEL ADMINS.
+
 @admin.register(Creator)
 class CreatorAdmin(admin.ModelAdmin):
     list_display = ('sort_name', 'kind',)
@@ -66,8 +73,11 @@ class CreatorAdmin(admin.ModelAdmin):
         }),
     )
 
+    radio_fields = {'kind': admin.HORIZONTAL}
     readonly_fields = ('time_created', 'time_modified',)
 
+
+# BOOKS MODEL ADMINS.
 
 @admin.register(BookSeries)
 class BookSeriesAdmin(admin.ModelAdmin):
@@ -104,6 +114,7 @@ class BookAdmin(admin.ModelAdmin):
         }),
     )
 
+    radio_fields = {'kind': admin.HORIZONTAL}
     readonly_fields = ('time_created', 'time_modified',)
 
     inlines = [ BookRoleInline, ReadingInline, ]
@@ -117,15 +128,29 @@ class BookAdmin(admin.ModelAdmin):
     show_creators.short_description = 'Creators'
 
 
-@admin.register(Concert)
-class ConcertAdmin(admin.ModelAdmin):
+# EVENTS MODEL ADMINS.
+
+@admin.register(Event)
+class EventAdmin(PolymorphicParentModelAdmin):
+    base_model = Event
+    child_models = (Concert, MovieEvent, PlayProductionEvent)
+
     list_display = ('__str__', 'date', 'venue',)
     list_filter = ('date',)
-    search_fields = ('title',)
+
+
+@admin.register(Concert)
+class ConcertAdmin(PolymorphicChildModelAdmin):
+    base_model = Concert
+    show_in_index = True # makes child model admin visible in main admin site
+
+    list_display = ('__str__', 'date', 'venue',)
+    list_filter = ('date',)
+    search_fields = ('concert_title',)
 
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'date', 'venue',)
+            'fields': ( 'concert_title', 'date', 'venue',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -161,7 +186,10 @@ class MovieAdmin(admin.ModelAdmin):
 
 
 @admin.register(MovieEvent)
-class MovieEventAdmin(admin.ModelAdmin):
+class MovieEventAdmin(PolymorphicChildModelAdmin):
+    base_model = MovieEvent
+    show_in_index = True # makes child model admin visible in main admin site
+
     list_display = ('movie', 'date', 'venue',)
     list_filter = ('date',)
     search_fields = ('movie__title',)
@@ -223,6 +251,7 @@ class PlayProductionAdmin(admin.ModelAdmin):
         }),
     )
 
+    raw_id_fields = ('play',)
     readonly_fields = ('time_created', 'time_modified',)
 
     inlines = [ PlayProductionRoleInline, ]
@@ -240,7 +269,10 @@ class PlayProductionAdmin(admin.ModelAdmin):
 
 
 @admin.register(PlayProductionEvent)
-class PlayProdutionEventAdmin(admin.ModelAdmin):
+class PlayProdutionEventAdmin(PolymorphicChildModelAdmin):
+    base_model = PlayProductionEvent
+    show_in_index = True # makes child model admin visible in main admin site
+
     list_display = ('production', 'date', 'venue',)
     list_filter = ('date',)
     search_fields = ('production__title', 'production__play__title')

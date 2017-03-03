@@ -4,21 +4,35 @@ import datetime
 from django.db import models
 from django.core.validators import RegexValidator
 
+from polymorphic.models import PolymorphicModel
+
 from . import BaseRole, Creator, TimeStampedModelMixin
 
 
-class BaseEvent(TimeStampedModelMixin, models.Model):
+class Event(TimeStampedModelMixin, PolymorphicModel):
     """
     Parent class for different kinds of event: Concert, MovieEvent, PlayEvent.
+
+    A child class can add its own fields.
+    It should set the value of title in its own save() method.
     """
-    title = models.CharField(null=False, blank=True, max_length=255,
-            help_text="e.g., 'Indietracks 2017', 'Radio 1 Roadshow'.")
     date = models.DateField(null=True, blank=False)
     venue = models.ForeignKey('Venue', blank=False)
 
+    # Each Child model should create the title in its save() method.
+    # These titles might only show up in Event Admin, but could also
+    # be used elsewhere if we do simple queries only fetching Event objects.
+    title = models.CharField(null=False, blank=True, max_length=255,
+        help_text="Automatically created so each Event has an appropriate title.")
+
     class Meta:
-        abstract = True
         ordering = ['date',]
+
+    def __str__(self):
+        if self.title:
+            return self.title
+        else:
+            return 'Event #{}'.format(self.pk)
 
 
 class ConcertRole(BaseRole):
@@ -33,7 +47,7 @@ class ConcertRole(BaseRole):
                                                         related_name='roles')
 
 
-class Concert(BaseEvent):
+class Concert(Event):
     """
     A gig.
 
@@ -49,16 +63,19 @@ class Concert(BaseEvent):
         for role in concert.roles.all():
             print(role.concert, role.creator, role.role_name)
     """
+    concert_title = models.CharField(null=False, blank=True, max_length=255,
+            help_text="Optional. e.g., 'Indietracks 2017', 'Radio 1 Roadshow'.")
+
     creators = models.ManyToManyField(Creator, through='ConcertRole',
                                                     related_name='concerts')
 
     def __str__(self):
-        if self.title:
-            return self.title
+        if self.concert_title:
+            return self.concert_title
         else:
             roles = list(self.roles.all())
             if len(roles) == 0:
-                return 'Concert <{}>'.format(self.pk)
+                return 'Concert #{}'.format(self.pk)
             elif len(roles) == 1:
                 return str(roles[0].creator.name)
             else:
@@ -68,6 +85,10 @@ class Concert(BaseEvent):
                             ', '.join(roles[:-1]),
                             roles[-1]
                         )
+
+    def save(self, *args, **kwargs):
+        self.title = self.__str__()
+        super().save(*args, **kwargs)
 
 
 class MovieRole(BaseRole):
@@ -131,14 +152,18 @@ class Movie(TimeStampedModelMixin, models.Model):
             return self.title
 
 
-class MovieEvent(BaseEvent):
+class MovieEvent(Event):
     """
     An occasion on which a Movie was watched.
     """
     movie = models.ForeignKey('Movie', null=False, blank=False)
 
     def __str__(self):
-        return "{} on {}".format(self.movie, self.date)
+        return str(self.movie)
+
+    def save(self, *args, **kwargs):
+        self.title = self.__str__()
+        super().save(*args, **kwargs)
 
 
 class PlayRole(BaseRole):
@@ -223,7 +248,7 @@ class PlayProduction(TimeStampedModelMixin, models.Model):
 
     def __str__(self):
         if self.title:
-            return '{} ({})'.format(self.play, self.title)
+            return self.title
         else:
             roles = list(self.roles.all())
             if len(roles) == 0:
@@ -237,14 +262,18 @@ class PlayProduction(TimeStampedModelMixin, models.Model):
                         )
 
 
-class PlayProductionEvent(BaseEvent):
+class PlayProductionEvent(Event):
     """
     An occasion on which a PlayProduction was watched.
     """
     production = models.ForeignKey('PlayProduction', blank=False)
 
     def __str__(self):
-        return "{} on {}".format(self.production, self.date)
+        return str(self.production)
+
+    def save(self, *args, **kwargs):
+        self.title = self.__str__()
+        super().save(*args, **kwargs)
 
 
 class Venue(TimeStampedModelMixin, models.Model):
