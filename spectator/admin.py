@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from polymorphic.admin import PolymorphicParentModelAdmin,\
-    PolymorphicChildModelAdmin
+    PolymorphicChildModelAdmin, PolymorphicChildModelFilter
 
 from .models import Event, Creator, Venue,\
     Book, BookRole, BookSeries, Reading,\
@@ -136,21 +136,24 @@ class EventAdmin(PolymorphicParentModelAdmin):
     child_models = (Concert, MovieEvent, PlayProductionEvent)
 
     list_display = ('__str__', 'date', 'venue',)
-    list_filter = ('date',)
+    list_filter = (PolymorphicChildModelFilter, 'date',)
+    # Get child models too, which means __str__ better reflects the child
+    # model. But, makes for more queries.
+    polymorphic_list = True
 
 
 @admin.register(Concert)
 class ConcertAdmin(PolymorphicChildModelAdmin):
     base_model = Concert
-    show_in_index = True # makes child model admin visible in main admin site
+    show_in_index = False # Hide this model from the Admin index.
 
     list_display = ('__str__', 'date', 'venue',)
     list_filter = ('date',)
-    search_fields = ('concert_title',)
+    search_fields = ('title',)
 
     fieldsets = (
         (None, {
-            'fields': ( 'concert_title', 'date', 'venue',)
+            'fields': ( 'title', 'date', 'venue',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -188,7 +191,7 @@ class MovieAdmin(admin.ModelAdmin):
 @admin.register(MovieEvent)
 class MovieEventAdmin(PolymorphicChildModelAdmin):
     base_model = MovieEvent
-    show_in_index = True # makes child model admin visible in main admin site
+    show_in_index = False # Hide this model from the Admin index.
 
     list_display = ('movie', 'date', 'venue',)
     list_filter = ('date',)
@@ -271,7 +274,7 @@ class PlayProductionAdmin(admin.ModelAdmin):
 @admin.register(PlayProductionEvent)
 class PlayProdutionEventAdmin(PolymorphicChildModelAdmin):
     base_model = PlayProductionEvent
-    show_in_index = True # makes child model admin visible in main admin site
+    show_in_index = False # Hide this model from the Admin index.
 
     list_display = ('production', 'date', 'venue',)
     list_filter = ('date',)

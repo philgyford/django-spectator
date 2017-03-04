@@ -77,7 +77,7 @@ class ConcertFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Concert
 
-    concert_title = factory.Sequence(lambda n: 'Concert %s' % n)
+    title = factory.Sequence(lambda n: 'Concert %s' % n)
     venue = factory.SubFactory(VenueFactory)
 
 
