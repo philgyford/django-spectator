@@ -2,6 +2,12 @@
  Django Spectator
 ==================
 
+.. image:: https://travis-ci.org/philgyford/django-spectator.svg?branch=master
+  :target: https://travis-ci.org/philgyford/django-spectator?branch=master
+
+.. image:: https://coveralls.io/repos/github/philgyford/django-spectator/badge.svg?branch=master
+  :target: https://coveralls.io/github/philgyford/django-spectator?branch=master
+
 A Django app to track book reading, movie viewing, gig going and play watching.
 
 So far only used with Python 3 and Django 1.10.
