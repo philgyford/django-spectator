@@ -1,13 +1,13 @@
 language: python
+python:
+  - "3.5"
+  - "3.6"
 env:
-  - TOX_ENV=py35-django18
-  - TOX_ENV=py35-django110
-  - TOX_ENV=py36-django18
-  - TOX_ENV=py36-django110
-  - TOX_ENV=coverage
+  - DJANGO=1.8
+  - DJANGO=1.10
 # command to install dependencies
 install:
-  - pip install tox coverage coveralls
+  - pip install tox tox-travis coverage coveralls
 # command to run tests
 script:
   - tox
