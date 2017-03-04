@@ -1,0 +1,19 @@
+language: python
+python: 3.6
+env:
+  - TOX_ENV=py35-django18
+  - TOX_ENV=py35-django110
+  - TOX_ENV=py36-django18
+  - TOX_ENV=py36-django110
+  - TOX_ENV=coverage
+# command to install dependencies
+install:
+  - pip install tox coverage coveralls
+# command to run tests
+script:
+  - tox -e $TOX_ENV
+#after_success:
+  #- bash scripts/coveralls.sh
+# containers
+sudo: false
+
