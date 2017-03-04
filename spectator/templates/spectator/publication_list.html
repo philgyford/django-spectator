@@ -1,0 +1,16 @@
+{% extends 'spectator/base.html' %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'spectator:reading_home' %}">Reading</a></li>
+    <li class="breadcrumb-item active">Publications</li>
+{% endblock %}
+
+{% block content %}
+    <h1 class="my-4">
+        {% block title %}
+            Publications
+        {% endblock %}
+    </h1>
+
+{% endblock content %}
