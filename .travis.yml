@@ -5,6 +5,7 @@ python:
 env:
   - DJANGO=1.8
   - DJANGO=1.10
+  - TOX_ENV=coverage
 # command to install dependencies
 install:
   - pip install tox tox-travis coverage coveralls
