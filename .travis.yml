@@ -19,7 +19,7 @@ install:
 script:
   - tox
 after_success:
-  - bash scripts/coveralls.sh
+  - coveralls
 # containers
 sudo: false
 
