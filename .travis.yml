@@ -12,8 +12,8 @@ install:
 # command to run tests
 script:
   - tox -e $TOX_ENV
-#after_success:
-  #- bash scripts/coveralls.sh
+after_success:
+  - bash scripts/coveralls.sh
 # containers
 sudo: false
 
