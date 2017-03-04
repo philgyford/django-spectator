@@ -4,7 +4,7 @@ from polymorphic.admin import PolymorphicParentModelAdmin,\
     PolymorphicChildModelAdmin, PolymorphicChildModelFilter
 
 from .models import Event, Creator, Venue,\
-    Book, BookRole, BookSeries, Reading,\
+    Publication, PublicationRole, PublicationSeries, Reading,\
     Concert, ConcertRole,\
     Movie, MovieEvent, MovieRole,\
     Play, PlayProduction, PlayProductionEvent, PlayProductionRole, PlayRole
@@ -14,14 +14,14 @@ from .models import Event, Creator, Venue,\
 
 class ReadingInline(admin.TabularInline):
     model = Reading
-    fields = ('book', 'start_date', 'end_date', 'is_finished',
+    fields = ('publication', 'start_date', 'end_date', 'is_finished',
                         'start_granularity', 'end_granularity',)
-    raw_id_fields = ('book',)
+    raw_id_fields = ('publication',)
     extra = 1
 
 
-class BookRoleInline(admin.TabularInline):
-    model = BookRole
+class PublicationRoleInline(admin.TabularInline):
+    model = PublicationRole
     fields = ( 'creator', 'role_name', 'role_order',)
     raw_id_fields = ('creator',)
     extra = 1
@@ -77,10 +77,10 @@ class CreatorAdmin(admin.ModelAdmin):
     readonly_fields = ('time_created', 'time_modified',)
 
 
-# BOOKS MODEL ADMINS.
+# PUBLICATIONS MODEL ADMINS.
 
-@admin.register(BookSeries)
-class BookSeriesAdmin(admin.ModelAdmin):
+@admin.register(PublicationSeries)
+class PublicationSeriesAdmin(admin.ModelAdmin):
     list_display = ('title', )
 
     fieldsets = (
@@ -96,8 +96,8 @@ class BookSeriesAdmin(admin.ModelAdmin):
     readonly_fields = ('time_created', 'time_modified',)
 
 
-@admin.register(Book)
-class BookAdmin(admin.ModelAdmin):
+@admin.register(Publication)
+class PublicationAdmin(admin.ModelAdmin):
     list_display = ('title', 'kind', 'show_creators', 'series', )
     list_filter = ('kind', 'series', )
     search_fields = ('title',)
@@ -117,7 +117,7 @@ class BookAdmin(admin.ModelAdmin):
     radio_fields = {'kind': admin.HORIZONTAL}
     readonly_fields = ('time_created', 'time_modified',)
 
-    inlines = [ BookRoleInline, ReadingInline, ]
+    inlines = [ PublicationRoleInline, ReadingInline, ]
 
     def show_creators(self, instance):
         names = [ str(r.creator) for r in instance.roles.all() ]

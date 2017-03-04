@@ -3,9 +3,9 @@ from django.db import models
 from . import BaseRole, Creator, TimeStampedModelMixin
 
 
-class BookSeries(TimeStampedModelMixin, models.Model):
+class PublicationSeries(TimeStampedModelMixin, models.Model):
     """
-    A way to group 'Books' into series.
+    A way to group `Publication`s into series.
     """
     title = models.CharField(null=False, blank=False, max_length=255,
             help_text="e.g. 'The London Review of Books'.")
@@ -14,39 +14,37 @@ class BookSeries(TimeStampedModelMixin, models.Model):
 
     class Meta:
         ordering = ('title',)
-        verbose_name_plural = 'Book series'
+        verbose_name_plural = 'Publication series'
 
     def __str__(self):
         return self.title
 
 
-class BookRole(BaseRole):
+class PublicationRole(BaseRole):
     """
-    Linking a creator to a book, optionally via their role (e.g. 'Author',
-    'Editor', etc.)
+    Linking a creator to a Publication, optionally via their role (e.g.
+    'Author', 'Editor', etc.)
     """
     creator = models.ForeignKey('Creator', blank=False,
-                            on_delete=models.CASCADE, related_name='book_roles')
+                    on_delete=models.CASCADE, related_name='publication_roles')
 
-    book = models.ForeignKey('Book', on_delete=models.CASCADE,
+    publication = models.ForeignKey('Publication', on_delete=models.CASCADE,
                                                         related_name='roles')
 
 
-class Book(TimeStampedModelMixin, models.Model):
+class Publication(TimeStampedModelMixin, models.Model):
     """
-    Not just books, but magazines etc too.
+    Get a Publication's creators:
 
-    Get a Book's creators:
-
-        book = Book.objects.get(pk=1)
+        publication = Publication.objects.get(pk=1)
 
         # Just the creators:
-        for creator in book.creators.all():
+        for creator in publication.creators.all():
             print(creator.name)
 
         # Include their roles:
-        for role in book.roles.all():
-            print(role.book, role.creator, role.role_name)
+        for role in publication.roles.all():
+            print(role.publication, role.creator, role.role_name)
     """
 
     KIND_CHOICES = (
@@ -56,7 +54,7 @@ class Book(TimeStampedModelMixin, models.Model):
 
     title = models.CharField(null=False, blank=False, max_length=255,
             help_text="e.g. 'Aurora' or 'Vol. 39 No. 4, 16 February 2017'.")
-    series = models.ForeignKey('BookSeries', blank=True, null=True,
+    series = models.ForeignKey('PublicationSeries', blank=True, null=True,
                                                     on_delete=models.SET_NULL)
     kind = models.CharField(max_length=20, choices=KIND_CHOICES,
                                                         default='book')
@@ -70,8 +68,8 @@ class Book(TimeStampedModelMixin, models.Model):
     notes_url = models.URLField(null=False, blank=True, max_length=255,
             verbose_name='Notes URL', help_text="URL of your notes/review.")
 
-    creators = models.ManyToManyField(Creator, through='BookRole',
-                                                        related_name='books')
+    creators = models.ManyToManyField(Creator, through='PublicationRole',
+                                                related_name='publications')
 
     class Meta:
         ordering = ('title',)
@@ -82,7 +80,7 @@ class Book(TimeStampedModelMixin, models.Model):
 
 class Reading(TimeStampedModelMixin, models.Model):
     """
-    A period when a Book was read.
+    A period when a Publication was read.
     """
     # Via https://www.flickr.com/services/api/misc.dates.html
     DATE_GRANULARITIES = (
@@ -93,7 +91,7 @@ class Reading(TimeStampedModelMixin, models.Model):
         # (8, 'Circa...'),
     )
 
-    book = models.ForeignKey('Book', null=False, blank=False)
+    publication = models.ForeignKey('Publication', null=False, blank=False)
 
     start_date = models.DateField(null=True, blank=True)
     start_granularity = models.PositiveSmallIntegerField(null=False,
@@ -102,11 +100,12 @@ class Reading(TimeStampedModelMixin, models.Model):
     end_granularity = models.PositiveSmallIntegerField(null=False,
             blank=False, default=3, choices=DATE_GRANULARITIES)
     is_finished = models.BooleanField(default=False,
-            help_text="Did you finish the book?")
+            help_text="Did you finish the publication?")
 
     class Meta:
         ordering = ('end_date',)
 
     def __str__(self):
-        return '{} ({} to {})'.format(self.book, self.start_date, self.end_date)
+        return '{} ({} to {})'.format(
+                            self.publication, self.start_date, self.end_date)
 

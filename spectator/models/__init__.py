@@ -1,5 +1,5 @@
 from .core import BaseRole, Creator, TimeStampedModelMixin
-from .books import Book, BookRole, BookSeries, Reading
+from .reading import Publication, PublicationRole, PublicationSeries, Reading
 from .events import Event, Venue,\
         ConcertRole, Concert,\
         Movie, MovieEvent, MovieRole,\

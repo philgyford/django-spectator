@@ -1,12 +1,12 @@
 from django.contrib.admin.sites import AdminSite
 from django.test import TestCase
 
-from spectator.admin import BookAdmin, PlayAdmin, PlayProductionAdmin
-from spectator.factories import BookFactory, BookRoleFactory,\
+from spectator.admin import PublicationAdmin, PlayAdmin, PlayProductionAdmin
+from spectator.factories import PublicationFactory, PublicationRoleFactory,\
         PlayFactory, PlayProductionFactory,\
         PlayProductionRoleFactory, PlayRoleFactory,\
         IndividualCreatorFactory
-from spectator.models import Book, Play, PlayProduction
+from spectator.models import Publication, Play, PlayProduction
 
 
 class AdminTestCase(TestCase):
@@ -15,29 +15,29 @@ class AdminTestCase(TestCase):
         self.site = AdminSite()
 
 
-class BookAdminTestCase(AdminTestCase):
+class PublicationAdminTestCase(AdminTestCase):
 
     def test_show_creators_with_roles(self):
-        "When a Book has roles, display them."
-        book = BookFactory()
-        BookRoleFactory(
-                book=book,
+        "When a Publication has roles, display them."
+        pub = PublicationFactory()
+        PublicationRoleFactory(
+                publication=pub,
                 creator=IndividualCreatorFactory(name='Bob'),
                 role_order=1)
-        BookRoleFactory(
-                book=book,
+        PublicationRoleFactory(
+                publication=pub,
                 creator=IndividualCreatorFactory(name='Terry'),
                 role_order=2)
 
-        ba = BookAdmin(Book, self.site)
-        self.assertEqual(ba.show_creators(book), 'Bob, Terry')
+        ba = PublicationAdmin(Publication, self.site)
+        self.assertEqual(ba.show_creators(pub), 'Bob, Terry')
 
     def test_show_creators_no_roles(self):
-        "When a Book has no roles, display '-'."
-        book = BookFactory()
+        "When a Publication has no roles, display '-'."
+        pub = PublicationFactory()
 
-        ba = BookAdmin(Book, self.site)
-        self.assertEqual(ba.show_creators(book), '-')
+        ba = PublicationAdmin(Publication, self.site)
+        self.assertEqual(ba.show_creators(pub), '-')
 
 
 class PlayAdminTestCase(AdminTestCase):

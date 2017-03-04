@@ -3,7 +3,7 @@ from datetime import datetime
 from django.test import TestCase
 
 from spectator.factories import *
-from spectator.models import Book, Concert, Creator, Movie, MovieEvent,\
+from spectator.models import Publication, Concert, Creator, Movie, MovieEvent,\
         Play, PlayProduction, PlayProductionEvent, Reading, Venue
 
 
@@ -25,13 +25,15 @@ class CreatorTestCase(TestCase):
         self.assertEqual(creators[0], a)
         self.assertEqual(creators[1], b)
 
-    def test_book_roles(self):
+    def test_publication_roles(self):
         bob = IndividualCreatorFactory(name='Bob')
-        book1 = BookFactory(title='Book 1')
-        book2 = BookFactory(title='Book 2')
-        role1 = BookRoleFactory(book=book1, creator=bob, role_name='Author')
-        role2 = BookRoleFactory(book=book2, creator=bob, role_name='Editor')
-        roles = bob.book_roles.all()
+        pub1 = PublicationFactory(title='Publication 1')
+        pub2 = PublicationFactory(title='Publication 2')
+        role1 = PublicationRoleFactory(
+                        publication=pub1, creator=bob, role_name='Author')
+        role2 = PublicationRoleFactory(
+                        publication=pub2, creator=bob, role_name='Editor')
+        roles = bob.publication_roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], role1)
         self.assertEqual(roles[1], role2)
@@ -126,52 +128,52 @@ class CreatorTestCase(TestCase):
         self.assertEqual(group.sort_name, 'Maurier, Daphne du')
 
 
-class BookRoleTestCase(TestCase):
+class PublicationRoleTestCase(TestCase):
 
     def test_str_1(self):
         creator = IndividualCreatorFactory(name='Bill Brown')
-        role = BookRoleFactory(creator=creator, role_name='')
+        role = PublicationRoleFactory(creator=creator, role_name='')
         self.assertEqual(str(role), 'Bill Brown')
 
     def test_str_2(self):
         creator = IndividualCreatorFactory(name='Bill Brown')
-        role = BookRoleFactory(creator=creator, role_name='Editor')
+        role = PublicationRoleFactory(creator=creator, role_name='Editor')
         self.assertEqual(str(role), 'Bill Brown (Editor)')
 
 
-class BookSeriesTestCase(TestCase):
+class PublicationSeriesTestCase(TestCase):
 
     def test_str(self):
-        series = BookSeriesFactory(title='The London Review of Books')
+        series = PublicationSeriesFactory(title='The London Review of Books')
         self.assertEqual(str(series), 'The London Review of Books')
 
 
-class BookTestCase(TestCase):
+class PublicationTestCase(TestCase):
 
     def test_str(self):
-        book = BookFactory(title='Aurora')
-        self.assertEqual(str(book), 'Aurora')
+        pub = PublicationFactory(title='Aurora')
+        self.assertEqual(str(pub), 'Aurora')
 
     def test_ordering(self):
         "Should order by book title."
-        b3 = BookFactory(title='Book C')
-        b1 = BookFactory(title='Book A')
-        b2 = BookFactory(title='Book B')
-        books = Book.objects.all()
-        self.assertEqual(books[0], b1)
-        self.assertEqual(books[1], b2)
-        self.assertEqual(books[2], b3)
+        b3 = PublicationFactory(title='Publication C')
+        b1 = PublicationFactory(title='Publication A')
+        b2 = PublicationFactory(title='Publication B')
+        pubs = Publication.objects.all()
+        self.assertEqual(pubs[0], b1)
+        self.assertEqual(pubs[1], b2)
+        self.assertEqual(pubs[2], b3)
 
     def test_roles(self):
-        "It can have multiple BookRoles."
+        "It can have multiple PublicationRoles."
         bob = IndividualCreatorFactory(name='Bob')
         terry = IndividualCreatorFactory(name='Terry')
-        book = BookFactory()
-        bobs_role = BookRoleFactory(book=book, creator=bob,
+        pub = PublicationFactory()
+        bobs_role = PublicationRoleFactory(publication=pub, creator=bob,
                                         role_name='Editor', role_order=2)
-        terrys_role = BookRoleFactory(book=book, creator=terry,
+        terrys_role = PublicationRoleFactory(publication=pub, creator=terry,
                                         role_name='Author', role_order=1)
-        roles = book.roles.all()
+        roles = pub.roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], terrys_role)
         self.assertEqual(roles[1], bobs_role)
@@ -183,7 +185,7 @@ class ReadingTestCase(TestCase):
 
     def test_str(self):
         reading = ReadingFactory(
-                book=BookFactory(title='Big Book'),
+                publication=PublicationFactory(title='Big Book'),
                 start_date=make_date('2017-02-15'),
                 end_date=make_date('2017-02-28'),
             )

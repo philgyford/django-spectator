@@ -23,37 +23,37 @@ class GroupCreatorFactory(factory.DjangoModelFactory):
     kind = 'group'
 
 
-# Factories for book models.
+# Factories for publication models.
 
-class BookSeriesFactory(factory.DjangoModelFactory):
+class PublicationSeriesFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.BookSeries
+        model = models.PublicationSeries
 
-    title = factory.Sequence(lambda n: 'Book Series %s' % n)
+    title = factory.Sequence(lambda n: 'Publication Series %s' % n)
 
 
-class BookFactory(factory.DjangoModelFactory):
+class PublicationFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.Book
+        model = models.Publication
 
-    title = factory.Sequence(lambda n: 'Book %s' % n)
-    series = factory.SubFactory(BookSeriesFactory)
+    title = factory.Sequence(lambda n: 'Publication %s' % n)
+    series = factory.SubFactory(PublicationSeriesFactory)
 
 
-class BookRoleFactory(factory.DjangoModelFactory):
+class PublicationRoleFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.BookRole
+        model = models.PublicationRole
 
     role_name = factory.Sequence(lambda n: 'Role %s' % n)
     creator = factory.SubFactory(IndividualCreatorFactory)
-    book = factory.SubFactory(BookFactory)
+    publication = factory.SubFactory(PublicationFactory)
 
 
 class ReadingFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Reading
 
-    book = factory.SubFactory(BookFactory)
+    publication = factory.SubFactory(PublicationFactory)
 
 
 # Factories for event models.
