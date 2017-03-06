@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest.mock import patch
 
 from django.test import TestCase
 try:
@@ -46,7 +47,6 @@ class UrlsTestCase(TestCase):
         IndividualCreatorFactory(pk=3)
         self.assertEqual(resolve('/creators/3/').func.__name__,
                          views.CreatorDetailView.__name__)
-
 
     def test_reading_home_url(self):
         self.assertEqual(reverse('spectator:reading_home'), '/reading/')

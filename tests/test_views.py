@@ -14,98 +14,129 @@ from spectator.factories import IndividualCreatorFactory,\
         PublicationFactory, PublicationSeriesFactory, ReadingFactory
 
 
-class ViewsTestCase(TestCase):
+class ViewTestCase(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
+        # We use '/fake-path/' for all tests because not testing URLs here,
+        # and the views don't care what the URL is.
+        self.request = self.factory.get('/fake-path/')
 
-    def test_home_response_200(self):
+
+class HomeViewTestCase(ViewTestCase):
+
+    def test_response_200(self):
         "It should respond with 200."
-        request = self.factory.get('/')
-        response = views.HomeView.as_view()(request)
+        response = views.HomeView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
 
-    def test_creator_list_response_200(self):
+    def test_templates(self):
+        response = views.HomeView.as_view()(self.request)
+        self.assertEqual(response.template_name[0], 'spectator/home.html')
+
+
+class CreatorListViewTestCase(ViewTestCase):
+
+    def test_response_200(self):
         "It should respond with 200."
-        request = self.factory.get('/creators/')
-        response = views.CreatorListView.as_view()(request)
+        response = views.CreatorListView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
 
-    def test_creator_detail_response_200(self):
+
+class CreatorDetailViewTestCase(ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        IndividualCreatorFactory(pk=3)
+
+    def test_response_200(self):
         "It should respond with 200 if there's a Creator with that pk."
-        IndividualCreatorFactory(pk=3)
-        request = self.factory.get('/creators/3/')
-        response = views.CreatorDetailView.as_view()(request, pk=3)
+        response = views.CreatorDetailView.as_view()(self.request, pk=3)
         self.assertEqual(response.status_code, 200)
 
-    def test_creator_detail_response_404(self):
+    def test_response_404(self):
         "It should raise 404 if there's no Creator with that pk."
-        IndividualCreatorFactory(pk=3)
-        request = self.factory.get('/creators/5/')
         with self.assertRaises(Http404):
-            response = views.CreatorDetailView.as_view()(request, pk=5)
+            response = views.CreatorDetailView.as_view()(self.request, pk=5)
 
-    def test_reading_home_response_200(self):
+
+class ReadingHomeViewTestCase(ViewTestCase):
+
+    def test_response_200(self):
         "It should respond with 200."
-        request = self.factory.get('/reading/')
-        response = views.ReadingHomeView.as_view()(request)
+        response = views.ReadingHomeView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
 
-    def test_publicationseries_list_response_200(self):
+
+class PublicationSeriesListViewTestCase(ViewTestCase):
+
+    def test_response_200(self):
         "It should respond with 200."
-        request = self.factory.get('/reading/series/')
-        response = views.PublicationSeriesListView.as_view()(request)
+        response = views.PublicationSeriesListView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
 
-    def test_publicationseries_detail_response_200(self):
+
+class PublicationSeriesDetailViewTestCase(ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        PublicationSeriesFactory(pk=3)
+
+    def test_response_200(self):
         "It should respond with 200 if there's a PublicationSeries with that pk."
-        PublicationSeriesFactory(pk=3)
-        request = self.factory.get('/reading/series/3/')
-        response = views.PublicationSeriesDetailView.as_view()(request, pk=3)
+        response = views.PublicationSeriesDetailView.as_view()(
+                                                        self.request, pk=3)
         self.assertEqual(response.status_code, 200)
 
-    def test_publicationseries_detail_response_404(self):
+    def test_response_404(self):
         "It should raise 404 if there's no PublicationSeries with that pk."
-        PublicationSeriesFactory(pk=3)
-        request = self.factory.get('/reading/series/5/')
         with self.assertRaises(Http404):
             response = views.PublicationSeriesDetailView.as_view()(
-                                                                request, pk=5)
+                                                        self.request, pk=5)
 
-    def test_publication_list_response_200(self):
+
+class PublicationListViewTestCase(ViewTestCase):
+
+    def test_response_200(self):
         "It should respond with 200."
-        request = self.factory.get('/reading/publications/')
-        response = views.PublicationListView.as_view()(request)
+        response = views.PublicationListView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
 
-    def test_publication_detail_response_200(self):
+
+class PublicationDetailViewTestCase(ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        PublicationFactory(pk=3)
+
+    def test_response_200(self):
         "It should respond with 200 if there's a Publication with that pk."
-        PublicationFactory(pk=3)
-        request = self.factory.get('/reading/publications/3/')
-        response = views.PublicationDetailView.as_view()(request, pk=3)
+        response = views.PublicationDetailView.as_view()(self.request, pk=3)
         self.assertEqual(response.status_code, 200)
 
-    def test_publication_detail_response_404(self):
+    def test_response_404(self):
         "It should raise 404 if there's no Publication with that pk."
-        PublicationFactory(pk=3)
-        request = self.factory.get('/reading/publications/5/')
         with self.assertRaises(Http404):
-            response = views.PublicationDetailView.as_view()(request, pk=5)
+            response = views.PublicationDetailView.as_view()(self.request, pk=5)
 
-    def test_reading_year_archive_response_200(self):
-        "It should respond with 200 if there's a Reading ending in that year."
+
+class ReadingYearArchiveViewTestCase(ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
         ReadingFactory(
                 end_date=datetime.strptime('2017-02-15', "%Y-%m-%d").date())
-        request = self.factory.get('/reading/2017/')
-        response = views.ReadingYearArchiveView.as_view()(request, year='2017')
+
+
+    def test_response_200(self):
+        "It should respond with 200 if there's a Reading ending in that year."
+        response = views.ReadingYearArchiveView.as_view()(
+                                                    self.request, year='2017')
         self.assertEqual(response.status_code, 200)
 
-    def test_reading_year_archive_response_404(self):
+    def test_response_404(self):
         "It should raise 404 if there's no Reading ending in that year."
-        ReadingFactory(
-                end_date=datetime.strptime('2017-02-15', "%Y-%m-%d").date())
-        request = self.factory.get('/reading/2016/')
         with self.assertRaises(Http404):
             response = views.ReadingYearArchiveView.as_view()(
-                                                        request, year='2016')
+                                                    self.request, year='2016')
 
