@@ -67,6 +67,11 @@ class ReadingHomeViewTestCase(ViewTestCase):
         response = views.ReadingHomeView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
 
+    def test_templates(self):
+        response = views.ReadingHomeView.as_view()(self.request)
+        self.assertEqual(response.template_name[0],
+                         'spectator/reading_home.html')
+
 
 class PublicationSeriesListViewTestCase(ViewTestCase):
 
@@ -125,8 +130,8 @@ class ReadingYearArchiveViewTestCase(ViewTestCase):
     def setUp(self):
         super().setUp()
         ReadingFactory(
-                end_date=datetime.strptime('2017-02-15', "%Y-%m-%d").date())
-
+                start_date=datetime.strptime('2016-12-15', "%Y-%m-%d").date(),
+                end_date=datetime.strptime('2017-01-15', "%Y-%m-%d").date())
 
     def test_response_200(self):
         "It should respond with 200 if there's a Reading ending in that year."
