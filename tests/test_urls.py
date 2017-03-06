@@ -1,8 +1,12 @@
 from datetime import datetime
 
-from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.urls import resolve
+try:
+    # Django >= 1.10
+    from django.urls import resolve, reverse
+except ImportError:
+    # Django < 1.10
+    from django.core.urlresolvers import resolve, reverse
 
 from spectator import views
 from spectator.factories import IndividualCreatorFactory,\
