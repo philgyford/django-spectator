@@ -58,6 +58,45 @@ class PublicationTestCase(TestCase):
         self.assertEqual(roles[1].role_name, 'Editor')
 
 
+class PublicationManagersTestCase(TestCase):
+
+    def setUp(self):
+        self.unread_pub = PublicationFactory()
+
+        self.read_pub = PublicationFactory()
+        ReadingFactory(publication=self.read_pub,
+                        start_date=make_date('2017-02-15'),
+                        end_date=make_date('2017-02-28'),
+                    )
+
+        # Has been read once but is being read again:
+        self.in_progress_pub = PublicationFactory()
+        ReadingFactory(publication=self.in_progress_pub,
+                        start_date=make_date('2017-02-15'),
+                        end_date=make_date('2017-02-28'),
+                    )
+        ReadingFactory(publication=self.in_progress_pub,
+                        start_date=make_date('2017-02-15'),
+                    )
+
+    def test_default_manager(self):
+        "Should return all publications, no matter their reading state."
+        pubs = Publication.objects.all()
+        self.assertEqual(len(pubs), 3)
+
+    def test_in_progress_manager(self):
+        "Should only return started-but-not-finished Publications."
+        pubs = Publication.in_progress_objects.all()
+        self.assertEqual(len(pubs), 1)
+        self.assertEqual(pubs[0], self.in_progress_pub)
+
+    def test_unread_manager(self):
+        "Should only return unread Publications."
+        pubs = Publication.unread_objects.all()
+        self.assertEqual(len(pubs), 1)
+        self.assertEqual(pubs[0], self.unread_pub)
+
+
 class ReadingTestCase(TestCase):
 
     def test_str(self):

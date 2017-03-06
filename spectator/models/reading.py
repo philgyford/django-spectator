@@ -1,6 +1,7 @@
 from django.db import models
 
 from . import BaseRole, Creator, TimeStampedModelMixin
+from .. import managers
 
 
 class PublicationSeries(TimeStampedModelMixin, models.Model):
@@ -45,6 +46,11 @@ class Publication(TimeStampedModelMixin, models.Model):
         # Include their roles:
         for role in publication.roles.all():
             print(role.publication, role.creator, role.role_name)
+
+    Get its readings:
+
+        for reading in publication.reading_set.all():
+            print(reading.start_date, reading.end_date)
     """
 
     KIND_CHOICES = (
@@ -70,6 +76,12 @@ class Publication(TimeStampedModelMixin, models.Model):
 
     creators = models.ManyToManyField(Creator, through='PublicationRole',
                                                 related_name='publications')
+
+    objects = models.Manager()
+    # Publications that are currently being read:
+    in_progress_objects = managers.InProgressPublicationsManager()
+    # Publications that haven't been started (have no Readings):
+    unread_objects = managers.UnreadPublicationsManager()
 
     class Meta:
         ordering = ('title',)
