@@ -112,14 +112,33 @@ class ReadingTestCase(TestCase):
         self.assertEqual(str(reading), 'Big Book (2017-02-15 to 2017-02-28)')
 
     def test_ordering(self):
+        "Most recently read should be first."
         reading1 = ReadingFactory(
-                start_date=make_date('2017-02-15'),
-                end_date=make_date('2017-02-28'),
-            )
-        reading2 = ReadingFactory(
                 start_date=make_date('2017-01-15'),
                 end_date=make_date('2017-01-28'),
+            )
+        reading2 = ReadingFactory(
+                start_date=make_date('2017-02-15'),
+                end_date=make_date('2017-02-28'),
             )
         readings = Reading.objects.all()
         self.assertEqual(readings[0], reading2)
         self.assertEqual(readings[1], reading1)
+
+    def test_ordering_in_progress(self):
+        "A reading that's in progress should be first."
+        in_progress = ReadingFactory(
+                start_date=make_date('2017-02-10'),
+            )
+        reading1 = ReadingFactory(
+                start_date=make_date('2017-01-15'),
+                end_date=make_date('2017-01-28'),
+            )
+        reading2 = ReadingFactory(
+                start_date=make_date('2017-02-15'),
+                end_date=make_date('2017-02-28'),
+            )
+        readings = Reading.objects.all()
+        self.assertEqual(readings[0], in_progress)
+        self.assertEqual(readings[1], reading2)
+        self.assertEqual(readings[2], reading1)

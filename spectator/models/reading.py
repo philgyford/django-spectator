@@ -123,8 +123,11 @@ class Reading(TimeStampedModelMixin, models.Model):
     is_finished = models.BooleanField(default=False,
             help_text="Did you finish the publication?")
 
+    objects = managers.EndDateDescendingManager()
+    objects_asc = managers.EndDateAscendingManager()
+
     class Meta:
-        ordering = ('end_date',)
+        get_latest_by = 'end_date'
 
     def __str__(self):
         return '{} ({} to {})'.format(
