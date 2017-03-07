@@ -18,7 +18,7 @@
 {% block content %}
     <h1 class="my-4">
         {% if publication.series %}
-            {{ publication.series.title }}<br>
+            <a href="{{ publication.series.get_absolute_url }}">{{ publication.series.title }}</a><br>
         {% endif %}
         {{ publication.title }}
     </h1>

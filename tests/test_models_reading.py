@@ -24,6 +24,10 @@ class PublicationSeriesTestCase(TestCase):
         series = PublicationSeriesFactory(title='The London Review of Books')
         self.assertEqual(str(series), 'The London Review of Books')
 
+    def test_absolute_url(self):
+        series = PublicationSeriesFactory(pk=3)
+        self.assertEqual(series.get_absolute_url(), '/reading/series/3/')
+
 
 class PublicationTestCase(TestCase):
 
