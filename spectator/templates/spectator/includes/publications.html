@@ -1,0 +1,15 @@
+{% comment %}
+Expects:
+
+* publication_list: The list or QuerySet of Publications to display.
+
+{% endcomment %}
+
+<ul>
+    {% for publication in publication_list %}
+        <li>
+            {% include 'spectator/includes/publication.html' with publication=publication only %}
+        </li>
+    {% endfor %}
+</ul>
+

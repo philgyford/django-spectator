@@ -41,6 +41,10 @@ class PublicationTestCase(TestCase):
         self.assertEqual(pubs[1], b2)
         self.assertEqual(pubs[2], b3)
 
+    def test_absolute_url(self):
+        pub = PublicationFactory(pk=3)
+        self.assertEqual(pub.get_absolute_url(), '/reading/publications/3/')
+
     def test_roles(self):
         "It can have multiple PublicationRoles."
         bob = IndividualCreatorFactory(name='Bob')

@@ -12,4 +12,16 @@
         {% endblock %}
     </h1>
 
+    {% if in_progress_publications|length > 0 %}
+        <h2>In-progress</h2>
+
+        {% include 'spectator/includes/publications.html' with publication_list=in_progress_publications only %}
+    {% endif %}
+
+    {% if publication_list|length > 0 %}
+        <h2>Unread</h2>
+
+        {% include 'spectator/includes/publications.html' with publication_list=publication_list only %}
+    {% endif %}
+
 {% endblock content %}

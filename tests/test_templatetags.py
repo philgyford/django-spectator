@@ -1,0 +1,171 @@
+from django.test import TestCase
+
+from . import make_date
+from spectator.factories import ReadingFactory
+from spectator.templatetags.spectator_tags import reading_dates
+
+
+class ReadingDatesTestCase(TestCase):
+
+    # Both start_date AND end_date.
+
+    ## Granularity both 3.
+
+    def test_ymd_to_ymd_diff_years(self):
+        "Complete dates, start and finish in different years"
+        r = ReadingFactory(start_date=make_date('2016-12-30'),
+                           start_granularity=3,
+                           end_date=make_date('2017-01-06'),
+                           end_granularity=3)
+        self.assertEqual(reading_dates(r),
+                    '30&nbsp;December&nbsp;2016 to 6&nbsp;January&nbsp;2017')
+
+    def test_ymd_to_ymd_same_year(self):
+        "Complete dates, start and finish in different months of same year."
+        r = ReadingFactory(start_date=make_date('2017-01-30'),
+                           start_granularity=3,
+                           end_date=make_date('2017-02-06'),
+                           end_granularity=3)
+        self.assertEqual(reading_dates(r),
+                         '30&nbsp;January to 6&nbsp;February&nbsp;2017')
+
+    def test_ymd_to_ymd_same_month(self):
+        "Complete dates, start and finish in same month."
+        r = ReadingFactory(start_date=make_date('2017-02-01'),
+                           start_granularity=3,
+                           end_date=make_date('2017-02-06'),
+                           end_granularity=3)
+        self.assertEqual(reading_dates(r), '1–6&nbsp;February&nbsp;2017')
+
+    def test_ymd_to_ymd_same_day(self):
+        "Complete dates, start and finish on same day."
+        r = ReadingFactory(start_date=make_date('2017-02-01'),
+                           start_granularity=3,
+                           end_date=make_date('2017-02-01'),
+                           end_granularity=3)
+        self.assertEqual(reading_dates(r), '1&nbsp;February&nbsp;2017')
+
+    ## Less granular start_dates.
+
+    def test_ym_to_ymd(self):
+        "Month-based start date, complete end date"
+        r = ReadingFactory(start_date=make_date('2016-12-30'),
+                           start_granularity=4,
+                           end_date=make_date('2017-01-06'),
+                           end_granularity=3)
+        self.assertEqual(reading_dates(r),
+                         'December&nbsp;2016 to 6&nbsp;January&nbsp;2017')
+
+    def test_y_to_ymd(self):
+        "Year-based start date, complete end date"
+        r = ReadingFactory(start_date=make_date('2016-12-30'),
+                           start_granularity=6,
+                           end_date=make_date('2017-01-06'),
+                           end_granularity=3)
+        self.assertEqual(reading_dates(r), '2016 to 6&nbsp;January&nbsp;2017')
+
+    ## Less granular end_dates.
+
+    def test_ymd_to_ym(self):
+        "Complete start date, month-based end date."
+        r = ReadingFactory(start_date=make_date('2016-12-30'),
+                           start_granularity=3,
+                           end_date=make_date('2017-01-06'),
+                           end_granularity=4)
+        self.assertEqual(reading_dates(r),
+                         '30&nbsp;December&nbsp;2016 to January&nbsp;2017')
+
+    def test_ymd_to_y(self):
+        "Complete start date to year-based end date"
+        r = ReadingFactory(start_date=make_date('2016-12-30'),
+                           start_granularity=3,
+                           end_date=make_date('2017-01-06'),
+                           end_granularity=6)
+        self.assertEqual(reading_dates(r), '30&nbsp;December&nbsp;2016 to 2017')
+
+    ## Less granular start_date and end_date.
+
+    def test_y_to_y_diff_year(self):
+        "Only years for start and end, and different years."
+        r = ReadingFactory(start_date=make_date('2016-01-01'),
+                           start_granularity=6,
+                           end_date=make_date('2017-01-01'),
+                           end_granularity=6)
+        self.assertEqual(reading_dates(r), '2016 to 2017')
+
+    def test_y_to_y_same_year(self):
+        "Only years for start and end, and the same year."
+        r = ReadingFactory(start_date=make_date('2017-01-01'),
+                           start_granularity=6,
+                           end_date=make_date('2017-01-01'),
+                           end_granularity=6)
+        self.assertEqual(reading_dates(r), '2017')
+
+    def test_my_to_my_diff_years(self):
+        "Month and year for start and end, and different years."
+        r = ReadingFactory(start_date=make_date('2016-12-01'),
+                           start_granularity=4,
+                           end_date=make_date('2017-01-01'),
+                           end_granularity=4)
+        self.assertEqual(reading_dates(r),
+                         'December&nbsp;2016 to January&nbsp;2017')
+
+    def test_my_to_my_diff_months_same_year(self):
+        "Month and year for start and end, and different months, same year."
+        r = ReadingFactory(start_date=make_date('2017-01-01'),
+                           start_granularity=4,
+                           end_date=make_date('2017-02-01'),
+                           end_granularity=4)
+        self.assertEqual(reading_dates(r), 'January to February&nbsp;2017')
+
+    def test_my_to_my_same_month(self):
+        "Month and year for start and end, and same month."
+        r = ReadingFactory(start_date=make_date('2017-01-01'),
+                           start_granularity=4,
+                           end_date=make_date('2017-01-01'),
+                           end_granularity=4)
+        self.assertEqual(reading_dates(r), 'January&nbsp;2017')
+
+    # Only an end_date.
+
+    def test_end_ymd(self):
+        "Complete end date, no start"
+        r = ReadingFactory(end_date=make_date('2017-02-01'),
+                           end_granularity=3)
+        self.assertEqual(reading_dates(r),
+                         'Finished on 1&nbsp;February&nbsp;2017')
+
+    def test_end_ym(self):
+        "Month-based end date, no start"
+        r = ReadingFactory(end_date=make_date('2017-02-01'),
+                           end_granularity=4)
+        self.assertEqual(reading_dates(r), 'Finished in February&nbsp;2017')
+
+    def test_end_y(self):
+        "Year-based end date, no start"
+        r = ReadingFactory(end_date=make_date('2017-02-01'),
+                           end_granularity=6)
+        self.assertEqual(reading_dates(r), 'Finished in 2017')
+
+
+    # Only a start_date.
+
+    def test_start_ymd(self):
+        "Complete start date, no end"
+        r = ReadingFactory(start_date=make_date('2017-02-01'),
+                           start_granularity=3)
+        self.assertEqual(reading_dates(r),
+                         'Started on 1&nbsp;February&nbsp;2017')
+
+    def test_start_ym(self):
+        "Month-based start date, no end"
+        r = ReadingFactory(start_date=make_date('2017-02-01'),
+                           start_granularity=4)
+        self.assertEqual(reading_dates(r), 'Started in February&nbsp;2017')
+
+    def test_start_y(self):
+        "Year-based start date, no end"
+        r = ReadingFactory(start_date=make_date('2017-02-01'),
+                           start_granularity=6)
+        self.assertEqual(reading_dates(r), 'Started in 2017')
+

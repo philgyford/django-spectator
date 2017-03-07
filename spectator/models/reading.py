@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from . import BaseRole, Creator, TimeStampedModelMixin
 from .. import managers
@@ -88,6 +89,9 @@ class Publication(TimeStampedModelMixin, models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('spectator:publication_detail', kwargs={'pk':self.pk})
 
 
 class Reading(TimeStampedModelMixin, models.Model):

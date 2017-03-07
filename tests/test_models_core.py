@@ -18,6 +18,10 @@ class CreatorTestCase(TestCase):
         self.assertEqual(creators[0], a)
         self.assertEqual(creators[1], b)
 
+    def test_absolute_url(self):
+        creator = IndividualCreatorFactory(pk=3)
+        self.assertEqual(creator.get_absolute_url(), '/creators/3/')
+
     def test_publication_roles(self):
         bob = IndividualCreatorFactory(name='Bob')
         pub1 = PublicationFactory(title='Publication 1')

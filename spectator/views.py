@@ -19,6 +19,13 @@ class CreatorDetailView(DetailView):
 class ReadingHomeView(ListView):
     model = Publication
     template_name = 'spectator/reading_home.html'
+    queryset = Publication.unread_objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['in_progress_publications'] = \
+                                        Publication.in_progress_objects.all()
+        return context
 
 
 class PublicationSeriesListView(ListView):

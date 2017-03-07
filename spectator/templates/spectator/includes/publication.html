@@ -1,0 +1,30 @@
+{% comment %}
+Expects:
+
+* publication: The Publication to display.
+
+{% endcomment %}
+
+{% if publication.series %}
+    <cite>{{ publication.series.title }}</cite>,
+    <a href="{{ publication.get_absolute_url }}">{{ publication.title }}</a>
+{% else %}
+    <a href="{{ publication.get_absolute_url }}"><cite>{{ publication.title }}</cite></a>
+{% endif %}
+
+{% with publication.roles.all as roles %}
+    {% if roles|length > 0 %}
+        by
+        {% for r in roles %}{% if forloop.first %}{% else %}{% if forloop.last %} and {% else %}, {% endif %}{% endif %}<a href="{{ r.creator.get_absolute_url }}">{{ r.creator.name }}</a>{% if r.role_name %} ({{ r.role_name }}){% endif %}{% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with publication.reading_set.all as readings %}
+    {% if readings|length > 0 %}
+        {% load spectator_tags %}
+        {% for reading in readings %}
+            <br>{% reading_dates reading %}
+            {% if reading.is_finished %}(Finished){% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
