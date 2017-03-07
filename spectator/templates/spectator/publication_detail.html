@@ -29,6 +29,15 @@
         </p>
     {% endwith %}
 
+    {% with publication.amazon_urls as urls %}
+        {% if urls|length > 0 %}
+            <p>
+                View at
+                {% for url in urls %}{% if forloop.first %}{% else %}{% if forloop.last %} or {% else %}, {% endif %}{% endif %}<a href="{{ url.url }}">{{ url.name }}</a>{% endfor %}.
+            </p>
+        {% endif %}
+    {% endwith %}
+
     {% with publication.reading_set.all as readings %}
         {% if readings|length > 0 %}
             <h2>Readings</h2>

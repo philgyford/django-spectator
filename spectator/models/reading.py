@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 try:
     # Django >= 1.10
@@ -73,7 +74,7 @@ class Publication(TimeStampedModelMixin, models.Model):
     official_url = models.URLField(null=False, blank=True, max_length=255,
             verbose_name='Official URL',
             help_text="Official URL for this book/issue.")
-    isbn_gb = models.CharField(null=False, blank=True, max_length=20,
+    isbn_uk = models.CharField(null=False, blank=True, max_length=20,
             verbose_name='UK ISBN', help_text="e.g. '0356500489'.")
     isbn_us = models.CharField(null=False, blank=True, max_length=20,
             verbose_name='US ISBN', help_text="e.g. '0316098094'.")
@@ -97,6 +98,41 @@ class Publication(TimeStampedModelMixin, models.Model):
 
     def get_absolute_url(self):
         return reverse('spectator:publication_detail', kwargs={'pk':self.pk})
+
+    @property
+    def amazon_uk_url(self):
+        url = ''
+        if self.isbn_uk:
+            url = 'https://www.amazon.co.uk/gp/product/{}/'.format(self.isbn_uk)
+            if hasattr(settings, 'SPECTATOR_AMAZON') and 'uk' in settings.SPECTATOR_AMAZON:
+                url = '{}?tag={}'.format(url, settings.SPECTATOR_AMAZON['uk'])
+        return url
+
+    @property
+    def amazon_us_url(self):
+        url = ''
+        if self.isbn_us:
+            url = 'https://www.amazon.com/dp/{}/'.format(self.isbn_us)
+            if hasattr(settings, 'SPECTATOR_AMAZON') and 'us' in settings.SPECTATOR_AMAZON:
+                url = '{}?tag={}'.format(url, settings.SPECTATOR_AMAZON['us'])
+        return url
+
+    @property
+    def amazon_urls(self):
+        urls = []
+        if self.isbn_uk:
+            urls.append({
+                'url': self.amazon_uk_url,
+                'name': 'Amazon.co.uk',
+                'country': 'UK',
+            })
+        if self.isbn_us:
+            urls.append({
+                'url': self.amazon_us_url,
+                'name': 'Amazon.com',
+                'country': 'USA',
+            })
+        return urls
 
 
 class Reading(TimeStampedModelMixin, models.Model):

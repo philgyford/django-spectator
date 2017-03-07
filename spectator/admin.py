@@ -105,7 +105,7 @@ class PublicationAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ( 'title', 'kind', 'series',
-                        'isbn_gb', 'isbn_us',
+                        'isbn_uk', 'isbn_us',
                         'official_url', 'notes_url', )
         }),
         ('Times', {
