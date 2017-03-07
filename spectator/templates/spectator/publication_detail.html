@@ -29,14 +29,27 @@
         </p>
     {% endwith %}
 
-    {% with publication.amazon_urls as urls %}
-        {% if urls|length > 0 %}
-            <p>
-                View at
-                {% for url in urls %}{% if forloop.first %}{% else %}{% if forloop.last %} or {% else %}, {% endif %}{% endif %}<a href="{{ url.url }}">{{ url.name }}</a>{% endfor %}.
-            </p>
-        {% endif %}
-    {% endwith %}
+    {% if publication.has_urls %}
+        {% load spectator_filters %}
+        <ul>
+            {% if publication.notes_url %}
+                <li>View notes at {{ publication.notes_url|domain_urlize }}.</li>
+            {% endif %}
+
+            {% if publication.official_url %}
+                <li>View official site at {{ publication.official_url|domain_urlize }}.</li>
+            {% endif %}
+
+            {% with publication.amazon_urls as urls %}
+                {% if urls|length > 0 %}
+                    <li>
+                        View at
+                        {% for url in urls %}{% if forloop.first %}{% else %}{% if forloop.last %} or {% else %}, {% endif %}{% endif %}<a href="{{ url.url }}">{{ url.name }}</a>{% endfor %}.
+                    </li>
+                {% endif %}
+            {% endwith %}
+        </ul>
+    {% endif %}
 
     {% with publication.reading_set.all as readings %}
         {% if readings|length > 0 %}

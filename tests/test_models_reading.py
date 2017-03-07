@@ -99,6 +99,26 @@ class PublicationTestCase(TestCase):
             {'url': p.amazon_us_url, 'name': 'Amazon.com', 'country': 'USA'},
         ])
 
+    def test_has_urls_no(self):
+        p = PublicationFactory()
+        self.assertFalse(p.has_urls)
+
+    def test_has_urls_official(self):
+        p = PublicationFactory(official_url='http://www.example.org')
+        self.assertTrue(p.has_urls)
+
+    def test_has_urls_notes(self):
+        p = PublicationFactory(notes_url='http://www.example.org')
+        self.assertTrue(p.has_urls)
+
+    def test_has_urls_isbn_uk(self):
+        p = PublicationFactory(isbn_uk='1234567890')
+        self.assertTrue(p.has_urls)
+
+    def test_has_urls_isbn_us(self):
+        p = PublicationFactory(isbn_us='1234567890')
+        self.assertTrue(p.has_urls)
+
 
 class PublicationManagersTestCase(TestCase):
 
