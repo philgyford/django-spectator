@@ -7,11 +7,41 @@
     <li class="breadcrumb-item active">{{ publication }}</li>
 {% endblock %}
 
+{% block title %}
+    {% if publication.series %}
+        {{ publication.series.title }}, {{ publication.title }}
+    {% else %}
+        {{ publication.title }}
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <h1 class="my-4">
-        {% block title %}
-            {{ publication }}
-        {% endblock %}
+        {% if publication.series %}
+            {{ publication.series.title }}<br>
+        {% endif %}
+        {{ publication.title }}
     </h1>
+
+    {% with publication.roles.all as roles %}
+        <p class="lead">
+            {% include 'spectator/includes/roles.html' with roles=publication.roles.all intro='By' %}
+        </p>
+    {% endwith %}
+
+    {% with publication.reading_set.all as readings %}
+        {% if readings|length > 0 %}
+            <h2>Readings</h2>
+            <ul>
+                {% for reading in readings %}
+                    <li>
+                        {% include 'spectator/includes/reading.html' with reading=reading only %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Unread.</p>
+        {% endif %}
+    {% endwith %}
 
 {% endblock content %}

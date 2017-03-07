@@ -15,7 +15,7 @@
     {% if in_progress_publications|length > 0 %}
         <h2>In-progress</h2>
 
-        {% include 'spectator/includes/publications.html' with publication_list=in_progress_publications only %}
+        {% include 'spectator/includes/publications.html' with publication_list=in_progress_publications show_readings='one' only %}
     {% endif %}
 
     {% if publication_list|length > 0 %}

@@ -2,13 +2,14 @@
 Expects:
 
 * publication_list: The list or QuerySet of Publications to display.
+* show_readings: 'none' (default), 'all' or 'one'.
 
 {% endcomment %}
 
 <ul>
     {% for publication in publication_list %}
         <li>
-            {% include 'spectator/includes/publication.html' with publication=publication only %}
+            {% include 'spectator/includes/publication.html' with publication=publication show_readings=show_readings|default:'none' only %}
         </li>
     {% endfor %}
 </ul>

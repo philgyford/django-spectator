@@ -1,7 +1,10 @@
 {% comment %}
+Display a single Publication, probably used in a list.
+
 Expects:
 
 * publication: The Publication to display.
+* show_readings: 'none' (default), 'all' or 'one'.
 
 {% endcomment %}
 
@@ -12,19 +15,21 @@ Expects:
     <a href="{{ publication.get_absolute_url }}"><cite>{{ publication.title }}</cite></a>
 {% endif %}
 
-{% with publication.roles.all as roles %}
-    {% if roles|length > 0 %}
-        by
-        {% for r in roles %}{% if forloop.first %}{% else %}{% if forloop.last %} and {% else %}, {% endif %}{% endif %}<a href="{{ r.creator.get_absolute_url }}">{{ r.creator.name }}</a>{% if r.role_name %} ({{ r.role_name }}){% endif %}{% endfor %}
-    {% endif %}
-{% endwith %}
+{% include 'spectator/includes/roles.html' with roles=publication.roles.all intro='by' %}
 
-{% with publication.reading_set.all as readings %}
-    {% if readings|length > 0 %}
-        {% load spectator_tags %}
-        {% for reading in readings %}
-            <br>{% reading_dates reading %}
-            {% if reading.is_finished %}(Finished){% endif %}
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+{% if show_readings == 'all' or show_readings == 'one' %}
+    {% with publication.reading_set.all as readings %}
+        {% if readings|length > 0 %}
+            {% if show_readings == 'all' %}
+                {% for reading in readings %}
+                    <br>
+                    {% include 'spectator/includes/reading.html' with reading=reading only %}
+                {% endfor %}
+            {% else %}
+                <br>
+                {% include 'spectator/includes/reading.html' with reading=readings|first only %}
+            {% endif %}
+        {% endif %}
+    {% endwith %}
+{% endif %}
+
