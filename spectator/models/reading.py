@@ -1,5 +1,10 @@
 from django.db import models
-from django.urls import reverse
+try:
+    # Django >= 1.10
+    from django.urls import reverse
+except ImportError:
+    # Django < 1.10
+    from django.core.urlresolvers import reverse
 
 from . import BaseRole, Creator, TimeStampedModelMixin
 from .. import managers
