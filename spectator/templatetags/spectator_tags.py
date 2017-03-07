@@ -20,12 +20,18 @@ def reading_dates(reading):
     [1] https://www.flickr.com/services/api/misc.dates.html
     """
 
-    full_format = '%-d&nbsp;%B&nbsp;%Y'    # 3 September 2017
-    month_year_format = '%B&nbsp;%Y'       # September 2017
-    year_format = '%Y'                     # 2017
-    day_format = '%-d'                     # 3 
-    day_month_format = '%-d&nbsp;%B'       # 3 September
-    month_format = '%B'                    # September
+    # 3 September 2017
+    full_format = '<time datetime="%Y-%m-%d">%-d&nbsp;%B&nbsp;%Y</time>'
+    # September 2017
+    month_year_format = '<time datetime="%Y-%m">%B&nbsp;%Y</time>'
+    # 2017
+    year_format = '<time datetime="%Y">%Y</time>'
+    # 3
+    day_format = '<time datetime="%Y-%m-%d">%-d</time>'
+    # 3 September
+    day_month_format = '<time datetime="%Y-%m-%d">%-d&nbsp;%B</time>'
+    # September
+    month_format = '<time datetime="%Y-%m">%B</time>'
 
     # For brevity:
     start_date = reading.start_date
