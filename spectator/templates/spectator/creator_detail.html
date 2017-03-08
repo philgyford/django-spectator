@@ -14,6 +14,8 @@
     </h1>
 
     {% if creator.publications.all.count > 0 %}
+        <h2>Publications</h2>
+
         {% include 'spectator/includes/publications.html' with publication_list=creator.publications.all show_readings='all' only %}
     {% endif %}
 
