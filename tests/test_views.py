@@ -15,6 +15,9 @@ from spectator.factories import GroupCreatorFactory, IndividualCreatorFactory,\
 
 
 class ViewTestCase(TestCase):
+    """
+    Parent class to use with all the other view test cases.
+    """
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -166,6 +169,29 @@ class PublicationListViewTestCase(ViewTestCase):
         self.assertEqual(len(response.context_data['publication_list']), 1)
         self.assertEqual(response.context_data['publication_list'][0],
                                                                     periodical)
+
+    def test_non_numeric_page(self):
+        "PaginatedListView should raise 404 if we ask for a non-numeric page that isn't 'last'."
+        request = self.factory.get('/fake-path/?p=asdf')
+        with self.assertRaises(Http404):
+            response = views.PublicationListView.as_view()(request)
+
+    def test_last_page(self):
+        "PaginatedListView should return last page with ?p=last"
+        # Two pages' worth:
+        PublicationFactory.create_batch(51)
+        request = self.factory.get('/fake-path/?p=last')
+        response = views.PublicationListView.as_view()(request)
+        # Has the final one publication on the second page:
+        self.assertEqual(len(response.context_data['publication_list']), 1)
+
+    def test_invalid_page(self):
+        "PaginatedListView should raise 404 if we ask for a page number that doesn't exist."
+        # Use a URL with p=99:
+        request = self.factory.get('/fake-path/?p=99')
+        with self.assertRaises(Http404):
+            response = views.PublicationListView.as_view()(request)
+
 
 
 class PublicationDetailViewTestCase(ViewTestCase):

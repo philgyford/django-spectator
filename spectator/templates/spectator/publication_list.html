@@ -23,7 +23,14 @@
     </ul>
 
     {% if publication_list|length > 0 %}
+        {% if page_obj|default:False and page_obj.number > 1 %}
+            {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+        {% endif %}
+
         {% include 'spectator/includes/publications.html' with publication_list=publication_list only %}
+
+        {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+
     {% endif %}
 
 {% endblock content %}
