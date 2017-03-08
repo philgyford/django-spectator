@@ -11,6 +11,22 @@ class HomeView(TemplateView):
 class CreatorListView(ListView):
     model = Creator
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.kwargs.get('kind', None) == 'group':
+            context['creator_kind'] = 'group'
+        else:
+            context['creator_kind'] = 'individual'
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.kwargs.get('kind', None) == 'group':
+            queryset = queryset.filter(kind='group')
+        else:
+            queryset = queryset.filter(kind='individual')
+        return queryset
+
 
 class CreatorDetailView(DetailView):
     model = Creator

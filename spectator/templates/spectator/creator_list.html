@@ -12,4 +12,22 @@
         {% endblock %}
     </h1>
 
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link{% if creator_kind == 'individual' %} active{% endif %}" href="{% url 'spectator:creator_list' %}">Individuals</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link{% if creator_kind == 'group' %} active{% endif %}" href="{% url 'spectator:creator_list_group' %}">Groups</a>
+        </li>
+    </ul>
+
+    {% if creator_list|length > 0 %}
+        <ul>
+            {% for creator in creator_list %}
+                <li>
+                    <a href="{{ creator.get_absolute_url }}">{{ creator.sort_name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock content %}

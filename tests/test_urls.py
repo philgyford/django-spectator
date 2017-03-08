@@ -28,12 +28,22 @@ class UrlsTestCase(TestCase):
         self.assertEqual(resolve('/').func.__name__,
                          views.HomeView.__name__)
 
+
     def test_creator_list_url(self):
         self.assertEqual(reverse('spectator:creator_list'), '/creators/')
 
     def test_creator_list_view(self):
         "Should use the correct view."
         self.assertEqual(resolve('/creators/').func.__name__,
+                         views.CreatorListView.__name__)
+
+    def test_creator_list_group_url(self):
+        self.assertEqual(reverse('spectator:creator_list_group'),
+                         '/creators/groups/')
+
+    def test_creator_list_group_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/creators/groups/').func.__name__,
                          views.CreatorListView.__name__)
 
 

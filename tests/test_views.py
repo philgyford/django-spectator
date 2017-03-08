@@ -10,7 +10,7 @@ except ImportError:
     from django.core.urlresolvers import reverse
 
 from spectator import views
-from spectator.factories import IndividualCreatorFactory,\
+from spectator.factories import GroupCreatorFactory, IndividualCreatorFactory,\
         PublicationFactory, PublicationSeriesFactory, ReadingFactory
 
 
@@ -41,6 +41,34 @@ class CreatorListViewTestCase(ViewTestCase):
         "It should respond with 200."
         response = views.CreatorListView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
+
+    def test_context_individual(self):
+        "It should have creator_kind='individual' in the context."
+        response = views.CreatorListView.as_view()(self.request)
+        self.assertIn('creator_kind', response.context_data)
+        self.assertEqual(response.context_data['creator_kind'], 'individual')
+
+    def test_context_group(self):
+        "It should have creator_kind='group' in the context."
+        response = views.CreatorListView.as_view()(self.request, kind='group')
+        self.assertIn('creator_kind', response.context_data)
+        self.assertEqual(response.context_data['creator_kind'], 'group')
+
+    def test_queryset_individual(self):
+        "It should only include individuals in the creator_list"
+        group = GroupCreatorFactory()
+        indiv = IndividualCreatorFactory()
+        response = views.CreatorListView.as_view()(self.request)
+        self.assertEqual(len(response.context_data['creator_list']), 1)
+        self.assertEqual(response.context_data['creator_list'][0], indiv)
+
+    def test_queryset_group(self):
+        "It should only include groups in the creator_list"
+        group = GroupCreatorFactory()
+        indiv = IndividualCreatorFactory()
+        response = views.CreatorListView.as_view()(self.request, kind='group')
+        self.assertEqual(len(response.context_data['creator_list']), 1)
+        self.assertEqual(response.context_data['creator_list'][0], group)
 
 
 class CreatorDetailViewTestCase(ViewTestCase):
