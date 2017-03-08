@@ -9,6 +9,7 @@ except ImportError:
     # Django < 1.10
     from django.core.urlresolvers import reverse
 
+from . import make_date
 from spectator import views
 from spectator.factories import GroupCreatorFactory, IndividualCreatorFactory,\
         PublicationFactory, PublicationSeriesFactory, ReadingFactory
@@ -36,6 +37,22 @@ class HomeViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.HomeView.as_view()(self.request)
         self.assertEqual(response.template_name[0], 'spectator/home.html')
+
+    def test_context_in_progress(self):
+        "It should have in-progress publications in the context."
+        in_progress = ReadingFactory(
+                start_date=make_date('2017-02-10'),
+            )
+        finished = ReadingFactory(
+                start_date=make_date('2017-01-15'),
+                end_date=make_date('2017-01-28'),
+            )
+        response = views.HomeView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('in_progress_publications', context)
+        self.assertEqual(len(context['in_progress_publications']), 1)
+        self.assertEqual(context['in_progress_publications'][0],
+                                                    in_progress.publication)
 
 
 class CreatorListViewTestCase(ViewTestCase):
@@ -102,6 +119,22 @@ class ReadingHomeViewTestCase(ViewTestCase):
         response = views.ReadingHomeView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
                          'spectator/reading_home.html')
+
+    def test_context_in_progress(self):
+        "It should have in-progress publications in the context."
+        in_progress = ReadingFactory(
+                start_date=make_date('2017-02-10'),
+            )
+        finished = ReadingFactory(
+                start_date=make_date('2017-01-15'),
+                end_date=make_date('2017-01-28'),
+            )
+        response = views.ReadingHomeView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('in_progress_publications', context)
+        self.assertEqual(len(context['in_progress_publications']), 1)
+        self.assertEqual(context['in_progress_publications'][0],
+                                                    in_progress.publication)
 
 
 class PublicationSeriesListViewTestCase(ViewTestCase):

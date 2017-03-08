@@ -9,4 +9,10 @@
         Spectator
     </h1>
 
+    {% if in_progress_publications|length > 0 %}
+        <h2>Currently reading</h2>
+
+        {% include 'spectator/includes/publications.html' with publication_list=in_progress_publications show_readings='one' only %}
+    {% endif %}
+
 {% endblock content %}

@@ -69,6 +69,12 @@ class PaginatedListView(ListView):
 class HomeView(TemplateView):
     template_name = 'spectator/home.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['in_progress_publications'] = \
+                                        Publication.in_progress_objects.all()
+        return context
+
 
 class CreatorListView(PaginatedListView):
     model = Creator
