@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 
 from . import make_date
@@ -137,4 +138,12 @@ class ReadingTestCase(TestCase):
                 end_date=make_date('2017-02-28'),
             )
         self.assertEqual(str(reading), 'Big Book (2017-02-15 to 2017-02-28)')
+
+    def test_clean(self):
+        reading = ReadingFactory(
+                start_date=make_date('2017-02-15'),
+                end_date=make_date('2016-02-28'),
+            )
+        with self.assertRaises(ValidationError):
+            reading.clean()
 

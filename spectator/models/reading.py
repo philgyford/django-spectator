@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 try:
     # Django >= 1.10
@@ -184,4 +185,9 @@ class Reading(TimeStampedModelMixin, models.Model):
     def __str__(self):
         return '{} ({} to {})'.format(
                             self.publication, self.start_date, self.end_date)
+
+    def clean(self):
+        if self.start_date and self.end_date and self.start_date > self.end_date:
+            raise ValidationError(
+                    "A Reading's end date can't be before its start date.")
 
