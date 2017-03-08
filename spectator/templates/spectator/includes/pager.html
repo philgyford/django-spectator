@@ -1,0 +1,25 @@
+{% comment %}
+Display next/prev year links.
+
+Expects:
+
+next -- date.
+previous -- date.
+{% endcomment %}
+
+{% if next or previous %}
+	<nav class="my-4 nextprev">
+		<p>
+			{% if previous %}
+				<a href="{% url 'spectator:reading_year_archive' year=previous|date:"Y" %}" class="btn btn-outline-primary">
+					&larr; {{ previous|date:'Y' }}
+				</a>
+			{% endif %}
+			{% if next %}
+				<a href="{% url 'spectator:reading_year_archive' year=next|date:"Y" %}" class="btn btn-outline-primary float-right">
+					{{ next|date:'Y' }} &rarr;
+				</a>
+			{% endif %}
+		</p>
+	</nav>
+{% endif %}
