@@ -9,10 +9,14 @@ Expects:
 {% endcomment %}
 
 {% if publication.series %}
-    <cite>{{ publication.series.title }}</cite>,
-    <a href="{{ publication.get_absolute_url }}">{{ publication.title }}</a>
+    <strong>
+        <cite>{{ publication.series.title }}</cite>,
+        <a href="{{ publication.get_absolute_url }}">{{ publication.title }}</a>
+    </strong>
 {% else %}
-    <a href="{{ publication.get_absolute_url }}"><cite>{{ publication.title }}</cite></a>
+    <strong>
+        <a href="{{ publication.get_absolute_url }}"><cite>{{ publication.title }}</cite></a>
+    </strong>
 {% endif %}
 
 {% include 'spectator/includes/roles.html' with roles=publication.roles.all intro='by' %}
