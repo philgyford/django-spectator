@@ -47,6 +47,12 @@ urlpatterns = [
         name='publication_list'
     ),
     url(
+        regex=r"^reading/publications/periodicals/$",
+        view=views.PublicationListView.as_view(),
+        name='publication_list_periodical',
+        kwargs={'kind': 'periodical',}
+    ),
+    url(
         regex=r"^reading/publications/(?P<pk>\d+)/$",
         view=views.PublicationDetailView.as_view(),
         name='publication_detail'

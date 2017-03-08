@@ -90,7 +90,7 @@ class UrlsTestCase(TestCase):
                          views.PublicationSeriesDetailView.__name__)
 
 
-    def test_publication_list_home_url(self):
+    def test_publication_list_url(self):
         self.assertEqual(reverse('spectator:publication_list'),
                          '/reading/publications/')
 
@@ -98,6 +98,16 @@ class UrlsTestCase(TestCase):
         "Should use the correct view."
         self.assertEqual(resolve('/reading/publications/').func.__name__,
                          views.PublicationListView.__name__)
+
+    def test_publication_list_periodical_url(self):
+        self.assertEqual(reverse('spectator:publication_list_periodical'),
+                         '/reading/publications/periodicals/')
+
+    def test_publication_list_periodical_view(self):
+        "Should use the correct view."
+        self.assertEqual(
+                resolve('/reading/publications/periodicals/').func.__name__,
+                views.PublicationListView.__name__)
 
 
     def test_publication_detail_url(self):

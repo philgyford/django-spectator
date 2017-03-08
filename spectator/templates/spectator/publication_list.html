@@ -13,4 +13,17 @@
         {% endblock %}
     </h1>
 
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link{% if publication_kind == 'book' %} active{% endif %}" href="{% url 'spectator:publication_list' %}">Books</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link{% if publication_kind == 'periodical' %} active{% endif %}" href="{% url 'spectator:publication_list_periodical' %}">Periodicals</a>
+        </li>
+    </ul>
+
+    {% if publication_list|length > 0 %}
+        {% include 'spectator/includes/publications.html' with publication_list=publication_list only %}
+    {% endif %}
+
 {% endblock content %}

@@ -135,6 +135,38 @@ class PublicationListViewTestCase(ViewTestCase):
         response = views.PublicationListView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
 
+    def test_context_individual(self):
+        "It should have publication_kind='book' in the context."
+        response = views.PublicationListView.as_view()(self.request)
+        self.assertIn('publication_kind', response.context_data)
+        self.assertEqual(response.context_data['publication_kind'], 'book')
+
+    def test_context_group(self):
+        "It should have publication_kind='periodical' in the context."
+        response = views.PublicationListView.as_view()(
+                                            self.request, kind='periodical')
+        self.assertIn('publication_kind', response.context_data)
+        self.assertEqual(response.context_data['publication_kind'],
+                                                                'periodical')
+
+    def test_queryset_individual(self):
+        "It should only include books in the publication_list"
+        book = PublicationFactory(kind='book')
+        periodical = PublicationFactory(kind='periodical')
+        response = views.PublicationListView.as_view()(self.request)
+        self.assertEqual(len(response.context_data['publication_list']), 1)
+        self.assertEqual(response.context_data['publication_list'][0], book)
+
+    def test_queryset_group(self):
+        "It should only include periodicals in the publication_list"
+        book = PublicationFactory(kind='book')
+        periodical = PublicationFactory(kind='periodical')
+        response = views.PublicationListView.as_view()(
+                                            self.request, kind='periodical')
+        self.assertEqual(len(response.context_data['publication_list']), 1)
+        self.assertEqual(response.context_data['publication_list'][0],
+                                                                    periodical)
+
 
 class PublicationDetailViewTestCase(ViewTestCase):
 

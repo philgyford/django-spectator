@@ -10,21 +10,22 @@ class HomeView(TemplateView):
 
 class CreatorListView(ListView):
     model = Creator
+    creator_kind = 'individual'
+
+    def get(self, request, *args, **kwargs):
+        # Are we should 'individual's (default) or 'group's?
+        if self.kwargs.get('kind', None) == 'group':
+            self.creator_kind = 'group'
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.kwargs.get('kind', None) == 'group':
-            context['creator_kind'] = 'group'
-        else:
-            context['creator_kind'] = 'individual'
+        context['creator_kind'] = self.creator_kind
         return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.kwargs.get('kind', None) == 'group':
-            queryset = queryset.filter(kind='group')
-        else:
-            queryset = queryset.filter(kind='individual')
+        queryset = queryset.filter(kind=self.creator_kind)
         return queryset
 
 
@@ -54,6 +55,23 @@ class PublicationSeriesDetailView(DetailView):
 
 class PublicationListView(ListView):
     model = Publication
+    publication_kind = 'book'
+
+    def get(self, request, *args, **kwargs):
+        # Are we should 'book's (default) or 'periodical's?
+        if self.kwargs.get('kind', None) == 'periodical':
+            self.publication_kind = 'periodical'
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['publication_kind'] = self.publication_kind
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(kind=self.publication_kind)
+        return queryset
 
 
 class PublicationDetailView(DetailView):
