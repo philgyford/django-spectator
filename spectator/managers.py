@@ -23,7 +23,7 @@ class UnreadPublicationsManager(models.Manager):
         return super().get_queryset().filter(reading__isnull=True)
 
 
-class EndDateAscendingManager(models.Manager):
+class EndDateAscendingReadingsManager(models.Manager):
     """
     Returns Readings in descending end_date order, with Readings that have
     no end_date first.
@@ -35,7 +35,7 @@ class EndDateAscendingManager(models.Manager):
         qs = qs.extra(select={'end_date_null': 'end_date is null'})
         return qs.extra(order_by=['end_date_null', 'end_date'])
 
-class EndDateDescendingManager(models.Manager):
+class EndDateDescendingReadingsManager(models.Manager):
     """
     Returns Readings in ascending end_date order, with Readings that have
     no end_date last.

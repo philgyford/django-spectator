@@ -171,8 +171,8 @@ class Reading(TimeStampedModelMixin, models.Model):
     is_finished = models.BooleanField(default=False,
             help_text="Did you finish the publication?")
 
-    objects = managers.EndDateDescendingManager()
-    objects_asc = managers.EndDateAscendingManager()
+    objects = managers.EndDateDescendingReadingsManager()
+    objects_asc = managers.EndDateAscendingReadingsManager()
 
     class Meta:
         get_latest_by = 'end_date'
