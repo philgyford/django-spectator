@@ -4,14 +4,18 @@
     <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'spectator:reading_home' %}">Reading</a></li>
     <li class="breadcrumb-item"><a href="{% url 'spectator:publicationseries_list' %}">Series</a></li>
-    <li class="breadcrumb-item active">{{ publicationseries }}</li>
+    <li class="breadcrumb-item active">{{ publicationseries.title }}</li>
 {% endblock %}
 
 {% block content %}
     <h1 class="my-4">
         {% block title %}
-            {{ publicationseries }}
+            {{ publicationseries.title }}
         {% endblock %}
     </h1>
+
+    {% if publicationseries.publication_set.count > 0 %}
+        {% include 'spectator/includes/publications.html' with publication_list=publicationseries.publication_set.all show_readings='all' only %}
+    {% endif %}
 
 {% endblock content %}
