@@ -58,6 +58,15 @@ class ReadingDatesTestCase(TestCase):
         self.assertEqual(reading_dates(r),
              '<time datetime="2016-12">December&nbsp;2016</time> to <time datetime="2017-01-06">6&nbsp;January&nbsp;2017</time>')
 
+    def test_ym_to_ymd_same_year(self):
+        "Month-based start date, complete end date, in same year."
+        r = ReadingFactory(start_date=make_date('2017-01-01'),
+                           start_granularity=4,
+                           end_date=make_date('2017-02-01'),
+                           end_granularity=3)
+        self.assertEqual(reading_dates(r),
+            '<time datetime="2017-01">January</time> to <time datetime="2017-02-01">1&nbsp;February&nbsp;2017</time>')
+
     def test_y_to_ymd(self):
         "Year-based start date, complete end date"
         r = ReadingFactory(start_date=make_date('2016-12-30'),
@@ -77,6 +86,15 @@ class ReadingDatesTestCase(TestCase):
                            end_granularity=4)
         self.assertEqual(reading_dates(r),
             '<time datetime="2016-12-30">30&nbsp;December&nbsp;2016</time> to <time datetime="2017-01">January&nbsp;2017</time>')
+
+    def test_ymd_to_ym_same_year(self):
+        "Complete start date, month-based end date, in same year."
+        r = ReadingFactory(start_date=make_date('2017-01-01'),
+                           start_granularity=3,
+                           end_date=make_date('2017-02-01'),
+                           end_granularity=4)
+        self.assertEqual(reading_dates(r),
+            '<time datetime="2017-01-01">1&nbsp;January</time> to <time datetime="2017-02">February&nbsp;2017</time>')
 
     def test_ymd_to_y(self):
         "Complete start date to year-based end date"
@@ -106,7 +124,7 @@ class ReadingDatesTestCase(TestCase):
                            end_granularity=6)
         self.assertEqual(reading_dates(r), '<time datetime="2017">2017</time>')
 
-    def test_my_to_my_diff_years(self):
+    def test_ym_to_ym_diff_years(self):
         "Month and year for start and end, and different years."
         r = ReadingFactory(start_date=make_date('2016-12-01'),
                            start_granularity=4,
@@ -115,7 +133,7 @@ class ReadingDatesTestCase(TestCase):
         self.assertEqual(reading_dates(r),
             '<time datetime="2016-12">December&nbsp;2016</time> to <time datetime="2017-01">January&nbsp;2017</time>')
 
-    def test_my_to_my_diff_months_same_year(self):
+    def test_ym_to_ym_diff_months_same_year(self):
         "Month and year for start and end, and different months, same year."
         r = ReadingFactory(start_date=make_date('2017-01-01'),
                            start_granularity=4,
@@ -124,7 +142,7 @@ class ReadingDatesTestCase(TestCase):
         self.assertEqual(reading_dates(r),
             '<time datetime="2017-01">January</time> to <time datetime="2017-02">February&nbsp;2017</time>')
 
-    def test_my_to_my_same_month(self):
+    def test_ym_to_ym_same_month(self):
         "Month and year for start and end, and same month."
         r = ReadingFactory(start_date=make_date('2017-01-01'),
                            start_granularity=4,
@@ -132,6 +150,15 @@ class ReadingDatesTestCase(TestCase):
                            end_granularity=4)
         self.assertEqual(reading_dates(r),
             '<time datetime="2017-01">January&nbsp;2017</time>')
+
+    def test_ym_to_ym_same_year(self):
+        "Month and year for start and end, and same year."
+        r = ReadingFactory(start_date=make_date('2017-01-01'),
+                           start_granularity=4,
+                           end_date=make_date('2017-02-01'),
+                           end_granularity=4)
+        self.assertEqual(reading_dates(r),
+            '<time datetime="2017-01">January</time> to <time datetime="2017-02">February&nbsp;2017</time>')
 
     # Only an end_date.
 

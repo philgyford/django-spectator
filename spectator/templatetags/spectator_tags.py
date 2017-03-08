@@ -76,7 +76,7 @@ def reading_dates(reading):
 
     # Now make the final strings we'll return:
 
-    if end_date and start_date:
+    if start_date and end_date:
 
         # A default which will be overridden in many cases. This covers:
         # 1 February 2017 to 3 March 2018
