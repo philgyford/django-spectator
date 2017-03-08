@@ -103,6 +103,10 @@ class PublicationTestCase(TestCase):
             {'url': p.amazon_us_url, 'name': 'Amazon.com', 'country': 'USA'},
         ])
 
+    def test_amazon_urls_none(self):
+        p = PublicationFactory(isbn_uk='', isbn_us='')
+        self.assertEqual(p.amazon_urls, [])
+
     def test_has_urls_no(self):
         p = PublicationFactory()
         self.assertFalse(p.has_urls)
