@@ -14,6 +14,10 @@ from .. import managers
 class PublicationSeries(TimeStampedModelMixin, models.Model):
     """
     A way to group `Publication`s into series.
+
+    Get its Publications:
+
+        series.publication_set.all()
     """
     title = models.CharField(null=False, blank=False, max_length=255,
             help_text="e.g. 'The London Review of Books'.")
