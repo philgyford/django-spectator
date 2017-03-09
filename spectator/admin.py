@@ -81,11 +81,11 @@ class CreatorAdmin(admin.ModelAdmin):
 
 @admin.register(PublicationSeries)
 class PublicationSeriesAdmin(admin.ModelAdmin):
-    list_display = ('title', )
+    list_display = ('sort_title', 'title',)
 
     fieldsets = (
         (None, {
-            'fields': ('title', 'url', )
+            'fields': ('title', 'sort_title', 'url', )
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -98,14 +98,14 @@ class PublicationSeriesAdmin(admin.ModelAdmin):
 
 @admin.register(Publication)
 class PublicationAdmin(admin.ModelAdmin):
-    list_display = ('title', 'kind', 'show_creators', 'series', )
+    list_display = ('sort_title', 'kind', 'show_creators', 'series', )
     list_filter = ('kind', 'series', )
     search_fields = ('title',)
     list_select_related = ('series',)
 
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'kind', 'series',
+            'fields': ( 'title', 'sort_title', 'kind', 'series',
                         'isbn_uk', 'isbn_us',
                         'official_url', 'notes_url', )
         }),

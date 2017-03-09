@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 
@@ -28,6 +30,13 @@ class PublicationSeriesTestCase(TestCase):
     def test_absolute_url(self):
         series = PublicationSeriesFactory(pk=3)
         self.assertEqual(series.get_absolute_url(), '/reading/series/3/')
+
+    @patch('spectator.models.reading.make_sort_name')
+    def test_sort_title(self, make_sort_name):
+        "It should call the make_sort_name method when saving."
+        make_sort_name.return_value = "Alpine Review, The"
+        PublicationSeriesFactory(title='The Alpine Review')
+        make_sort_name.assert_called_once_with('The Alpine Review', 'thing')
 
 
 class PublicationTestCase(TestCase):
@@ -65,6 +74,13 @@ class PublicationTestCase(TestCase):
         self.assertEqual(roles[1], bobs_role)
         self.assertEqual(roles[0].role_name, 'Author')
         self.assertEqual(roles[1].role_name, 'Editor')
+
+    @patch('spectator.models.reading.make_sort_name')
+    def test_sort_title(self, make_sort_name):
+        "It should call the make_sort_name method when saving."
+        make_sort_name.return_value = "Clockwork Orange, A"
+        PublicationFactory(title='A Clockwork Orange', series=None)
+        make_sort_name.assert_called_once_with('A Clockwork Orange', 'thing')
 
     def test_amazon_uk_url(self):
         p = PublicationFactory(isbn_uk='0356500489')
