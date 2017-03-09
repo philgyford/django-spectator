@@ -59,7 +59,7 @@ class PlayProductionRoleInline(admin.TabularInline):
 
 @admin.register(Creator)
 class CreatorAdmin(admin.ModelAdmin):
-    list_display = ('sort_name', 'kind',)
+    list_display = ('sort_name', 'name', 'kind',)
     list_filter = ('kind', )
     search_fields = ('name', 'sort_name',)
 
@@ -101,6 +101,7 @@ class PublicationAdmin(admin.ModelAdmin):
     list_display = ('title', 'kind', 'show_creators', 'series', )
     list_filter = ('kind', 'series', )
     search_fields = ('title',)
+    list_select_related = ('series',)
 
     fieldsets = (
         (None, {
