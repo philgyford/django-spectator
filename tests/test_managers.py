@@ -37,6 +37,22 @@ class PublicationManagersTestCase(TestCase):
         self.assertEqual(len(pubs), 1)
         self.assertEqual(pubs[0], self.in_progress_pub)
 
+    def test_in_progress_manager_ordering(self):
+        "Should be ordered by reading start_date ASC."
+        earliest_in_progress_pub = PublicationFactory()
+        ReadingFactory(publication=earliest_in_progress_pub,
+                        start_date=make_date('2017-02-14'),
+                    )
+        latest_in_progress_pub = PublicationFactory()
+        ReadingFactory(publication=latest_in_progress_pub,
+                        start_date=make_date('2017-02-16'),
+                    )
+        pubs = Publication.in_progress_objects.all()
+        self.assertEqual(len(pubs), 3)
+        self.assertEqual(pubs[0], earliest_in_progress_pub)
+        self.assertEqual(pubs[1], self.in_progress_pub)
+        self.assertEqual(pubs[2], latest_in_progress_pub)
+
     def test_unread_manager(self):
         "Should only return unread Publications."
         pubs = Publication.unread_objects.all()

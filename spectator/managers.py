@@ -1,17 +1,20 @@
 from django.db import models
-from django.db.models import F
+from django.db.models import F, Min
 
 
 class InProgressPublicationsManager(models.Manager):
     """
-    Returns Publications that are currently being read.
+    Returns Publications that are currently being read, ordered with the
+    most-recently-started last.
     They might have previously been finished.
     """
     def get_queryset(self):
         from .models import Publication
-        return super().get_queryset().filter(
-                                        reading__start_date__isnull=False,
-                                        reading__end_date__isnull=True)
+        return super().get_queryset()\
+                .filter(reading__start_date__isnull=False,
+                        reading__end_date__isnull=True)\
+                .annotate(min_start_date=Min('reading__start_date'))\
+                .order_by('min_start_date')
 
 
 class UnreadPublicationsManager(models.Manager):
