@@ -149,7 +149,8 @@ class PublicationSeriesDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        PublicationSeriesFactory(pk=3)
+        series = PublicationSeriesFactory(pk=3)
+        PublicationFactory.create_batch(2, series=series)
 
     def test_response_200(self):
         "It should respond with 200 if there's a PublicationSeries with that pk."
@@ -162,6 +163,20 @@ class PublicationSeriesDetailViewTestCase(ViewTestCase):
         with self.assertRaises(Http404):
             response = views.PublicationSeriesDetailView.as_view()(
                                                         self.request, pk=5)
+
+    def test_context_series(self):
+        "It should include the PublicationSeries in the context."
+        response = views.PublicationSeriesDetailView.as_view()(
+                                                        self.request, pk=3)
+        self.assertIn('publicationseries', response.context_data)
+        self.assertEqual(response.context_data['publicationseries'].pk, 3)
+
+    def test_context_publication_list(self):
+        "It should include the publication_list in the context."
+        response = views.PublicationSeriesDetailView.as_view()(
+                                                        self.request, pk=3)
+        self.assertIn('publication_list', response.context_data)
+        self.assertEqual(len(response.context_data['publication_list']), 2)
 
 
 class PublicationListViewTestCase(ViewTestCase):
