@@ -108,6 +108,12 @@ class Publication(TimeStampedModelMixin, models.Model):
     def get_absolute_url(self):
         return reverse('spectator:publication_detail', kwargs={'pk':self.pk})
 
+    def get_current_reading(self):
+        try:
+            return self.reading_set.filter(end_date__isnull=True)[0]
+        except IndexError:
+            pass
+
     @property
     def amazon_uk_url(self):
         url = ''
@@ -176,11 +182,8 @@ class Reading(TimeStampedModelMixin, models.Model):
     is_finished = models.BooleanField(default=False,
             help_text="Did you finish the publication?")
 
-    objects = managers.EndDateDescendingReadingsManager()
-    objects_asc = managers.EndDateAscendingReadingsManager()
-
-    class Meta:
-        get_latest_by = 'end_date'
+    objects = managers.EndDateAscendingReadingsManager()
+    objects_desc = managers.EndDateDescendingReadingsManager()
 
     def __str__(self):
         return '{} ({} to {})'.format(

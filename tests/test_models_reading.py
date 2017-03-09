@@ -128,6 +128,24 @@ class PublicationTestCase(TestCase):
         p = PublicationFactory(isbn_us='1234567890')
         self.assertTrue(p.has_urls)
 
+    def test_get_current_reading(self):
+        "It should return the one in-progress Reading."
+        p = PublicationFactory()
+        in_progress = ReadingFactory(publication=p,
+                                    start_date=make_date('2017-02-15'))
+        completed = ReadingFactory(publication=p,
+                                    start_date=make_date('2017-02-15'),
+                                    end_date=make_date('2017-02-28'))
+        self.assertEqual(p.get_current_reading(), in_progress)
+
+    def test_get_current_reading_none(self):
+        "If there's no in-progress Reading, it should return nothing."
+        p = PublicationFactory()
+        completed = ReadingFactory(publication=p,
+                                    start_date=make_date('2017-02-15'),
+                                    end_date=make_date('2017-02-28'))
+        self.assertIsNone(p.get_current_reading())
+
 
 class ReadingTestCase(TestCase):
 

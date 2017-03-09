@@ -60,16 +60,16 @@ class ReadingManagersTestCase(TestCase):
             )
 
     def test_default_manager(self):
-        "EndDateDescendingReadingsManager. A reading that's in progress should be first."
-        readings = Reading.objects.all()
-        self.assertEqual(readings[0], self.in_progress)
-        self.assertEqual(readings[1], self.reading2)
-        self.assertEqual(readings[2], self.reading1)
-
-    def test_objects_asc_manager(self):
         "EndDateAscendingReadingsManager. A reading that's in progress should be last."
-        readings = Reading.objects_asc.all()
+        readings = Reading.objects.all()
         self.assertEqual(readings[0], self.reading1)
         self.assertEqual(readings[1], self.reading2)
         self.assertEqual(readings[2], self.in_progress)
+
+    def test_objects_asc_manager(self):
+        "EndDateDescendingReadingsManager. A reading that's in progress should be first."
+        readings = Reading.objects_desc.all()
+        self.assertEqual(readings[0], self.in_progress)
+        self.assertEqual(readings[1], self.reading2)
+        self.assertEqual(readings[2], self.reading1)
 
