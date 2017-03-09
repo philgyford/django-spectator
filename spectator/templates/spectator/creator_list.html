@@ -14,7 +14,7 @@
 
     <ul class="nav nav-tabs mb-4">
         <li class="nav-item">
-            <a class="nav-link{% if creator_kind == 'individual' %} active{% endif %}" href="{% url 'spectator:creator_list' %}">Individuals</a>
+            <a class="nav-link{% if creator_kind == 'individual' %} active{% endif %}" href="{% url 'spectator:creator_list' %}">People</a>
         </li>
         <li class="nav-item">
             <a class="nav-link{% if creator_kind == 'group' %} active{% endif %}" href="{% url 'spectator:creator_list_group' %}">Groups</a>
@@ -22,6 +22,11 @@
     </ul>
 
     {% if creator_list|length > 0 %}
+
+        {% if page_obj|default:False and page_obj.number > 1 %}
+            {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+        {% endif %}
+
         <ul>
             {% for creator in creator_list %}
                 <li>
@@ -29,5 +34,13 @@
                 </li>
             {% endfor %}
         </ul>
+
+        {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+
+    {% else %}
+
+        <p>There are no {% if creator_kind == 'group' %}groups{% else %}people{% endif %} to display.</p>
+
     {% endif %}
+
 {% endblock content %}

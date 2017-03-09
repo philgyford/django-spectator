@@ -3,6 +3,7 @@ from django.http import Http404
 from django.utils.translation import ugettext as _
 from django.views.generic import DetailView, ListView, YearArchiveView,\
         TemplateView
+from django.views.generic.detail import SingleObjectMixin
 
 from .models import Creator, Publication, PublicationSeries, Reading
 from .paginator import DiggPaginator
@@ -117,8 +118,21 @@ class PublicationSeriesListView(ListView):
     model = PublicationSeries
 
 
-class PublicationSeriesDetailView(DetailView):
-    model = PublicationSeries
+class PublicationSeriesDetailView(SingleObjectMixin, PaginatedListView):
+    template_name = "spectator/publicationseries_detail.html"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=PublicationSeries.objects.all())
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['publicationseries'] = self.object
+        context['publication_list'] = context['object_list']
+        return context
+
+    def get_queryset(self):
+        return self.object.publication_set.all()
 
 
 class PublicationListView(PaginatedListView):

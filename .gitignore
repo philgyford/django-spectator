@@ -1,6 +1,7 @@
-devproject/db.sqlite3
+devproject/db*.sqlite3
 devproject/media
 devproject/static
 django_spectator.egg-info
 htmlcov
 .coverage
+import_gyford_reading.py

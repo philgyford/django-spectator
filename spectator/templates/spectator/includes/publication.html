@@ -19,21 +19,25 @@ Expects:
     </strong>
 {% endif %}
 
-{% include 'spectator/includes/roles.html' with roles=publication.roles.all intro='by' %}
+{% include 'spectator/includes/roles.html' with roles=publication.roles.all intro='<br>by' %}
 
 {% if show_readings == 'all' or show_readings == 'one' %}
-    {% with publication.reading_set.all as readings %}
-        {% if readings|length > 0 %}
-            {% if show_readings == 'all' %}
-                {% for reading in readings %}
-                    <br>
-                    {% include 'spectator/includes/reading.html' with reading=reading only %}
-                {% endfor %}
-            {% else %}
-                <br>
-                {% include 'spectator/includes/reading.html' with reading=readings|first only %}
+    <ul class="text-muted">
+        {% with publication.reading_set.all as readings %}
+            {% if readings|length > 0 %}
+                {% if show_readings == 'all' %}
+                    {% for reading in readings %}
+                        <li>
+                            {% include 'spectator/includes/reading.html' with reading=reading only %}
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li>
+                        {% include 'spectator/includes/reading.html' with reading=readings|first only %}
+                    </li>
+                {% endif %}
             {% endif %}
-        {% endif %}
-    {% endwith %}
+        {% endwith %}
+    </ul>
 {% endif %}
 

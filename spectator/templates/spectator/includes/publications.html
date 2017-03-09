@@ -8,7 +8,7 @@ Expects:
 
 <ul>
     {% for publication in publication_list %}
-        <li>
+        <li class="mb-4">
             {% include 'spectator/includes/publication.html' with publication=publication show_readings=show_readings|default:'none' only %}
         </li>
     {% endfor %}

@@ -8,5 +8,5 @@ Expects:
 {% load spectator_tags %}
 
 {% reading_dates reading %}
-{% if reading.end_date and not reading.is_finished %}<span class="text-muted">(Unfinished)</span>{% endif %}
+{% if reading.end_date and not reading.is_finished %}(Unfinished){% endif %}
 
