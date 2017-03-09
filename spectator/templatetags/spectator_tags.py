@@ -35,27 +35,27 @@ def reading_dates(reading):
     Given a Reading, with start and end dates and granularities[1] it returns
     an HTML string representing that period. eg:
 
-        * '1–6 February 2017'
-        * '1 February to 3 March 2017'
-        * 'February 2017 to March 2018'
+        * '1–6 Feb 2017'
+        * '1 Feb to 3 Mar 2017'
+        * 'Feb 2017 to Mar 2018'
         * '2017-2018'
     etc.
 
     [1] https://www.flickr.com/services/api/misc.dates.html
     """
 
-    # 3 September 2017
-    full_format = '<time datetime="%Y-%m-%d">%-d&nbsp;%B&nbsp;%Y</time>'
-    # September 2017
-    month_year_format = '<time datetime="%Y-%m">%B&nbsp;%Y</time>'
+    # 3 Sep 2017
+    full_format = '<time datetime="%Y-%m-%d">%-d&nbsp;%b&nbsp;%Y</time>'
+    # Sep 2017
+    month_year_format = '<time datetime="%Y-%m">%b&nbsp;%Y</time>'
     # 2017
     year_format = '<time datetime="%Y">%Y</time>'
     # 3
     day_format = '<time datetime="%Y-%m-%d">%-d</time>'
-    # 3 September
-    day_month_format = '<time datetime="%Y-%m-%d">%-d&nbsp;%B</time>'
-    # September
-    month_format = '<time datetime="%Y-%m">%B</time>'
+    # 3 Sep
+    day_month_format = '<time datetime="%Y-%m-%d">%-d&nbsp;%b</time>'
+    # Sep
+    month_format = '<time datetime="%Y-%m">%b</time>'
 
     # For brevity:
     start_date = reading.start_date
