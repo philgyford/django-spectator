@@ -2,6 +2,8 @@ from django import template
 from django.http import QueryDict
 from django.utils.html import format_html
 
+from ..models import Publication
+
 
 register = template.Library()
 
@@ -179,4 +181,12 @@ def reading_dates(reading):
             output = "Started in {}".format(start_str)
 
     return format_html(output)
+
+
+@register.assignment_tag
+def in_progress_publications():
+    """
+    Returns a QuerySet of any Publications that are currently being read.
+    """
+    return Publication.in_progress_objects.all().order_by('time_created')
 

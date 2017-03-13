@@ -5,7 +5,8 @@ from django.test import TestCase
 
 from . import make_date
 from spectator.factories import ReadingFactory
-from spectator.templatetags.spectator_tags import query_string, reading_dates
+from spectator.templatetags.spectator_tags import query_string,\
+        in_progress_publications, reading_dates
 
 
 class QueryStringTestCase(TestCase):
@@ -244,4 +245,20 @@ class ReadingDatesTestCase(TestCase):
                            start_granularity=6)
         self.assertEqual(reading_dates(r),
             'Started in <time datetime="2017">2017</time>')
+
+
+class InProgressPublicationsTestCase(TestCase):
+
+    def test_queryset(self):
+        "It should return in-progress publications."
+        in_progress = ReadingFactory(
+                start_date=make_date('2017-02-10'),
+            )
+        finished = ReadingFactory(
+                start_date=make_date('2017-01-15'),
+                end_date=make_date('2017-01-28'),
+            )
+        qs = in_progress_publications()
+        self.assertEqual(len(qs), 1)
+        self.assertEqual(qs[0], in_progress.publication)
 

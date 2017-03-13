@@ -10,10 +10,10 @@
 
 {% block content %}
 
-    {% if in_progress_publications|length > 0 %}
+    {% if in_progress_publication_list|length > 0 %}
         <h2>Current</h2>
 
-        {% include 'spectator/includes/publications.html' with publication_list=in_progress_publications show_readings='current' only %}
+        {% include 'spectator/includes/publications.html' with publication_list=in_progress_publication_list show_readings='current' only %}
     {% endif %}
 
     {% if publication_list|length > 0 %}
