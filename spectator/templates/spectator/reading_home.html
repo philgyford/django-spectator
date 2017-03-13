@@ -1,16 +1,14 @@
 {% extends 'spectator/base.html' %}
 
+{% block head_page_title %}Reading{% endblock %}
+{% block content_title %}Reading{% endblock %}
+
 {% block breadcrumbs %}
     <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
     <li class="breadcrumb-item active">Reading</li>
 {% endblock %}
 
 {% block content %}
-    <h1 class="my-4">
-        {% block title %}
-            Reading
-        {% endblock %}
-    </h1>
 
     {% if in_progress_publications|length > 0 %}
         <h2>Current</h2>

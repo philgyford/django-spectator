@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>{% block head_title %}{% block title %}{% endblock %} ({% block head_site_title %}Spectator{% endblock %}){% endblock %}</title>
+        <title>{% block head_title %}{% block head_page_title %}{% endblock %} ({% block head_site_title %}Spectator{% endblock %}){% endblock %}</title>
 
         {% load static %}
         <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
@@ -48,9 +48,25 @@
                 {% block breadcrumbs %}{% endblock %}
             </ol>
 
-            {% block content %}
-            {% endblock content %}
+            {% block content_heading %}
+                <h1 class="my-4">
+                    {% block content_title %}
+                    {% endblock %}
+                </h1>
+            {% endblock %}
 
+            {% block content_main %}
+                <div class="row">
+                    <div class="col-md-9">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+                    <div class="col-md-3">
+                        {% block sidebar %}
+                        {% endblock %}
+                    </div>
+                </div>
+            {% endblock content_main %}
         </div>
 
     {% block footer %}

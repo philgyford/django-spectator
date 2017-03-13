@@ -1,13 +1,13 @@
 {% extends 'spectator/base.html' %}
 
+{% block head_page_title %}Spectator{% endblock %}
+{% block content_title %}Spectator{% endblock %}
+
 {% block breadcrumbs %}
     <li class="breadcrumb-item active">Home</li>
 {% endblock %}
 
 {% block content %}
-    <h1 class="my-4">
-        Spectator
-    </h1>
 
     {% if in_progress_publications|length > 0 %}
         <h2>Currently reading</h2>

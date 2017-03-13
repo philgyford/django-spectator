@@ -1,5 +1,8 @@
 {% extends 'spectator/base.html' %}
 
+{% block head_page_title %}{{ year|date:"Y" }} reading{% endblock %}
+{% block content_title %}{{ year|date:"Y" }} reading{% endblock %}
+
 {% block breadcrumbs %}
     <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'spectator:reading_home' %}">Reading</a></li>
@@ -7,12 +10,6 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="my-4">
-        {% block title %}
-            {{ year|date:"Y" }} reading
-        {% endblock %}
-    </h1>
-
     {% include 'spectator/includes/pager.html' with previous=previous_year next=next_year only %}
 
     {% if reading_list|length > 0 %}

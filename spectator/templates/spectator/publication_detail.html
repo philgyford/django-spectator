@@ -1,13 +1,6 @@
 {% extends 'spectator/base.html' %}
 
-{% block breadcrumbs %}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'spectator:reading_home' %}">Reading</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'spectator:publication_list' %}">Publications</a></li>
-    <li class="breadcrumb-item active">{{ publication }}</li>
-{% endblock %}
-
-{% block title %}
+{% block head_page_title %}
     {% if publication.series %}
         {{ publication.series.title }}, {{ publication.title }}
     {% else %}
@@ -15,13 +8,21 @@
     {% endif %}
 {% endblock %}
 
+{% block content_title %}
+    {% if publication.series %}
+        <a href="{{ publication.series.get_absolute_url }}">{{ publication.series.title }}</a><br>
+    {% endif %}
+    {{ publication.title }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'spectator:reading_home' %}">Reading</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'spectator:publication_list' %}">Publications</a></li>
+    <li class="breadcrumb-item active">{{ publication }}</li>
+{% endblock %}
+
 {% block content %}
-    <h1 class="my-4">
-        {% if publication.series %}
-            <a href="{{ publication.series.get_absolute_url }}">{{ publication.series.title }}</a><br>
-        {% endif %}
-        {{ publication.title }}
-    </h1>
 
     {% with publication.roles.all as roles %}
         <p class="lead">
