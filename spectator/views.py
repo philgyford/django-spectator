@@ -1,5 +1,7 @@
 from django.core.paginator import InvalidPage
+from django.db.models import Min
 from django.http import Http404
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 from django.views.generic import DetailView, ListView, YearArchiveView,\
         TemplateView
@@ -167,4 +169,25 @@ class ReadingYearArchiveView(YearArchiveView):
     make_object_list = True
     model = Reading
     ordering = 'end_date'
+
+    def get_dated_items(self):
+        items, qs, info = super().get_dated_items()
+
+        if 'year' in info and info['year']:
+            # Get the earliest date we have a Reading for:
+            end_date_min = Reading.objects.aggregate(
+                                            Min('end_date'))['end_date__min']
+            # Make it a 'yyyy-01-01' date:
+            min_year_date = end_date_min.replace(month=1, day=1)
+            if info['year'] < min_year_date:
+                # The year we're viewing is before our minimum date, so 404.
+                raise Http404(_("No %(verbose_name_plural)s available") % {
+                    'verbose_name_plural': force_text(qs.model._meta.verbose_name_plural)
+                })
+            elif info['year'] == min_year_date:
+                # This is the earliest year we have readings for, so
+                # there is no previous year.
+                info['previous_year'] = None
+
+        return items, qs, info
 

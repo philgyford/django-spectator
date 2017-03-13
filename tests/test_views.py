@@ -272,11 +272,11 @@ class ReadingYearArchiveViewTestCase(ViewTestCase):
                                                     self.request, year='2017')
         self.assertEqual(response.status_code, 200)
 
-    # def test_response_404(self):
-        # "It should raise 404 if there's no Reading ending in that year."
-        # with self.assertRaises(Http404):
-            # response = views.ReadingYearArchiveView.as_view()(
-                                                    # self.request, year='2016')
+    def test_response_404(self):
+        "It should raise 404 if it's a date before our first year."
+        with self.assertRaises(Http404):
+            response = views.ReadingYearArchiveView.as_view()(
+                                                    self.request, year='2016')
 
     def test_context_reading_list(self):
         "Should include Readings ending in chosen year, earliest end_date first."
@@ -320,4 +320,9 @@ class ReadingYearArchiveViewTestCase(ViewTestCase):
                         make_date('2016-01-01'))
         self.assertIsNone(response.context_data['next_year'])
 
-
+    def test_context_no_prev_year(self):
+        "There should be no previous year if we're on the earliest year."
+        response = views.ReadingYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        self.assertIn('previous_year', response.context_data)
+        self.assertIsNone(response.context_data['previous_year'])
