@@ -162,5 +162,9 @@ class PublicationDetailView(DetailView):
 
 
 class ReadingYearArchiveView(YearArchiveView):
+    allow_empty = True
     date_field = 'end_date'
+    make_object_list = True
     model = Reading
+    ordering = 'end_date'
+

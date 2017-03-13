@@ -9,10 +9,33 @@
 {% block content %}
     <h1 class="my-4">
         {% block title %}
-            {{ year|date:"Y" }}
+            {{ year|date:"Y" }} reading
         {% endblock %}
     </h1>
 
     {% include 'spectator/includes/pager.html' with previous=previous_year next=next_year only %}
+
+    {% if reading_list|length > 0 %}
+        <p class="text-muted">By date finished.</p>
+
+        {% for reading in reading_list %}
+            {% ifchanged reading.end_date|date:"m" %}
+                {% if not forloop.first %}
+                    </ul>
+                {% endif %}
+                <h2>{{ reading.end_date|date:"F"}}</h2>
+                <ul>
+            {% endifchanged %}
+            <li>
+                {% include 'spectator/includes/publication.html' with publication=reading.publication show_readings='none' only %}
+            </li>
+        {% endfor %}
+        </ul>
+
+        {% include 'spectator/includes/pager.html' with previous=previous_year next=next_year only %}
+
+    {% else %}
+        <p>Nothing was read in {{ year|date:"Y" }}.</p>
+    {% endif %}
 
 {% endblock content %}

@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.http.response import Http404
 from django.test import RequestFactory, TestCase
 try:
@@ -264,8 +262,9 @@ class ReadingYearArchiveViewTestCase(ViewTestCase):
     def setUp(self):
         super().setUp()
         ReadingFactory(
-                start_date=datetime.strptime('2016-12-15', "%Y-%m-%d").date(),
-                end_date=datetime.strptime('2017-01-15', "%Y-%m-%d").date())
+                publication=PublicationFactory(title='2017 Pub 1'),
+                start_date=make_date('2016-12-15'),
+                end_date=make_date('2017-01-31'))
 
     def test_response_200(self):
         "It should respond with 200 if there's a Reading ending in that year."
@@ -273,9 +272,52 @@ class ReadingYearArchiveViewTestCase(ViewTestCase):
                                                     self.request, year='2017')
         self.assertEqual(response.status_code, 200)
 
-    def test_response_404(self):
-        "It should raise 404 if there's no Reading ending in that year."
-        with self.assertRaises(Http404):
-            response = views.ReadingYearArchiveView.as_view()(
-                                                    self.request, year='2016')
+    # def test_response_404(self):
+        # "It should raise 404 if there's no Reading ending in that year."
+        # with self.assertRaises(Http404):
+            # response = views.ReadingYearArchiveView.as_view()(
+                                                    # self.request, year='2016')
+
+    def test_context_reading_list(self):
+        "Should include Readings ending in chosen year, earliest end_date first."
+        ReadingFactory(
+                publication=PublicationFactory(title='Old Pub'),
+                start_date=make_date('2016-06-15'),
+                end_date=make_date('2016-07-15'))
+        ReadingFactory(
+                publication=PublicationFactory(title='2017 Pub 2'),
+                start_date=make_date('2017-01-01'),
+                end_date=make_date('2017-01-20'))
+
+        response = views.ReadingYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        context = response.context_data
+        self.assertIn('reading_list', context)
+        self.assertEqual(len(context['reading_list']), 2)
+        self.assertEqual(context['reading_list'][0].publication.title,
+                        '2017 Pub 2')
+        self.assertEqual(context['reading_list'][1].publication.title,
+                        '2017 Pub 1')
+
+    def test_context_year(self):
+        "Context should include a date object representing the chosen year."
+        response = views.ReadingYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        self.assertIn('year', response.context_data)
+        self.assertEqual(response.context_data['year'], make_date('2017-01-01'))
+
+    def test_context_next_prev_years(self):
+        "Context should include date objects representing next/prev years, if any."
+        ReadingFactory(
+                publication=PublicationFactory(title='Old Pub'),
+                start_date=make_date('2016-06-15'),
+                end_date=make_date('2016-07-15'))
+        response = views.ReadingYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        self.assertIn('previous_year', response.context_data)
+        self.assertIn('next_year', response.context_data)
+        self.assertEqual(response.context_data['previous_year'],
+                        make_date('2016-01-01'))
+        self.assertIsNone(response.context_data['next_year'])
+
 
