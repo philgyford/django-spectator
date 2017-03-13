@@ -173,11 +173,22 @@ class ReadingTestCase(TestCase):
             )
         self.assertEqual(str(reading), 'Big Book (2017-02-15 to 2017-02-28)')
 
-    def test_clean(self):
+    def test_clean_error(self):
+        "It won't accept an end_date before a start_date."
         reading = ReadingFactory(
                 start_date=make_date('2017-02-15'),
                 end_date=make_date('2016-02-28'),
             )
         with self.assertRaises(ValidationError):
             reading.clean()
+
+    def test_clean_no_error(self):
+        reading = ReadingFactory(
+                start_date=make_date('2016-02-28'),
+                end_date=make_date('2017-02-15'),
+            )
+        try:
+            reading.clean()
+        except ValidationError:
+            self.fail("clean() raised ValidationError unexpectedly.")
 
