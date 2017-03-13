@@ -8,22 +8,22 @@ previous -- date.
 {% endcomment %}
 
 {% if next or previous %}
-	<nav class="nextprev">
-		<p class="row">
-			{% if previous %}
-				<span class="col-6">
-					<a href="{% url 'spectator:reading_year_archive' year=previous|date:"Y" %}" class="btn btn-outline-primary">
-						&larr; {{ previous|date:'Y' }}
-					</a>
-				</span>
-			{% endif %}
-			{% if next %}
-				<span class="col-6{% if not previous %} offset-6{% endif %}">
-					<a href="{% url 'spectator:reading_year_archive' year=next|date:"Y" %}" class="btn btn-outline-primary float-right">
-						{{ next|date:'Y' }} &rarr;
-					</a>
-				</span>
-			{% endif %}
-		</p>
-	</nav>
+    <nav class="nextprev">
+        <p class="row">
+            {% if previous %}
+                <span class="col-6">
+                    <a href="{% url 'spectator:reading_year_archive' year=previous|date:"Y" %}" class="btn btn-outline-primary">
+                        &larr; {{ previous|date:'Y' }}
+                    </a>
+                </span>
+            {% endif %}
+            {% if next %}
+                <span class="col-6{% if not previous %} offset-6{% endif %}">
+                    <a href="{% url 'spectator:reading_year_archive' year=next|date:"Y" %}" class="btn btn-outline-primary float-right">
+                        {{ next|date:'Y' }} &rarr;
+                    </a>
+                </span>
+            {% endif %}
+        </p>
+    </nav>
 {% endif %}
