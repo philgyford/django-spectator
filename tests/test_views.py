@@ -198,7 +198,7 @@ class PublicationListViewTestCase(ViewTestCase):
         self.assertEqual(response.context_data['publication_kind'],
                                                                 'periodical')
 
-    def test_queryset_individual(self):
+    def test_queryset_book(self):
         "It should only include books in the publication_list"
         book = PublicationFactory(kind='book')
         periodical = PublicationFactory(kind='periodical')
@@ -206,7 +206,7 @@ class PublicationListViewTestCase(ViewTestCase):
         self.assertEqual(len(response.context_data['publication_list']), 1)
         self.assertEqual(response.context_data['publication_list'][0], book)
 
-    def test_queryset_group(self):
+    def test_queryset_periodical(self):
         "It should only include periodicals in the publication_list"
         book = PublicationFactory(kind='book')
         periodical = PublicationFactory(kind='periodical')
@@ -238,6 +238,31 @@ class PublicationListViewTestCase(ViewTestCase):
         with self.assertRaises(Http404):
             response = views.PublicationListView.as_view()(request)
 
+    def test_ordering_books(self):
+        "Should be ordered by title_sort."
+        book2 = PublicationFactory(kind='book', title='Book 2')
+        book1 = PublicationFactory(kind='book', title='Book 1')
+        response = views.PublicationListView.as_view()(self.request)
+        pubs = response.context_data['publication_list']
+        self.assertEqual(pubs[0], book1)
+        self.assertEqual(pubs[1], book2)
+
+    def test_ordering_periodicals(self):
+        "Should be ordered by series' title_sort, then publication's title_sort."
+        series_a = PublicationSeriesFactory(title='Series A')
+        series_b = PublicationSeriesFactory(title='Series B')
+        pub_b1 = PublicationFactory(
+                            kind='periodical', series=series_b, title='Book 1')
+        pub_a2 = PublicationFactory(
+                            kind='periodical', series=series_a, title='Book 2')
+        pub_a1 = PublicationFactory(
+                            kind='periodical', series=series_a, title='Book 1')
+        response = views.PublicationListView.as_view()(
+                                            self.request, kind='periodical')
+        pubs = response.context_data['publication_list']
+        self.assertEqual(pubs[0], pub_a1)
+        self.assertEqual(pubs[1], pub_a2)
+        self.assertEqual(pubs[2], pub_b1)
 
 
 class PublicationDetailViewTestCase(ViewTestCase):

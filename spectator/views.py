@@ -164,6 +164,12 @@ class PublicationListView(PaginatedListView):
         queryset = queryset.filter(kind=self.publication_kind)
         return queryset
 
+    def get_ordering(self):
+        if self.publication_kind == 'periodical':
+            return ('series__title_sort', 'title_sort',)
+        else:
+            return ('title_sort',)
+
 
 class PublicationDetailView(DetailView):
     model = Publication
