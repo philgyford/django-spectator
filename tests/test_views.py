@@ -72,6 +72,16 @@ class CreatorListViewTestCase(ViewTestCase):
         self.assertIn('creator_kind', response.context_data)
         self.assertEqual(response.context_data['creator_kind'], 'group')
 
+    def test_context_counts(self):
+        "It should include the individual and group counts."
+        IndividualCreatorFactory.create_batch(2)
+        GroupCreatorFactory.create_batch(3)
+        response = views.CreatorListView.as_view()(self.request)
+        self.assertIn('individual_count', response.context_data)
+        self.assertEqual(response.context_data['individual_count'], 2)
+        self.assertIn('group_count', response.context_data)
+        self.assertEqual(response.context_data['group_count'], 3)
+
     def test_queryset_individual(self):
         "It should only include individuals in the creator_list"
         group = GroupCreatorFactory()
@@ -184,19 +194,28 @@ class PublicationListViewTestCase(ViewTestCase):
         response = views.PublicationListView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
 
-    def test_context_individual(self):
+    def test_context_book(self):
         "It should have publication_kind='book' in the context."
         response = views.PublicationListView.as_view()(self.request)
         self.assertIn('publication_kind', response.context_data)
         self.assertEqual(response.context_data['publication_kind'], 'book')
 
-    def test_context_group(self):
+    def test_context_periodical(self):
         "It should have publication_kind='periodical' in the context."
         response = views.PublicationListView.as_view()(
                                             self.request, kind='periodical')
         self.assertIn('publication_kind', response.context_data)
         self.assertEqual(response.context_data['publication_kind'],
                                                                 'periodical')
+    def test_context_counts(self):
+        "It should include the book and periodical counts."
+        PublicationFactory.create_batch(2, kind='book')
+        PublicationFactory.create_batch(3, kind='periodical')
+        response = views.PublicationListView.as_view()(self.request)
+        self.assertIn('book_count', response.context_data)
+        self.assertEqual(response.context_data['book_count'], 2)
+        self.assertIn('periodical_count', response.context_data)
+        self.assertEqual(response.context_data['periodical_count'], 3)
 
     def test_queryset_book(self):
         "It should only include books in the publication_list"

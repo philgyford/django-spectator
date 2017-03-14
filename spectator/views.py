@@ -92,6 +92,10 @@ class CreatorListView(PaginatedListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['creator_kind'] = self.creator_kind
+        context['individual_count'] = Creator.objects.filter(
+                                                    kind='individual').count()
+        context['group_count'] = Creator.objects.filter(
+                                                    kind='group').count()
         return context
 
     def get_queryset(self):
@@ -157,6 +161,9 @@ class PublicationListView(PaginatedListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['publication_kind'] = self.publication_kind
+        context['book_count'] = Publication.objects.filter(kind='book').count()
+        context['periodical_count'] = Publication.objects.filter(
+                                                    kind='periodical').count()
         return context
 
     def get_queryset(self):
