@@ -75,14 +75,16 @@ class CreatorAdmin(admin.ModelAdmin):
     )
 
     radio_fields = {'kind': admin.HORIZONTAL}
-    readonly_fields = ('time_created', 'time_modified',)
+    readonly_fields = ('name_sort', 'name_individual_sort',
+                        'name_individual_sort_display',
+                        'time_created', 'time_modified',)
 
 
 # PUBLICATIONS MODEL ADMINS.
 
 @admin.register(PublicationSeries)
 class PublicationSeriesAdmin(admin.ModelAdmin):
-    list_display = ('title', 'title_sort',)
+    list_display = ('title',)
 
     fieldsets = (
         (None, {
@@ -94,12 +96,12 @@ class PublicationSeriesAdmin(admin.ModelAdmin):
         }),
     )
 
-    readonly_fields = ('time_created', 'time_modified',)
+    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
 
 
 @admin.register(Publication)
 class PublicationAdmin(admin.ModelAdmin):
-    list_display = ('title_sort', 'kind', 'show_creators', 'series', )
+    list_display = ('title', 'kind', 'show_creators', 'series', )
     list_filter = ('kind', 'series', )
     search_fields = ('title',)
     list_select_related = ('series',)
@@ -117,7 +119,7 @@ class PublicationAdmin(admin.ModelAdmin):
     )
 
     radio_fields = {'kind': admin.HORIZONTAL}
-    readonly_fields = ('time_created', 'time_modified',)
+    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
 
     inlines = [ PublicationRoleInline, ReadingInline, ]
 
