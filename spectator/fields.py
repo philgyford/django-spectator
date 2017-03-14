@@ -41,6 +41,9 @@ class NaturalSortField(models.CharField):
             name = models.CharField(max_length=255)
             name_sort = NaturalSortField('name',  max_length=255)
             sort_as = 'person'
+
+            class Meta:
+                ordering = ('name_sort',)
     """
 
     description = "A string to allow more human-friendly sorting"
