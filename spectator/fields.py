@@ -8,16 +8,39 @@ class NaturalSortField(models.CharField):
     Using the value of another field on the model, make a version that is
     more suitable for sorting.
 
+    If the object has a `sort_as` property and that is set to `person` then
+    the string will be treated as if it's a name, i.e. surname put first.
+
+    Either way, this will be done:
+
     * Stripped of leading/trailing spaces.
     * All lowercase.
-    * Articles ("the", "a", etc) moved to the end of the string.
     * Integers heavily padded with zeros.
 
-    e.g. "The Long Blondes" becomes "long blondes, the".
-         "An Actor Prepares" becomes "actor prepares, an".
-         "Le Tigre" becomes "tigre, le".
-         "Vol. 2 No. 11, November 2004" becomes
-             "vol. 00000002 no. 00000011, november 00002004".
+    And, if it's a person:
+
+    * Surnames moved to the start.
+        e.g. "David Foster Wallace" becomes "wallace, david foster".
+             "John Le Carre" becomes "le carre, john".
+             "Daphne du Maurier" becomes "maurier, daphne du".
+             "Sir Fred Bloggs Jr" becomes "bloggs, sir fred jr".
+             "Prince" is "prince".
+
+    Or, if it's not a person:
+
+    * Articles ("the", "a", etc) moved to the end of the string.
+        e.g. "The Long Blondes" becomes "long blondes, the".
+             "An Actor Prepares" becomes "actor prepares, an".
+             "Le Tigre" becomes "tigre, le".
+             "Vol. 2 No. 11, November 2004" becomes
+                 "vol. 00000002 no. 00000011, november 00002004".
+
+    So, use like:
+
+        class Author(mdoels.Model):
+            name = models.CharField(max_length=255)
+            name_sort = NaturalSortField('name',  max_length=255)
+            sort_as = 'person'
     """
 
     description = "A string to allow more human-friendly sorting"
@@ -39,23 +62,21 @@ class NaturalSortField(models.CharField):
         return name, path, args, kwargs
 
     def pre_save(self, model_instance, add):
-        return self._naturalize(getattr(model_instance, self.for_field))
+        string = getattr(model_instance, self.for_field)
 
-    def _naturalize(self, string):
-        string = self._pre_naturalization(string)
-        string = self._do_naturalization(string)
-        string = self._post_naturalization(string)
-        return string
-
-    def _pre_naturalization(self, string):
-        string = string.lower()
         string = string.strip()
+
+        if hasattr(model_instance, 'sort_as') and model_instance.sort_as == 'person':
+            string = self.naturalize_person(string)
+            # The case of the name is important, so we lowercase afterwards:
+            string = string.lower()
+        else:
+            string = string.lower()
+            string = self.naturalize_thing(string)
+
         return string
 
-    def _post_naturalization(self, string):
-        return string
-
-    def _do_naturalization(self, string):
+    def naturalize_thing(self, string):
         """
         Make a naturalized version of a general string, not a person's name.
         e.g., title of a book, a band's name, etc.
@@ -82,48 +103,7 @@ class NaturalSortField(models.CharField):
 
         return sort_string
 
-    def _naturalize_numbers(self, string):
-        """
-        Makes any integers into very zero-padded numbers.
-        e.g. '1' becomes '00000001'.
-        """
-
-        def naturalize_int_match(match):
-            return '%08d' % (int(match.group(0)),)
-
-        string = re.sub(r'\d+', naturalize_int_match, string)
-
-        return string
-
-
-class PersonNaturalSortField(NaturalSortField):
-    """
-    Using the value of another field on the model, which should represent a
-    person's name, make a version that is more suitable for sorting.
-
-    * Stripped of leading/trailing spaces.
-    * All lowercase.
-    * Surnames moved to the start.
-    * Integers heavily padded with zeros.
-
-    e.g. "David Foster Wallace" becomes "wallace, david foster".
-         "John Le Carre" becomes "le carre, john".
-         "Daphne du Maurier" becomes "maurier, daphne du".
-         "Sir Fred Bloggs Jr" becomes "bloggs, sir fred jr".
-         "Prince" is "prince".
-    """
-
-    description = "A string to allow more human-friendly sorting of people's names"
-
-    def _pre_naturalization(self, string):
-        string = string.strip()
-        return string
-
-    def _post_naturalization(self, string):
-        string = string.lower()
-        return string
-
-    def _do_naturalization(self, string):
+    def naturalize_person(self, string):
         """
         Attempt to make a version of the string that has the surname, if any,
         at the start.
@@ -181,34 +161,22 @@ class PersonNaturalSortField(NaturalSortField):
 
         return sort_string
 
+    def _naturalize_numbers(self, string):
+        """
+        Makes any integers into very zero-padded numbers.
+        e.g. '1' becomes '00000001'.
+        """
 
-class PersonDisplayNaturalSortField(PersonNaturalSortField):
-    """
-    Using the value of another field on the model, which should represent a
-    person's name, make a version that would be more suitable for sorting
-    except it keeps its original case.
+        def naturalize_int_match(match):
+            return '%08d' % (int(match.group(0)),)
 
-    So, you shouldn't use it for sorting, but it makes for a good visual
-    display of the underlying sorting.
+        string = re.sub(r'\d+', naturalize_int_match, string)
 
-    * Stripped of leading/trailing spaces.
-    * Original case.
-    * Surnames moved to the start.
-    * Integers heavily padded with zeros.
-
-    e.g. "David Foster Wallace" becomes "Wallace, David Foster".
-         "John Le Carre" becomes "le Carre, John".
-         "Daphne du Maurier" becomes "Maurier, Daphne du".
-         "Sir Fred Bloggs Jr" becomes "Bloggs, Sir Fred Jr".
-         "Prince" is "Prince".
-    """
-
-    description = "A string that looks like the human-friendly person's name sorting string, but is itself more human-friendly"
-
-    def _pre_naturalization(self, string):
-        string = string.strip()
         return string
 
-    def _post_naturalization(self, string):
-        return string
 
+class PersonNaturalSortField(NaturalSortField):
+    pass
+
+class PersonDisplayNaturalSortField(NaturalSortField):
+    pass

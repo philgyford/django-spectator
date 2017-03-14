@@ -1,7 +1,6 @@
 from django.db import models
 
-from spectator.fields import NaturalSortField, PersonNaturalSortField,\
-        PersonDisplayNaturalSortField
+from spectator.fields import NaturalSortField
 
 
 class TitleModel(models.Model):
@@ -11,6 +10,5 @@ class TitleModel(models.Model):
 
 class PersonModel(models.Model):
     name = models.CharField(max_length=255)
-    name_sort = PersonNaturalSortField('name')
-    name_sort_display = PersonDisplayNaturalSortField('name')
-
+    name_sort = NaturalSortField('name')
+    sort_as = 'person'

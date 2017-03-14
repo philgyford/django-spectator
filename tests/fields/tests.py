@@ -46,7 +46,7 @@ class NaturalSortFieldTestCase(TestCase):
 
 
 class PersonNaturalSortFieldTestCase(TestCase):
-    "Testing the PersonNaturalSortField field."
+    "Testing the NaturalSortField field when used for a person."
 
     def test_one_word(self):
         "If name is one word sort_name should be the same"
@@ -96,55 +96,3 @@ class PersonNaturalSortFieldTestCase(TestCase):
         obj.refresh_from_db()
         self.assertEqual(obj.name_sort, '00000007, bob')
 
-
-
-class PersonDisplayNaturalSortFieldTestCase(TestCase):
-    "Testing the PersonDisplayNaturalSortField field."
-
-    def test_one_word(self):
-        "If name is one word sort_name should be the same"
-        obj = PersonModel.objects.create(name='Prince')
-        obj.refresh_from_db()
-        self.assertEqual(obj.name_sort_display, 'Prince')
-
-    def test_two_words(self):
-        "If name is two names, sort_name should be 'Surname, Firstname'"
-        obj = PersonModel.objects.create(name='Alice Faye')
-        obj.refresh_from_db()
-        self.assertEqual(obj.name_sort_display, 'Faye, Alice')
-
-    def test_three_words(self):
-        "If name is three names, sort_name should be 'Surname, First Second'"
-        obj = PersonModel.objects.create(name='David Foster Wallace')
-        obj.refresh_from_db()
-        self.assertEqual(obj.name_sort_display, 'Wallace, David Foster')
-
-    def test_suffix(self):
-        "If name has a suffix, it should not be first in sort_name"
-        obj = PersonModel.objects.create(name='Billy Q Smith Jr')
-        obj.refresh_from_db()
-        self.assertEqual(obj.name_sort_display, 'Smith, Billy Q Jr')
-
-    def test_suffix_two_words(self):
-        "If name has a suffix, but only two words, sort_name should be the same"
-        obj = PersonModel.objects.create(name='Bill Jr')
-        obj.refresh_from_db()
-        self.assertEqual(obj.name_sort_display, 'Bill Jr')
-
-    def test_uppercase_particle(self):
-        "Uses an upper case particle like 'Le' as part of the surname."
-        obj = PersonModel.objects.create(name='John Le Carré')
-        obj.refresh_from_db()
-        self.assertEqual(obj.name_sort_display, 'Le Carré, John')
-
-    def test_lowercase_particle(self):
-        "Does not use a lower case particle like 'du' as part of the surname."
-        obj = PersonModel.objects.create(name='Daphne du Maurier')
-        obj.refresh_from_db()
-        self.assertEqual(obj.name_sort_display, 'Maurier, Daphne du')
-
-    def test_numbers(self):
-        "Numbers are zero-padded."
-        obj = PersonModel.objects.create(name='Bob 7')
-        obj.refresh_from_db()
-        self.assertEqual(obj.name_sort_display, '00000007, Bob')

@@ -59,14 +59,13 @@ class PlayProductionRoleInline(admin.TabularInline):
 
 @admin.register(Creator)
 class CreatorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'name_sort', 'name_individual_sort', 'kind',)
+    list_display = ('name', 'name_sort', 'kind',)
     list_filter = ('kind', )
-    search_fields = ('name', 'name_sort', 'name_individual_sort',)
+    search_fields = ('name', 'name_sort', )
 
     fieldsets = (
         (None, {
-            'fields': ('name', 'name_sort', 'name_individual_sort',
-                        'name_individual_sort_display', 'kind',)
+            'fields': ('name', 'name_sort', 'kind',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -75,9 +74,7 @@ class CreatorAdmin(admin.ModelAdmin):
     )
 
     radio_fields = {'kind': admin.HORIZONTAL}
-    readonly_fields = ('name_sort', 'name_individual_sort',
-                        'name_individual_sort_display',
-                        'time_created', 'time_modified',)
+    readonly_fields = ('name_sort', 'time_created', 'time_modified',)
 
 
 # PUBLICATIONS MODEL ADMINS.

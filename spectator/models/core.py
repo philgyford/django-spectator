@@ -6,8 +6,7 @@ except ImportError:
     # Django < 1.10
     from django.core.urlresolvers import reverse
 
-from ..fields import NaturalSortField, PersonNaturalSortField,\
-        PersonDisplayNaturalSortField
+from ..fields import NaturalSortField
 
 
 class TimeStampedModelMixin(models.Model):
@@ -95,22 +94,12 @@ class Creator(TimeStampedModelMixin, models.Model):
 
     name_sort = NaturalSortField(
         'name', max_length=255, default='',
-        help_text="Best for sorting groups. e.g. 'long blondes, the'.")
-
-    name_individual_sort = PersonNaturalSortField(
-        'name', max_length=255, default='',
-        help_text="For sorting individuals. e.g. 'adams, douglas'.")
-
-    name_individual_sort_display = PersonDisplayNaturalSortField(
-        'name', max_length=255, default='',
-        help_text="For displaying sorted individuals. e.g. 'Adams, Douglas'.")
+        help_text="Best for sorting groups. e.g. 'long blondes, the' or 'adams, douglas'.")
 
     kind = models.CharField(max_length=20, choices=KIND_CHOICES,
                                                         default='individual')
 
     class Meta:
-        # Although if you know you're only getting kind='individual', better
-        # to specify 'name_individual_sort'
         ordering = ('name_sort',)
 
     def __str__(self):
@@ -118,4 +107,12 @@ class Creator(TimeStampedModelMixin, models.Model):
 
     def get_absolute_url(self):
         return reverse('spectator:creator_detail', kwargs={'pk':self.pk})
+
+    @property
+    def sort_as(self):
+        "Used by the NaturalSortField."
+        if self.kind == 'individual':
+            return 'person'
+        else:
+            return 'thing'
 
