@@ -99,6 +99,12 @@ class CreatorListView(PaginatedListView):
         queryset = queryset.filter(kind=self.creator_kind)
         return queryset
 
+    def get_ordering(self):
+        if self.creator_kind == 'group':
+            return ('name_sort',)
+        else:
+            return ('name_individual_sort',)
+
 
 class CreatorDetailView(DetailView):
     model = Creator

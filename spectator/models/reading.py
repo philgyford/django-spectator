@@ -9,8 +9,8 @@ except ImportError:
     from django.core.urlresolvers import reverse
 
 from . import BaseRole, Creator, TimeStampedModelMixin
-from ..utils import make_sort_name
 from .. import managers
+from ..fields import NaturalSortField
 
 
 class PublicationSeries(TimeStampedModelMixin, models.Model):
@@ -23,18 +23,15 @@ class PublicationSeries(TimeStampedModelMixin, models.Model):
     """
     title = models.CharField(null=False, blank=False, max_length=255,
             help_text="e.g. 'The London Review of Books'.")
-    sort_title = models.CharField(blank=True, max_length=255,
-            help_text="e.g. 'Alpine Review, The'. If left blank, will be created automatically on save.")
+
+    title_sort = NaturalSortField('title', max_length=255, default='',
+            help_text="e.g. 'london review of books, the'.")
+
     url = models.URLField(null=False, blank=True, max_length=255,
             verbose_name='URL', help_text="e.g. 'https://www.lrb.co.uk/'.")
 
-    def save(self, *args, **kwargs):
-        if self.sort_title == '':
-            self.sort_title = self._make_sort_title(self.title)
-        super().save(*args, **kwargs)
-
     class Meta:
-        ordering = ('sort_title',)
+        ordering = ('title_sort',)
         verbose_name_plural = 'Publication series'
 
     def __str__(self):
@@ -43,9 +40,6 @@ class PublicationSeries(TimeStampedModelMixin, models.Model):
     def get_absolute_url(self):
         return reverse('spectator:publicationseries_detail',
                                                         kwargs={'pk':self.pk})
-
-    def _make_sort_title(self, title):
-        return make_sort_name(title, 'thing')
 
 
 class PublicationRole(BaseRole):
@@ -87,19 +81,26 @@ class Publication(TimeStampedModelMixin, models.Model):
 
     title = models.CharField(null=False, blank=False, max_length=255,
             help_text="e.g. 'Aurora' or 'Vol. 39 No. 4, 16 February 2017'.")
-    sort_title = models.CharField(blank=True, max_length=255,
-            help_text="e.g. 'Clockwork Orange, A' or 'World Cities, The'. If left blank, will be created automatically on save.")
+
+    title_sort = NaturalSortField('title', max_length=255, default='',
+            help_text="e.g. 'clockwork orange, a' or 'world cities, the'.")
+
     series = models.ForeignKey('PublicationSeries', blank=True, null=True,
                                                     on_delete=models.SET_NULL)
+
     kind = models.CharField(max_length=20, choices=KIND_CHOICES,
                                                         default='book')
+
     official_url = models.URLField(null=False, blank=True, max_length=255,
             verbose_name='Official URL',
             help_text="Official URL for this book/issue.")
+
     isbn_uk = models.CharField(null=False, blank=True, max_length=20,
             verbose_name='UK ISBN', help_text="e.g. '0356500489'.")
+
     isbn_us = models.CharField(null=False, blank=True, max_length=20,
             verbose_name='US ISBN', help_text="e.g. '0316098094'.")
+
     notes_url = models.URLField(null=False, blank=True, max_length=255,
             verbose_name='Notes URL', help_text="URL of your notes/review.")
 
@@ -112,13 +113,8 @@ class Publication(TimeStampedModelMixin, models.Model):
     # Publications that haven't been started (have no Readings):
     unread_objects = managers.UnreadPublicationsManager()
 
-    def save(self, *args, **kwargs):
-        if self.sort_title == '':
-            self.sort_title = self._make_sort_title(self.title)
-        super().save(*args, **kwargs)
-
     class Meta:
-        ordering = ('sort_title',)
+        ordering = ('title_sort',)
 
     def __str__(self):
         return self.title
@@ -174,9 +170,6 @@ class Publication(TimeStampedModelMixin, models.Model):
             return True
         else:
             return False
-
-    def _make_sort_title(self, title):
-        return make_sort_name(title, 'thing')
 
 
 class Reading(TimeStampedModelMixin, models.Model):

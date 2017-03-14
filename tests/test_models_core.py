@@ -1,6 +1,4 @@
 # coding: utf-8
-from unittest.mock import patch
-
 from django.test import TestCase
 
 from spectator.factories import *
@@ -14,8 +12,10 @@ class CreatorTestCase(TestCase):
         self.assertEqual(str(creator), 'Bill Brown')
 
     def test_ordering(self):
-        b = IndividualCreatorFactory(sort_name='Brown, Bill')
-        a = IndividualCreatorFactory(sort_name='Apple, Adam')
+        # Will have a name_sort of 'peaness':
+        b = IndividualCreatorFactory(name='Peaness')
+        # Will have a name_sort of 'long blondes, the':
+        a = IndividualCreatorFactory(name='The Long Blondes')
         creators = Creator.objects.all()
         self.assertEqual(creators[0], a)
         self.assertEqual(creators[1], b)
@@ -70,11 +70,4 @@ class CreatorTestCase(TestCase):
         self.assertEqual(roles[1], role2)
         self.assertEqual(roles[0].role_name, 'Director')
         self.assertEqual(roles[1].role_name, 'Actor')
-
-    @patch('spectator.models.core.make_sort_name')
-    def test_sort_name(self, make_sort_name):
-        "It should call the make_sort_name method when saving."
-        make_sort_name.return_value = "Jones, Bob"
-        IndividualCreatorFactory(name='Bob Jones')
-        make_sort_name.assert_called_once_with('Bob Jones', 'person')
 

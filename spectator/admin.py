@@ -59,13 +59,14 @@ class PlayProductionRoleInline(admin.TabularInline):
 
 @admin.register(Creator)
 class CreatorAdmin(admin.ModelAdmin):
-    list_display = ('sort_name', 'name', 'kind',)
+    list_display = ('name', 'name_sort', 'name_individual_sort', 'kind',)
     list_filter = ('kind', )
-    search_fields = ('name', 'sort_name',)
+    search_fields = ('name', 'name_sort', 'name_individual_sort',)
 
     fieldsets = (
         (None, {
-            'fields': ('name', 'sort_name', 'kind',)
+            'fields': ('name', 'name_sort', 'name_individual_sort',
+                        'name_individual_sort_display', 'kind',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -81,11 +82,11 @@ class CreatorAdmin(admin.ModelAdmin):
 
 @admin.register(PublicationSeries)
 class PublicationSeriesAdmin(admin.ModelAdmin):
-    list_display = ('sort_title', 'title',)
+    list_display = ('title', 'title_sort',)
 
     fieldsets = (
         (None, {
-            'fields': ('title', 'sort_title', 'url', )
+            'fields': ('title', 'title_sort', 'url', )
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -98,14 +99,14 @@ class PublicationSeriesAdmin(admin.ModelAdmin):
 
 @admin.register(Publication)
 class PublicationAdmin(admin.ModelAdmin):
-    list_display = ('sort_title', 'kind', 'show_creators', 'series', )
+    list_display = ('title_sort', 'kind', 'show_creators', 'series', )
     list_filter = ('kind', 'series', )
     search_fields = ('title',)
     list_select_related = ('series',)
 
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'sort_title', 'kind', 'series',
+            'fields': ( 'title', 'title_sort', 'kind', 'series',
                         'isbn_uk', 'isbn_us',
                         'official_url', 'notes_url', )
         }),

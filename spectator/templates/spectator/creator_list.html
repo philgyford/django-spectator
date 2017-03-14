@@ -28,7 +28,9 @@
         <ul>
             {% for creator in creator_list %}
                 <li>
-                    <a href="{{ creator.get_absolute_url }}">{{ creator.sort_name }}</a>
+                    <a href="{{ creator.get_absolute_url }}">
+						{{ creator.name }}
+					</a>
                 </li>
             {% endfor %}
         </ul>
