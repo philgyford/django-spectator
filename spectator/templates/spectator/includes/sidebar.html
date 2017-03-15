@@ -1,9 +1,36 @@
 {% load spectator_tags %}
 
+{% current_url_name as url_name %}
+<div class="card mb-3">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            {% if url_name == 'creator_list' %}
+                Creators
+            {% else %}
+                <a href="{% url 'spectator:creator_list' %}">Creators</a>
+            {% endif %}
+        </li>
+        <li class="list-group-item">
+            {% if url_name == 'publication_list' %}
+                Publications
+            {% else %}
+                <a href="{% url 'spectator:publication_list' %}">Publications</a>
+            {% endif %}
+        </li>
+        <li class="list-group-item">
+            {% if url_name == 'publicationseries_list' %}
+                Publication series
+            {% else %}
+                <a href="{% url 'spectator:publicationseries_list' %}">Publication series</a>
+            {% endif %}
+        </li>
+    </ul>
+</div>
+
 {% if not in_progress_publication_list %}
     {% in_progress_publications as in_progress_publication_list %}
     {% if in_progress_publication_list|length > 0 %}
-        <div class="card">
+        <div class="card mb-3">
             <div class="card-block">
                 <h2 class="h6 card-title">Current reading</h2>
                 {% include 'spectator/includes/publications.html' with publication_list=in_progress_publication_list show_readings='none' style='unstyled' only %}

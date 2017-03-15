@@ -9,6 +9,24 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
+def current_url_name(context):
+    """
+    Returns the name of the current URL, or False.
+
+    Example usage:
+
+        {% current_url_name as url_name %}
+
+        <a href="#"{% if url_name == 'home' %} class="active"{% endif %}">Home</a>
+
+    """
+    url_name = False
+    if context.request.resolver_match:
+        url_name = context.request.resolver_match.url_name
+    return url_name
+
+
+@register.simple_tag(takes_context=True)
 def query_string(context, key, value):
     """
     For adding/replacing a key=value pair to the GET string for a URL.
