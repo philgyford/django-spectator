@@ -47,9 +47,9 @@ class HomeViewTestCase(ViewTestCase):
             )
         response = views.HomeView.as_view()(self.request)
         context = response.context_data
-        self.assertIn('in_progress_publications', context)
-        self.assertEqual(len(context['in_progress_publications']), 1)
-        self.assertEqual(context['in_progress_publications'][0],
+        self.assertIn('in_progress_publication_list', context)
+        self.assertEqual(len(context['in_progress_publication_list']), 1)
+        self.assertEqual(context['in_progress_publication_list'][0],
                                                     in_progress.publication)
 
 
