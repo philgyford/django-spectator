@@ -46,7 +46,6 @@ setup(
         'factory-boy>=2.8.1,<2.9',
         'coverage'
     ],
-    test_suite='runtests.runtests',
     include_package_data=True,
     license=get_license(),
     description='A Django app to track book reading, movie viewing, gig going and play watching.',
