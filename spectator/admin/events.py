@@ -3,29 +3,14 @@ from django.contrib import admin
 from polymorphic.admin import PolymorphicParentModelAdmin,\
     PolymorphicChildModelAdmin, PolymorphicChildModelFilter
 
-from .models import Event, Creator, Venue,\
-    Publication, PublicationRole, PublicationSeries, Reading,\
-    Concert, ConcertRole,\
-    Movie, MovieEvent, MovieRole,\
-    Play, PlayProduction, PlayProductionEvent, PlayProductionRole, PlayRole
+from ..models import Concert, ConcertRole, Event,\
+        Movie, MovieEvent, MovieRole,\
+        Play, PlayProduction, PlayProductionEvent,\
+        PlayProductionRole, PlayRole,\
+        Venue
 
 
-# ALL INLINES.
-
-class ReadingInline(admin.TabularInline):
-    model = Reading
-    fields = ('publication', 'start_date', 'end_date', 'is_finished',
-                        'start_granularity', 'end_granularity',)
-    raw_id_fields = ('publication',)
-    extra = 1
-
-
-class PublicationRoleInline(admin.TabularInline):
-    model = PublicationRole
-    fields = ( 'creator', 'role_name', 'role_order',)
-    raw_id_fields = ('creator',)
-    extra = 1
-
+# INLINES.
 
 class ConcertRoleInline(admin.TabularInline):
     model = ConcertRole
@@ -55,81 +40,7 @@ class PlayProductionRoleInline(admin.TabularInline):
     extra = 1
 
 
-# CORE MODEL ADMINS.
-
-@admin.register(Creator)
-class CreatorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'name_sort', 'kind',)
-    list_filter = ('kind', )
-    search_fields = ('name', 'name_sort', )
-
-    fieldsets = (
-        (None, {
-            'fields': ('name', 'name_sort', 'kind',)
-        }),
-        ('Times', {
-            'classes': ('collapse',),
-            'fields': ('time_created', 'time_modified',)
-        }),
-    )
-
-    radio_fields = {'kind': admin.HORIZONTAL}
-    readonly_fields = ('name_sort', 'time_created', 'time_modified',)
-
-
-# PUBLICATIONS MODEL ADMINS.
-
-@admin.register(PublicationSeries)
-class PublicationSeriesAdmin(admin.ModelAdmin):
-    list_display = ('title',)
-
-    fieldsets = (
-        (None, {
-            'fields': ('title', 'title_sort', 'url', )
-        }),
-        ('Times', {
-            'classes': ('collapse',),
-            'fields': ('time_created', 'time_modified',)
-        }),
-    )
-
-    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
-
-
-@admin.register(Publication)
-class PublicationAdmin(admin.ModelAdmin):
-    list_display = ('title', 'kind', 'show_creators', 'series', )
-    list_filter = ('kind', 'series', )
-    search_fields = ('title',)
-    list_select_related = ('series',)
-
-    fieldsets = (
-        (None, {
-            'fields': ( 'title', 'title_sort', 'kind', 'series',
-                        'isbn_uk', 'isbn_us',
-                        'official_url', 'notes_url', )
-        }),
-        ('Times', {
-            'classes': ('collapse',),
-            'fields': ('time_created', 'time_modified',)
-        }),
-    )
-
-    radio_fields = {'kind': admin.HORIZONTAL}
-    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
-
-    inlines = [ PublicationRoleInline, ReadingInline, ]
-
-    def show_creators(self, instance):
-        names = [ str(r.creator) for r in instance.roles.all() ]
-        if names:
-            return ', '.join(names)
-        else:
-            return '-'
-    show_creators.short_description = 'Creators'
-
-
-# EVENTS MODEL ADMINS.
+# MODEL ADMINS.
 
 @admin.register(Event)
 class EventAdmin(PolymorphicParentModelAdmin):
@@ -273,7 +184,7 @@ class PlayProductionAdmin(admin.ModelAdmin):
 
 
 @admin.register(PlayProductionEvent)
-class PlayProdutionEventAdmin(PolymorphicChildModelAdmin):
+class PlayProductionEventAdmin(PolymorphicChildModelAdmin):
     base_model = PlayProductionEvent
     show_in_index = False # Hide this model from the Admin index.
 
