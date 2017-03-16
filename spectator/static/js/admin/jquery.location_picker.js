@@ -15,11 +15,14 @@
 
   // If we don't have a lat/lon in the input fields,
   // this is where the map will be centered initially.
-  var initial_lat = 50,
-      initial_lon = 0;
+  var initial_lat = 51.516448,
+      initial_lon = -0.130463;
 
   // Initial zoom level for the map.
   var initial_zoom = 6;
+
+  // Initial zoom level if input fields have a location.
+  var initial_with_loc_zoom = 12;
 
   // Global variables. Nice.
   var map, marker, $lat, $lon;
@@ -37,10 +40,13 @@
     $lat = $(lat_input_selector);
     $lon = $(lon_input_selector);
 
-    if ($lat.val() && $lon.val()) {
+    var has_initial_loc = ($lat.val() && $lon.val());
+
+    if (has_initial_loc) {
       // There is lat/lon in the fields, so centre the map on that.
       initial_lat = parseFloat($lat.val());
       initial_lon = parseFloat($lon.val());
+      initial_zoom = initial_with_loc_zoom;
     };
 
     $prevEl.after( $('<div id="setloc-map"></div>') );
@@ -56,7 +62,7 @@
       draggable: true,
     });
 
-    if ($lat.val() && $lon.val()) {
+    if (has_initial_loc) {
       // There is lat/lon in the fields, so centre the marker on that.
       setMarkerPosition(initial_lat, initial_lon);
     };
