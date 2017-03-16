@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 
 from polymorphic.admin import PolymorphicParentModelAdmin,\
@@ -222,3 +223,14 @@ class VenueAdmin(admin.ModelAdmin):
     )
 
     readonly_fields = ('time_created', 'time_modified',)
+
+    class Media:
+        if hasattr(settings, 'SPECTATOR_GOOGLE_MAPS_API_KEY') and settings.SPECTATOR_GOOGLE_MAPS_API_KEY:
+            css = {
+                'all': ('css/admin/location_picker.css',),
+            }
+            js = (
+                'https://maps.googleapis.com/maps/api/js?key={}'.format(settings.SPECTATOR_GOOGLE_MAPS_API_KEY),
+                'js/admin/jquery.location_picker.js',
+            )
+
