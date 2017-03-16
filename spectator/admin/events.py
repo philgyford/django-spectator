@@ -231,6 +231,6 @@ class VenueAdmin(admin.ModelAdmin):
             }
             js = (
                 'https://maps.googleapis.com/maps/api/js?key={}'.format(settings.SPECTATOR_GOOGLE_MAPS_API_KEY),
-                'js/admin/jquery.location_picker.js',
+                'js/admin/location_picker.js',
             )
 
