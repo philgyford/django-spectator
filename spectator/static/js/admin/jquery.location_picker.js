@@ -6,7 +6,7 @@
 ;(function($) {
 
   // We'll insert the map after this element:
-  var prev_el_selector = '.field-longitude';
+  var prev_el_selector = '.form-row.field-longitude';
 
   // The elements we'll put lat/lon into and use
   // to set the map's initial lat/lon.

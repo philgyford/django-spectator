@@ -209,7 +209,7 @@ class PlayProductionEventAdmin(PolymorphicChildModelAdmin):
 
 @admin.register(Venue)
 class VenueAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', 'latitude', 'longitude',)
     search_fields = ('name',)
 
     fieldsets = (
