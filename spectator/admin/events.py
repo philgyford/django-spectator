@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
+from django.core import urlresolvers
 
 from polymorphic.admin import PolymorphicParentModelAdmin,\
     PolymorphicChildModelAdmin, PolymorphicChildModelFilter
@@ -49,6 +50,52 @@ class MovieEventInline(admin.TabularInline):
 class PlayProductionEventInline(admin.TabularInline):
     model = PlayProductionEvent
     extra = 1
+
+
+class PlayProductionLinkInline(admin.TabularInline):
+    """
+    Shows a link to the PlayProduction's change form, which includes the
+    PlayProductionEvents inline.
+
+    Because we can't show inlines inside inlines and we would like to have:
+
+        Play change form
+            PlayProduction change forms inline
+                PlayProductionEvent change forms inline
+
+    So, on the Play change form we list the PlayProductions and provide
+    links to their change forms.
+    """
+    model = PlayProduction
+    fields = ('display_str', 'changeform_link',)
+    readonly_fields = ('display_str', 'changeform_link',)
+    extra = 1
+
+    def display_str(self, instance):
+        if instance.id:
+            events = instance.playproductionevent_set.all()
+            events = ''.join(
+                    ['<br>• {} – {}'.format(ev.date, ev.venue) for ev in events]
+                )
+            return '{}{}'.format(instance, events)
+        else:
+            changeform_url = urlresolvers.reverse(
+                'admin:spectator_playproduction_add'
+            )
+            return '<a href="{}">Add new event</a>'.format(changeform_url)
+    display_str.allow_tags = True
+    display_str.short_description = ''
+
+    def changeform_link(self, instance):
+        link = ''
+        if instance.id:
+            changeform_url = urlresolvers.reverse(
+                'admin:spectator_playproduction_change', args=(instance.id,)
+            )
+            link = '<a href="{}">Change production and/or event(s)</a>'.format(changeform_url)
+        return link
+    changeform_link.allow_tags = True
+    changeform_link.short_description = ''
 
 
 # MODEL ADMINS.
@@ -151,7 +198,7 @@ class PlayAdmin(admin.ModelAdmin):
 
     readonly_fields = ('time_created', 'time_modified',)
 
-    inlines = [ PlayRoleInline, ]
+    inlines = [ PlayRoleInline, PlayProductionLinkInline, ]
 
     def show_creators(self, instance):
         names = [ str(r.creator) for r in instance.roles.all() ]
