@@ -41,6 +41,16 @@ class PlayProductionRoleInline(admin.TabularInline):
     extra = 1
 
 
+class MovieEventInline(admin.TabularInline):
+    model = MovieEvent
+    extra = 1
+
+
+class PlayProductionEventInline(admin.TabularInline):
+    model = PlayProductionEvent
+    extra = 1
+
+
 # MODEL ADMINS.
 
 @admin.register(Event)
@@ -98,7 +108,7 @@ class MovieAdmin(admin.ModelAdmin):
 
     readonly_fields = ('time_created', 'time_modified',)
 
-    inlines = [ MovieRoleInline, ]
+    inlines = [ MovieRoleInline, MovieEventInline, ]
 
 
 @admin.register(MovieEvent)
@@ -170,7 +180,7 @@ class PlayProductionAdmin(admin.ModelAdmin):
     raw_id_fields = ('play',)
     readonly_fields = ('time_created', 'time_modified',)
 
-    inlines = [ PlayProductionRoleInline, ]
+    inlines = [ PlayProductionRoleInline, PlayProductionEventInline, ]
 
     def show_creators(self, instance):
         names = [ str(r.creator) for r in instance.roles.all() ]
