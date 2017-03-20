@@ -6,7 +6,20 @@
 
 {% block breadcrumbs %}
     <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
-    <li class="breadcrumb-item active">Events</li>
+    {% if event_kind == 'event' %}
+        <li class="breadcrumb-item active">Events</li>
+    {% else %}
+        <li class="breadcrumb-item"><a href="{% url 'spectator:events_home' %}">Events</a></li>
+        {% if event_kind == 'concert' %}
+            <li class="breadcrumb-item active">Concerts</li>
+        {% elif event_kind == 'movie' %}
+            <li class="breadcrumb-item"><a href="{% url 'spectator:movie_list' %}">Movies</a></li>
+            <li class="breadcrumb-item active">Visits</li>
+        {% elif event_kind == 'play' %}
+            <li class="breadcrumb-item"><a href="{% url 'spectator:play_list' %}">Plays</a></li>
+            <li class="breadcrumb-item active">Visits</li>
+        {% endif %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}

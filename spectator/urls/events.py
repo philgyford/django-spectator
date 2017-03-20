@@ -16,11 +16,21 @@ urlpatterns = [
     ),
     url(
         regex=r"^movies/$",
+        view=views.MovieListView.as_view(),
+        name='movie_list',
+    ),
+    url(
+        regex=r"^movies/visits/$",
         view=views.MovieEventListView.as_view(),
         name='movieevent_list',
     ),
     url(
         regex=r"^plays/$",
+        view=views.PlayListView.as_view(),
+        name='play_list',
+    ),
+    url(
+        regex=r"^plays/visits/$",
         view=views.PlayProductionEventListView.as_view(),
         name='playproductionevent_list',
     ),

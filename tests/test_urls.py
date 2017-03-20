@@ -61,6 +61,8 @@ class CoreUrlsTestCase(TestCase):
 
 class EventsUrlsTestCase(TestCase):
 
+    # Event lists
+
     def test_events_home_url(self):
         self.assertEqual(reverse('spectator:events_home'), '/events/')
 
@@ -68,6 +70,50 @@ class EventsUrlsTestCase(TestCase):
         "Should use the correct view."
         self.assertEqual(resolve('/events/').func.__name__,
                          views.EventsHomeView.__name__)
+
+    def test_concert_list_url(self):
+        self.assertEqual(reverse('spectator:concert_list'), '/events/concerts/')
+
+    def test_concert_list_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/concerts/').func.__name__,
+                         views.ConcertListView.__name__)
+
+    def test_movieevent_list_url(self):
+        self.assertEqual(reverse('spectator:movieevent_list'),
+                         '/events/movies/visits/')
+
+    def test_movieevent_list_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/movies/visits/').func.__name__,
+                         views.MovieEventListView.__name__)
+
+    def test_playproductionevent_list_url(self):
+        self.assertEqual(reverse('spectator:playproductionevent_list'),
+                         '/events/plays/visits/')
+
+    def test_playproduction_list_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/plays/visits/').func.__name__,
+                         views.PlayProductionEventListView.__name__)
+
+    # Movie and Play lists
+
+    def test_movie_list_url(self):
+        self.assertEqual(reverse('spectator:movie_list'), '/events/movies/')
+
+    def test_movie_list_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/movies/').func.__name__,
+                         views.MovieListView.__name__)
+
+    def test_play_list_url(self):
+        self.assertEqual(reverse('spectator:play_list'), '/events/plays/')
+
+    def test_play_list_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/plays/').func.__name__,
+                         views.PlayListView.__name__)
 
 
 class ReadingUrlsTestCase(TestCase):

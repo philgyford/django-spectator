@@ -1,6 +1,7 @@
 from django.views.generic import ListView
 
-from ..models import Concert, Event, MovieEvent, PlayProductionEvent
+from ..models import Concert, Event, Movie, MovieEvent, Play,\
+        PlayProductionEvent
 
 
 class EventsListView(ListView):
@@ -39,4 +40,11 @@ class MovieEventListView(EventsListView):
 
 class PlayProductionEventListView(EventsListView):
     model = PlayProductionEvent
+
+
+class MovieListView(ListView):
+    model = Movie
+
+class PlayListView(ListView):
+    model = Play
 
