@@ -57,6 +57,10 @@
             {% endif %}
         </ul>
 
+        {% if page_obj|default:False and page_obj.number > 1 %}
+            {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+        {% endif %}
+
         <ul>
             {% for event in event_list %}
             <li>
@@ -72,6 +76,8 @@
             </li>
             {% endfor %}
         </ul>
+
+        {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
     {% else %}
         <p>There are no events to show.</p>
     {% endif %}

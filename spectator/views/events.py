@@ -1,10 +1,11 @@
 from django.views.generic import ListView
 
+from . import PaginatedListView
 from ..models import Concert, Event, Movie, MovieEvent, Play,\
         PlayProductionEvent
 
 
-class EventsListView(ListView):
+class EventsListView(PaginatedListView):
     model = Event
     ordering = ['-date',]
     template_name = 'spectator/event_list.html'
