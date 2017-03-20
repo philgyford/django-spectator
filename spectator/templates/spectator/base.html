@@ -34,6 +34,12 @@
                                 </a>
                             </li>
 
+                            <li class="nav-item {% block events_nav_active %}{% endblock %}">
+                                <a class="nav-link" href="{% url 'spectator:events_home' %}">
+                                    Events
+                                </a>
+                            </li>
+
                             {% block navbar_list_end %}
                             {% endblock %}
                         </ul>
