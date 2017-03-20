@@ -45,13 +45,13 @@ class PlayProductionEventListView(EventListView):
 
 class ConcertListView(ListView):
     model = Concert
-    ordering = ['title']
+    ordering = ['title_sort']
 
 class MovieListView(ListView):
     model = Movie
-    ordering = ['title']
+    ordering = ['title_sort']
 
 class PlayListView(ListView):
     model = Play
-    ordering = ['title']
+    ordering = ['title_sort']
 
