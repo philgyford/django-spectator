@@ -54,10 +54,10 @@ class ConcertTestCase(TestCase):
         self.assertEqual(str(concert), 'Milky Wimpshake, Martha and The Tuts')
 
     def test_ordering(self):
-        "Should order by date"
-        c3 = ConcertFactory(date=make_date('2017-02-28'))
-        c1 = ConcertFactory(date=make_date('2016-06-28'))
-        c2 = ConcertFactory(date=make_date('2016-12-28'))
+        "Should order by title_sort"
+        c3 = ConcertFactory(title='Concert')
+        c1 = ConcertFactory(title='Abba Concert')
+        c2 = ConcertFactory(title='The Big Concert')
         concerts = Concert.objects.all()
         self.assertEqual(concerts[0], c1)
         self.assertEqual(concerts[1], c2)
