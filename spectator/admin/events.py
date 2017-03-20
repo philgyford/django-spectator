@@ -33,6 +33,7 @@ class PlayRoleInline(admin.TabularInline):
     fields = ( 'creator', 'role_name', 'role_order',)
     raw_id_fields = ('creator',)
     extra = 1
+    verbose_name_plural = "People/orgs who wrote/created the Play itself"
 
 
 class PlayProductionRoleInline(admin.TabularInline):
@@ -40,6 +41,7 @@ class PlayProductionRoleInline(admin.TabularInline):
     fields = ( 'creator', 'role_name', 'role_order',)
     raw_id_fields = ('creator',)
     extra = 1
+    verbose_name_plural = 'Play Production Roles (people/orgs who created this version of the Play)'
 
 
 class MovieEventInline(admin.TabularInline):
@@ -50,6 +52,7 @@ class MovieEventInline(admin.TabularInline):
 class PlayProductionEventInline(admin.TabularInline):
     model = PlayProductionEvent
     extra = 1
+    verbose_name_plural = "Occasions when you've seen this Production of the Play"
 
 
 class PlayProductionLinkInline(admin.TabularInline):
@@ -70,6 +73,7 @@ class PlayProductionLinkInline(admin.TabularInline):
     fields = ('display_str', 'changeform_link',)
     readonly_fields = ('display_str', 'changeform_link',)
     extra = 1
+    verbose_name_plural = "Productions of this Play"
 
     def display_str(self, instance):
         """
@@ -132,7 +136,7 @@ class EventAdmin(PolymorphicParentModelAdmin):
 @admin.register(Concert)
 class ConcertAdmin(PolymorphicChildModelAdmin):
     base_model = Concert
-    show_in_index = False # Hide this model from the Admin index.
+    show_in_index = True # Show this model in the Admin index.
 
     list_display = ('__str__', 'date', 'venue',)
     list_filter = ('date',)
