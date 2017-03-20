@@ -144,7 +144,7 @@ class ConcertAdmin(PolymorphicChildModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'date', 'venue',)
+            'fields': ( 'title', 'title_sort', 'date', 'venue',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -153,7 +153,7 @@ class ConcertAdmin(PolymorphicChildModelAdmin):
     )
 
     raw_id_fields = ('venue',)
-    readonly_fields = ('time_created', 'time_modified',)
+    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
 
     inlines = [ ConcertRoleInline, ]
 

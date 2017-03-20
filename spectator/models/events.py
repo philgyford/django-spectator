@@ -60,6 +60,9 @@ class Concert(Event):
     title = models.CharField(null=False, blank=True, max_length=255,
             help_text="Optional. e.g., 'Indietracks 2017', 'Radio 1 Roadshow'.")
 
+    title_sort = NaturalSortField('title_to_sort', max_length=255, default='',
+            help_text="e.g. 'reading festival, the' or 'drifters, the'.")
+
     creators = models.ManyToManyField(Creator, through='ConcertRole',
                                                     related_name='concerts')
     event_kind = 'concert'
@@ -80,6 +83,18 @@ class Concert(Event):
                             ', '.join(roles[:-1]),
                             roles[-1]
                         )
+
+    class Meta:
+        ordering = ('title_sort',)
+
+    @property
+    def title_to_sort(self):
+        """
+        The string we use to create the title_sort property.
+        We want to be able to sort by the concert's Creators, if it doesn't
+        have a title.
+        """
+        return self.__str__()
 
 
 class MovieRole(BaseRole):
