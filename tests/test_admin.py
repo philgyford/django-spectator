@@ -1,11 +1,14 @@
 from django.contrib.admin.sites import AdminSite
 from django.test import TestCase
 
-from spectator.admin import PublicationAdmin, PlayAdmin, PlayProductionAdmin
+from . import make_date
+from spectator.admin import PublicationAdmin, PlayAdmin, PlayProductionAdmin,\
+        PlayProductionLinkInline
 from spectator.factories import PublicationFactory, PublicationRoleFactory,\
         PlayFactory, PlayProductionFactory,\
+        PlayProductionEventFactory,\
         PlayProductionRoleFactory, PlayRoleFactory,\
-        IndividualCreatorFactory
+        IndividualCreatorFactory, VenueFactory
 from spectator.models import Publication, Play, PlayProduction
 
 
@@ -13,6 +16,58 @@ class AdminTestCase(TestCase):
 
     def setUp(self):
         self.site = AdminSite()
+
+
+class PlayProductionLinkInlineTestCase(AdminTestCase):
+
+    def test_display_str_with_instance(self):
+        "It should return the correct string with a saved instance."
+        pp = PlayProductionFactory(title='Production Name')
+        v1 = VenueFactory(name='Venue 1')
+        v2 = VenueFactory(name='Venue 2')
+        pp.playproductionevent_set.add(
+            PlayProductionEventFactory(venue=v1, date=make_date('2017-02-20')))
+        pp.playproductionevent_set.add(
+            PlayProductionEventFactory(venue=v2, date=make_date('2016-12-30')))
+        ppli = PlayProductionLinkInline(pp, self.site)
+        self.assertEqual(
+            ppli.display_str(pp),
+            "Production Name<br>• 2016-12-30 – Venue 2<br>• 2017-02-20 – Venue 1"
+        )
+
+    def test_display_str_with_no_instance(self):
+        "It should return the correct string without a saved instance."
+        pp = PlayProduction()
+        ppli = PlayProductionLinkInline(pp, self.site)
+        self.assertEqual(
+            ppli.display_str(pp),
+            '<a href="/admin/spectator/playproduction/add/" class="js-add-event-link">Add another Play Production and event</a>'
+        )
+
+    def test_get_max_num(self):
+        "It should return the correct number."
+        p = PlayFactory()
+        pp1 = PlayProductionFactory()
+        pp2 = PlayProductionFactory()
+        p.playproduction_set.add(pp1)
+        p.playproduction_set.add(pp2)
+        ppli = PlayProductionLinkInline(pp1, self.site)
+        self.assertEqual(ppli.get_max_num(None, obj=p), 3)
+
+    def test_changeform_link_with_instance(self):
+        "It should return the correct string with a saved instance."
+        pp = PlayProductionFactory()
+        ppli = PlayProductionLinkInline(pp, self.site)
+        self.assertEqual(
+            ppli.changeform_link(pp),
+            '<a href="/admin/spectator/playproduction/1/change/">Change production and/or event(s)</a>'
+        )
+
+    def test_changeform_link_with_no_instance(self):
+        "It should return an empty string without a saved instance."
+        pp = PlayProduction()
+        ppli = PlayProductionLinkInline(pp, self.site)
+        self.assertEqual(ppli.changeform_link(pp), '')
 
 
 class PublicationAdminTestCase(AdminTestCase):
