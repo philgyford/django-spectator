@@ -44,6 +44,18 @@ class NaturalSortFieldTestCase(TestCase):
         self.assertEqual(obj.title_sort,
                         'vol. 00000002 no. 00000011, november 00002004')
 
+    def test_la_la(self):
+        "'La La Land' should not have a 'La' moved to the end."
+        obj = TitleModel.objects.create(title='La La Land')
+        obj.refresh_from_db()
+        self.assertEqual(obj.title_sort, 'la la land')
+
+    def test_the_the(self):
+        "'The The' should not have a 'The' moved after a final comma."
+        obj = TitleModel.objects.create(title='The The')
+        obj.refresh_from_db()
+        self.assertEqual(obj.title_sort, 'the the')
+
 
 class PersonNaturalSortFieldTestCase(TestCase):
     "Testing the NaturalSortField field when used for a person."

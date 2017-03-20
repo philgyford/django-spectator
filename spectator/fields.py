@@ -99,8 +99,10 @@ class NaturalSortField(models.CharField):
         parts = string.split(' ')
 
         if len(parts) > 1 and parts[0] in articles:
-            # 'long blondes, the':
-            sort_string = '{}, {}'.format(' '.join(parts[1:]), parts[0])
+            if parts[0] != parts[1]:
+                # Don't do this if the name is 'The The' or 'La La Land'.
+                # Makes 'long blondes, the':
+                sort_string = '{}, {}'.format(' '.join(parts[1:]), parts[0])
 
         sort_string = self._naturalize_numbers(sort_string)
 
