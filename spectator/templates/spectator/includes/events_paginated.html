@@ -1,0 +1,21 @@
+{% comment %}
+Displays a paginated list of events: Concerts, MovieEvents, PlayProductionEvents.
+
+Expects:
+* event_list - List or Queryset of children of Event.
+* page_obj, a DiggPaginator instance.
+
+{% endcomment %}
+
+{% if event_list|length > 0 %}
+    {% if page_obj|default:False and page_obj.number > 1 %}
+        {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+    {% endif %}
+
+    {% include 'spectator/includes/events.html' with event_list=event_list only %}
+
+    {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+
+{% else %}
+    <p>There are no events to show.</p>
+{% endif %}

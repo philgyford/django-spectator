@@ -11,7 +11,8 @@
     {% else %}
         <li class="breadcrumb-item"><a href="{% url 'spectator:events_home' %}">Events</a></li>
         {% if event_kind == 'concert' %}
-            <li class="breadcrumb-item active">Concerts</li>
+            <li class="breadcrumb-item"><a href="{% url 'spectator:concert_list' %}">Concerts</a></li>
+            <li class="breadcrumb-item active">Visits</li>
         {% elif event_kind == 'movie' %}
             <li class="breadcrumb-item"><a href="{% url 'spectator:movie_list' %}">Movies</a></li>
             <li class="breadcrumb-item active">Visits</li>
@@ -36,7 +37,7 @@
             {% endif %}
             {% if concert_count > 0 %}
                 <li class="nav-item">
-                    <a class="nav-link{% if event_kind == 'concert' %} active{% endif %}" href="{% url 'spectator:concert_list' %}">
+                    <a class="nav-link{% if event_kind == 'concert' %} active{% endif %}" href="{% url 'spectator:concertevent_list' %}">
                         Concerts ({{ concert_count }})
                     </a>
                 </li>
@@ -56,31 +57,8 @@
                 </li>
             {% endif %}
         </ul>
-
-        {% if page_obj|default:False and page_obj.number > 1 %}
-            {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
-        {% endif %}
-
-        <ul>
-            {% for event in event_list %}
-            <li>
-                {% if event.event_kind == 'concert' %}
-                    {% include 'spectator/includes/concert.html' with concert=event only %}
-                {% elif event.event_kind == 'movie' %}
-                    {% include 'spectator/includes/movieevent.html' with movieevent=event only %}
-                {% elif event.event_kind == 'play' %}
-                    {% include 'spectator/includes/playproductionevent.html' with playproductionevent=event only %}
-                {% else %}
-                    Unknown event kind for {{ event }}
-                {% endif %}
-            </li>
-            {% endfor %}
-        </ul>
-
-        {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
-    {% else %}
-        <p>There are no events to show.</p>
     {% endif %}
 
+    {% include 'spectator/includes/events_paginated.html' with event_list=event_list page_obj=page_obj only %}
 
 {% endblock content %}

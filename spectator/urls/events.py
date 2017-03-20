@@ -14,6 +14,13 @@ urlpatterns = [
         view=views.ConcertListView.as_view(),
         name='concert_list',
     ),
+    # There aren't any "ConcertEvents"; this is really just a different view
+    # of Concert objects:
+    url(
+        regex=r"^concerts/visits/$",
+        view=views.ConcertEventListView.as_view(),
+        name='concertevent_list',
+    ),
     url(
         regex=r"^movies/$",
         view=views.MovieListView.as_view(),

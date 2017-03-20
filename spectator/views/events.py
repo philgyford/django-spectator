@@ -5,7 +5,7 @@ from ..models import Concert, Event, Movie, MovieEvent, Play,\
         PlayProductionEvent
 
 
-class EventsListView(PaginatedListView):
+class EventListView(PaginatedListView):
     model = Event
     ordering = ['-date',]
     template_name = 'spectator/event_list.html'
@@ -30,22 +30,28 @@ class EventsListView(PaginatedListView):
         return self.model.event_kind
 
 
-class EventsHomeView(EventsListView):
+class EventsHomeView(EventListView):
     pass
 
-class ConcertListView(EventsListView):
+class ConcertEventListView(EventListView):
     model = Concert
 
-class MovieEventListView(EventsListView):
+class MovieEventListView(EventListView):
     model = MovieEvent
 
-class PlayProductionEventListView(EventsListView):
+class PlayProductionEventListView(EventListView):
     model = PlayProductionEvent
 
 
+class ConcertListView(ListView):
+    model = Concert
+    ordering = ['title']
+
 class MovieListView(ListView):
     model = Movie
+    ordering = ['title']
 
 class PlayListView(ListView):
     model = Play
+    ordering = ['title']
 

@@ -1,29 +1,26 @@
 {% extends 'spectator/base.html' %}
 
-{% block head_page_title %}Plays{% endblock %}
-{% block content_title %}Plays{% endblock %}
+{% block head_page_title %}Concert{% endblock %}
+{% block content_title %}Concerts{% endblock %}
 {% block events_nav_active %}active{% endblock %}
 
 {% block breadcrumbs %}
     <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'spectator:events_home' %}">Events</a></li>
-    <li class="breadcrumb-item active">Plays</li>
+    <li class="breadcrumb-item active">Concerts</li>
 {% endblock %}
 
 {% block content %}
 
-    {% if play_list|length > 0 %}
+    {% if concert_list|length > 0 %}
         {% if page_obj|default:False and page_obj.number > 1 %}
             {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
         {% endif %}
 
         <ul>
-            {% for play in play_list %}
+            {% for concert in concert_list %}
                 <li>
-                    <a href="">
-                        <strong>{{ play.title }}</strong>
-                    </a>
-                    {% include 'spectator/includes/roles.html' with roles=play.roles.all intro='<br>' show_role_name=False %}
+                    {% include 'spectator/includes/concert.html' with concert=concert only %}
                 </li>
             {% endfor %}
         </ul>
@@ -31,8 +28,7 @@
         {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
 
     {% else %}
-        <p>There are no plays to show.</p>
+        <p>There are no concerts to show.</p>
     {% endif %}
 
 {% endblock content %}
-
