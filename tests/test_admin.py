@@ -1,3 +1,6 @@
+from distutils.version import StrictVersion
+
+from django import get_version
 from django.contrib.admin.sites import AdminSite
 from django.test import TestCase
 
@@ -58,10 +61,17 @@ class PlayProductionLinkInlineTestCase(AdminTestCase):
         "It should return the correct string with a saved instance."
         pp = PlayProductionFactory()
         ppli = PlayProductionLinkInline(pp, self.site)
-        self.assertEqual(
-            ppli.changeform_link(pp),
-            '<a href="/admin/spectator/playproduction/1/change/">Change production and/or event(s)</a>'
-        )
+        # change URLs are slightly different for Django < 1.9:
+        if StrictVersion(get_version()) < StrictVersion('1.9'):
+            self.assertEqual(
+                ppli.changeform_link(pp),
+                '<a href="/admin/spectator/playproduction/1/">Change production and/or event(s)</a>'
+            )
+        else:
+            self.assertEqual(
+                ppli.changeform_link(pp),
+                '<a href="/admin/spectator/playproduction/1/change/">Change production and/or event(s)</a>'
+            )
 
     def test_changeform_link_with_no_instance(self):
         "It should return an empty string without a saved instance."
