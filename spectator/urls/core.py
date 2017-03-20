@@ -27,5 +27,10 @@ urlpatterns = [
         view=views.CreatorDetailView.as_view(),
         name='creator_detail'
     ),
+
+    url(r'^events/', include('spectator.urls.events')),
+    url(r'^reading/', include('spectator.urls.reading')),
+
 ]
+
 

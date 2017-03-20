@@ -59,6 +59,17 @@ class CoreUrlsTestCase(TestCase):
                          views.CreatorDetailView.__name__)
 
 
+class EventsUrlsTestCase(TestCase):
+
+    def test_events_home_url(self):
+        self.assertEqual(reverse('spectator:events_home'), '/events/')
+
+    def test_events_home_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/').func.__name__,
+                         views.EventsHomeView.__name__)
+
+
 class ReadingUrlsTestCase(TestCase):
 
     def test_reading_home_url(self):
@@ -139,15 +150,3 @@ class ReadingUrlsTestCase(TestCase):
                 end_date=datetime.strptime('2017-02-15', "%Y-%m-%d").date())
         self.assertEqual(resolve('/reading/2017/').func.__name__,
                          views.ReadingYearArchiveView.__name__)
-
-
-class EventsUrlsTestCase(TestCase):
-
-    def test_events_home_url(self):
-        self.assertEqual(reverse('spectator:events_home'), '/events/')
-
-    def test_events_home_view(self):
-        "Should use the correct view."
-        self.assertEqual(resolve('/events/').func.__name__,
-                         views.EventsHomeView.__name__)
-

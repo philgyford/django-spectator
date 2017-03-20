@@ -18,8 +18,8 @@ class Event(TimeStampedModelMixin, PolymorphicModel):
     date = models.DateField(null=True, blank=False)
     venue = models.ForeignKey('Venue', blank=False)
 
-    # Child classes should set their own unique value for event_type:
-    event_type = 'none'
+    # Child classes should set their own unique value for event_kind:
+    event_kind = 'event'
 
     class Meta:
         ordering = ['date',]
@@ -61,7 +61,7 @@ class Concert(Event):
 
     creators = models.ManyToManyField(Creator, through='ConcertRole',
                                                     related_name='concerts')
-    event_type = 'concert'
+    event_kind = 'concert'
 
     def __str__(self):
         if self.title:
@@ -147,7 +147,7 @@ class MovieEvent(Event):
     An occasion on which a Movie was watched.
     """
     movie = models.ForeignKey('Movie', null=False, blank=False)
-    event_type = 'movie'
+    event_kind = 'movie'
 
     def __str__(self):
         return str(self.movie)
@@ -254,7 +254,7 @@ class PlayProductionEvent(Event):
     An occasion on which a PlayProduction was watched.
     """
     production = models.ForeignKey('PlayProduction', blank=False)
-    event_type = 'play'
+    event_kind = 'play'
 
     def __str__(self):
         return str(self.production)

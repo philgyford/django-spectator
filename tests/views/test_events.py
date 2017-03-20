@@ -14,7 +14,7 @@ class EventsHomeViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.EventsHomeView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/events_home.html')
+                         'spectator/event_list.html')
 
     def test_context_events_list(self):
         "It should have the latest events in the context."
