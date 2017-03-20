@@ -72,6 +72,12 @@ class PlayProductionLinkInline(admin.TabularInline):
     extra = 1
 
     def display_str(self, instance):
+        """
+        Displays the name of the inline PlayProduction and lists all of its
+        PlayProductionEvents.
+        Or, displays an 'Add new event' link, which will have arguments added
+        with JavaScript that's added in PlayAdmin.
+        """
         if instance.id:
             events = instance.playproductionevent_set.all()
             events = ''.join(
@@ -79,23 +85,34 @@ class PlayProductionLinkInline(admin.TabularInline):
                 )
             return '{}{}'.format(instance, events)
         else:
-            changeform_url = urlresolvers.reverse(
+            playproduction_addform_url = urlresolvers.reverse(
                 'admin:spectator_playproduction_add'
             )
-            return '<a href="{}">Add new event</a>'.format(changeform_url)
+            return '<a href="{}" class="js-add-event-link">Add another Play Production and event</a>'.format(playproduction_addform_url)
     display_str.allow_tags = True
     display_str.short_description = ''
 
     def changeform_link(self, instance):
+        """
+        Custom link to edit the PlayProduction on its own change forms.
+        """
         link = ''
         if instance.id:
             changeform_url = urlresolvers.reverse(
                 'admin:spectator_playproduction_change', args=(instance.id,)
             )
+
             link = '<a href="{}">Change production and/or event(s)</a>'.format(changeform_url)
         return link
     changeform_link.allow_tags = True
     changeform_link.short_description = ''
+
+    def get_max_num(self, request, obj=None, **kwargs):
+        """
+        Only allow us to add the one `extra`, as it will be our custom 'Add'
+        link that takes the user to the PlayProduction add page.
+        """
+        return obj.playproduction_set.count() + self.extra
 
 
 # MODEL ADMINS.
@@ -208,6 +225,11 @@ class PlayAdmin(admin.ModelAdmin):
             return '-'
     show_creators.short_description = 'Creators'
 
+    class Media:
+        js = (
+            'js/admin/play.js',
+        )
+
 
 @admin.register(PlayProduction)
 class PlayProductionAdmin(admin.ModelAdmin):
@@ -239,6 +261,11 @@ class PlayProductionAdmin(admin.ModelAdmin):
             # Too many to list them all.
             return '{} et al.'.format(names[0])
     show_creators.short_description = 'Creators'
+
+    class Media:
+        js = (
+            'js/admin/playproduction.js',
+        )
 
 
 @admin.register(PlayProductionEvent)
