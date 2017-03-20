@@ -1,4 +1,4 @@
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView
 
 from . import PaginatedListView
 from ..models import Concert, Event, Movie, MovieEvent, Play,\
@@ -54,4 +54,14 @@ class MovieListView(ListView):
 class PlayListView(ListView):
     model = Play
     ordering = ['title_sort']
+
+
+class ConcertDetailView(DetailView):
+    model = Concert
+
+class MovieDetailView(DetailView):
+    model = Movie
+
+class PlayDetailView(DetailView):
+    model = Play
 

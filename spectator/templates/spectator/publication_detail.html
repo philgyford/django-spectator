@@ -26,11 +26,9 @@
 
 {% block content %}
 
-    {% with publication.roles.all as roles %}
-        <p class="lead">
-            {% include 'spectator/includes/roles.html' with roles=publication.roles.all intro='By' %}
-        </p>
-    {% endwith %}
+    <p class="lead">
+        {% include 'spectator/includes/roles.html' with roles=publication.roles.all intro='By' %}
+    </p>
 
     {% if publication.has_urls %}
         {% load spectator_filters %}

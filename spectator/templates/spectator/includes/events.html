@@ -6,18 +6,20 @@ Expects:
 
 {% endcomment %}
 
-<ul>
-    {% for event in event_list %}
-    <li>
-        {% if event.event_kind == 'concert' %}
-            {% include 'spectator/includes/concert.html' with concert=event only %}
-        {% elif event.event_kind == 'movie' %}
-            {% include 'spectator/includes/movieevent.html' with movieevent=event only %}
-        {% elif event.event_kind == 'play' %}
-            {% include 'spectator/includes/playproductionevent.html' with playproductionevent=event only %}
-        {% else %}
-            Unknown event kind for {{ event }}
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
+{% if event_list|length > 0 %}
+    <ul>
+        {% for event in event_list %}
+        <li>
+            {% if event.event_kind == 'concert' %}
+                {% include 'spectator/includes/concert.html' with concert=event only %}
+            {% elif event.event_kind == 'movie' %}
+                {% include 'spectator/includes/movieevent.html' with movieevent=event only %}
+            {% elif event.event_kind == 'play' %}
+                {% include 'spectator/includes/playproductionevent.html' with playproductionevent=event only %}
+            {% else %}
+                Unknown event kind for {{ event }}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+{% endif %}

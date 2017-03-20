@@ -22,6 +22,11 @@ urlpatterns = [
         name='concertevent_list',
     ),
     url(
+        regex=r"^concerts/(?P<pk>\d+)/$",
+        view=views.ConcertDetailView.as_view(),
+        name='concert_detail'
+    ),
+    url(
         regex=r"^movies/$",
         view=views.MovieListView.as_view(),
         name='movie_list',
@@ -32,6 +37,11 @@ urlpatterns = [
         name='movieevent_list',
     ),
     url(
+        regex=r"^movies/(?P<pk>\d+)/$",
+        view=views.MovieDetailView.as_view(),
+        name='movie_detail'
+    ),
+    url(
         regex=r"^plays/$",
         view=views.PlayListView.as_view(),
         name='play_list',
@@ -40,6 +50,11 @@ urlpatterns = [
         regex=r"^plays/visits/$",
         view=views.PlayProductionEventListView.as_view(),
         name='playproductionevent_list',
+    ),
+    url(
+        regex=r"^plays/(?P<pk>\d+)/$",
+        view=views.PlayDetailView.as_view(),
+        name='play_detail'
     ),
 ]
 

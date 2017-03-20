@@ -6,13 +6,13 @@ Expects:
 * movieevent - A MovieEvent object.
 {% endcomment %}
 
-<a href="">
+<a href="{{ movieevent.movie.get_absolute_url }}">
     <strong>
         {{ movieevent.movie.title }}
     </strong>
-    {% if movieevent.movie.year %}
-        ({{ movieevent.movie.year }})
-    {% endif %}
 </a>
+{% if movieevent.movie.year %}
+	({{ movieevent.movie.year }})
+{% endif %}
 
 <br>{{ movieevent.venue.name }}, {{ movieevent.date|date:"j M Y" }}

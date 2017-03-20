@@ -1,8 +1,9 @@
 {% extends 'spectator/base.html' %}
 
+{% block events_nav_active %}active{% endblock %}
+
 {% block head_page_title %}Plays{% endblock %}
 {% block content_title %}Plays{% endblock %}
-{% block events_nav_active %}active{% endblock %}
 
 {% block breadcrumbs %}
     <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>

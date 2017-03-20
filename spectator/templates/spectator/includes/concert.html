@@ -7,11 +7,7 @@ Expects:
 {% endcomment %}
 
 <strong>
-    {% if concert.title %}
-        <a href="">{{ concert.title }}</a>
-    {% else %}
-        {% include 'spectator/includes/roles.html' with roles=concert.roles.all show_role_name=False %}
-    {% endif %}
+		<a href="{{ concert.get_absolute_url }}">{{ concert }}</a>
 </strong>
 
 <br>{{ concert.venue.name }}, {{ concert.date|date:"j M Y" }}

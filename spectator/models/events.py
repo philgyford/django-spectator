@@ -1,8 +1,14 @@
 # coding: utf-8
 import datetime
 
-from django.db import models
 from django.core.validators import RegexValidator
+from django.db import models
+try:
+    # Django >= 1.10
+    from django.urls import reverse
+except ImportError:
+    # Django < 1.10
+    from django.core.urlresolvers import reverse
 
 from polymorphic.models import PolymorphicModel
 
@@ -67,6 +73,9 @@ class Concert(Event):
                                                     related_name='concerts')
     event_kind = 'concert'
 
+    class Meta:
+        ordering = ('title_sort',)
+
     def __str__(self):
         if self.title:
             return self.title
@@ -84,8 +93,8 @@ class Concert(Event):
                             roles[-1]
                         )
 
-    class Meta:
-        ordering = ('title_sort',)
+    def get_absolute_url(self):
+        return reverse('spectator:concert_detail', kwargs={'pk':self.pk})
 
     @property
     def title_to_sort(self):
@@ -124,6 +133,10 @@ class Movie(TimeStampedModelMixin, models.Model):
         # Include their roles:
         for role in movie.roles.all():
             print(role.movie, role.creator, role.role_name)
+
+        # When it's been seen:
+        for ev in movie.movieevent_set.all():
+            print(ev.venue, ev.date)
     """
     YEAR_CHOICES = [(r,r) for r in range(1888, datetime.date.today().year+1)]
     YEAR_CHOICES.insert(0, ('', 'Select…'))
@@ -160,6 +173,9 @@ class Movie(TimeStampedModelMixin, models.Model):
             return '{} ({})'.format(self.title, self.year)
         else:
             return self.title
+
+    def get_absolute_url(self):
+        return reverse('spectator:movie_detail', kwargs={'pk':self.pk})
 
 
 class MovieEvent(Event):
@@ -200,6 +216,12 @@ class Play(TimeStampedModelMixin, models.Model):
         # Include their roles:
         for role in play.roles.all():
             print(role.play, role.creator, role.role_name)
+
+        # The productions and events:
+        for production in play.playproduction_set.all():
+            print(production)
+            for event in production.playproductionevent_set.all():
+                print(event.venue, event.date)
     """
     title = models.CharField(null=False, blank=False, max_length=255)
 
@@ -214,6 +236,9 @@ class Play(TimeStampedModelMixin, models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('spectator:play_detail', kwargs={'pk':self.pk})
 
 
 class PlayProductionRole(BaseRole):
@@ -244,6 +269,10 @@ class PlayProduction(TimeStampedModelMixin, models.Model):
         for role in production.roles.all():
             print(role.production.play, role.production.title,\
                     role.creator, role.role_name)
+
+        # The events:
+        for event in production.playproductionevent_set.all():
+            print(event.venue, event.date)
     """
     play = models.ForeignKey('Play', null=False, blank=False)
 

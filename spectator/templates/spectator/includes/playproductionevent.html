@@ -6,7 +6,7 @@ Expects:
 * playproductionevent - A PlayProductionEvent object.
 {% endcomment %}
 
-<a href="">
+<a href="{{ playproductionevent.production.play.get_absolute_url }}">
     <strong>
         {{ playproductionevent.production.play.title }}
     </strong>
