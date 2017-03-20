@@ -1,0 +1,20 @@
+{% comment %}
+Dislaying a single visit to a PlayProduction, probably in a list.
+
+Expects:
+
+* playproductionevent - A PlayProductionEvent object.
+{% endcomment %}
+
+<a href="">
+    <strong>
+        {{ playproductionevent.production.play.title }}
+    </strong>
+    {% if playproductionevent.production.title %}
+        ({{ playproductionevent.production.title }})
+    {% endif %}
+</a>
+
+<br>{{ playproductionevent.venue.name }},
+{{ playproductionevent.date|date:"j M Y" }}
+

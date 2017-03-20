@@ -8,16 +8,16 @@ Expects:
 
 {% endcomment %}
 
-<strong>
-    <a href="{{ publication.get_absolute_url }}">
+<a href="{{ publication.get_absolute_url }}">
+	<strong>
         {% if publication.series %}
             <cite>{{ publication.series.title }}</cite>, 
             {{ publication.title }}
         {% else %}
             <cite>{{ publication.title }}</cite>
         {% endif %}
-    </a>
-</strong>
+	</strong>
+</a>
 
 {% include 'spectator/includes/roles.html' with roles=publication.roles.all intro='<br>by' %}
 

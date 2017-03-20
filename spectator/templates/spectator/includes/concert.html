@@ -1,0 +1,18 @@
+{% comment %}
+Dislaying a single visit to a Concert, probably in a list.
+
+Expects:
+
+* concert - A Concert object.
+{% endcomment %}
+
+<strong>
+    {% if concert.title %}
+        <a href="">{{ concert.title }}</a>
+    {% else %}
+        {% include 'spectator/includes/roles.html' with roles=concert.roles.all show_role_name=False %}
+    {% endif %}
+</strong>
+
+<br>{{ concert.venue.name }}, {{ concert.date|date:"j M Y" }}
+

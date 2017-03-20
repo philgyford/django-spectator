@@ -1,0 +1,18 @@
+{% comment %}
+Dislaying a single visit to a Movie, probably in a list.
+
+Expects:
+
+* movieevent - A MovieEvent object.
+{% endcomment %}
+
+<a href="">
+    <strong>
+        {{ movieevent.movie.title }}
+    </strong>
+    {% if movieevent.movie.year %}
+        ({{ movieevent.movie.year }})
+    {% endif %}
+</a>
+
+<br>{{ movieevent.venue.name }}, {{ movieevent.date|date:"j M Y" }}

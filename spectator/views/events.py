@@ -6,4 +6,5 @@ from ..models import Event
 class EventsHomeView(ListView):
     model = Event
     template_name = 'spectator/events_home.html'
+    ordering = ['-date',]
 
