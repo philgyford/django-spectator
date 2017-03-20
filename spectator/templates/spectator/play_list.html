@@ -23,7 +23,7 @@
                     <a href="">
                         <strong>{{ play.title }}</strong>
                     </a>
-                    {% include 'spectator/includes/roles.html' with roles=play.roles.all intro='<br>' show_role_name=False %}
+                    {% include 'spectator/includes/roles.html' with roles=play.roles.all intro='<br>by ' show_role_name=False %}
                 </li>
             {% endfor %}
         </ul>
