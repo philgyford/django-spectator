@@ -166,7 +166,7 @@ class MovieAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'year', 'imdb_id',)
+            'fields': ( 'title', 'title_sort', 'year', 'imdb_id',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -174,7 +174,7 @@ class MovieAdmin(admin.ModelAdmin):
         }),
     )
 
-    readonly_fields = ('time_created', 'time_modified',)
+    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
 
     inlines = [ MovieRoleInline, MovieEventInline, ]
 
@@ -209,7 +209,7 @@ class PlayAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ( 'title', )
+            'fields': ( 'title', 'title_sort', )
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -217,7 +217,7 @@ class PlayAdmin(admin.ModelAdmin):
         }),
     )
 
-    readonly_fields = ('time_created', 'time_modified',)
+    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
 
     inlines = [ PlayRoleInline, PlayProductionLinkInline, ]
 
@@ -302,7 +302,7 @@ class VenueAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ( 'name', 'latitude', 'longitude',)
+            'fields': ( 'name', 'name_sort', 'latitude', 'longitude',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -310,7 +310,7 @@ class VenueAdmin(admin.ModelAdmin):
         }),
     )
 
-    readonly_fields = ('time_created', 'time_modified',)
+    readonly_fields = ('name_sort', 'time_created', 'time_modified',)
 
     class Media:
         if hasattr(settings, 'SPECTATOR_GOOGLE_MAPS_API_KEY') and settings.SPECTATOR_GOOGLE_MAPS_API_KEY:

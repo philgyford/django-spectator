@@ -7,6 +7,7 @@ from django.core.validators import RegexValidator
 from polymorphic.models import PolymorphicModel
 
 from . import BaseRole, Creator, TimeStampedModelMixin
+from ..fields import NaturalSortField
 
 
 class Event(TimeStampedModelMixin, PolymorphicModel):
@@ -113,6 +114,10 @@ class Movie(TimeStampedModelMixin, models.Model):
     YEAR_CHOICES.insert(0, ('', 'Select…'))
 
     title = models.CharField(null=False, blank=False, max_length=255)
+
+    title_sort = NaturalSortField('title', max_length=255, default='',
+            help_text="e.g. 'haine, la' or 'unbelievable truth, the'.")
+
     creators = models.ManyToManyField(Creator, through='MovieRole',
                                                         related_name='movies')
 
@@ -133,7 +138,7 @@ class Movie(TimeStampedModelMixin, models.Model):
                 help_text="Year of release.")
 
     class Meta:
-        ordering = ('title',)
+        ordering = ('title_sort',)
 
     def __str__(self):
         if self.year:
@@ -182,11 +187,15 @@ class Play(TimeStampedModelMixin, models.Model):
             print(role.play, role.creator, role.role_name)
     """
     title = models.CharField(null=False, blank=False, max_length=255)
+
+    title_sort = NaturalSortField('title', max_length=255, default='',
+            help_text="e.g. 'big play, a' or 'biggest play, the'.")
+
     creators = models.ManyToManyField(Creator, through='PlayRole',
                                                         related_name='plays')
 
     class Meta:
-        ordering = ('title',)
+        ordering = ('title_sort',)
 
     def __str__(self):
         return self.title
@@ -265,13 +274,17 @@ class Venue(TimeStampedModelMixin, models.Model):
     Where an event happens.
     """
     name = models.CharField(null=False, blank=False, max_length=255)
+
+    name_sort = NaturalSortField('name', max_length=255, default='',
+            help_text="e.g. 'venue, a' or 'biggest venue, the'.")
+
     latitude = models.DecimalField(max_digits=9, decimal_places=6,
                                                         null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6,
                                                         null=True, blank=True)
 
     class Meta:
-        ordering = ['name',]
+        ordering = ['name_sort',]
 
     def __str__(self):
         return self.name
