@@ -18,7 +18,7 @@ from spectator.factories import IndividualCreatorFactory,\
 # and that the correct views are called.
 
 
-class UrlsTestCase(TestCase):
+class CoreUrlsTestCase(TestCase):
 
     def test_home_url(self):
         self.assertEqual(reverse('spectator:home'), '/')
@@ -57,6 +57,9 @@ class UrlsTestCase(TestCase):
         IndividualCreatorFactory(pk=3)
         self.assertEqual(resolve('/creators/3/').func.__name__,
                          views.CreatorDetailView.__name__)
+
+
+class ReadingUrlsTestCase(TestCase):
 
     def test_reading_home_url(self):
         self.assertEqual(reverse('spectator:reading_home'), '/reading/')
@@ -137,4 +140,14 @@ class UrlsTestCase(TestCase):
         self.assertEqual(resolve('/reading/2017/').func.__name__,
                          views.ReadingYearArchiveView.__name__)
 
+
+class EventsUrlsTestCase(TestCase):
+
+    def test_events_home_url(self):
+        self.assertEqual(reverse('spectator:events_home'), '/events/')
+
+    def test_events_home_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/').func.__name__,
+                         views.EventsHomeView.__name__)
 
