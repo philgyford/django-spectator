@@ -17,3 +17,18 @@
     {% include 'spectator/includes/publications_paginated.html' with publication_list=publication_list show_readings='all' page_obj=page_obj only %}
 
 {% endblock content %}
+
+
+{% block sidebar %}
+    {% if perms.spectator.can_edit_publicationseries %}
+        <div class="card mb-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <a href="{% url 'admin:spectator_publicationseries_change' publicationseries.id %}">Edit in Admin</a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+
+    {{ block.super }}
+{% endblock %}

@@ -28,3 +28,18 @@
     {% include 'spectator/includes/roles_list.html' with roles=concert.roles.all only %}
 
 {% endblock content %}
+
+
+{% block sidebar %}
+    {% if perms.spectator.can_edit_concert %}
+        <div class="card mb-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <a href="{% url 'admin:spectator_concert_change' concert.id %}">Edit in Admin</a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+
+    {{ block.super }}
+{% endblock %}

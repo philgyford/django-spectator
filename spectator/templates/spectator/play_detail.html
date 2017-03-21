@@ -34,10 +34,24 @@
                     {% endif %}
                 {% endwith %}
 
-                {% include 'spectator/includes/events_list.html' with events=production.playproductionevent_set.all heading_level='h4' only %}
+                {% include 'spectator/includes/visits_list.html' with events=production.playproductionevent_set.all heading_level='h4' only %}
             {% endfor %}
         {% endif %}
     {% endwith %}
 
-
 {% endblock content %}
+
+
+{% block sidebar %}
+    {% if perms.spectator.can_edit_play %}
+        <div class="card mb-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <a href="{% url 'admin:spectator_play_change' play.id %}">Edit in Admin</a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+
+    {{ block.super }}
+{% endblock %}
