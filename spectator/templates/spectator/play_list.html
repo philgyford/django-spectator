@@ -21,7 +21,7 @@
         <ul>
             {% for play in play_list %}
                 <li>
-                    <a href="">
+                    <a href="{{ play.get_absolute_url }}">
                         <strong>{{ play.title }}</strong>
                     </a>
                     {% include 'spectator/includes/roles.html' with roles=play.roles.all intro='<br>by ' show_role_name=False %}

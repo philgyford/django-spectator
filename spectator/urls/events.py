@@ -9,6 +9,9 @@ urlpatterns = [
         view=views.EventsHomeView.as_view(),
         name='events_home'
     ),
+
+    # CONCERTS
+
     url(
         regex=r"^concerts/$",
         view=views.ConcertListView.as_view(),
@@ -26,6 +29,9 @@ urlpatterns = [
         view=views.ConcertDetailView.as_view(),
         name='concert_detail'
     ),
+
+    # MOVIES
+
     url(
         regex=r"^movies/$",
         view=views.MovieListView.as_view(),
@@ -41,6 +47,9 @@ urlpatterns = [
         view=views.MovieDetailView.as_view(),
         name='movie_detail'
     ),
+
+    # PLAYS
+
     url(
         regex=r"^plays/$",
         view=views.PlayListView.as_view(),
