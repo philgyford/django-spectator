@@ -7,6 +7,29 @@ from spectator.factories import ConcertFactory, MovieFactory,\
         MovieEventFactory, PlayFactory, PlayProductionEventFactory
 
 
+class EventListViewTestCase(ViewTestCase):
+    "Testing some of the aspects of the parent class."
+
+    def test_ancestor(self):
+        self.assertTrue(issubclass(views.EventListView,
+                                   views.PaginatedListView))
+
+    def test_context_counts(self):
+        ConcertFactory.create_batch(5)
+        MovieEventFactory.create_batch(4)
+        PlayProductionEventFactory.create_batch(3)
+        response = views.EventListView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('event_count', context)
+        self.assertEqual(context['event_count'], 12)
+        self.assertIn('concert_count', context)
+        self.assertEqual(context['concert_count'], 5)
+        self.assertIn('movieevent_count', context)
+        self.assertEqual(context['movieevent_count'], 4)
+        self.assertIn('playproductionevent_count', context)
+        self.assertEqual(context['playproductionevent_count'], 3)
+
+
 class EventsHomeViewTestCase(ViewTestCase):
 
     def test_ancestor(self):
@@ -21,6 +44,12 @@ class EventsHomeViewTestCase(ViewTestCase):
         response = views.EventsHomeView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
                          'spectator/event_list.html')
+
+    def test_context_event_kind(self):
+        response = views.EventsHomeView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('event_kind', context)
+        self.assertEqual(context['event_kind'], 'event')
 
     def test_context_events_list(self):
         "It should have the latest events, of all kinds, in the context."
@@ -52,6 +81,12 @@ class ConcertEventListViewTestCase(ViewTestCase):
         self.assertEqual(response.template_name[0],
                          'spectator/event_list.html')
 
+    def test_context_event_kind(self):
+        response = views.ConcertEventListView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('event_kind', context)
+        self.assertEqual(context['event_kind'], 'concert')
+
     def test_context_events_list(self):
         "It should have the latest Concert events in the context."
         movie = MovieEventFactory(date=make_date('2017-02-10'))
@@ -81,6 +116,12 @@ class MovieEventListViewTestCase(ViewTestCase):
         self.assertEqual(response.template_name[0],
                          'spectator/event_list.html')
 
+    def test_context_event_kind(self):
+        response = views.MovieEventListView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('event_kind', context)
+        self.assertEqual(context['event_kind'], 'movie')
+
     def test_context_events_list(self):
         "It should have the latest Movie events in the context."
         concert = ConcertFactory(date=make_date('2017-02-10'))
@@ -109,6 +150,12 @@ class PlayProductionEventListViewTestCase(ViewTestCase):
         response = views.PlayProductionEventListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
                          'spectator/event_list.html')
+
+    def test_context_event_kind(self):
+        response = views.PlayProductionEventListView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('event_kind', context)
+        self.assertEqual(context['event_kind'], 'play')
 
     def test_context_events_list(self):
         "It should have the latest PlayProduction events in the context."
