@@ -49,7 +49,7 @@ Takes context.
 {% endif %}
 
 {% if url_name != 'spectator:home' and url_name != 'spectator:events_home' %}
-    {% recent_events as recent_event_list %}
+    {% recent_events 5 as recent_event_list %}
     {% if recent_event_list|length > 0 %}
         <div class="card mb-3">
             <div class="card-block">

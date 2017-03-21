@@ -215,3 +215,4 @@ def in_progress_publications():
 @register.assignment_tag
 def recent_events(num=10):
     return Event.objects.order_by('-date')[:num]
+
