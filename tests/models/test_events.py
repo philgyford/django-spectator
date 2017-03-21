@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from . import make_date
+from .. import make_date
 from spectator.factories import *
 from spectator.models import Concert, Movie, MovieEvent,\
         Play, PlayProduction, PlayProductionEvent, Venue
@@ -79,6 +79,10 @@ class ConcertTestCase(TestCase):
         self.assertEqual(roles[0].role_name, 'Headliner')
         self.assertEqual(roles[1].role_name, 'Supporter')
 
+    def test_absolute_url(self):
+        concert = ConcertFactory(pk=3)
+        self.assertEqual(concert.get_absolute_url(), '/events/concerts/3/')
+
 
 class MovieTestCase(TestCase):
 
@@ -114,6 +118,10 @@ class MovieTestCase(TestCase):
         self.assertEqual(roles[1], bobs_role)
         self.assertEqual(roles[0].role_name, 'Director')
         self.assertEqual(roles[1].role_name, 'Actor')
+
+    def test_absolute_url(self):
+        movie = MovieFactory(pk=3)
+        self.assertEqual(movie.get_absolute_url(), '/events/movies/3/')
 
 
 class MovieEventTestCase(TestCase):
@@ -164,6 +172,10 @@ class PlayTestCase(TestCase):
         self.assertEqual(roles[1], bobs_role)
         self.assertEqual(roles[0].role_name, 'Author')
         self.assertEqual(roles[1].role_name, 'Author')
+
+    def test_absolute_url(self):
+        play = PlayFactory(pk=3)
+        self.assertEqual(play.get_absolute_url(), '/events/plays/3/')
 
 
 class PlayProductionTestCase(TestCase):

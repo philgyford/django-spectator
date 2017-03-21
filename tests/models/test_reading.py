@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 
-from . import make_date
+from .. import make_date
 from spectator.factories import *
 from spectator.models import Publication, Reading
 
