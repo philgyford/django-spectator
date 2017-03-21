@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic import DetailView, ListView, YearArchiveView,\
         TemplateView
 
-from ..models import Creator, Publication
+from ..models import Creator, Event, Publication
 from ..paginator import DiggPaginator
 
 
@@ -73,6 +73,7 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['in_progress_publication_list'] = \
                                         Publication.in_progress_objects.all()
+        context['recent_event_list'] = Event.objects.order_by('-date')[:10]
         return context
 
 

@@ -15,4 +15,11 @@
         {% include 'spectator/includes/publications.html' with publication_list=in_progress_publication_list show_readings='current' only %}
     {% endif %}
 
+    {% if recent_event_list|length > 0 %}
+        <h2>Recent events</h2>
+
+        {% include 'spectator/includes/events.html' with event_list=recent_event_list only %}
+
+    {% endif %}
+
 {% endblock content %}
