@@ -11,10 +11,77 @@
 
 {% block content %}
 
-    {% if creator.publications.all.count > 0 %}
+    {% if creator.publications.count > 0 %}
         <h2>Publications</h2>
 
         {% include 'spectator/includes/publications.html' with publication_list=creator.publications.all show_readings='all' only %}
+    {% endif %}
+
+    {% if creator.concerts.count > 0 %}
+        <h2>Concerts</h2>
+
+        <ul>
+            {% for concert in creator.concerts.all %}
+                <li>
+                    {% include 'spectator/includes/concert.html' with concert=concert only %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if creator.movies.count > 0 %}
+        <h2>Movies</h2>
+
+        <ul>
+            {% for movie in creator.get_movies %}
+                <li>
+                    <a href="{{ movie.get_absolute_url }}">
+                        <strong>{{ movie.title }}</strong>
+                    </a>
+                    {% if movie.year %}
+                        ({{ movie.year }})
+                    {% endif %}
+                    {% if movie.creator_role_names|length > 0 %}
+                        <br>{{ movie.creator_role_names|join:', ' }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if creator.plays.count > 0 or creator.play_productsion.count > 0 %}
+        <h2>Plays</h2>
+
+        <ul>
+            {% for p in creator.get_plays_and_productions %}
+                <li>
+                    <a href="{{ p.play.get_absolute_url }}">
+                        <strong>{{ p.play.title }}</strong>
+                    </a>
+                    {% if p.play.creator_role_names|length > 0 %}
+                        <br>{{ p.play.creator_role_names|join:', ' }}
+                    {% endif %}
+                    {% if p.productions|length > 0 %}
+                        <ul>
+                            {% for production in p.productions %}
+                                <li>
+                                    {% if production.title %}
+                                        {{ production.title }}
+                                    {% endif %}
+                                    {% if production.creator_role_names|length > 0 %}
+                                        {% if production.title %}
+                                            <br>
+                                        {% endif %}
+                                        {{ production.creator_role_names|join:', ' }}
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
     {% endif %}
 
 {% endblock content %}
