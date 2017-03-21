@@ -2,7 +2,7 @@ from django import template
 from django.http import QueryDict
 from django.utils.html import format_html
 
-from ..models import Publication
+from ..models import Event, Publication
 
 
 register = template.Library()
@@ -11,18 +11,21 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def current_url_name(context):
     """
-    Returns the name of the current URL, or False.
+    Returns the name of the current URL, namespaced, or False.
 
     Example usage:
 
         {% current_url_name as url_name %}
 
-        <a href="#"{% if url_name == 'home' %} class="active"{% endif %}">Home</a>
+        <a href="#"{% if url_name == 'myapp:home' %} class="active"{% endif %}">Home</a>
 
     """
     url_name = False
     if context.request.resolver_match:
-        url_name = context.request.resolver_match.url_name
+        url_name = "{}:{}".format(
+                                context.request.resolver_match.namespace,
+                                context.request.resolver_match.url_name
+                            )
     return url_name
 
 
@@ -206,5 +209,9 @@ def in_progress_publications():
     """
     Returns a QuerySet of any Publications that are currently being read.
     """
-    return Publication.in_progress_objects.all().order_by('time_created')
+    return Publication.in_progress_objects.order_by('time_created')
 
+
+@register.assignment_tag
+def recent_events(num=10):
+    return Event.objects.order_by('-date')[:num]

@@ -3,13 +3,14 @@ Displays a list of events: Concerts, MovieEvents, PlayProductionEvents.
 
 Expects:
 * event_list - List or Queryset of children of Event.
+* style: 'bullets' (default) or 'unstyled'.
 
 {% endcomment %}
 
 {% if event_list|length > 0 %}
-    <ul>
+    <ul{% if style|default:'bullets' == 'unstyled' %} class="list-unstyled"{% endif %}>
         {% for event in event_list %}
-            <li>
+            <li class="mb-2">
                 {% if event.event_kind == 'concert' %}
                     {% include 'spectator/includes/concert.html' with concert=event only %}
                 {% elif event.event_kind == 'movie' %}

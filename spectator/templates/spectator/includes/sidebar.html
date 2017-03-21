@@ -1,3 +1,10 @@
+{% comment %}
+The sidebar!
+
+Takes context.
+{% endcomment %}
+
+
 {% load spectator_tags %}
 
 {% current_url_name as url_name %}
@@ -27,13 +34,27 @@
     </ul>
 </div>
 
-{% if not in_progress_publication_list %}
+{% current_url_name as url_name %}
+
+{% if url_name != 'spectator:home' and url_name != 'spectator:reading_home' %}
     {% in_progress_publications as in_progress_publication_list %}
     {% if in_progress_publication_list|length > 0 %}
         <div class="card mb-3">
             <div class="card-block">
                 <h2 class="h6 card-title">Current reading</h2>
                 {% include 'spectator/includes/publications.html' with publication_list=in_progress_publication_list show_readings='none' style='unstyled' only %}
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
+
+{% if url_name != 'spectator:home' and url_name != 'spectator:events_home' %}
+    {% recent_events as recent_event_list %}
+    {% if recent_event_list|length > 0 %}
+        <div class="card mb-3">
+            <div class="card-block">
+                <h2 class="h6 card-title">Recent events</h2>
+                {% include 'spectator/includes/events.html' with event_list=recent_event_list style='unstyled' only %}
             </div>
         </div>
     {% endif %}
