@@ -6,6 +6,12 @@ from ..models import Concert, Event, Movie, MovieEvent, Play,\
 
 
 class EventListView(PaginatedListView):
+    """
+    Parent class for any pages that list a type of Event.
+    Includes context of counts of all different Event types,
+    plus the kind of event this page is for,
+    plus adding `event_list` (synonym for `object_list`).
+    """
     model = Event
     ordering = ['-date',]
     template_name = 'spectator/event_list.html'
