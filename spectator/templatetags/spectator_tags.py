@@ -8,6 +8,19 @@ from ..models import Event, Publication
 register = template.Library()
 
 
+@register.assignment_tag
+def in_progress_publications():
+    """
+    Returns a QuerySet of any Publications that are currently being read.
+    """
+    return Publication.in_progress_objects.order_by('time_created')
+
+
+@register.assignment_tag
+def recent_events(num=10):
+    return Event.objects.order_by('-date')[:num]
+
+
 @register.simple_tag(takes_context=True)
 def current_url_name(context):
     """
@@ -202,17 +215,3 @@ def reading_dates(reading):
             output = "Started in {}".format(start_str)
 
     return format_html(output)
-
-
-@register.assignment_tag
-def in_progress_publications():
-    """
-    Returns a QuerySet of any Publications that are currently being read.
-    """
-    return Publication.in_progress_objects.order_by('time_created')
-
-
-@register.assignment_tag
-def recent_events(num=10):
-    return Event.objects.order_by('-date')[:num]
-
