@@ -10,6 +10,40 @@ from spectator.templatetags.spectator_tags import query_string,\
         in_progress_publications, reading_dates, recent_events
 
 
+class InProgressPublicationsTestCase(TestCase):
+
+    def test_queryset(self):
+        "It should return in-progress publications."
+        in_progress = ReadingFactory(
+                start_date=make_date('2017-02-10'),
+            )
+        finished = ReadingFactory(
+                start_date=make_date('2017-01-15'),
+                end_date=make_date('2017-01-28'),
+            )
+        qs = in_progress_publications()
+        self.assertEqual(len(qs), 1)
+        self.assertEqual(qs[0], in_progress.publication)
+
+
+class RecentEventsTestCase(TestCase):
+
+    def test_queryset(self):
+        "It should return 10 recent events by default."
+        MovieEventFactory.create_batch(6, date=make_date('2017-02-10'))
+        ConcertFactory.create_batch(6,    date=make_date('2017-02-12'))
+        qs = recent_events()
+        self.assertEqual(len(qs), 10)
+        self.assertEqual(qs[5].event_kind, 'concert')
+        self.assertEqual(qs[6].event_kind, 'movie')
+
+    def test_queryset_num(self):
+        "It should return the number of events requested."
+        ConcertFactory.create_batch(6, date=make_date('2017-02-12'))
+        qs = recent_events(5)
+        self.assertEqual(len(qs), 5)
+
+
 class QueryStringTestCase(TestCase):
 
     def test_adds_arg(self):
@@ -246,39 +280,5 @@ class ReadingDatesTestCase(TestCase):
                            start_granularity=6)
         self.assertEqual(reading_dates(r),
             'Started in <time datetime="2017">2017</time>')
-
-
-class InProgressPublicationsTestCase(TestCase):
-
-    def test_queryset(self):
-        "It should return in-progress publications."
-        in_progress = ReadingFactory(
-                start_date=make_date('2017-02-10'),
-            )
-        finished = ReadingFactory(
-                start_date=make_date('2017-01-15'),
-                end_date=make_date('2017-01-28'),
-            )
-        qs = in_progress_publications()
-        self.assertEqual(len(qs), 1)
-        self.assertEqual(qs[0], in_progress.publication)
-
-
-class RecentEventsTestCase(TestCase):
-
-    def test_queryset(self):
-        "It should return 10 recent events by default."
-        MovieEventFactory.create_batch(6, date=make_date('2017-02-10'))
-        ConcertFactory.create_batch(6,    date=make_date('2017-02-12'))
-        qs = recent_events()
-        self.assertEqual(len(qs), 10)
-        self.assertEqual(qs[5].event_kind, 'concert')
-        self.assertEqual(qs[6].event_kind, 'movie')
-
-    def test_queryset_num(self):
-        "It should return the number of events requested."
-        ConcertFactory.create_batch(6, date=make_date('2017-02-12'))
-        qs = recent_events(5)
-        self.assertEqual(len(qs), 5)
 
 
