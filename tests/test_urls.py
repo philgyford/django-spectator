@@ -155,6 +155,25 @@ class EventsUrlsTestCase(TestCase):
         self.assertEqual(resolve('/events/plays/34/').func.__name__,
                          views.PlayDetailView.__name__)
 
+    # VENUES
+
+    def test_venue_list_url(self):
+        self.assertEqual(reverse('spectator:venue_list'), '/events/venues/')
+
+    def test_venue_list_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/venues/').func.__name__,
+                         views.VenueListView.__name__)
+
+    def test_venue_detail_url(self):
+        self.assertEqual(reverse('spectator:venue_detail', kwargs={'pk':34,}),
+                        '/events/venues/34/')
+
+    def test_venue_detail_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/venues/34/').func.__name__,
+                         views.VenueDetailView.__name__)
+
 
 class ReadingUrlsTestCase(TestCase):
 

@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.views.generic import DetailView, ListView
+from django.views.generic.detail import SingleObjectMixin
 
 from . import PaginatedListView
 from ..models import Concert, Event, Movie, MovieEvent, Play,\
-        PlayProductionEvent
+        PlayProductionEvent, Venue
 
 
 class EventListView(PaginatedListView):
@@ -49,17 +51,21 @@ class PlayProductionEventListView(EventListView):
     model = PlayProductionEvent
 
 
-class ConcertListView(ListView):
+class ConcertListView(PaginatedListView):
     model = Concert
     ordering = ['title_sort']
 
-class MovieListView(ListView):
+class MovieListView(PaginatedListView):
     model = Movie
     ordering = ['title_sort']
 
-class PlayListView(ListView):
+class PlayListView(PaginatedListView):
     model = Play
     ordering = ['title_sort']
+
+class VenueListView(PaginatedListView):
+    model = Venue
+    ordering = ['name_sort']
 
 
 class ConcertDetailView(DetailView):
@@ -70,4 +76,23 @@ class MovieDetailView(DetailView):
 
 class PlayDetailView(DetailView):
     model = Play
+
+class VenueDetailView(SingleObjectMixin, PaginatedListView):
+    template_name = 'spectator/venue_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Venue.objects.all())
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['venue'] = self.object
+        context['event_list'] = context['object_list']
+        if hasattr(settings, 'SPECTATOR_GOOGLE_MAPS_API_KEY') and settings.SPECTATOR_GOOGLE_MAPS_API_KEY:
+            if self.object.latitude is not None and self.object.longitude is not None:
+                context['SPECTATOR_GOOGLE_MAPS_API_KEY'] = settings.SPECTATOR_GOOGLE_MAPS_API_KEY
+        return context
+
+    def get_queryset(self):
+        return self.object.event_set.order_by('-date')
 

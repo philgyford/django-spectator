@@ -595,3 +595,14 @@ class Venue(TimeStampedModelMixin, models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('spectator:venue_detail', kwargs={'pk':self.pk})
+
+    @property
+    def country_name(self):
+        if self.country:
+            return self.COUNTRIES[self.country]
+        else:
+            return None
+

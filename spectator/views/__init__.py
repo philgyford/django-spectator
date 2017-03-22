@@ -4,7 +4,8 @@ from .core import PaginatedListView, HomeView, CreatorListView,\
 from .events import EventListView, EventsHomeView,\
         ConcertDetailView, ConcertListView, ConcertEventListView,\
         MovieDetailView, MovieListView, MovieEventListView,\
-        PlayDetailView, PlayListView, PlayProductionEventListView
+        PlayDetailView, PlayListView, PlayProductionEventListView,\
+        VenueDetailView, VenueListView
 
 from .reading import ReadingHomeView, PublicationSeriesListView,\
         PublicationSeriesDetailView, PublicationListView,\

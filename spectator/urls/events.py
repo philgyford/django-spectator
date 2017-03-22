@@ -65,6 +65,19 @@ urlpatterns = [
         view=views.PlayDetailView.as_view(),
         name='play_detail'
     ),
+
+    # VENUES
+
+    url(
+        regex=r"^venues/$",
+        view=views.VenueListView.as_view(),
+        name='venue_list',
+    ),
+    url(
+        regex=r"^venues/(?P<pk>\d+)/$",
+        view=views.VenueDetailView.as_view(),
+        name='venue_detail'
+    ),
 ]
 
 
