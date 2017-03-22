@@ -300,12 +300,14 @@ class PlayProductionEventAdmin(PolymorphicChildModelAdmin):
 
 @admin.register(Venue)
 class VenueAdmin(admin.ModelAdmin):
-    list_display = ('name', 'latitude', 'longitude',)
+    list_display = ('name', 'latitude', 'longitude', 'country',)
+    list_filter = ('country',)
     search_fields = ('name',)
 
     fieldsets = (
         (None, {
-            'fields': ( 'name', 'name_sort', 'latitude', 'longitude',)
+            'fields': ( 'name', 'name_sort', 'latitude', 'longitude',
+                        'address', 'country',)
         }),
         ('Times', {
             'classes': ('collapse',),
