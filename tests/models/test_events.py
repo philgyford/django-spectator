@@ -272,3 +272,15 @@ class VenueTestCase(TestCase):
         self.assertEqual(venues[1], v2)
         self.assertEqual(venues[2], v3)
 
+    def test_absolute_url(self):
+        venue = VenueFactory(pk=3)
+        self.assertEqual(venue.get_absolute_url(), '/events/venues/3/')
+
+    def test_country_name_yes(self):
+        venue = VenueFactory(country='GB')
+        self.assertEqual(venue.country_name, 'UK')
+
+    def test_country_name_no(self):
+        venue = VenueFactory(country='')
+        self.assertEqual(venue.country_name, None)
+
