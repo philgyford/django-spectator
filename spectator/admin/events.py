@@ -116,7 +116,10 @@ class PlayProductionLinkInline(admin.TabularInline):
         Only allow us to add the one `extra`, as it will be our custom 'Add'
         link that takes the user to the PlayProduction add page.
         """
-        return obj.playproduction_set.count() + self.extra
+        if obj is None:
+            return self.extra
+        else:
+            return obj.playproduction_set.count() + self.extra
 
 
 # MODEL ADMINS.

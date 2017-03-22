@@ -57,6 +57,11 @@ class PlayProductionLinkInlineTestCase(AdminTestCase):
         ppli = PlayProductionLinkInline(pp1, self.site)
         self.assertEqual(ppli.get_max_num(None, obj=p), 3)
 
+    def test_get_max_num_new(self):
+        "If we're adding a Play, it returns the correct number."
+        ppli = PlayProductionLinkInline(None, self.site)
+        self.assertEqual(ppli.get_max_num(None, obj=None), 1)
+
     def test_changeform_link_with_instance(self):
         "It should return the correct string with a saved instance."
         pp = PlayProductionFactory()
