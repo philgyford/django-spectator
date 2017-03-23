@@ -5,7 +5,8 @@
  *  spectator_map_latitude
  *  spectator_map_longitude
  *
- * And for there to be a div, sized appropriately, with an ID of 'venue-map'.
+ * And for there to be a div, sized appropriately, with a class of
+ * 'js-venue-map-container'.
  *
  * Include the Google Maps Javascript API file like:
  * https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=spectatorInitMap
@@ -17,6 +18,10 @@ function spectatorInitMap() {
   if ( ! lat || ! lon) {
     return;
   };
+
+  $('.js-venue-map-container').insert(
+    $('<div id="venue-map" class="venue-map"></div>')
+  );
 
   var position = {lat: parseFloat(lat), lng: parseFloat(lon)};
 

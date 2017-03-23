@@ -1,5 +1,18 @@
 {% extends 'spectator/base.html' %}
 
+{% block head_extra %}
+    {% if SPECTATOR_GOOGLE_MAPS_API_KEY %}
+        <style type="text/css">
+            .venue_map {
+                max-width: 100%;
+                height: 300px;
+                border: 1px solid #eee;
+            }
+        </style>
+    {% endif %}
+    {{ block super }}
+{% endblock %}
+
 {% block events_nav_active %}active{% endblock %}
 
 {% block head_page_title %}{{ venue.name }}{% endblock %}
@@ -19,7 +32,7 @@
     </p>
 
     {% if SPECTATOR_GOOGLE_MAPS_API_KEY %}
-        <div id="venue-map" class="venue-map mb-4" style="max-width: 100%; height: 300px;"></div>
+        <div class="js-venue-map-container"></div>
     {% endif %}
 
     {% if event_list|length > 0 %}
