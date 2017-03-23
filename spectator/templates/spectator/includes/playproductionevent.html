@@ -15,6 +15,15 @@ Expects:
     {% endif %}
 </a>
 
-<br>{{ playproductionevent.venue.name }},
+<br>
+{% load spectator_tags %}
+{% current_url_name as url_name %}
+
+{% if url_name == 'spectator:venue_detail' %}
+    {{ playproductionevent.venue.name }},
+{% else %}
+    <a href="{% url 'spectator:venue_detail' pk=playproductionevent.venue.pk %}">{{ playproductionevent.venue.name }}</a>,
+{% endif %}
+
 {{ playproductionevent.date|date:"j M Y" }}
 

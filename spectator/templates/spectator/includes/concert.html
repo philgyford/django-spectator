@@ -7,8 +7,18 @@ Expects:
 {% endcomment %}
 
 <strong>
-		<a href="{{ concert.get_absolute_url }}">{{ concert }}</a>
+        <a href="{{ concert.get_absolute_url }}">{{ concert }}</a>
 </strong>
 
-<br>{{ concert.venue.name }}, {{ concert.date|date:"j M Y" }}
+<br>
+{% load spectator_tags %}
+{% current_url_name as url_name %}
+
+{% if url_name == 'spectator:venue_detail' %}
+    {{ concert.venue.name }},
+{% else %}
+    <a href="{% url 'spectator:venue_detail' pk=concert.venue.pk %}">{{ concert.venue.name }}</a>,
+{% endif %}
+
+{{ concert.date|date:"j M Y" }}
 

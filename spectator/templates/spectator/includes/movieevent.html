@@ -15,4 +15,15 @@ Expects:
     ({{ movieevent.movie.year }})
 {% endif %}
 
-<br>{{ movieevent.venue.name }}, {{ movieevent.date|date:"j M Y" }}
+<br>
+{% load spectator_tags %}
+{% current_url_name as url_name %}
+
+{% if url_name == 'spectator:venue_detail' %}
+    {{ movieevent.venue.name }},
+{% else %}
+    <a href="{% url 'spectator:venue_detail' pk=movieevent.venue.pk %}">{{ movieevent.venue.name }}</a>,
+{% endif %}
+
+{{ movieevent.date|date:"j M Y" }}
+
