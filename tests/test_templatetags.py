@@ -5,8 +5,9 @@ from django.test import TestCase
 
 from . import make_date
 from spectator.factories import ConcertFactory, MovieEventFactory,\
-        ReadingFactory
-from spectator.templatetags.spectator_tags import query_string,\
+        PublicationFactory, ReadingFactory
+from spectator.templatetags.spectator_tags import day_events,\
+        day_publications, query_string,\
         in_progress_publications, reading_dates, recent_events
 
 
@@ -42,6 +43,56 @@ class RecentEventsTestCase(TestCase):
         ConcertFactory.create_batch(6, date=make_date('2017-02-12'))
         qs = recent_events(5)
         self.assertEqual(len(qs), 5)
+
+
+class DayEventsTestCase(TestCase):
+
+    def test_queryset(self):
+        ConcertFactory(   date=make_date('2017-02-09'))
+        MovieEventFactory(date=make_date('2017-02-10'))
+        ConcertFactory(   date=make_date('2017-02-10'))
+        MovieEventFactory(date=make_date('2017-02-11'))
+        qs = day_events(make_date('2017-02-10'))
+        self.assertEqual(len(qs), 2)
+
+
+class DayPublicationsTestCase(TestCase):
+
+    def test_ended_readings(self):
+        "It returns publications whose ended readings were around the date"
+        pub1 = PublicationFactory()
+        pub2 = PublicationFactory()
+        # pub1 started before and ended after the date:
+        ReadingFactory(publication=pub1,
+                        start_date=make_date('2017-02-10'),
+                        end_date=make_date('2017-02-20')
+                    )
+        # pub2 was over before the date:
+        ReadingFactory(publication=pub2,
+                        start_date=make_date('2017-01-01'),
+                        end_date=make_date('2017-01-10')
+                    )
+        qs = day_publications(make_date('2017-02-15'))
+        self.assertEqual(len(qs), 1)
+        self.assertEqual(qs[0], pub1)
+
+    def test_in_progress_readings(self):
+        "It returns publications that were still in progress on the date."
+        pub1 = PublicationFactory()
+        pub2 = PublicationFactory()
+        # pub1 started before the date:
+        ReadingFactory(publication=pub1,
+                        start_date=make_date('2017-02-10'),
+                        end_date=None
+                    )
+        # pub2 started after the date:
+        ReadingFactory(publication=pub2,
+                        start_date=make_date('2017-03-01'),
+                        end_date=None
+                    )
+        qs = day_publications(make_date('2017-02-15'))
+        self.assertEqual(len(qs), 1)
+        self.assertEqual(qs[0], pub1)
 
 
 class QueryStringTestCase(TestCase):

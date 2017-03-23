@@ -1,4 +1,5 @@
 from django import template
+from django.db.models import Q
 from django.http import QueryDict
 from django.utils.html import format_html
 
@@ -18,7 +19,35 @@ def in_progress_publications():
 
 @register.assignment_tag
 def recent_events(num=10):
+    """
+    Returns a QuerySet of Events that happened recently.
+    `num` is the number returned.
+    """
     return Event.objects.order_by('-date')[:num]
+
+
+@register.assignment_tag
+def day_events(date):
+    """
+    Returns a QuerySet of Events that happened on the supplied date.
+    `date` is a date object.
+    """
+    return Event.objects.filter(date=date)
+
+
+@register.assignment_tag
+def day_publications(date):
+    """
+    Returns a QuerySet of Publications that were being read on `date`.
+    `date` is a date tobject.
+    """
+    return Publication.objects\
+            .filter(reading__start_date__lte=date)\
+            .filter(
+                Q(reading__end_date__gte=date)
+                |
+                Q(reading__end_date__isnull=True)
+            )
 
 
 @register.simple_tag(takes_context=True)
