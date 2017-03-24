@@ -39,38 +39,42 @@ Expects:
     {% endif %}
 {% endif %}
 
-<div class="card mb-3">
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-            {% if url_name == 'spectator:creator_list' %}
-                Creators
-            {% else %}
-                <a href="{% url 'spectator:creator_list' %}">Creators</a>
-            {% endif %}
-        </li>
-        <li class="list-group-item">
-            {% if url_name == 'spectator:publication_list' %}
-                Publications
-            {% else %}
-                <a href="{% url 'spectator:publication_list' %}">Publications</a>
-            {% endif %}
-        </li>
-        <li class="list-group-item">
-            {% if url_name == 'spectator:publicationseries_list' %}
-                Publication series
-            {% else %}
-                <a href="{% url 'spectator:publicationseries_list' %}">Publication series</a>
-            {% endif %}
-        </li>
-        <li class="list-group-item">
-            {% if url_name == 'spectator:venue_list' %}
-                Venues
-            {% else %}
-                <a href="{% url 'spectator:venue_list' %}">Venues</a>
-            {% endif %}
-        </li>
-    </ul>
-</div>
+{% block sidebar_nav %}
+    <div class="card mb-3">
+        <ul class="list-group list-group-flush">
+            {% block sidebar_nav_items %}
+                <li class="list-group-item">
+                    {% if url_name == 'spectator:creator_list' %}
+                        Creators
+                    {% else %}
+                        <a href="{% url 'spectator:creator_list' %}">Creators</a>
+                    {% endif %}
+                </li>
+                <li class="list-group-item">
+                    {% if url_name == 'spectator:publication_list' %}
+                        Publications
+                    {% else %}
+                        <a href="{% url 'spectator:publication_list' %}">Publications</a>
+                    {% endif %}
+                </li>
+                <li class="list-group-item">
+                    {% if url_name == 'spectator:publicationseries_list' %}
+                        Publication series
+                    {% else %}
+                        <a href="{% url 'spectator:publicationseries_list' %}">Publication series</a>
+                    {% endif %}
+                </li>
+                <li class="list-group-item">
+                    {% if url_name == 'spectator:venue_list' %}
+                        Venues
+                    {% else %}
+                        <a href="{% url 'spectator:venue_list' %}">Venues</a>
+                    {% endif %}
+                </li>
+            {% endblock sidebar_nav_items %}
+        </ul>
+    </div>
+{% endblock sidebar_nav %}
 
 {% block sidebar_end %}
 {% endblock %}
