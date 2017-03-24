@@ -3,7 +3,7 @@ from django.test import TestCase
 from .. import make_date
 from spectator.factories import *
 from spectator.models import Concert, Movie, MovieEvent,\
-        Play, PlayProduction, PlayProductionEvent, Venue
+        Play, PlayProduction, PlayProductionEvent, MiscEvent, Venue
 
 
 class EventTestCase(TestCase):
@@ -52,6 +52,26 @@ class ConcertTestCase(TestCase):
                 creator=GroupCreatorFactory(name='Martha'),
                 role_name='Support', role_order=2)
         self.assertEqual(str(concert), 'Milky Wimpshake, Martha and The Tuts')
+
+    def test_title_sort_with_no_title(self):
+        "If there's no title, title_sort should be based on creators."
+        concert = ConcertFactory(title='')
+        role1 = ConcertRoleFactory(
+                concert=concert,
+                creator=GroupCreatorFactory(name='Milky Wimpshake'),
+                role_order=1)
+        role2 = ConcertRoleFactory(
+                concert=concert,
+                creator=GroupCreatorFactory(name='Martha'),
+                role_order=2)
+
+        concert.refresh_from_db()
+        self.assertEqual(concert.title_sort, 'milky wimpshake and martha')
+
+        # And check it updates after deleting a relationship:
+        role2.delete()
+        concert.refresh_from_db()
+        self.assertEqual(concert.title_sort, 'milky wimpshake')
 
     def test_ordering(self):
         "Should order by title_sort"
@@ -283,4 +303,95 @@ class VenueTestCase(TestCase):
     def test_country_name_no(self):
         venue = VenueFactory(country='')
         self.assertEqual(venue.country_name, None)
+
+
+class MiscEventTestCase(TestCase):
+
+    def test_str_with_title(self):
+        "If event has a title, that should be used."
+        person = IndividualCreatorFactory(name='Stewart Lee')
+        event = MiscEventFactory(title='Comedy Gig')
+        MiscEventRoleFactory(miscevent=event, creator=person)
+        self.assertEqual(str(event), 'Comedy Gig')
+
+    def test_str_with_no_title_or_creators(self):
+        "With no title or creator names, it still has a __str__"
+        event = MiscEventFactory(title='')
+        self.assertEqual(str(event), 'Misc Event #{}'.format(event.pk))
+
+    def test_str_with_no_title_one_creator(self):
+        event = MiscEventFactory(title='')
+        MiscEventRoleFactory(
+                miscevent=event,
+                creator=IndividualCreatorFactory(name='Stewart Lee'),
+                role_name='Comedian')
+        self.assertEqual(str(event), 'Stewart Lee')
+
+    def test_str_with_no_title_several_creators(self):
+        "If event has no title, creator names should be used."
+        event = MiscEventFactory(title='')
+        MiscEventRoleFactory(
+                miscevent=event,
+                creator=IndividualCreatorFactory(name='Stewart Lee'),
+                role_order=1)
+        MiscEventRoleFactory(
+                miscevent=event,
+                creator=IndividualCreatorFactory(name='Simon Munnery'),
+                role_order=3)
+        MiscEventRoleFactory(
+                miscevent=event,
+                creator=IndividualCreatorFactory(name='Richard Herring'),
+                role_order=2)
+        self.assertEqual(str(event),
+                'Stewart Lee, Richard Herring and Simon Munnery')
+
+    def test_title_sort_with_no_title(self):
+        "If there's no title, title_sort should be based on creators."
+        event = MiscEventFactory(title='')
+        role1 = MiscEventRoleFactory(
+                miscevent=event,
+                creator=IndividualCreatorFactory(name='Stewart Lee'),
+                role_order=1)
+        role2 = MiscEventRoleFactory(
+                miscevent=event,
+                creator=IndividualCreatorFactory(name='Richard Herring'),
+                role_order=2)
+
+        event.refresh_from_db()
+        self.assertEqual(event.title_sort, 'stewart lee and richard herring')
+
+        # And check it updates after deleting a relationship:
+        role2.delete()
+        event.refresh_from_db()
+        self.assertEqual(event.title_sort, 'stewart lee')
+
+    def test_ordering(self):
+        "Should order by title_sort"
+        e3 = MiscEventFactory(title='Event')
+        e1 = MiscEventFactory(title='Amazing Event')
+        e2 = MiscEventFactory(title='The Big Event')
+        events = MiscEvent.objects.all()
+        self.assertEqual(events[0], e1)
+        self.assertEqual(events[1], e2)
+        self.assertEqual(events[2], e3)
+
+    def test_roles(self):
+        "It can have multiple MiscEventRoles."
+        bob = IndividualCreatorFactory(name='Bob')
+        martha = GroupCreatorFactory(name='Martha')
+        event = MiscEventFactory()
+        bobs_role = MiscEventRoleFactory(miscevent=event, creator=bob,
+                                        role_name='Supporter', role_order=2)
+        marthas_role = MiscEventRoleFactory(miscevent=event, creator=martha,
+                                        role_name='Headliner', role_order=1)
+        roles = event.roles.all()
+        self.assertEqual(len(roles), 2)
+        self.assertEqual(roles[0], marthas_role)
+        self.assertEqual(roles[1], bobs_role)
+        self.assertEqual(roles[0].role_name, 'Headliner')
+        self.assertEqual(roles[1].role_name, 'Supporter')
+
+    def test_absolute_url(self):
+        event = MiscEventFactory(pk=3)
+        self.assertEqual(event.get_absolute_url(), '/events/misc/3/')
 

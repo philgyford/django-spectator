@@ -4,7 +4,7 @@ from django.views.generic.detail import SingleObjectMixin
 
 from . import PaginatedListView
 from ..models import Concert, Event, Movie, MovieEvent, Play,\
-        PlayProductionEvent, Venue
+        PlayProductionEvent, MiscEvent, Venue
 
 
 class EventListView(PaginatedListView):
@@ -32,6 +32,7 @@ class EventListView(PaginatedListView):
         context['movieevent_count'] = MovieEvent.objects.count()
         context['playproductionevent_count'] = \
                                             PlayProductionEvent.objects.count()
+        context['miscevent_count'] = MiscEvent.objects.count()
         return context
 
     def get_event_kind(self):
@@ -50,6 +51,9 @@ class MovieEventListView(EventListView):
 class PlayProductionEventListView(EventListView):
     model = PlayProductionEvent
 
+class MiscEventVisitListView(EventListView):
+    model = MiscEvent
+
 
 class ConcertListView(PaginatedListView):
     model = Concert
@@ -67,6 +71,10 @@ class VenueListView(PaginatedListView):
     model = Venue
     ordering = ['name_sort']
 
+class MiscEventListView(PaginatedListView):
+    model = MiscEvent
+    ordering = ['title_sort']
+
 
 class ConcertDetailView(DetailView):
     model = Concert
@@ -76,6 +84,10 @@ class MovieDetailView(DetailView):
 
 class PlayDetailView(DetailView):
     model = Play
+
+class MiscEventDetailView(DetailView):
+    model = MiscEvent
+
 
 class VenueDetailView(SingleObjectMixin, PaginatedListView):
     template_name = 'spectator/venue_detail.html'

@@ -1,0 +1,24 @@
+{% comment %}
+Dislaying a single visit to a MiscEvent, probably in a list.
+
+Expects:
+
+* miscevent - A MiscEvent object.
+{% endcomment %}
+
+<strong>
+        <a href="{{ miscevent.get_absolute_url }}">{{ miscevent }}</a>
+</strong>
+
+<br>
+{% load spectator_tags %}
+{% current_url_name as url_name %}
+
+{% if url_name == 'spectator:venue_detail' %}
+    {{ miscevent.venue.name }},
+{% else %}
+    <a href="{% url 'spectator:venue_detail' pk=miscevent.venue.pk %}">{{ miscevent.venue.name }}</a>,
+{% endif %}
+
+{{ miscevent.date|date:"j M Y" }}
+

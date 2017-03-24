@@ -82,7 +82,7 @@ class EventsUrlsTestCase(TestCase):
                          views.ConcertListView.__name__)
 
     def test_concertevent_list_url(self):
-        self.assertEqual(reverse('spectator:concertevent_list'),
+        self.assertEqual(reverse('spectator:concert_visits'),
                         '/events/concerts/visits/')
 
     def test_concertevent_list_view(self):
@@ -110,7 +110,7 @@ class EventsUrlsTestCase(TestCase):
                          views.MovieListView.__name__)
 
     def test_movieevent_list_url(self):
-        self.assertEqual(reverse('spectator:movieevent_list'),
+        self.assertEqual(reverse('spectator:movie_visits'),
                          '/events/movies/visits/')
 
     def test_movieevent_list_view(self):
@@ -138,7 +138,7 @@ class EventsUrlsTestCase(TestCase):
                          views.PlayListView.__name__)
 
     def test_playproductioneventevent_list_url(self):
-        self.assertEqual(reverse('spectator:playproductionevent_list'),
+        self.assertEqual(reverse('spectator:play_visits'),
                          '/events/plays/visits/')
 
     def test_playproductionevent_list_view(self):
@@ -154,6 +154,34 @@ class EventsUrlsTestCase(TestCase):
         "Should use the correct view."
         self.assertEqual(resolve('/events/plays/34/').func.__name__,
                          views.PlayDetailView.__name__)
+
+    # MISCEVENTS
+
+    def test_miscevent_list_url(self):
+        self.assertEqual(reverse('spectator:miscevent_list'), '/events/misc/')
+
+    def test_miscevent_list_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/misc/').func.__name__,
+                         views.MiscEventListView.__name__)
+
+    def test_misceventevent_list_url(self):
+        self.assertEqual(reverse('spectator:miscevent_visits'),
+                        '/events/misc/visits/')
+
+    def test_misceventevent_list_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/misc/visits/').func.__name__,
+                         views.MiscEventVisitListView.__name__)
+
+    def test_miscevent_detail_url(self):
+        self.assertEqual(reverse('spectator:miscevent_detail', kwargs={'pk':34,}),
+                        '/events/misc/34/')
+
+    def test_miscevent_detail_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/misc/34/').func.__name__,
+                         views.MiscEventDetailView.__name__)
 
     # VENUES
 

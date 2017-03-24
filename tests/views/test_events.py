@@ -7,7 +7,7 @@ from .. import make_date
 from spectator import views
 from spectator.factories import ConcertFactory, MovieFactory,\
         MovieEventFactory, PlayFactory, PlayProductionEventFactory,\
-        VenueFactory
+        MiscEventFactory, VenueFactory
 
 
 class EventListViewTestCase(ViewTestCase):
@@ -21,16 +21,19 @@ class EventListViewTestCase(ViewTestCase):
         ConcertFactory.create_batch(5)
         MovieEventFactory.create_batch(4)
         PlayProductionEventFactory.create_batch(3)
+        MiscEventFactory.create_batch(2)
         response = views.EventListView.as_view()(self.request)
         context = response.context_data
         self.assertIn('event_count', context)
-        self.assertEqual(context['event_count'], 12)
+        self.assertEqual(context['event_count'], 14)
         self.assertIn('concert_count', context)
         self.assertEqual(context['concert_count'], 5)
         self.assertIn('movieevent_count', context)
         self.assertEqual(context['movieevent_count'], 4)
         self.assertIn('playproductionevent_count', context)
         self.assertEqual(context['playproductionevent_count'], 3)
+        self.assertIn('miscevent_count', context)
+        self.assertEqual(context['miscevent_count'], 2)
 
 
 class EventsHomeViewTestCase(ViewTestCase):
@@ -59,13 +62,15 @@ class EventsHomeViewTestCase(ViewTestCase):
         movie = MovieEventFactory(        date=make_date('2017-02-10'))
         play = PlayProductionEventFactory(date=make_date('2017-02-09'))
         concert = ConcertFactory(         date=make_date('2017-02-12'))
+        miscevent = MiscEventFactory(     date=make_date('2017-02-05'))
         response = views.EventsHomeView.as_view()(self.request)
         context = response.context_data
         self.assertIn('event_list', context)
-        self.assertEqual(len(context['event_list']), 3)
+        self.assertEqual(len(context['event_list']), 4)
         self.assertEqual(context['event_list'][0], concert)
         self.assertEqual(context['event_list'][1], movie)
         self.assertEqual(context['event_list'][2], play)
+        self.assertEqual(context['event_list'][3], miscevent)
 
 
 class ConcertEventListViewTestCase(ViewTestCase):
@@ -175,6 +180,41 @@ class PlayProductionEventListViewTestCase(ViewTestCase):
         self.assertEqual(context['event_list'][1], playproduction1)
 
 
+class MiscEventVisitListViewTestCase(ViewTestCase):
+
+    def test_ancestor(self):
+        self.assertTrue(issubclass(views.MiscEventVisitListView,
+                                   views.EventListView))
+
+    def test_response_200(self):
+        "It should respond with 200."
+        response = views.MiscEventVisitListView.as_view()(self.request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_templates(self):
+        response = views.MiscEventVisitListView.as_view()(self.request)
+        self.assertEqual(response.template_name[0],
+                         'spectator/event_list.html')
+
+    def test_context_event_kind(self):
+        response = views.MiscEventVisitListView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('event_kind', context)
+        self.assertEqual(context['event_kind'], 'misc')
+
+    def test_context_events_list(self):
+        "It should have the latest MiscEvent events in the context."
+        movie = MovieEventFactory(date=make_date('2017-02-10'))
+        miscevent1 = MiscEventFactory(date=make_date('2017-02-09'))
+        miscevent2 = MiscEventFactory(date=make_date('2017-02-12'))
+        response = views.MiscEventVisitListView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('event_list', context)
+        self.assertEqual(len(context['event_list']), 2)
+        self.assertEqual(context['event_list'][0], miscevent2)
+        self.assertEqual(context['event_list'][1], miscevent1)
+
+
 class ConcertListViewTestCase(ViewTestCase):
 
     def test_response_200(self):
@@ -251,6 +291,32 @@ class PlayListViewTestCase(ViewTestCase):
         self.assertEqual(context['play_list'][0], p2)
         self.assertEqual(context['play_list'][1], p3)
         self.assertEqual(context['play_list'][2], p1)
+
+
+class MiscEventListViewTestCase(ViewTestCase):
+
+    def test_response_200(self):
+        "It should respond with 200."
+        response = views.MiscEventListView.as_view()(self.request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_templates(self):
+        response = views.MiscEventListView.as_view()(self.request)
+        self.assertEqual(response.template_name[0],
+                         'spectator/miscevent_list.html')
+
+    def test_context_events_list(self):
+        "It should have MiscEvents in the context, in title_sort order."
+        e1 = MiscEventFactory(title="Crazy Event")
+        e2 = MiscEventFactory(title="The AAA Event")
+        e3 = MiscEventFactory(title="A Bad Event")
+        response = views.MiscEventListView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('miscevent_list', context)
+        self.assertEqual(len(context['miscevent_list']), 3)
+        self.assertEqual(context['miscevent_list'][0], e2)
+        self.assertEqual(context['miscevent_list'][1], e3)
+        self.assertEqual(context['miscevent_list'][2], e1)
 
 
 class VenueListViewTestCase(ViewTestCase):
@@ -364,6 +430,35 @@ class PlayDetailViewTestCase(ViewTestCase):
         context = response.context_data
         self.assertIn('play', context)
         self.assertEqual(context['play'], self.play)
+
+
+class MiscEventDetailViewTestCase(ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.miscevent = MiscEventFactory(pk=3)
+
+    def test_response_200(self):
+        "It should respond with 200."
+        response = views.MiscEventDetailView.as_view()(self.request, pk=3)
+        self.assertEqual(response.status_code, 200)
+
+    def test_response_404(self):
+        "It should raise 404 if there's no MiscEvent with that pk."
+        with self.assertRaises(Http404):
+            response = views.MiscEventDetailView.as_view()(self.request, pk=5)
+
+    def test_templates(self):
+        response = views.MiscEventDetailView.as_view()(self.request, pk=3)
+        self.assertEqual(response.template_name[0],
+                         'spectator/miscevent_detail.html')
+
+    def test_context(self):
+        "It should have the miscevent in the context."
+        response = views.MiscEventDetailView.as_view()(self.request, pk=3)
+        context = response.context_data
+        self.assertIn('miscevent', context)
+        self.assertEqual(context['miscevent'], self.miscevent)
 
 
 class VenueDetailViewTestCase(ViewTestCase):

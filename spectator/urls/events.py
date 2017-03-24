@@ -17,12 +17,10 @@ urlpatterns = [
         view=views.ConcertListView.as_view(),
         name='concert_list',
     ),
-    # There aren't any "ConcertEvents"; this is really just a different view
-    # of Concert objects:
     url(
         regex=r"^concerts/visits/$",
         view=views.ConcertEventListView.as_view(),
-        name='concertevent_list',
+        name='concert_visits',
     ),
     url(
         regex=r"^concerts/(?P<pk>\d+)/$",
@@ -40,7 +38,7 @@ urlpatterns = [
     url(
         regex=r"^movies/visits/$",
         view=views.MovieEventListView.as_view(),
-        name='movieevent_list',
+        name='movie_visits',
     ),
     url(
         regex=r"^movies/(?P<pk>\d+)/$",
@@ -58,12 +56,30 @@ urlpatterns = [
     url(
         regex=r"^plays/visits/$",
         view=views.PlayProductionEventListView.as_view(),
-        name='playproductionevent_list',
+        name='play_visits',
     ),
     url(
         regex=r"^plays/(?P<pk>\d+)/$",
         view=views.PlayDetailView.as_view(),
         name='play_detail'
+    ),
+
+    # MISCEVENTS
+
+    url(
+        regex=r"^misc/$",
+        view=views.MiscEventListView.as_view(),
+        name='miscevent_list',
+    ),
+    url(
+        regex=r"^misc/visits/$",
+        view=views.MiscEventVisitListView.as_view(),
+        name='miscevent_visits',
+    ),
+    url(
+        regex=r"^misc/(?P<pk>\d+)/$",
+        view=views.MiscEventDetailView.as_view(),
+        name='miscevent_detail'
     ),
 
     # VENUES

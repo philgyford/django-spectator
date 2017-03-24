@@ -42,3 +42,21 @@ $ tox -e py36-django110 -- tests.spectator.tests.test_models.CreatorTestCase.tes
 Running the tests in all environments will generate coverage output. There will also be an ``htmlcov/`` directory containing an HTML report. You can also generate these reports without running all the other tests::
 
 $ tox -e coverage
+
+### Adding a new event type
+
+* Add a child of the `Event` model, and a child of `BaseRole` for the through model and tests.
+* Add factories for both event and role models.
+* Add its admin.
+* Add URLs and tests.
+* Add Views and tests.
+* Add count of objects in `EventListView`.
+* In `event_list.html` template, add tab.
+* Add `newtype_list.html` and `newtype_detail.html` templates.
+* Add to `includes/events.html`.
+* Add `includes/newtype.html`.
+* Add new type to `creator_detail.html` template.
+
+`Concert` and `MiscEvent` are almost identical at the moment. Scope for
+refactoring?
+

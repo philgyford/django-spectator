@@ -154,3 +154,21 @@ class PlayRoleFactory(factory.DjangoModelFactory):
     creator = factory.SubFactory(IndividualCreatorFactory)
     play = factory.SubFactory(PlayFactory)
 
+
+class MiscEventFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.MiscEvent
+
+    title = factory.Sequence(lambda n: 'Misc Event %s' % n)
+    venue = factory.SubFactory(VenueFactory)
+
+
+class MiscEventRoleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.MiscEventRole
+
+    role_name = factory.Sequence(lambda n: 'Role %s' % n)
+    creator = factory.SubFactory(IndividualCreatorFactory)
+    miscevent = factory.SubFactory(MiscEventFactory)
+
+

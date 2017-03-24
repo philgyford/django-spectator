@@ -40,6 +40,9 @@ class ConcertRole(BaseRole):
     """
     Through model for linking a creator to a Concert, optionally via their role
     (e.g. 'Headliner', 'Support', etc.)
+
+    Every time one of these is saved/deleted a signal re-saves the Concert
+    in case its `title_sort` needs to change.
     """
     creator = models.ForeignKey('Creator', blank=False,
                         on_delete=models.CASCADE, related_name='concert_roles')
@@ -312,6 +315,66 @@ class PlayProductionEvent(Event):
 
     def __str__(self):
         return str(self.production)
+
+
+class MiscEventRole(BaseRole):
+    """
+    Through model for linking a creator to a MiscEvent, optionally via their
+    role (e.g. 'Performer', 'Director', etc.)
+
+    Every time one of these is saved/deleted a signal re-saves the MiscEvent
+    in case its `title_sort` needs to change.
+    """
+    creator = models.ForeignKey('Creator', blank=False,
+                    on_delete=models.CASCADE, related_name='miscevent_roles')
+
+    miscevent = models.ForeignKey('MiscEvent', on_delete=models.CASCADE,
+                                                        related_name='roles')
+
+
+class MiscEvent(Event):
+
+    title = models.CharField(null=False, blank=True, max_length=255,
+            help_text="Optional. e.g., 'A Great Event'.")
+
+    title_sort = NaturalSortField('title_to_sort', max_length=255, default='',
+            help_text="e.g. 'great event, a'.")
+
+    creators = models.ManyToManyField(Creator, through='MiscEventRole',
+                                                    related_name='miscevents')
+    event_kind = 'misc'
+
+    class Meta:
+        ordering = ('title_sort',)
+
+    def __str__(self):
+        if self.title:
+            return self.title
+        else:
+            roles = list(self.roles.all())
+            if len(roles) == 0:
+                return 'Misc Event #{}'.format(self.pk)
+            elif len(roles) == 1:
+                return str(roles[0].creator.name)
+            else:
+                roles = [r.creator.name for r in roles]
+                # Join with commas but 'and' for the last one:
+                return '{} and {}'.format(
+                            ', '.join(roles[:-1]),
+                            roles[-1]
+                        )
+
+    def get_absolute_url(self):
+        return reverse('spectator:miscevent_detail', kwargs={'pk':self.pk})
+
+    @property
+    def title_to_sort(self):
+        """
+        The string we use to create the title_sort property.
+        We want to be able to sort by the concert's MiscEvent's, if it doesn't
+        have a title.
+        """
+        return self.__str__()
 
 
 class Venue(TimeStampedModelMixin, models.Model):

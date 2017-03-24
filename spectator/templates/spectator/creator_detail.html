@@ -81,8 +81,20 @@
                 </li>
             {% endfor %}
         </ul>
-
     {% endif %}
+
+    {% if creator.miscevents.count > 0 %}
+        <h2>Other events</h2>
+
+        <ul>
+            {% for miscevent in creator.miscevents.all %}
+                <li>
+                    {% include 'spectator/includes/miscevent.html' with miscevent=miscevent only %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
 
 {% endblock content %}
 

@@ -17,6 +17,8 @@ Expects:
                     {% include 'spectator/includes/movieevent.html' with movieevent=event only %}
                 {% elif event.event_kind == 'play' %}
                     {% include 'spectator/includes/playproductionevent.html' with playproductionevent=event only %}
+                {% elif event.event_kind == 'misc' %}
+                    {% include 'spectator/includes/miscevent.html' with miscevent=event only %}
                 {% else %}
                     Unknown event kind for {{ event }}
                 {% endif %}

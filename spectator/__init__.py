@@ -8,5 +8,5 @@ VERSION = __version__  # synonym
 TITLE = __title__  # synonym
 
 
-default_app_config = 'spectator.apps.SpectatorConfig'
+default_app_config = 'spectator.apps.SpectatorAppConfig'
 

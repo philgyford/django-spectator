@@ -9,6 +9,7 @@ from ..models import Concert, ConcertRole, Event,\
         Movie, MovieEvent, MovieRole,\
         Play, PlayProduction, PlayProductionEvent,\
         PlayProductionRole, PlayRole,\
+        MiscEvent, MiscEventRole,\
         Venue
 
 
@@ -42,6 +43,13 @@ class PlayProductionRoleInline(admin.TabularInline):
     raw_id_fields = ('creator',)
     extra = 1
     verbose_name_plural = 'Play Production Roles (people/orgs who created this version of the Play)'
+
+
+class MiscEventRoleInline(admin.TabularInline):
+    model = MiscEventRole
+    fields = ( 'creator', 'role_name', 'role_order',)
+    raw_id_fields = ('creator',)
+    extra = 1
 
 
 class MovieEventInline(admin.TabularInline):
@@ -296,6 +304,31 @@ class PlayProductionEventAdmin(PolymorphicChildModelAdmin):
 
     raw_id_fields = ('production', 'venue',)
     readonly_fields = ('time_created', 'time_modified',)
+
+
+@admin.register(MiscEvent)
+class ConcertAdmin(PolymorphicChildModelAdmin):
+    base_model = MiscEvent
+    show_in_index = True # Show this model in the Admin index.
+
+    list_display = ('__str__', 'date', 'venue',)
+    list_filter = ('date',)
+    search_fields = ('title',)
+
+    fieldsets = (
+        (None, {
+            'fields': ( 'title', 'title_sort', 'date', 'venue',)
+        }),
+        ('Times', {
+            'classes': ('collapse',),
+            'fields': ('time_created', 'time_modified',)
+        }),
+    )
+
+    raw_id_fields = ('venue',)
+    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
+
+    inlines = [ MiscEventRoleInline, ]
 
 
 @admin.register(Venue)
