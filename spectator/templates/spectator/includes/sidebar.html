@@ -12,6 +12,9 @@ Expects:
 {% load spectator_tags %}
 {% current_url_name as url_name %}
 
+{% block sidebar_start %}
+{% endblock %}
+
 {% if url_name != 'spectator:home' and url_name != 'spectator:reading_home' %}
     {% in_progress_publications as in_progress_publication_list %}
     {% if in_progress_publication_list|length > 0 %}
@@ -69,3 +72,5 @@ Expects:
     </ul>
 </div>
 
+{% block sidebar_end %}
+{% endblock %}
