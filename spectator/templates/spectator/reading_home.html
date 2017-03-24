@@ -13,7 +13,7 @@
 {% block content %}
 
     {% if in_progress_publication_list|length > 0 %}
-        <h2>Current</h2>
+        <h2>Currently reading</h2>
 
         {% include 'spectator/includes/publications.html' with publication_list=in_progress_publication_list show_readings='current' only %}
     {% endif %}
