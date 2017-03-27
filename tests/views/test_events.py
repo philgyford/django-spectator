@@ -49,7 +49,7 @@ class EventsHomeViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.EventsHomeView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/event_list.html')
+                         'spectator/events/event_list.html')
 
     def test_context_event_kind(self):
         response = views.EventsHomeView.as_view()(self.request)
@@ -87,7 +87,7 @@ class ConcertEventListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.ConcertEventListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/event_list.html')
+                         'spectator/events/event_list.html')
 
     def test_context_event_kind(self):
         response = views.ConcertEventListView.as_view()(self.request)
@@ -122,7 +122,7 @@ class MovieEventListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.MovieEventListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/event_list.html')
+                         'spectator/events/event_list.html')
 
     def test_context_event_kind(self):
         response = views.MovieEventListView.as_view()(self.request)
@@ -157,7 +157,7 @@ class PlayProductionEventListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.PlayProductionEventListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/event_list.html')
+                         'spectator/events/event_list.html')
 
     def test_context_event_kind(self):
         response = views.PlayProductionEventListView.as_view()(self.request)
@@ -194,7 +194,7 @@ class MiscEventVisitListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.MiscEventVisitListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/event_list.html')
+                         'spectator/events/event_list.html')
 
     def test_context_event_kind(self):
         response = views.MiscEventVisitListView.as_view()(self.request)
@@ -225,7 +225,7 @@ class ConcertListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.ConcertListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/concert_list.html')
+                         'spectator/events/concert_list.html')
 
     def test_context_events_list(self):
         "It should have Concerts in the context, in title_sort order."
@@ -251,7 +251,7 @@ class MovieListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.MovieListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/movie_list.html')
+                         'spectator/events/movie_list.html')
 
     def test_context_events_list(self):
         "It should have Movies in the context, in title_sort order."
@@ -277,7 +277,7 @@ class PlayListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.PlayListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/play_list.html')
+                         'spectator/events/play_list.html')
 
     def test_context_events_list(self):
         "It should have Plays in the context, in title_sort order."
@@ -303,7 +303,7 @@ class MiscEventListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.MiscEventListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/miscevent_list.html')
+                         'spectator/events/miscevent_list.html')
 
     def test_context_events_list(self):
         "It should have MiscEvents in the context, in title_sort order."
@@ -329,7 +329,7 @@ class VenueListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.VenueListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/venue_list.html')
+                         'spectator/events/venue_list.html')
 
     def test_context_events_list(self):
         "It should have Venues in the context, in title_sort order."
@@ -364,7 +364,7 @@ class ConcertDetailViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.ConcertDetailView.as_view()(self.request, pk=3)
         self.assertEqual(response.template_name[0],
-                         'spectator/concert_detail.html')
+                         'spectator/events/concert_detail.html')
 
     def test_context(self):
         "It should have the concert in the context."
@@ -393,7 +393,7 @@ class MovieDetailViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.MovieDetailView.as_view()(self.request, pk=3)
         self.assertEqual(response.template_name[0],
-                         'spectator/movie_detail.html')
+                         'spectator/events/movie_detail.html')
 
     def test_context(self):
         "It should have the movie in the context."
@@ -422,7 +422,7 @@ class PlayDetailViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.PlayDetailView.as_view()(self.request, pk=3)
         self.assertEqual(response.template_name[0],
-                         'spectator/play_detail.html')
+                         'spectator/events/play_detail.html')
 
     def test_context(self):
         "It should have the play in the context."
@@ -451,7 +451,7 @@ class MiscEventDetailViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.MiscEventDetailView.as_view()(self.request, pk=3)
         self.assertEqual(response.template_name[0],
-                         'spectator/miscevent_detail.html')
+                         'spectator/events/miscevent_detail.html')
 
     def test_context(self):
         "It should have the miscevent in the context."
@@ -484,7 +484,7 @@ class VenueDetailViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.VenueDetailView.as_view()(self.request, pk=3)
         self.assertEqual(response.template_name[0],
-                         'spectator/venue_detail.html')
+                         'spectator/events/venue_detail.html')
 
     def test_context_venue(self):
         "It should have the venue in the context."
@@ -544,6 +544,12 @@ def EventYearArchiveViewTestCase(ViewTestCase):
         with self.assertRaises(Http404):
             response = views.EventYearArchiveView.as_view()(
                                                     self.request, year='2016')
+
+    def test_templates(self):
+        response = views.EventYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        self.assertEqual(response.template_name[0],
+                         'spectator/events/events_archive_year.html')
 
     def test_context_event_list(self):
         "It should only include events in chosen year, earliest first."

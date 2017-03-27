@@ -67,7 +67,7 @@ class PaginatedListView(ListView):
 
 
 class HomeView(TemplateView):
-    template_name = 'spectator/home.html'
+    template_name = 'spectator/core/home.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -84,6 +84,7 @@ class HomeView(TemplateView):
 class CreatorListView(PaginatedListView):
     model = Creator
     creator_kind = 'individual'
+    template_name = 'spectator/core/creator_list.html'
 
     def get(self, request, *args, **kwargs):
         # Are we should 'individual's (default) or 'group's?
@@ -108,5 +109,6 @@ class CreatorListView(PaginatedListView):
 
 class CreatorDetailView(DetailView):
     model = Creator
+    template_name = 'spectator/core/creator_detail.html'
 
 

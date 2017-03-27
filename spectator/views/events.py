@@ -18,7 +18,7 @@ class EventListView(PaginatedListView):
     """
     model = Event
     ordering = ['-date',]
-    template_name = 'spectator/event_list.html'
+    template_name = 'spectator/events/event_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -93,6 +93,7 @@ class MiscEventVisitListView(EventListView):
 class ConcertListView(PaginatedListView):
     model = Concert
     ordering = ['title_sort']
+    template_name = 'spectator/events/concert_list.html'
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -103,6 +104,7 @@ class ConcertListView(PaginatedListView):
 class MovieListView(PaginatedListView):
     model = Movie
     ordering = ['title_sort']
+    template_name = 'spectator/events/movie_list.html'
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -113,6 +115,7 @@ class MovieListView(PaginatedListView):
 class PlayListView(PaginatedListView):
     model = Play
     ordering = ['title_sort']
+    template_name = 'spectator/events/play_list.html'
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -123,6 +126,7 @@ class PlayListView(PaginatedListView):
 class MiscEventListView(PaginatedListView):
     model = MiscEvent
     ordering = ['title_sort']
+    template_name = 'spectator/events/miscevent_list.html'
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -130,30 +134,35 @@ class MiscEventListView(PaginatedListView):
         return qs
 
 
+## DETAIL VIEWS
+
+class ConcertDetailView(DetailView):
+    model = Concert
+    template_name = 'spectator/events/concert_detail.html'
+
+class MovieDetailView(DetailView):
+    model = Movie
+    template_name = 'spectator/events/movie_detail.html'
+
+class PlayDetailView(DetailView):
+    model = Play
+    template_name = 'spectator/events/play_detail.html'
+
+class MiscEventDetailView(DetailView):
+    model = MiscEvent
+    template_name = 'spectator/events/miscevent_detail.html'
+
+
 # VENUEs
 
 class VenueListView(PaginatedListView):
     model = Venue
     ordering = ['name_sort']
-
-
-## DETAIL VIEWS
-
-class ConcertDetailView(DetailView):
-    model = Concert
-
-class MovieDetailView(DetailView):
-    model = Movie
-
-class PlayDetailView(DetailView):
-    model = Play
-
-class MiscEventDetailView(DetailView):
-    model = MiscEvent
+    template_name = 'spectator/events/venue_list.html'
 
 
 class VenueDetailView(SingleObjectMixin, PaginatedListView):
-    template_name = 'spectator/venue_detail.html'
+    template_name = 'spectator/events/venue_detail.html'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=Venue.objects.all())
@@ -178,6 +187,7 @@ class EventYearArchiveView(YearArchiveView):
     make_object_list = True
     model = Event
     ordering = 'date'
+    template_name = 'spectator/events/event_archive_year.html'
 
     def get_queryset(self):
         "Reduce the number of queries and speed things up."

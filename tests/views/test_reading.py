@@ -16,7 +16,7 @@ class ReadingHomeViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.ReadingHomeView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator/reading_home.html')
+                         'spectator/reading/home.html')
 
     def test_context_in_progress(self):
         "It should have in-progress publications in the context."
@@ -42,6 +42,11 @@ class PublicationSeriesListViewTestCase(ViewTestCase):
         response = views.PublicationSeriesListView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
 
+    def test_templates(self):
+        response = views.PublicationSeriesListView.as_view()(self.request)
+        self.assertEqual(response.template_name[0],
+                         'spectator/reading/publicationseries_list.html')
+
 
 class PublicationSeriesDetailViewTestCase(ViewTestCase):
 
@@ -61,6 +66,12 @@ class PublicationSeriesDetailViewTestCase(ViewTestCase):
         with self.assertRaises(Http404):
             response = views.PublicationSeriesDetailView.as_view()(
                                                         self.request, pk=5)
+
+    def test_templates(self):
+        response = views.PublicationSeriesDetailView.as_view()(
+                                                        self.request, pk=3)
+        self.assertEqual(response.template_name[0],
+                         'spectator/reading/publicationseries_detail.html')
 
     def test_context_series(self):
         "It should include the PublicationSeries in the context."
@@ -83,6 +94,11 @@ class PublicationListViewTestCase(ViewTestCase):
         "It should respond with 200."
         response = views.PublicationListView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
+
+    def test_templates(self):
+        response = views.PublicationListView.as_view()(self.request)
+        self.assertEqual(response.template_name[0],
+                         'spectator/reading/publication_list.html')
 
     def test_context_book(self):
         "It should have publication_kind='book' in the context."
@@ -190,6 +206,11 @@ class PublicationDetailViewTestCase(ViewTestCase):
         with self.assertRaises(Http404):
             response = views.PublicationDetailView.as_view()(self.request, pk=5)
 
+    def test_templates(self):
+        response = views.PublicationDetailView.as_view()(self.request, pk=3)
+        self.assertEqual(response.template_name[0],
+                         'spectator/reading/publication_detail.html')
+
 
 class ReadingYearArchiveViewTestCase(ViewTestCase):
 
@@ -211,6 +232,12 @@ class ReadingYearArchiveViewTestCase(ViewTestCase):
         with self.assertRaises(Http404):
             response = views.ReadingYearArchiveView.as_view()(
                                                     self.request, year='2016')
+
+    def test_templates(self):
+        response = views.ReadingYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        self.assertEqual(response.template_name[0],
+                         'spectator/reading/reading_archive_year.html')
 
     def test_context_reading_list(self):
         "Should include Readings ending in chosen year, earliest end_date first."

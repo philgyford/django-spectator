@@ -1,25 +1,28 @@
-{% extends 'spectator/base_events.html' %}
+{% extends 'spectator/events/base.html' %}
 
-{% block head_page_title %}Misc Events{% endblock %}
-{% block content_title %}Misc Events{% endblock %}
+{% block head_page_title %}Venues{% endblock %}
+{% block content_title %}Venues{% endblock %}
 
 {% block breadcrumbs %}
     <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'spectator:events_home' %}">Events</a></li>
-    <li class="breadcrumb-item active">Misc</li>
+    <li class="breadcrumb-item active">Venues</li>
 {% endblock %}
 
 {% block content %}
 
-    {% if miscevent_list|length > 0 %}
+    {% if venue_list|length > 0 %}
         {% if page_obj|default:False and page_obj.number > 1 %}
             {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
         {% endif %}
 
         <ul>
-            {% for miscevent in miscevent_list %}
-                <li>
-                    {% include 'spectator/includes/miscevent.html' with miscevent=miscevent only %}
+            {% for venue in venue_list %}
+                <li class="mb-2">
+                    <a href="{{ venue.get_absolute_url }}">
+                        <strong>{{ venue.name }}</strong>
+                    </a><br>
+                    {{ venue.address }}, {{ venue.country_name }}
                 </li>
             {% endfor %}
         </ul>
@@ -27,7 +30,7 @@
         {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
 
     {% else %}
-        <p>There are no events to show.</p>
+        <p>There are no venues to show.</p>
     {% endif %}
 
 {% endblock content %}

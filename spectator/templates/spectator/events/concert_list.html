@@ -1,4 +1,4 @@
-{% extends 'spectator/base_events.html' %}
+{% extends 'spectator/events/base.html' %}
 
 {% block events_nav_active %}active{% endblock %}
 
@@ -20,7 +20,7 @@
 
         <ul>
             {% for concert in concert_list %}
-                <li>
+                <li class="mb-2">
                     {% include 'spectator/includes/concert.html' with concert=concert only %}
                 </li>
             {% endfor %}

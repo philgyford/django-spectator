@@ -28,7 +28,7 @@ class HomeViewTestCase(ViewTestCase):
 
     def test_templates(self):
         response = views.HomeView.as_view()(self.request)
-        self.assertEqual(response.template_name[0], 'spectator/home.html')
+        self.assertEqual(response.template_name[0], 'spectator/core/home.html')
 
     def test_context_in_progress(self):
         "It should have in-progress publications in the context."
@@ -66,6 +66,11 @@ class CreatorListViewTestCase(ViewTestCase):
         "It should respond with 200."
         response = views.CreatorListView.as_view()(self.request)
         self.assertEqual(response.status_code, 200)
+
+    def test_templates(self):
+        response = views.CreatorListView.as_view()(self.request)
+        self.assertEqual(response.template_name[0],
+                        'spectator/core/creator_list.html')
 
     def test_context_individual(self):
         "It should have creator_kind='individual' in the context."
@@ -121,4 +126,9 @@ class CreatorDetailViewTestCase(ViewTestCase):
         "It should raise 404 if there's no Creator with that pk."
         with self.assertRaises(Http404):
             response = views.CreatorDetailView.as_view()(self.request, pk=5)
+
+    def test_templates(self):
+        response = views.CreatorDetailView.as_view()(self.request, pk=3)
+        self.assertEqual(response.template_name[0],
+                        'spectator/core/creator_detail.html')
 

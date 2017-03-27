@@ -11,7 +11,7 @@ from ..models import Publication, PublicationSeries, Reading
 
 class ReadingHomeView(ListView):
     model = Publication
-    template_name = 'spectator/reading_home.html'
+    template_name = 'spectator/reading/home.html'
     queryset = Publication.unread_objects.select_related('series')\
                             .prefetch_related('roles__creator').all()
     ordering = ['time_created',]
@@ -29,10 +29,11 @@ class ReadingHomeView(ListView):
 
 class PublicationSeriesListView(ListView):
     model = PublicationSeries
+    template_name = 'spectator/reading/publicationseries_list.html'
 
 
 class PublicationSeriesDetailView(SingleObjectMixin, PaginatedListView):
-    template_name = "spectator/publicationseries_detail.html"
+    template_name = "spectator/reading/publicationseries_detail.html"
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=PublicationSeries.objects.all())
@@ -52,6 +53,7 @@ class PublicationSeriesDetailView(SingleObjectMixin, PaginatedListView):
 class PublicationListView(PaginatedListView):
     model = Publication
     publication_kind = 'book'
+    template_name = 'spectator/reading/publication_list.html'
 
     def get(self, request, *args, **kwargs):
         # Are we should 'book's (default) or 'periodical's?
@@ -83,6 +85,7 @@ class PublicationListView(PaginatedListView):
 
 class PublicationDetailView(DetailView):
     model = Publication
+    template_name = 'spectator/reading/publication_detail.html'
 
 
 class ReadingYearArchiveView(YearArchiveView):
@@ -91,6 +94,7 @@ class ReadingYearArchiveView(YearArchiveView):
     make_object_list = True
     model = Reading
     ordering = 'end_date'
+    template_name = 'spectator/reading/reading_archive_year.html'
 
     def get_queryset(self):
         "Reduce the number of queries and speed things up."
