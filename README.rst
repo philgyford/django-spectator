@@ -281,7 +281,7 @@ Running the tests in all environments will generate coverage output. There will 
 $ tox -e coverage
 
 Adding a new event type
------------------------
+=======================
 
 * Add a child of the ``Event`` model, and a child of ``BaseRole`` for the through model and tests.
 * Add factories for both event and role models.
