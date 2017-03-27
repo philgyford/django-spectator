@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.http import QueryDict
 from django.utils.html import format_html
 
-from ..models import Event, Publication
+from ..models import Event, Publication, Reading
 
 
 register = template.Library()
@@ -53,6 +53,13 @@ def day_events(date):
     `date` is a date object.
     """
     return Event.objects.filter(date=date).select_related('venue')
+
+
+@register.assignment_tag
+def reading_years():
+    """
+    """
+    return Reading.objects.dates('end_date', 'year')
 
 
 @register.simple_tag(takes_context=True)

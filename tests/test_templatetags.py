@@ -8,7 +8,8 @@ from spectator.factories import ConcertFactory, MovieEventFactory,\
         PublicationFactory, ReadingFactory
 from spectator.templatetags.spectator_tags import day_events,\
         day_publications, query_string,\
-        in_progress_publications, reading_dates, recent_events
+        in_progress_publications, reading_dates, recent_events,\
+        reading_years
 
 
 class InProgressPublicationsTestCase(TestCase):
@@ -93,6 +94,24 @@ class DayEventsTestCase(TestCase):
         MovieEventFactory(date=make_date('2017-02-11'))
         qs = day_events(make_date('2017-02-10'))
         self.assertEqual(len(qs), 2)
+
+
+class ReadingYearsTestCase(TestCase):
+
+    def test_queryset(self):
+        ReadingFactory(start_date=make_date('2015-02-10'),
+                        end_date=make_date('2015-02-15')
+                    )
+        ReadingFactory(start_date=make_date('2017-02-10'),
+                        end_date=make_date('2017-02-15')
+                    )
+        ReadingFactory(start_date=make_date('2017-03-10'),
+                        end_date=make_date('2017-03-15')
+                    )
+        qs = reading_years()
+        self.assertEqual(len(qs), 2)
+        self.assertEqual(qs[0], make_date('2015-01-01'))
+        self.assertEqual(qs[1], make_date('2017-01-01'))
 
 
 class QueryStringTestCase(TestCase):
