@@ -58,8 +58,19 @@ def day_events(date):
 @register.assignment_tag
 def reading_years():
     """
+    Returns a QuerySet of date objects, one for each year in which there are
+    Readings.
     """
     return Reading.objects.dates('end_date', 'year')
+
+
+@register.assignment_tag
+def events_years():
+    """
+    Returns a QuerySet of date objects, one for each year in which there are
+    Events.
+    """
+    return Event.objects.dates('date', 'year')
 
 
 @register.simple_tag(takes_context=True)

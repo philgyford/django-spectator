@@ -1,4 +1,3 @@
-from datetime import datetime
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -9,9 +8,11 @@ except ImportError:
     # Django < 1.10
     from django.core.urlresolvers import resolve, reverse
 
+from . import make_date
 from spectator import views
 from spectator.factories import IndividualCreatorFactory,\
-        PublicationFactory, PublicationSeriesFactory, ReadingFactory
+        PublicationFactory, PublicationSeriesFactory, ReadingFactory,\
+        ConcertFactory
 
 
 # Testing that the named URLs map the correct name to URL,
@@ -202,6 +203,20 @@ class EventsUrlsTestCase(TestCase):
         self.assertEqual(resolve('/events/venues/34/').func.__name__,
                          views.VenueDetailView.__name__)
 
+    # OTHER
+
+    def test_event_year_archive_url(self):
+        ConcertFactory(date=make_date('2017-02-15'))
+        self.assertEqual(
+            reverse('spectator:event_year_archive', kwargs={'year': 2017}),
+                    '/events/2017/')
+
+    def test_event_year_archive_view(self):
+        "Should use the correct view."
+        ConcertFactory(date=('2017-02-15'))
+        self.assertEqual(resolve('/events/2017/').func.__name__,
+                         views.EventYearArchiveView.__name__)
+
 
 class ReadingUrlsTestCase(TestCase):
 
@@ -271,15 +286,13 @@ class ReadingUrlsTestCase(TestCase):
 
 
     def test_reading_year_archive_url(self):
-        ReadingFactory(
-                end_date=datetime.strptime('2017-02-15', "%Y-%m-%d").date())
+        ReadingFactory(end_date=('2017-02-15'))
         self.assertEqual(
             reverse('spectator:reading_year_archive', kwargs={'year': 2017}),
                     '/reading/2017/')
 
     def test_reading_year_archive_view(self):
         "Should use the correct view."
-        ReadingFactory(
-                end_date=datetime.strptime('2017-02-15', "%Y-%m-%d").date())
+        ReadingFactory(end_date=('2017-02-15'))
         self.assertEqual(resolve('/reading/2017/').func.__name__,
                          views.ReadingYearArchiveView.__name__)

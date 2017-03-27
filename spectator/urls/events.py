@@ -94,6 +94,14 @@ urlpatterns = [
         view=views.VenueDetailView.as_view(),
         name='venue_detail'
     ),
+
+    # OTHER
+
+    url(
+        regex=r"^(?P<year>[0-9]{4})/$",
+        view=views.EventYearArchiveView.as_view(),
+        name='event_year_archive'
+    ),
 ]
 
 

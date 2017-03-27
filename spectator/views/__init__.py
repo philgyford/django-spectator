@@ -6,7 +6,7 @@ from .events import EventListView, EventsHomeView,\
         MovieDetailView, MovieListView, MovieEventListView,\
         PlayDetailView, PlayListView, PlayProductionEventListView,\
         MiscEventDetailView, MiscEventListView, MiscEventVisitListView,\
-        VenueDetailView, VenueListView
+        VenueDetailView, VenueListView, EventYearArchiveView
 
 from .reading import ReadingHomeView, PublicationSeriesListView,\
         PublicationSeriesDetailView, PublicationListView,\

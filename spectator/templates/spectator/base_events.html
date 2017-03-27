@@ -1,24 +1,24 @@
 {% extends 'spectator/base.html' %}
 
-{% block reading_nav_active %}active{% endblock %}
+{% block events_nav_active %}active{% endblock %}
 
 {% block sidebar %}
 
     {% load spectator_tags %}
 
-    {% reading_years as years %}
+    {% events_years as years %}
     {% if years|length > 0 %}
         {% current_url_name as url_name %}
         <div class="card mb-3">
             <div class="card-block">
-                <h2 class="h6 card-title">Reading by year</h2>
+                <h2 class="h6 card-title">Events by year</h2>
                 <ul class="list-inline mb-0">
-                    {% for reading_year in years %}
+                    {% for events_year in years %}
                         <li class="list-inline-item">
-                            {% if url_name == 'spectator:reading_year_archive' and year|date:"Y" == reading_year|date:"Y" %}
-                                {{ reading_year|date:"Y" }}
+                            {% if url_name == 'spectator:event_year_archive' and year|date:"Y" == events_year|date:"Y" %}
+                                {{ events_year|date:"Y" }}
                             {% else %}
-                                <a href="{% url 'spectator:reading_year_archive' year=reading_year|date:"Y" %}">{{ reading_year|date:"Y" }}</a>
+                                <a href="{% url 'spectator:event_year_archive' year=events_year|date:"Y" %}">{{ events_year|date:"Y" }}</a>
                             {% endif %}
                         </li>
                     {% endfor %}

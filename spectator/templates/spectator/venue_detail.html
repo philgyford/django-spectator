@@ -1,4 +1,4 @@
-{% extends 'spectator/base.html' %}
+{% extends 'spectator/base_events.html' %}
 
 {% block head_extra %}
     {% if SPECTATOR_GOOGLE_MAPS_API_KEY %}
@@ -12,8 +12,6 @@
     {% endif %}
     {{ block.super }}
 {% endblock %}
-
-{% block events_nav_active %}active{% endblock %}
 
 {% block head_page_title %}{{ venue.name }}{% endblock %}
 {% block content_title %}{{ venue.name }}{% endblock %}
