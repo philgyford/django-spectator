@@ -15,7 +15,7 @@
     {% with play.roles.all as roles %}
         {% if roles|length > 0 %}
             <p class="lead">
-                {% include 'spectator/includes/roles.html' with roles=roles intro='By' %}
+                {% include 'spectator/core/includes/roles.html' with roles=roles intro='By' %}
             </p>
         {% endif %}
     {% endwith %}
@@ -28,11 +28,11 @@
                 <h3>{{ production }}</h3>
                 {% with production.roles.all as production_roles %}
                     {% if production_roles|length > 0 %}
-                        {% include 'spectator/includes/roles_list.html' with roles=production_roles only %}
+                        {% include 'spectator/core/includes/roles_list.html' with roles=production_roles only %}
                     {% endif %}
                 {% endwith %}
 
-                {% include 'spectator/includes/visits_list.html' with events=production.playproductionevent_set.all heading_level='h4' only %}
+                {% include 'spectator/events/includes/visits_list.html' with events=production.playproductionevent_set.all heading_level='h4' only %}
             {% endfor %}
         {% endif %}
     {% endwith %}

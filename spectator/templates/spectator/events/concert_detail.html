@@ -25,7 +25,7 @@
         {{ concert.date|date:"j M Y" }}
     </p>
 
-    {% include 'spectator/includes/roles_list.html' with roles=concert.roles.all only %}
+    {% include 'spectator/core/includes/roles_list.html' with roles=concert.roles.all only %}
 
 {% endblock content %}
 

@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-    {% include 'spectator/includes/pager.html' with url_name='spectator:event_year_archive' previous=previous_year next=next_year only %}
+    {% include 'spectator/core/includes/pager.html' with url_name='spectator:event_year_archive' previous=previous_year next=next_year only %}
 
     {% if event_list|length > 0 %}
 
@@ -24,13 +24,13 @@
             {% endifchanged %}
             <li class="mb-2">
                 {% if event.event_kind == 'concert' %}
-                    {% include 'spectator/includes/concert.html' with concert=event only %}
+                    {% include 'spectator/events/includes/concert.html' with concert=event only %}
                 {% elif event.event_kind == 'movie' %}
-                    {% include 'spectator/includes/movieevent.html' with movieevent=event only %}
+                    {% include 'spectator/events/includes/movieevent.html' with movieevent=event only %}
                 {% elif event.event_kind == 'play' %}
-                    {% include 'spectator/includes/playproductionevent.html' with playproductionevent=event only %}
+                    {% include 'spectator/events/includes/playproductionevent.html' with playproductionevent=event only %}
                 {% elif event.event_kind == 'misc' %}
-                    {% include 'spectator/includes/miscevent.html' with miscevent=event only %}
+                    {% include 'spectator/events/includes/miscevent.html' with miscevent=event only %}
                 {% else %}
                     Unknown event kind for {{ event }}
                 {% endif %}
@@ -38,7 +38,7 @@
         {% endfor %}
         </ul>
 
-        {% include 'spectator/includes/pager.html' with url_name='spectator:event_year_archive' previous=previous_year next=next_year only %}
+        {% include 'spectator/core/includes/pager.html' with url_name='spectator:event_year_archive' previous=previous_year next=next_year only %}
 
     {% else %}
         <p>No events in {{ year|date:"Y" }}.</p>

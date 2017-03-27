@@ -23,7 +23,7 @@
         {{ miscevent.date|date:"j M Y" }}
     </p>
 
-    {% include 'spectator/includes/roles_list.html' with roles=miscevent.roles.all only %}
+    {% include 'spectator/core/includes/roles_list.html' with roles=miscevent.roles.all only %}
 
 {% endblock content %}
 

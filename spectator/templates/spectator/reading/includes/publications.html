@@ -10,7 +10,7 @@ Expects:
 <ul{% if style|default:'bullets' == 'unstyled' %} class="list-unstyled"{% endif %}>
     {% for publication in publication_list %}
         <li class="mb-2">
-            {% include 'spectator/includes/publication.html' with publication=publication show_readings=show_readings|default:'none' only %}
+            {% include 'spectator/reading/includes/publication.html' with publication=publication show_readings=show_readings|default:'none' only %}
         </li>
     {% endfor %}
 </ul>

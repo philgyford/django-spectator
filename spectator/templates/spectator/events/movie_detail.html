@@ -24,11 +24,11 @@
     {% with movie.roles.all as roles %}
         {% if roles|length > 0 %}
             <h2>Cast and crew</h2>
-            {% include 'spectator/includes/roles_list.html' with roles=roles only %}
+            {% include 'spectator/core/includes/roles_list.html' with roles=roles only %}
         {% endif %}
     {% endwith %}
 
-    {% include 'spectator/includes/visits_list.html' with events=movie.movieevent_set.all heading_level='h2' only %}
+    {% include 'spectator/events/includes/visits_list.html' with events=movie.movieevent_set.all heading_level='h2' only %}
 
 {% endblock content %}
 

@@ -13,13 +13,13 @@
     {% if in_progress_publication_list|length > 0 %}
         <h2>Currently reading</h2>
 
-        {% include 'spectator/includes/publications.html' with publication_list=in_progress_publication_list show_readings='current' only %}
+        {% include 'spectator/reading/includes/publications.html' with publication_list=in_progress_publication_list show_readings='current' only %}
     {% endif %}
 
     {% if publication_list|length > 0 %}
         <h2>Unread</h2>
 
-        {% include 'spectator/includes/publications.html' with publication_list=publication_list only %}
+        {% include 'spectator/reading/includes/publications.html' with publication_list=publication_list only %}
     {% endif %}
 
 {% endblock content %}

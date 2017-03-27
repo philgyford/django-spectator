@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-    {% include 'spectator/includes/pager.html' with url_name='spectator:reading_year_archive' previous=previous_year next=next_year only %}
+    {% include 'spectator/core/includes/pager.html' with url_name='spectator:reading_year_archive' previous=previous_year next=next_year only %}
 
     {% if reading_list|length > 0 %}
         <p class="text-muted">By date finished.</p>
@@ -24,12 +24,12 @@
                 <ul>
             {% endifchanged %}
             <li class="mb-2">
-                {% include 'spectator/includes/publication.html' with publication=reading.publication show_readings='none' only %}
+                {% include 'spectator/reading/includes/publication.html' with publication=reading.publication show_readings='none' only %}
             </li>
         {% endfor %}
         </ul>
 
-        {% include 'spectator/includes/pager.html' with url_name='spectator:reading_year_archive' previous=previous_year next=next_year only %}
+        {% include 'spectator/core/includes/pager.html' with url_name='spectator:reading_year_archive' previous=previous_year next=next_year only %}
 
     {% else %}
         <p>Nothing was read in {{ year|date:"Y" }}.</p>

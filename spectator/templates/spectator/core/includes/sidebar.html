@@ -21,7 +21,7 @@ Expects:
         <div class="card mb-3">
             <div class="card-block">
                 <h2 class="h6 card-title">Currently reading</h2>
-                {% include 'spectator/includes/publications.html' with publication_list=in_progress_publication_list show_readings='none' style='unstyled' only %}
+                {% include 'spectator/reading/includes/publications.html' with publication_list=in_progress_publication_list show_readings='none' style='unstyled' only %}
             </div>
         </div>
     {% endif %}
@@ -33,7 +33,7 @@ Expects:
         <div class="card mb-3">
             <div class="card-block">
                 <h2 class="h6 card-title">Recent events</h2>
-                {% include 'spectator/includes/events.html' with event_list=recent_event_list style='unstyled' only %}
+                {% include 'spectator/events/includes/events.html' with event_list=recent_event_list style='unstyled' only %}
             </div>
         </div>
     {% endif %}

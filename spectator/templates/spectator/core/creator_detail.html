@@ -14,7 +14,7 @@
     {% if creator.publications.count > 0 %}
         <h2>Publications</h2>
 
-        {% include 'spectator/includes/publications.html' with publication_list=creator.publications.all show_readings='none' only %}
+        {% include 'spectator/reading/includes/publications.html' with publication_list=creator.publications.all show_readings='none' only %}
     {% endif %}
 
     {% if creator.concerts.count > 0 %}
@@ -23,7 +23,7 @@
         <ul>
             {% for concert in creator.concerts.all %}
                 <li>
-                    {% include 'spectator/includes/concert.html' with concert=concert only %}
+                    {% include 'spectator/events/includes/concert.html' with concert=concert only %}
                 </li>
             {% endfor %}
         </ul>
@@ -89,7 +89,7 @@
         <ul>
             {% for miscevent in creator.miscevents.all %}
                 <li>
-                    {% include 'spectator/includes/miscevent.html' with miscevent=miscevent only %}
+                    {% include 'spectator/events/includes/miscevent.html' with miscevent=miscevent only %}
                 </li>
             {% endfor %}
         </ul>

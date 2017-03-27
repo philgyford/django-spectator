@@ -13,7 +13,7 @@
 
     {% if play_list|length > 0 %}
         {% if page_obj|default:False and page_obj.number > 1 %}
-            {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+            {% include 'spectator/core/includes/pagination.html' with page_obj=page_obj only %}
         {% endif %}
 
         <ul>
@@ -22,12 +22,12 @@
                     <a href="{{ play.get_absolute_url }}">
                         <strong>{{ play.title }}</strong>
                     </a>
-                    {% include 'spectator/includes/roles.html' with roles=play.roles.all intro='<br>by ' show_role_name=False %}
+                    {% include 'spectator/core/includes/roles.html' with roles=play.roles.all intro='<br>by ' show_role_name=False %}
                 </li>
             {% endfor %}
         </ul>
 
-        {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+        {% include 'spectator/core/includes/pagination.html' with page_obj=page_obj only %}
 
     {% else %}
         <p>There are no plays to show.</p>

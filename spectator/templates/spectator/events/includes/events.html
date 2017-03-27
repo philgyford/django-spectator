@@ -12,13 +12,13 @@ Expects:
         {% for event in event_list %}
             <li class="mb-2">
                 {% if event.event_kind == 'concert' %}
-                    {% include 'spectator/includes/concert.html' with concert=event only %}
+                    {% include 'spectator/events/includes/concert.html' with concert=event only %}
                 {% elif event.event_kind == 'movie' %}
-                    {% include 'spectator/includes/movieevent.html' with movieevent=event only %}
+                    {% include 'spectator/events/includes/movieevent.html' with movieevent=event only %}
                 {% elif event.event_kind == 'play' %}
-                    {% include 'spectator/includes/playproductionevent.html' with playproductionevent=event only %}
+                    {% include 'spectator/events/includes/playproductionevent.html' with playproductionevent=event only %}
                 {% elif event.event_kind == 'misc' %}
-                    {% include 'spectator/includes/miscevent.html' with miscevent=event only %}
+                    {% include 'spectator/events/includes/miscevent.html' with miscevent=event only %}
                 {% else %}
                     Unknown event kind for {{ event }}
                 {% endif %}

@@ -15,18 +15,18 @@
 
     {% if concert_list|length > 0 %}
         {% if page_obj|default:False and page_obj.number > 1 %}
-            {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+            {% include 'spectator/core/includes/pagination.html' with page_obj=page_obj only %}
         {% endif %}
 
         <ul>
             {% for concert in concert_list %}
                 <li class="mb-2">
-                    {% include 'spectator/includes/concert.html' with concert=concert only %}
+                    {% include 'spectator/events/includes/concert.html' with concert=concert only %}
                 </li>
             {% endfor %}
         </ul>
 
-        {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+        {% include 'spectator/core/includes/pagination.html' with page_obj=page_obj only %}
 
     {% else %}
         <p>There are no concerts to show.</p>

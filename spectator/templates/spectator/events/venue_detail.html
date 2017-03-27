@@ -35,7 +35,7 @@
 
     {% if event_list|length > 0 %}
         <h2>Events</h2>
-        {% include 'spectator/includes/events_paginated.html' with event_list=event_list page_obj=page_obj only %}
+        {% include 'spectator/events/includes/events_paginated.html' with event_list=event_list page_obj=page_obj only %}
     {% endif %}
 
 {% endblock content %}

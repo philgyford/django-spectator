@@ -13,18 +13,18 @@
 
     {% if miscevent_list|length > 0 %}
         {% if page_obj|default:False and page_obj.number > 1 %}
-            {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+            {% include 'spectator/core/includes/pagination.html' with page_obj=page_obj only %}
         {% endif %}
 
         <ul>
             {% for miscevent in miscevent_list %}
                 <li>
-                    {% include 'spectator/includes/miscevent.html' with miscevent=miscevent only %}
+                    {% include 'spectator/events/includes/miscevent.html' with miscevent=miscevent only %}
                 </li>
             {% endfor %}
         </ul>
 
-        {% include 'spectator/includes/pagination.html' with page_obj=page_obj only %}
+        {% include 'spectator/core/includes/pagination.html' with page_obj=page_obj only %}
 
     {% else %}
         <p>There are no events to show.</p>
