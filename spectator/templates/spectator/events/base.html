@@ -6,26 +6,7 @@
 
     {% load spectator_tags %}
 
-    {% events_years as years %}
-    {% if years|length > 0 %}
-        {% current_url_name as url_name %}
-        <div class="card mb-3">
-            <div class="card-block">
-                <h2 class="h6 card-title">Events by year</h2>
-                <ul class="list-inline mb-0">
-                    {% for events_year in years %}
-                        <li class="list-inline-item">
-                            {% if url_name == 'spectator:event_year_archive' and year|date:"Y" == events_year|date:"Y" %}
-                                {{ events_year|date:"Y" }}
-                            {% else %}
-                                <a href="{% url 'spectator:event_year_archive' year=events_year|date:"Y" %}">{{ events_year|date:"Y" }}</a>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    {% endif %}
+    {% events_years_card current_year=year %}
 
     {{ block.super }}
 {% endblock sidebar %}

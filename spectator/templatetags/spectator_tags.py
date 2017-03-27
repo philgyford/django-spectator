@@ -20,6 +20,14 @@ def in_progress_publications():
                         .order_by('time_created')
 
 
+@register.inclusion_tag('spectator/reading/includes/card_publications.html')
+def in_progress_publications_card():
+    return {
+            'card_title': 'Currently reading',
+            'publication_list': in_progress_publications(),
+            }
+
+
 @register.assignment_tag
 def recent_events(num=10):
     """
@@ -27,6 +35,14 @@ def recent_events(num=10):
     `num` is the number returned.
     """
     return Event.objects.select_related('venue').order_by('-date')[:num]
+
+
+@register.inclusion_tag('spectator/events/includes/card_events.html')
+def recent_events_card(num=10):
+    return {
+            'card_title': 'Recent events',
+            'event_list': recent_events(num=num),
+            }
 
 
 @register.assignment_tag
@@ -64,6 +80,14 @@ def reading_years():
     return Reading.objects.dates('end_date', 'year')
 
 
+@register.inclusion_tag('spectator/reading/includes/card_years.html')
+def reading_years_card(current_year=None):
+    return {
+            'current_year': current_year,
+            'years': reading_years(),
+            }
+
+
 @register.assignment_tag
 def events_years():
     """
@@ -71,6 +95,14 @@ def events_years():
     Events.
     """
     return Event.objects.dates('date', 'year')
+
+
+@register.inclusion_tag('spectator/events/includes/card_years.html')
+def events_years_card(current_year=None):
+    return {
+            'current_year': current_year,
+            'years': events_years(),
+            }
 
 
 @register.simple_tag(takes_context=True)

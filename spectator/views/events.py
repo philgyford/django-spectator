@@ -1,5 +1,7 @@
 from django.db.models import Min
 from django.http import Http404
+from django.utils.encoding import force_text
+from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.views.generic import DetailView, ListView, YearArchiveView
 from django.views.generic.detail import SingleObjectMixin
