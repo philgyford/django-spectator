@@ -14,7 +14,7 @@ Expects:
     <ul>
         {% for event in events %}
             <li>
-                {{ event.venue }}<br>
+				<a href="{{ event.venue.get_absolute_url }}">{{ event.venue }}</a><br>
                 {{ event.date|date:"j M Y" }}
             </li>
         {% endfor %}
