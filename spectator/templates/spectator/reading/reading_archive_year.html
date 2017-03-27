@@ -1,7 +1,7 @@
 {% extends 'spectator/reading/base.html' %}
 
-{% block head_page_title %}{{ year|date:"Y" }} reading{% endblock %}
-{% block content_title %}{{ year|date:"Y" }} reading{% endblock %}
+{% block head_page_title %}Publications finished in {{ year|date:"Y" }}{% endblock %}
+{% block content_title %}Publications finished in {{ year|date:"Y" }}{% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -12,7 +12,6 @@
     {% include 'spectator/core/includes/pager.html' with url_name='spectator:reading_year_archive' previous=previous_year next=next_year only %}
 
     {% if reading_list|length > 0 %}
-        <p class="text-muted">By date finished.</p>
 
         {% for reading in reading_list %}
             {% ifchanged reading.end_date|date:"m" %}
