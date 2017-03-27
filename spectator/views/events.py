@@ -38,43 +38,104 @@ class EventListView(PaginatedListView):
     def get_event_kind(self):
         return self.model.event_kind
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.select_related('venue')
+        return qs
+
+
+## EVENTs and its children.
 
 class EventsHomeView(EventListView):
     pass
 
+
 class ConcertEventListView(EventListView):
     model = Concert
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.prefetch_related('roles__creator')
+        return qs
+
 
 class MovieEventListView(EventListView):
     model = MovieEvent
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.select_related('movie')
+        return qs
+
+
 class PlayProductionEventListView(EventListView):
     model = PlayProductionEvent
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.select_related('production', 'production__play')
+        return qs
+
 
 class MiscEventVisitListView(EventListView):
     model = MiscEvent
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.prefetch_related('roles__creator')
+        return qs
+
+
+## Concert, Movie, Play, etc themselves; not the events.
 
 class ConcertListView(PaginatedListView):
     model = Concert
     ordering = ['title_sort']
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.select_related('venue').prefetch_related('roles__creator')
+        return qs
+
+
 class MovieListView(PaginatedListView):
     model = Movie
     ordering = ['title_sort']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.prefetch_related('roles__creator')
+        return qs
+
 
 class PlayListView(PaginatedListView):
     model = Play
     ordering = ['title_sort']
 
-class VenueListView(PaginatedListView):
-    model = Venue
-    ordering = ['name_sort']
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.prefetch_related('roles__creator')
+        return qs
+
 
 class MiscEventListView(PaginatedListView):
     model = MiscEvent
     ordering = ['title_sort']
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.prefetch_related('roles__creator')
+        return qs
+
+
+# VENUEs
+
+class VenueListView(PaginatedListView):
+    model = Venue
+    ordering = ['name_sort']
+
+
+## DETAIL VIEWS
 
 class ConcertDetailView(DetailView):
     model = Concert

@@ -26,7 +26,7 @@ def recent_events(num=10):
     Returns a QuerySet of Events that happened recently.
     `num` is the number returned.
     """
-    return Event.objects.order_by('-date')[:num]
+    return Event.objects.select_related('venue').order_by('-date')[:num]
 
 
 @register.assignment_tag
@@ -35,7 +35,7 @@ def day_events(date):
     Returns a QuerySet of Events that happened on the supplied date.
     `date` is a date object.
     """
-    return Event.objects.filter(date=date)
+    return Event.objects.filter(date=date).select_related('venue')
 
 
 @register.assignment_tag
