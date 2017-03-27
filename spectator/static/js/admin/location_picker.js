@@ -68,9 +68,11 @@
       initial_zoom = initial_with_loc_zoom;
     };
 
-    $prevEl.after( $('<div id="setloc-map"></div>') );
+    $prevEl.after( $('<div class="js-setloc-map setloc-map"></div>') );
 
-    map = new google.maps.Map(document.getElementById('setloc-map'), {
+    var mapEl = document.getElementsByClassName('js-setloc-map')[0];
+
+    map = new google.maps.Map(mapEl, {
       zoom: initial_zoom,
       center: {lat: initial_lat, lng: initial_lon}
     });

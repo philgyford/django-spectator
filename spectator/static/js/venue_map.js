@@ -19,13 +19,14 @@ function spectatorInitMap() {
     return;
   };
 
-  $('.js-venue-map-container').insert(
-    $('<div id="venue-map" class="venue-map"></div>')
-  );
+  var container = document.getElementsByClassName('js-venue-map-container')[0];
+  container.innerHTML = '<div class="js-venue-map venue-map"></div>';
 
   var position = {lat: parseFloat(lat), lng: parseFloat(lon)};
 
-  var map = new google.maps.Map(document.getElementById('venue-map'), {
+  var mapEl = document.getElementsByClassName('js-venue-map')[0];
+
+  var map = new google.maps.Map(mapEl, {
     zoom: 12,
     center: position
   });
