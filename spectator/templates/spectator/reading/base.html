@@ -5,6 +5,11 @@
 {% block sidebar %}
 
     {% load spectator_tags %}
+    {% current_url_name as url_name %}
+
+    {% if url_name != 'spectator:reading_home' %}
+        {% in_progress_publications_card %}
+    {% endif %}
 
     {% reading_years_card current_year=year %}
 

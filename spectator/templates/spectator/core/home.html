@@ -23,3 +23,12 @@
     {% endif %}
 
 {% endblock content %}
+
+{% block sidebar %}
+
+    {% include 'spectator/core/includes/card_nav.html' %}
+    {% include 'spectator/reading/includes/card_nav.html' %}
+    {% include 'spectator/events/includes/card_nav.html' %}
+
+    {{ block.super }}
+{% endblock sidebar %}

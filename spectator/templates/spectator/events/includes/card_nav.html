@@ -1,0 +1,43 @@
+
+{% load spectator_tags %}
+{% current_url_name as url_name %}
+
+<div class="card mb-3">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            {% if url_name == 'spectator:venue_list' %}
+                Venues
+            {% else %}
+                <a href="{% url 'spectator:venue_list' %}">Venues</a>
+            {% endif %}
+        </li>
+        <li class="list-group-item">
+            {% if url_name == 'spectator:concert_list' %}
+                Concerts
+            {% else %}
+                <a href="{% url 'spectator:concert_list' %}">Concerts</a>
+            {% endif %}
+        </li>
+        <li class="list-group-item">
+            {% if url_name == 'spectator:movie_list' %}
+               Movies
+            {% else %}
+                <a href="{% url 'spectator:movie_list' %}">Movies</a>
+            {% endif %}
+        </li>
+        <li class="list-group-item">
+            {% if url_name == 'spectator:play_list' %}
+                Plays
+            {% else %}
+                <a href="{% url 'spectator:play_list' %}">Plays</a>
+            {% endif %}
+        </li>
+        <li class="list-group-item">
+            {% if url_name == 'spectator:miscevent_list' %}
+                Misc events
+            {% else %}
+                <a href="{% url 'spectator:miscevent_list' %}">Misc events</a>
+            {% endif %}
+        </li>
+    </ul>
+</div>

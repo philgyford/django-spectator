@@ -5,6 +5,11 @@
 {% block sidebar %}
 
     {% load spectator_tags %}
+    {% current_url_name as url_name %}
+
+    {% if url_name != 'spectator:events_home' %}
+        {% recent_events_card 5 %}
+    {% endif %}
 
     {% events_years_card current_year=year %}
 
