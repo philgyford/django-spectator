@@ -22,6 +22,9 @@ def in_progress_publications():
 
 @register.inclusion_tag('spectator/reading/includes/card_publications.html')
 def in_progress_publications_card():
+    """
+    Displays Publications that are currently being read.
+    """
     return {
             'card_title': 'Currently reading',
             'publication_list': in_progress_publications(),
@@ -39,6 +42,10 @@ def recent_events(num=10):
 
 @register.inclusion_tag('spectator/events/includes/card_events.html')
 def recent_events_card(num=10):
+    """
+    Displays Events that happened recently.
+    `num` is the number returned.
+    """
     return {
             'card_title': 'Recent events',
             'event_list': recent_events(num=num),
@@ -62,6 +69,18 @@ def day_publications(date):
                         .prefetch_related('roles__creator')
 
 
+@register.inclusion_tag('spectator/reading/includes/card_publications.html')
+def day_publications_card(date):
+    """
+    Displays Publications that were being read on `date`.
+    `date` is a date tobject.
+    """
+    card_title = 'Reading on {}'.format(date.strftime('%-d %b %Y'))
+    return {
+            'card_title': card_title,
+            'publication_list': day_publications(date=date),
+            }
+
 @register.assignment_tag
 def day_events(date):
     """
@@ -69,6 +88,19 @@ def day_events(date):
     `date` is a date object.
     """
     return Event.objects.filter(date=date).select_related('venue')
+
+
+@register.inclusion_tag('spectator/events/includes/card_events.html')
+def day_events_card(date):
+    """
+    Displays Events that happened on the supplied date.
+    `date` is a date object.
+    """
+    card_title = 'Events on {}'.format(date.strftime('%-d %b %Y'))
+    return {
+            'card_title': card_title,
+            'event_list': day_events(date=date),
+            }
 
 
 @register.assignment_tag
@@ -82,6 +114,11 @@ def reading_years():
 
 @register.inclusion_tag('spectator/reading/includes/card_years.html')
 def reading_years_card(current_year=None):
+    """
+    Displays the years in which there are Readings.
+    Each one is linked to the year archive page.
+    current_year is a date object; this year won't be linked.
+    """
     return {
             'current_year': current_year,
             'years': reading_years(),
