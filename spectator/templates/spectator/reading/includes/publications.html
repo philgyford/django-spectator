@@ -7,7 +7,7 @@ Expects:
 
 {% endcomment %}
 
-<ul{% if style|default:'bullets' == 'unstyled' %} class="list-unstyled"{% endif %}>
+<ul{% if style|default:'bullets' == 'unstyled' %} class="list-unstyled mb-0"{% endif %}>
     {% for publication in publication_list %}
         <li class="mb-2">
             {% include 'spectator/reading/includes/publication.html' with publication=publication show_readings=show_readings|default:'none' only %}
