@@ -16,8 +16,7 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'spectator:reading_home' %}">Reading</a></li>
+    {{ block.super }}
     <li class="breadcrumb-item"><a href="{% url 'spectator:publication_list' %}">Publications</a></li>
     <li class="breadcrumb-item active">{{ publication }}</li>
 {% endblock %}

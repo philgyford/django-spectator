@@ -4,7 +4,7 @@
 {% block content_title %}{{ creator.name }}{% endblock %}
 
 {% block breadcrumbs %}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
+    {{ block.super }}
     <li class="breadcrumb-item"><a href="{% url 'spectator:creator_list' %}">Creators</a></li>
     <li class="breadcrumb-item active">{{ creator.name }}</li>
 {% endblock %}

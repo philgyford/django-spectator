@@ -4,8 +4,7 @@
 {% block content_title %}Movies{% endblock %}
 
 {% block breadcrumbs %}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'spectator:events_home' %}">Events</a></li>
+    {{ block.super }}
     <li class="breadcrumb-item active">Movies</li>
 {% endblock %}
 

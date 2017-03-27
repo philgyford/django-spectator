@@ -2,6 +2,12 @@
 
 {% block reading_nav_active %}active{% endblock %}
 
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:reading_home' %}">Reading</a></li>
+{% endblock %}
+
+
 {% block sidebar %}
 
     {% load spectator_tags %}

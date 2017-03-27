@@ -6,8 +6,7 @@
 {% block content_title %}{{ concert }}{% endblock %}
 
 {% block breadcrumbs %}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'spectator:events_home' %}">Events</a></li>
+    {{ block.super }}
     <li class="breadcrumb-item"><a href="{% url 'spectator:concert_list' %}">Concerts</a></li>
     <li class="breadcrumb-item active">
         {% if concert.title %}

@@ -51,7 +51,9 @@
         <div class="container">
 
             <ol class="breadcrumb">
-                {% block breadcrumbs %}{% endblock %}
+                {% block breadcrumbs %}
+                    <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
+                {% endblock %}
             </ol>
 
             {% block content_heading %}

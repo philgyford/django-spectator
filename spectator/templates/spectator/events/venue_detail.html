@@ -18,8 +18,7 @@
 {% block content_title %}{{ venue.name }}{% endblock %}
 
 {% block breadcrumbs %}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'spectator:events_home' %}">Events</a></li>
+    {{ block.super }}
     <li class="breadcrumb-item"><a href="{% url 'spectator:venue_list' %}">Venues</a></li>
     <li class="breadcrumb-item active">{{ venue.name }}</li>
 {% endblock %}
