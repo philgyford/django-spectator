@@ -22,17 +22,7 @@
                 <ul>
             {% endifchanged %}
             <li class="mb-2">
-                {% if event.event_kind == 'concert' %}
-                    {% include 'spectator/events/includes/concert.html' with concert=event only %}
-                {% elif event.event_kind == 'movie' %}
-                    {% include 'spectator/events/includes/movieevent.html' with movieevent=event only %}
-                {% elif event.event_kind == 'play' %}
-                    {% include 'spectator/events/includes/playproductionevent.html' with playproductionevent=event only %}
-                {% elif event.event_kind == 'misc' %}
-                    {% include 'spectator/events/includes/miscevent.html' with miscevent=event only %}
-                {% else %}
-                    Unknown event kind for {{ event }}
-                {% endif %}
+                {% include 'spectator/events/includes/event.html' with event=event only %}
             </li>
         {% endfor %}
         </ul>
