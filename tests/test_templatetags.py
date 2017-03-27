@@ -45,17 +45,6 @@ class RecentEventsTestCase(TestCase):
         self.assertEqual(len(qs), 5)
 
 
-class DayEventsTestCase(TestCase):
-
-    def test_queryset(self):
-        ConcertFactory(   date=make_date('2017-02-09'))
-        MovieEventFactory(date=make_date('2017-02-10'))
-        ConcertFactory(   date=make_date('2017-02-10'))
-        MovieEventFactory(date=make_date('2017-02-11'))
-        qs = day_events(make_date('2017-02-10'))
-        self.assertEqual(len(qs), 2)
-
-
 class DayPublicationsTestCase(TestCase):
 
     def test_ended_readings(self):
@@ -93,6 +82,17 @@ class DayPublicationsTestCase(TestCase):
         qs = day_publications(make_date('2017-02-15'))
         self.assertEqual(len(qs), 1)
         self.assertEqual(qs[0], pub1)
+
+
+class DayEventsTestCase(TestCase):
+
+    def test_queryset(self):
+        ConcertFactory(   date=make_date('2017-02-09'))
+        MovieEventFactory(date=make_date('2017-02-10'))
+        ConcertFactory(   date=make_date('2017-02-10'))
+        MovieEventFactory(date=make_date('2017-02-11'))
+        qs = day_events(make_date('2017-02-10'))
+        self.assertEqual(len(qs), 2)
 
 
 class QueryStringTestCase(TestCase):
