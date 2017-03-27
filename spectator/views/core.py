@@ -72,7 +72,7 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['in_progress_publication_list'] = \
-                                        Publication.in_progress_objects.all()
+                                        Publication.in_progress_objects.select_related('series').prefetch_related('roles__creator').all()
         context['recent_event_list'] = Event.objects.order_by('-date')[:10]
         return context
 

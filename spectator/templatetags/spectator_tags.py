@@ -14,7 +14,10 @@ def in_progress_publications():
     """
     Returns a QuerySet of any Publications that are currently being read.
     """
-    return Publication.in_progress_objects.order_by('time_created')
+    return Publication.in_progress_objects\
+                        .select_related('series')\
+                        .prefetch_related('roles__creator')\
+                        .order_by('time_created')
 
 
 @register.assignment_tag
@@ -42,12 +45,14 @@ def day_publications(date):
     `date` is a date tobject.
     """
     return Publication.objects\
-            .filter(reading__start_date__lte=date)\
-            .filter(
-                Q(reading__end_date__gte=date)
-                |
-                Q(reading__end_date__isnull=True)
-            )
+                        .filter(reading__start_date__lte=date)\
+                        .filter(
+                            Q(reading__end_date__gte=date)
+                            |
+                            Q(reading__end_date__isnull=True)
+                        )\
+                        .select_related('series')\
+                        .prefetch_related('roles__creator')
 
 
 @register.simple_tag(takes_context=True)

@@ -14,7 +14,7 @@
 
 {% block content %}
 
-    {% include 'spectator/includes/publications_paginated.html' with publication_list=publication_list show_readings='all' page_obj=page_obj only %}
+    {% include 'spectator/includes/publications_paginated.html' with publication_list=publication_list show_readings='all' page_obj=page_obj show_readings='none' only %}
 
 {% endblock content %}
 
