@@ -30,15 +30,6 @@ def recent_events(num=10):
 
 
 @register.assignment_tag
-def day_events(date):
-    """
-    Returns a QuerySet of Events that happened on the supplied date.
-    `date` is a date object.
-    """
-    return Event.objects.filter(date=date).select_related('venue')
-
-
-@register.assignment_tag
 def day_publications(date):
     """
     Returns a QuerySet of Publications that were being read on `date`.
@@ -53,6 +44,15 @@ def day_publications(date):
                         )\
                         .select_related('series')\
                         .prefetch_related('roles__creator')
+
+
+@register.assignment_tag
+def day_events(date):
+    """
+    Returns a QuerySet of Events that happened on the supplied date.
+    `date` is a date object.
+    """
+    return Event.objects.filter(date=date).select_related('venue')
 
 
 @register.simple_tag(takes_context=True)
