@@ -1,6 +1,7 @@
 import codecs
 import os
 import re
+import sys
 from setuptools import setup
 
 with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
@@ -32,6 +33,24 @@ def get_author():
 def get_author_email():
     return get_entity('spectator', 'author_email')
 
+# Do `python setup.py tag` to tag with the current version number.
+if sys.argv[-1] == 'tag':
+    os.system("git tag -a %s -m 'version %s'" % (get_version(), get_version()))
+    os.system("git push --tags")
+    sys.exit()
+
+# Do `python setup.py publish` to send current version to PyPI.
+if sys.argv[-1] == 'publish':
+    os.system("python setup.py sdist upload -r pypi")
+    # os.system("python setup.py bdist_wheel upload")
+    sys.exit()
+
+# Do `python setup.py testpublish` to send current version to Test PyPI.
+if sys.argv[-1] == 'testpublish':
+    os.system("python setup.py sdist upload -r pypitest")
+    # os.system("python setup.py bdist_wheel upload")
+    sys.exit()
+
 setup(
     name='django-spectator',
     version=get_version(),
@@ -48,7 +67,7 @@ setup(
     ],
     include_package_data=True,
     license=get_license(),
-    description='A Django app to track book reading, movie viewing, gig going and play watching.',
+    description='A Django app to track book reading, movie viewing, gig going, play watching, etc.',
     long_description=read(os.path.join(os.path.dirname(__file__), 'README.rst')),
     url='https://github.com/philgyford/django-spectator',
     author=get_author(),
@@ -57,6 +76,9 @@ setup(
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Django',
+        'Framework :: Django :: 1.8',
+        'Framework :: Django :: 1.9',
+        'Framework :: Django :: 1.10',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
