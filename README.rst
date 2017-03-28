@@ -56,12 +56,12 @@ Then, go to Django Admin to add your data.
 Overview
 ********
 
-There are two main parts to Spectator: Reading and Events (movies, concerts, etc).
+There are two main parts to Spectator: Reading and Events (movies, concerts, etc). They both share Creators.
 
 Creators
 ========
 
-Reading and Events both share Creators, which are the authors of books, directors of movies, actors in plays, groups who perfom at gigs, etc.
+Creators are the authors of books, directors of movies, actors in plays, groups who perfom at gigs, etc.
 
 A Creator has a name and a ``kind``, of either "individual" (e.g. "Anthony Sher") or "group" (e.g. "Royal Shakespeare Company").
 
