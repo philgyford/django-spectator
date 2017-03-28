@@ -100,6 +100,24 @@ Events
 An Event specifies a date on which you saw a thing at a particular Venue.
 A Venue has a name and, optionally, location details.
 
+Spectator uses `django-polymorphic <https://django-polymorphic.readthedocs.io/en/stable/>`_ to model the different kinds of events. This makes some things simpler and some things more complex (and possibly slower). Briefly, if you get a list of Events, something like::
+
+    events = Event.objects.all().order_by('-date')[:10]
+
+Then QuerySet returned will be a mixture of different objects::
+
+    <QuerySet [
+        <MovieEvent: Personal Shopper (2016)>,
+        <PlayProductionEvent: King Lear by Royal Shakespeare Company et al.>,
+        <Concert: Holly Herndon, Amnesia Scanner and Visionist>,
+        <MiscEvent: Stewart Lee>,
+    ]>
+
+If you only want one kind of event then you can fetch that as normal. e.g. only
+the MovieEvents::
+
+    movies = MovieEvent.objects.all()
+
 The different kinds of Events have different structures:
 
 Concerts and MiscEvents
