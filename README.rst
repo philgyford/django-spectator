@@ -314,3 +314,13 @@ Adding a new event type
 ``Concert`` and ``MiscEvent`` are almost identical at the moment. Scope for
 refactoring?
 
+
+*******
+Contact
+*******
+
+Phil Gyford
+phil@gyford.com
+@philgyford on Twitter
+
+
