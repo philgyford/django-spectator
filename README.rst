@@ -10,8 +10,6 @@
 
 A Django app to track book reading, movie viewing, gig going and play watching.
 
-v1.0 STILL IN PROGRESS.
-
 So far only used with Python 3.6 and Django 1.10. Should work with Python
 3.5+ and Django 1.8+.
 
@@ -26,7 +24,7 @@ below).
 Installation
 ************
 
-Install with pip (not working yet)::
+Install with pip::
 
     pip install django-spectator
 
