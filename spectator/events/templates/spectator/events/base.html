@@ -13,6 +13,7 @@
     {% current_url_name as url_name %}
 
     {% if url_name != 'spectator:events_home' %}
+		{% load spectator_events %}
         {% recent_events_card 5 %}
     {% endif %}
 
