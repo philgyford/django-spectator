@@ -1,0 +1,15 @@
+
+{% load spectator_core %}
+{% current_url_name as url_name %}
+
+<div class="card mb-3">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            {% if url_name == 'spectator:creator_list' %}
+                Creators
+            {% else %}
+                <a href="{% url 'spectator:creator_list' %}">Creators</a>
+            {% endif %}
+        </li>
+    </ul>
+</div>

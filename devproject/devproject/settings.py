@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'polymorphic',
-    'spectator',
+    'spectator.core',
+    'spectator.events',
+    'spectator.reading',
 ]
 
 MIDDLEWARE = [

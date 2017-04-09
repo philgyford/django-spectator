@@ -4,7 +4,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
-    url(r'^', include('spectator.urls', namespace='spectator')),
+    url(r'^', include('spectator.core.urls', namespace='spectator')),
 ]
 
 

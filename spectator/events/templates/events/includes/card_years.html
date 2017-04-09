@@ -1,0 +1,30 @@
+{% comment %}
+Used by the events_years_card template tag.
+
+Expects:
+
+* current_year: A date object representing the current year, if any.
+* years: A QuerySet of date objects, one for each year to link to.
+{% endcomment %}
+
+{% if years|length > 0 %}
+    {% load spectator_core %}
+    {% current_url_name as url_name %}
+    <div class="card mb-3">
+        <div class="card-block">
+            <h2 class="h6 card-title">Events by year</h2>
+            <ul class="list-inline mb-0">
+                {% for events_year in years %}
+                    <li class="list-inline-item">
+                        {% if url_name == 'spectator:event_year_archive' and current_year|date:"Y" == events_year|date:"Y" %}
+                            {{ events_year|date:"Y" }}
+                        {% else %}
+                            <a href="{% url 'spectator:event_year_archive' year=events_year|date:"Y" %}">{{ events_year|date:"Y" }}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}
+

@@ -1,0 +1,12 @@
+{% comment %}
+Display one Reading of a Publication.
+
+Expects:
+* reading - A Reading object.
+{% endcomment %}
+
+{% load spectator_reading %}
+
+{% reading_dates reading %}
+{% if reading.end_date and not reading.is_finished %}(Unfinished){% endif %}
+
