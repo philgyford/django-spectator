@@ -6,3 +6,4 @@ django_spectator.egg-info
 htmlcov
 .coverage
 import_gyford_reading.py
+dist
