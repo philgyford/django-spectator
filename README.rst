@@ -28,12 +28,13 @@ Install with pip::
 
     pip install django-spectator
 
-Add it and django-polymorphic to your project's ``INSTALLED_APPS`` in ``settings.py``::
+Add the apps to your project's ``INSTALLED_APPS`` in ``settings.py``::
 
     INSTALLED_APPS = [
         ...
-        'polymorphic',
-        'spectator',
+        'spectator.core',
+        'spectator.events',
+        'spectator.reading',
     ]
 
 Run migrations::
@@ -54,7 +55,7 @@ Then, go to Django Admin to add your data.
 Overview
 ********
 
-There are two main parts to Spectator: Reading and Events (movies, concerts, etc). They both share Creators.
+There are two main parts to Spectator: Reading and Events (movies, gigs, etc). They both share Creators.
 
 Creators
 ========
@@ -63,7 +64,7 @@ Creators are the authors of books, directors of movies, actors in plays, groups 
 
 A Creator has a name and a ``kind``, of either "individual" (e.g. "Anthony Sher") or "group" (e.g. "Royal Shakespeare Company").
 
-A Creator is associated with books, movies, concerts, etc. through roles, which
+A Creator is associated with books, movies, events, etc. through roles, which
 include an optional ``role_name`` such as "Author", "Illustrator", "Director",
 "Playwright", "Company", etc. The roles can be given an order so that the
 creators of a thing will be listed in the appropriate order (such as the
@@ -96,71 +97,107 @@ Events
 ======
 
 An Event specifies a date on which you saw a thing at a particular Venue.
-A Venue has a name and, optionally, location details.
+A Venue has a name and, optionally, location details. Events can be different
+kinds, e.g. "gig", "movie", "play".
 
-Spectator uses `django-polymorphic <https://django-polymorphic.readthedocs.io/en/stable/>`_ to model the different kinds of events. This makes some things simpler and some things more complex (and possibly slower). Briefly, if you get a list of Events, something like::
+While an Event is a thing at a place on a day, with some optional Creators,
+some kids of Events are slightly more complicated.
 
-    events = Event.objects.all().order_by('-date')[:10]
+Gigs and MiscEvents
+-------------------
 
-Then QuerySet returned will be a mixture of different objects::
-
-    <QuerySet [
-        <MovieEvent: Personal Shopper (2016)>,
-        <PlayProductionEvent: King Lear by Royal Shakespeare Company et al.>,
-        <Concert: Holly Herndon, Amnesia Scanner and Visionist>,
-        <MiscEvent: Stewart Lee>,
-    ]>
-
-If you only want one kind of event then you can fetch that as normal. e.g. only
-the MovieEvents::
-
-    movies = MovieEvent.objects.all()
-
-The different kinds of Events have different structures:
-
-Concerts and MiscEvents
------------------------
-
-A Concert, and the generic MiscEvents, are the simplest. A date when you
-went to a Venue to see one or more Creators. The Concert/MiscEvent can
-optionally have a title.
-
-Movies
-------
-
-A Movie is a film created by (optionally) one or more Creators. It can
-optionally have a year and an IMDb ID.
-
-A MovieEvent is when a particular Movie was seen on a specific date at a specific Venue.
+A gig, and the generic misc Events, are the simplest. A date when you went to a
+Venue to see one or more Creators. The Event can optionally have a title.
 
 Plays
 -----
 
-A Play (e.g. "King Lear") is created by zero or more Creators (e.g. "William
-Shakespeare (Playwright)").
+An Event of type "play" can have a Play object (e.g. "King Lear") connected to
+it. A Play is created by (optionally) one or more Creators. A Play can
+therefore have several Events (occasions when you saw that one play).
 
-A PlayProduction is a particular production of that play by zero or more
-Creators. For example, one might be by "Royal Shakespeare Company" with
-"Anthony Sher (King Lear)". Another might be by "Deborah Warner (Director)"
-with "Glenda Jackson (King Lear)".
+Movies
+------
 
-A PlayProductionEvent is when a particular PlayProduction was seen on
-a specific date at a specific Venue.
-
-When adding a new Play in the Django Admin, it's best to fill in the Play
-details, click "Save and continue editing", then click "Add another Play Production and event" to add the details of the particular production and when it was seen.
+An Event of type "movie" can have a Movie object connected to it. A Movie is created by (optionally) one or more Creators. It can optionally have a year and
+an IMDb ID. A Movie can therefore have several Events (occasions when you saw
+that one film).
 
 
 *************
 Template tags
 *************
 
-To use any of these tags in a template, first::
+Each app, `core`, `events` and `reading`, has some template tags.
 
-    {% load spectator_tags %}
+Events template tags
+===================
+
+To use any of these in a template, first::
+
+    {% load spectator_events %}
+
+Recent Events
+-------------
+
+To get a QuerySet of Events that happened recently::
+
+    {% recent_events num=3 as events %}
+
+    {% for event in events %}
+        <p>
+            {{ event }}<br>
+            {{ event.venue.name }}
+        </p>
+    {% endfor %}
+
+If ``num`` is not specified, 10 are returned by default.
+
+Or to display as a Boostrap card::
+
+    {% recent_events_card num=3 %}
+
+Events on a day
+---------------
+
+To get a QuerySet of Events that happened on a particular day, use
+``day_events``. If ``my_date`` is a python ``date`` object::
+
+    {% day_events date=my_date as events %}
+
+And display the results as in the above example.
+
+Or to display as a Bootstrap card::
+
+    {% day_events_card date=my_date %}
+
+Years of Events
+---------------
+
+To get a QuerySet of the years in which Events happened::
+
+    {% events_years as years %}
+
+    {% for year in years %}
+        {{ year|date:"Y" }}<br>
+    {% endfor %}
+
+Or to display as a Bootstrap card, with each year linking to the
+``EventYearArchiveView``::
+
+    {% events_years_card current_year=year %}
+
+Here, ``year`` is a date object indicating a year which shouldn't be linked.
+
+Events template tags
+===================
+
+To use any of these in a template, first::
+
+    {% load spectator_reading %}
 
 In-progress Publications
-========================
+------------------------
 
 To get a QuerySet of Publications currently being read use
 ``in_progress_publications``::
@@ -182,7 +219,7 @@ Or to display as a Bootstrap card::
     {% in_progress_publications_card %}
 
 Publications being read on a day
-================================
+--------------------------------
 
 To get a QuerySet of Publications that were being read on a particular day use
 ``day_publications``. If ``my_date`` is a python ``date`` object::
@@ -196,7 +233,7 @@ Or to display as a Bootstrap card::
     {% day_publications_card date=my_date %}
 
 Years of reading
-================
+----------------
 
 To get a QuerySet of the years in which Publications were being read::
 
@@ -210,58 +247,6 @@ Or to display as a Bootstrap card, with each year linking to the
 ``ReadingYearArchiveView``::
 
     {% reading_years_card current_year=year %}
-
-Here, ``year`` is a date object indicating a year which shouldn't be linked.
-
-Recent Events
-=============
-
-To get a QuerySet of Events that happened recently::
-
-    {% recent_events num=3 as events %}
-
-    {% for event in events %}
-        <p>
-            {{ event }}<br>
-            {{ event.venue.name }}
-        </p>
-    {% endfor %}
-
-If ``num`` is not specified, 10 are returned by default.
-
-Or to display as a Boostrap card::
-
-    {% recent_events_card num=3 %}
-
-Events on a day
-===============
-
-To get a QuerySet of Events that happened on a particular day, use
-``day_events``. If ``my_date`` is a python ``date`` object::
-
-    {% day_events date=my_date as events %}
-
-And display the results as in the above example.
-
-Or to display as a Bootstrap card::
-
-    {% day_events_card date=my_date %}
-
-Years of Events
-===============
-
-To get a QuerySet of the years in which Events happened::
-
-    {% events_years as years %}
-
-    {% for year in years %}
-        {{ year|date:"Y" }}<br>
-    {% endfor %}
-
-Or to display as a Bootstrap card, with each year linking to the
-``EventYearArchiveView``::
-
-    {% events_years_card current_year=year %}
 
 Here, ``year`` is a date object indicating a year which shouldn't be linked.
 
@@ -290,7 +275,7 @@ $ tox -e py36-django110
 
 To run a specific test, add its path after ``--``, eg::
 
-$ tox -e py36-django110 -- tests.spectator.tests.test_models.CreatorTestCase.test_ordering
+$ tox -e py36-django110 -- tests.core.test_models.CreatorTestCase.test_ordering
 
 Running the tests in all environments will generate coverage output. There will also be an ``htmlcov/`` directory containing an HTML report. You can also generate these reports without running all the other tests::
 
@@ -298,6 +283,8 @@ $ tox -e coverage
 
 Adding a new event type
 =======================
+
+Needs updating:
 
 * Add a child of the ``Event`` model, and a child of ``BaseRole`` for the through model and tests.
 * Add factories for both event and role models.
