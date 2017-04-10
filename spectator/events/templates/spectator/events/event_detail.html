@@ -1,0 +1,41 @@
+{% extends 'spectator/events/base.html' %}
+
+{% block head_page_title %}{{ event }}{% endblock %}
+{% block content_title %}{{ event }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:event_list' kind_slug=event.kind_slug %}">{{ event.kind_name_plural }}</a></li>
+    <li class="breadcrumb-item active">{{ event }}</li>
+{% endblock %}
+
+{% block content %}
+
+    <p>
+        At <a href="{{ event.venue.get_absolute_url }}">{{ event.venue }}</a>
+        on {{ event.date|date:"j M Y" }}.
+    </p>
+
+    {% with event.roles.all as roles %}
+        {% if roles|length > 0 %}
+            <h2>Featuring</h2>
+            {% include 'spectator/core/includes/roles_list.html' with roles=roles only %}
+        {% endif %}
+    {% endwith %}
+
+{% endblock content %}
+
+
+{% block sidebar %}
+    {% if perms.spectator.can_edit_event %}
+        <div class="card mb-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <a href="{% url 'admin:events_event_change' event.id %}">Edit in Admin</a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+
+    {{ block.super }}
+{% endblock %}

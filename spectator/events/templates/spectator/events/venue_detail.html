@@ -36,6 +36,8 @@
     {% if event_list|length > 0 %}
         <h2>Events</h2>
         {% include 'spectator/events/includes/events_paginated.html' with event_list=event_list page_obj=page_obj only %}
+    {% else %}
+        <p>There are no events to show.</p>
     {% endif %}
 
 {% endblock content %}
@@ -46,7 +48,7 @@
         <div class="card mb-3">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
-                    <a href="{% url 'admin:spectator_venue_change' venue.id %}">Edit in Admin</a>
+                    <a href="{% url 'admin:events_venue_change' venue.id %}">Edit in Admin</a>
                 </li>
             </ul>
         </div>

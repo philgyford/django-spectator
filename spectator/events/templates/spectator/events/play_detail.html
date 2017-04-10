@@ -5,7 +5,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:play_list' %}">Plays</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'spectator:event_list' kind_slug='plays' %}">Plays</a></li>
     <li class="breadcrumb-item active">{{ play.title }}</li>
 {% endblock %}
 
@@ -19,22 +19,7 @@
         {% endif %}
     {% endwith %}
 
-    {% with play.playproduction_set.all as productions %}
-        {% if productions|length > 0 %}
-            <h2>Productions</h2>
-
-            {% for production in productions %}
-                <h3>{{ production }}</h3>
-                {% with production.roles.all as production_roles %}
-                    {% if production_roles|length > 0 %}
-                        {% include 'spectator/core/includes/roles_list.html' with roles=production_roles only %}
-                    {% endif %}
-                {% endwith %}
-
-                {% include 'spectator/events/includes/visits_list.html' with events=production.playproductionevent_set.all heading_level='h4' only %}
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+    {% include 'spectator/events/includes/visits_list.html' with events=play.event_set.all heading_level='h2' only %}
 
 {% endblock content %}
 
@@ -44,7 +29,7 @@
         <div class="card mb-3">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
-                    <a href="{% url 'admin:spectator_play_change' play.id %}">Edit in Admin</a>
+                    <a href="{% url 'admin:events_play_change' play.id %}">Edit in Admin</a>
                 </li>
             </ul>
         </div>

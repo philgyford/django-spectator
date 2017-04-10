@@ -16,7 +16,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'polymorphic',
     'spectator.core',
     'spectator.events',
     'spectator.reading',

@@ -9,15 +9,12 @@
         <li class="breadcrumb-item active">Events</li>
     {% else %}
         <li class="breadcrumb-item"><a href="{% url 'spectator:events_home' %}">Events</a></li>
-        {% if event_kind == 'concert' %}
-            <li class="breadcrumb-item"><a href="{% url 'spectator:concert_list' %}">Concerts</a></li>
-            <li class="breadcrumb-item active">Visits</li>
+        {% if event_kind == 'gig' %}
+            <li class="breadcrumb-item active">Gigs</li>
         {% elif event_kind == 'movie' %}
-            <li class="breadcrumb-item"><a href="{% url 'spectator:movie_list' %}">Movies</a></li>
-            <li class="breadcrumb-item active">Visits</li>
+            <li class="breadcrumb-item active">Movies</li>
         {% elif event_kind == 'play' %}
-            <li class="breadcrumb-item"><a href="{% url 'spectator:play_list' %}">Plays</a></li>
-            <li class="breadcrumb-item active">Visits</li>
+            <li class="breadcrumb-item active">Plays</li>
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -29,36 +26,36 @@
         <ul class="nav nav-tabs mb-4">
             {% if event_count > 0 %}
                 <li class="nav-item">
-                    <a class="nav-link{% if event_kind == 'event' %} active{% endif %}" href="{% url 'spectator:events_home' %}">
+                    <a class="nav-link{% if not event_kind %} active{% endif %}" href="{% url 'spectator:events_home' %}">
                         All ({{ event_count }})
                     </a>
                 </li>
             {% endif %}
-            {% if concert_count > 0 %}
+            {% if gig_count > 0 %}
                 <li class="nav-item">
-                    <a class="nav-link{% if event_kind == 'concert' %} active{% endif %}" href="{% url 'spectator:concert_visits' %}">
-                        Concerts ({{ concert_count }})
+                    <a class="nav-link{% if event_kind == 'gig' %} active{% endif %}" href="{% url 'spectator:event_list' kind_slug='gigs' %}">
+                        Gigs ({{ gig_count }})
                     </a>
                 </li>
             {% endif %}
-            {% if movieevent_count > 0 %}
+            {% if movie_count > 0 %}
                 <li class="nav-item">
-                    <a class="nav-link{% if event_kind == 'movie' %} active{% endif %}" href="{% url 'spectator:movie_visits' %}">
-                        Movies ({{ movieevent_count }})
+                    <a class="nav-link{% if event_kind == 'movie' %} active{% endif %}" href="{% url 'spectator:event_list' kind_slug='movies' %}">
+                        Movies ({{ movie_count }})
                     </a>
                 </li>
             {% endif %}
-            {% if playproductionevent_count > 0 %}
+            {% if play_count > 0 %}
                 <li class="nav-item">
-                    <a class="nav-link{% if event_kind == 'play' %} active{% endif %}" href="{% url 'spectator:play_visits' %}">
-                        Plays ({{ playproductionevent_count }})
+                    <a class="nav-link{% if event_kind == 'play' %} active{% endif %}" href="{% url 'spectator:event_list' kind_slug='plays' %}">
+                        Plays ({{ play_count }})
                     </a>
                 </li>
             {% endif %}
-            {% if miscevent_count > 0 %}
+            {% if misc_count > 0 %}
                 <li class="nav-item">
-                    <a class="nav-link{% if event_kind == 'misc' %} active{% endif %}" href="{% url 'spectator:miscevent_visits' %}">
-                        Other ({{ miscevent_count }})
+                    <a class="nav-link{% if event_kind == 'misc' %} active{% endif %}" href="{% url 'spectator:event_list' kind_slug='misc' %}">
+                        Other ({{ misc_count }})
                     </a>
                 </li>
             {% endif %}

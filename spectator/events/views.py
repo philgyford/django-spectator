@@ -7,13 +7,11 @@ from django.views.generic import DetailView, ListView, YearArchiveView
 from django.views.generic.detail import SingleObjectMixin
 
 from spectator.core.views import PaginatedListView
-from .models import Concert, Event, Movie, MovieEvent, Play,\
-        PlayProductionEvent, MiscEvent, Venue
+from .models import Event, Movie, Play, Venue
 
 
 class EventListView(PaginatedListView):
     """
-    Parent class for any pages that list a type of Event.
     Includes context of counts of all different Event types,
     plus the kind of event this page is for,
     plus adding `event_list` (synonym for `object_list`).
@@ -24,163 +22,76 @@ class EventListView(PaginatedListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context = self.add_counts_to_context_data(context)
-        # The kind of event we're listing on this page:
+
+        context.update( self.get_event_counts() )
+
         context['event_kind'] = self.get_event_kind()
         context['event_list'] = context['object_list']
         return context
 
-    def add_counts_to_context_data(self, context):
-        context['event_count'] = Event.objects.count()
-        context['concert_count'] = Concert.objects.count()
-        context['movieevent_count'] = MovieEvent.objects.count()
-        context['playproductionevent_count'] = \
-                                            PlayProductionEvent.objects.count()
-        context['miscevent_count'] = MiscEvent.objects.count()
-        return context
+    def get_event_counts(self):
+        counts = {'event_count': Event.objects.count(),}
+
+        for k,v in Event.KIND_CHOICES:
+            # e.g. 'movie_count':
+            counts['{}_count'.format(k)] = \
+                                        Event.objects.filter(kind=k).count()
+        return counts
 
     def get_event_kind(self):
-        return self.model.event_kind
+        """
+        Unless we're on the front page we'll have a kind_slug like 'movies'.
+        We need to translate that into an event `kind` like 'movie'.
+        """
+        slug = self.kwargs.get('kind_slug', None)
+        if slug is None:
+            return None  # Front page; showing all Event kinds.
+        else:
+            slugs_to_kinds = {v:k for k,v in Event.KIND_SLUGS.items()}
+            return slugs_to_kinds.get(slug, None)
 
     def get_queryset(self):
+        "Restrict to a single kind of event, if any, and include Venue data."
         qs = super().get_queryset()
+
+        kind = self.get_event_kind()
+        if kind is not None:
+            qs = qs.filter(kind=kind)
+
         qs = qs.select_related('venue')
+
         return qs
 
 
-## EVENTs and its children.
+class EventDetailView(DetailView):
+    """
+    For simple events, like Gigs and Misc, it's a standard EventDetail view.
 
-class EventsHomeView(EventListView):
-    pass
-
-
-class ConcertEventListView(EventListView):
-    model = Concert
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.prefetch_related('roles__creator')
-        return qs
-
-
-class MovieEventListView(EventListView):
-    model = MovieEvent
+    For Movies and Plays it's actually a MovieDetail or PlayDetail view, as
+    determined by the value of `kind_slug`.
+    """
+    model = Event
+    template_name = 'spectator/events/event_detail.html'
 
     def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.select_related('movie')
-        return qs
+        """
+        Determine if we need to change the model and template_name due to the
+        `kind_slug`.
+        """
+        kind = self.get_event_kind()
+        if kind == 'movie':
+            self.model = Movie
+            self.template_name = 'spectator/events/movie_detail.html'
+        elif kind == 'play':
+            self.model = Play
+            self.template_name = 'spectator/events/play_detail.html'
+        return super().get_queryset()
 
-
-class PlayProductionEventListView(EventListView):
-    model = PlayProductionEvent
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.select_related('production', 'production__play')
-        return qs
-
-
-class MiscEventVisitListView(EventListView):
-    model = MiscEvent
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.prefetch_related('roles__creator')
-        return qs
-
-
-## Concert, Movie, Play, etc themselves; not the events.
-
-class ConcertListView(PaginatedListView):
-    model = Concert
-    ordering = ['title_sort']
-    template_name = 'spectator/events/concert_list.html'
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.select_related('venue').prefetch_related('roles__creator')
-        return qs
-
-
-class MovieListView(PaginatedListView):
-    model = Movie
-    ordering = ['title_sort']
-    template_name = 'spectator/events/movie_list.html'
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.prefetch_related('roles__creator')
-        return qs
-
-
-class PlayListView(PaginatedListView):
-    model = Play
-    ordering = ['title_sort']
-    template_name = 'spectator/events/play_list.html'
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.prefetch_related('roles__creator')
-        return qs
-
-
-class MiscEventListView(PaginatedListView):
-    model = MiscEvent
-    ordering = ['title_sort']
-    template_name = 'spectator/events/miscevent_list.html'
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.prefetch_related('roles__creator')
-        return qs
-
-
-## DETAIL VIEWS
-
-class ConcertDetailView(DetailView):
-    model = Concert
-    template_name = 'spectator/events/concert_detail.html'
-
-class MovieDetailView(DetailView):
-    model = Movie
-    template_name = 'spectator/events/movie_detail.html'
-
-class PlayDetailView(DetailView):
-    model = Play
-    template_name = 'spectator/events/play_detail.html'
-
-class MiscEventDetailView(DetailView):
-    model = MiscEvent
-    template_name = 'spectator/events/miscevent_detail.html'
-
-
-# VENUEs
-
-class VenueListView(PaginatedListView):
-    model = Venue
-    ordering = ['name_sort']
-    template_name = 'spectator/events/venue_list.html'
-
-
-class VenueDetailView(SingleObjectMixin, PaginatedListView):
-    template_name = 'spectator/events/venue_detail.html'
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object(queryset=Venue.objects.all())
-        return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['venue'] = self.object
-        context['event_list'] = context['object_list']
-        if hasattr(settings, 'SPECTATOR_GOOGLE_MAPS_API_KEY') and settings.SPECTATOR_GOOGLE_MAPS_API_KEY:
-            if self.object.latitude is not None and self.object.longitude is not None:
-                context['SPECTATOR_GOOGLE_MAPS_API_KEY'] = settings.SPECTATOR_GOOGLE_MAPS_API_KEY
-        return context
-
-    def get_queryset(self):
-        return self.object.event_set.order_by('-date')
+    def get_event_kind(self):
+        "Translate the `kind_slug` into an event `kind` like 'movie'."
+        slug = self.kwargs.get('kind_slug')
+        slugs_to_kinds = {v:k for k,v in Event.KIND_SLUGS.items()}
+        return slugs_to_kinds.get(slug, None)
 
 
 class EventYearArchiveView(YearArchiveView):
@@ -216,4 +127,65 @@ class EventYearArchiveView(YearArchiveView):
                 info['previous_year'] = None
 
         return items, qs, info
+
+
+# MOVIE AND PLAY LISTS/DETAILS.
+
+class MovieListView(PaginatedListView):
+    model = Movie
+    ordering = ['title_sort']
+    template_name = 'spectator/events/movie_list.html'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.prefetch_related('roles__creator')
+        return qs
+
+class PlayListView(PaginatedListView):
+    model = Play
+    ordering = ['title_sort']
+    template_name = 'spectator/events/play_list.html'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.prefetch_related('roles__creator')
+        return qs
+
+
+class MovieDetailView(DetailView):
+    model = Movie
+    template_name = 'spectator/events/movie_detail.html'
+
+class PlayDetailView(DetailView):
+    model = Play
+    template_name = 'spectator/events/play_detail.html'
+
+
+# VENUES
+
+class VenueListView(PaginatedListView):
+    model = Venue
+    ordering = ['name_sort']
+    template_name = 'spectator/events/venue_list.html'
+
+
+class VenueDetailView(SingleObjectMixin, PaginatedListView):
+    template_name = 'spectator/events/venue_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Venue.objects.all())
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['venue'] = self.object
+        context['event_list'] = context['object_list']
+        if hasattr(settings, 'SPECTATOR_GOOGLE_MAPS_API_KEY') and settings.SPECTATOR_GOOGLE_MAPS_API_KEY:
+            if self.object.latitude is not None and self.object.longitude is not None:
+                context['SPECTATOR_GOOGLE_MAPS_API_KEY'] = settings.SPECTATOR_GOOGLE_MAPS_API_KEY
+        return context
+
+    def get_queryset(self):
+        return self.object.event_set.order_by('-date')
+
 

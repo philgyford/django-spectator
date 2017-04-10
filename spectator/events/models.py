@@ -11,62 +11,56 @@ except ImportError:
     # Django < 1.10
     from django.core.urlresolvers import reverse
 
-from polymorphic.models import PolymorphicModel
-
 from spectator.core.models import BaseRole, TimeStampedModelMixin
 from spectator.core.fields import NaturalSortField
 
 
-class Event(TimeStampedModelMixin, PolymorphicModel):
+class EventRole(BaseRole):
     """
-    Parent class for different kinds of event: Concert, MovieEvent, PlayEvent.
+    Through model for linking a Creator to an Event, optionally via their role
+    (e.g. 'Headliner', 'Support', 'Pianist', 'Actor', etc.)
 
-    A child class can add its own fields.
-    """
-    date = models.DateField(null=True, blank=False)
-    venue = models.ForeignKey('Venue', blank=False)
-
-    # Child classes should set their own unique value for event_kind:
-    event_kind = 'event'
-
-    class Meta:
-        ordering = ['date',]
-
-    def __str__(self):
-        return 'Event #{}'.format(self.pk)
-
-
-class ConcertRole(BaseRole):
-    """
-    Through model for linking a creator to a Concert, optionally via their role
-    (e.g. 'Headliner', 'Support', etc.)
-
-    Every time one of these is saved/deleted a signal re-saves the Concert
+    Every time one of these is saved/deleted a signal re-saves the Event
     in case its `title_sort` needs to change.
     """
     creator = models.ForeignKey('core.Creator', blank=False,
-                        on_delete=models.CASCADE, related_name='concert_roles')
+                        on_delete=models.CASCADE, related_name='event_roles')
 
-    concert = models.ForeignKey('Concert', on_delete=models.CASCADE,
+    event = models.ForeignKey('Event', on_delete=models.CASCADE,
                                                         related_name='roles')
 
 
-class Concert(Event):
+class Event(TimeStampedModelMixin, models.Model):
     """
-    A gig.
-
-    Get a Concert's creators:
-
-        concert = Concert.objects.get(pk=1)
-
-        # Just the creators:
-        for creator in concert.creators.all():
-            print(creator.name)
-
-        # Include their roles:
-        for role in concert.roles.all():
-            print(role.concert, role.creator, role.role_name)
+    A thing that happened at a particular venue on a particular date.
     """
+
+    # The keys are used as slugs, so should be appropriate:
+    KIND_CHOICES = (
+        # ('comedy',      'Comedy'),
+        # ('concert',     'Classical concert'),
+        # ('dance',       'Dance'),
+        # ('exhibition',  'Exhibition'),
+        ('gig',         'Gig'),
+        ('misc',        'Misc'),
+        ('movie',       'Movie'),
+        ('play',        'Play'),
+    )
+
+    # Mapping keys from KIND_CHOICES to the slugs we'll use in URLs:
+    KIND_SLUGS = {
+        'gig':      'gigs',
+        'misc':     'misc',
+        'movie':    'movies',
+        'play':     'plays'
+    }
+
+    kind = models.CharField(max_length=20, choices=KIND_CHOICES, blank=False)
+
+    date = models.DateField(null=True, blank=False)
+
+    venue = models.ForeignKey('Venue', blank=False)
+
     title = models.CharField(null=False, blank=True, max_length=255,
             help_text="Optional. e.g., 'Indietracks 2017', 'Radio 1 Roadshow'.")
 
@@ -74,21 +68,33 @@ class Concert(Event):
             help_text="e.g. 'reading festival, the' or 'drifters, the'.")
 
     creators = models.ManyToManyField('core.Creator',
-                                through='ConcertRole', related_name='concerts')
-    event_kind = 'concert'
+                                through='EventRole', related_name='events')
+
+    movie = models.ForeignKey('Movie', null=True, blank=True,
+            help_text="Only used if event is of 'movie' kind.")
+
+    play = models.ForeignKey('Play', null=True, blank=True,
+            help_text="Only used if event is of 'play' kind.")
+
+    kind_slug = models.SlugField(null=False, blank=True,
+            help_text="Set when the event is saved.")
 
     class Meta:
-        ordering = ('title_sort',)
+        ordering = ['date',]
 
     def __str__(self):
         if self.title:
             return self.title
         else:
             roles = list(self.roles.all())
-            if len(roles) == 0:
-                return 'Concert #{}'.format(self.pk)
+            if self.kind == 'movie':
+                return str(self.movie)
+            elif self.kind == 'play':
+                return str(self.play)
             elif len(roles) == 1:
                 return str(roles[0].creator.name)
+            elif len(roles) == 0:
+                return 'Event {}'.format(self.pk)
             else:
                 roles = [r.creator.name for r in roles]
                 # Join with commas but 'and' for the last one:
@@ -97,14 +103,36 @@ class Concert(Event):
                             roles[-1]
                         )
 
+    def save(self, *args, **kwargs):
+        self.kind_slug = self.KIND_SLUGS[self.kind]
+        super().save(*args, **kwargs)
+
     def get_absolute_url(self):
-        return reverse('spectator:concert_detail', kwargs={'pk':self.pk})
+        pk = self.pk
+
+        if self.kind == 'movie':
+            pk = self.movie.pk
+        elif self.kind == 'play':
+            pk = self.play.pk
+
+        return reverse('spectator:event_detail',
+                        kwargs={'kind_slug': self.kind_slug, 'pk':pk})
+
+    @property
+    def kind_name(self):
+        "e.g. 'Gig' or 'Movie'."
+        return {k:v for (k,v) in self.KIND_CHOICES}[self.kind]
+
+    @property
+    def kind_name_plural(self):
+        "e.g. 'Gigs' or 'Movies'."
+        return '{}s'.format(self.kind_name)
 
     @property
     def title_to_sort(self):
         """
         The string we use to create the title_sort property.
-        We want to be able to sort by the concert's Creators, if it doesn't
+        We want to be able to sort by the event's Creators, if it doesn't
         have a title.
         """
         return self.__str__()
@@ -112,7 +140,7 @@ class Concert(Event):
 
 class MovieRole(BaseRole):
     """
-    Through model for linking a creator to a Movie, optionally via their role
+    Through model for linking a Creator to a Movie, optionally via their role
     (e.g.  'Director', 'Actor', etc.)
     """
     creator = models.ForeignKey('core.Creator', blank=False,
@@ -139,7 +167,7 @@ class Movie(TimeStampedModelMixin, models.Model):
             print(role.movie, role.creator, role.role_name)
 
         # When it's been seen:
-        for ev in movie.movieevent_set.all():
+        for ev in movie.event_set.all():
             print(ev.venue, ev.date)
     """
     YEAR_CHOICES = [(r,r) for r in range(1888, datetime.date.today().year+1)]
@@ -179,24 +207,14 @@ class Movie(TimeStampedModelMixin, models.Model):
             return self.title
 
     def get_absolute_url(self):
-        return reverse('spectator:movie_detail', kwargs={'pk':self.pk})
-
-
-class MovieEvent(Event):
-    """
-    An occasion on which a Movie was watched.
-    """
-    movie = models.ForeignKey('Movie', null=False, blank=False)
-    event_kind = 'movie'
-
-    def __str__(self):
-        return str(self.movie)
+        return reverse('spectator:event_detail',
+                        kwargs={'kind_slug': 'movies', 'pk':self.pk})
 
 
 class PlayRole(BaseRole):
     """
-    Through model for linking a creator to a Play, optionally via their role
-    (e.g. 'Author'.)
+    Through model for linking a Creator to a Play, optionally via their role
+    (e.g. 'Playwright'.)
     """
     creator = models.ForeignKey('core.Creator', blank=False,
                         on_delete=models.CASCADE, related_name='play_roles')
@@ -221,11 +239,9 @@ class Play(TimeStampedModelMixin, models.Model):
         for role in play.roles.all():
             print(role.play, role.creator, role.role_name)
 
-        # The productions and events:
-        for production in play.playproduction_set.all():
-            print(production)
-            for event in production.playproductionevent_set.all():
-                print(event.venue, event.date)
+        # When it's been seen:
+        for ev in play.event_set.all():
+            print(ev.venue, ev.date)
     """
     title = models.CharField(null=False, blank=False, max_length=255)
 
@@ -242,140 +258,8 @@ class Play(TimeStampedModelMixin, models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('spectator:play_detail', kwargs={'pk':self.pk})
-
-
-class PlayProductionRole(BaseRole):
-    """
-    Through model for linking a creator to a particular production of a Play,
-    optionally via their role (e.g. 'Director' or 'Actor'.)
-    """
-    creator = models.ForeignKey('core.Creator', blank=False,
-                on_delete=models.CASCADE, related_name='play_production_roles')
-
-    production = models.ForeignKey('PlayProduction', on_delete=models.CASCADE,
-                                                related_name='roles')
-
-
-class PlayProduction(TimeStampedModelMixin, models.Model):
-    """
-    A particular production of a play by a certain company/director/etc.
-
-    Get a PlayProduction's creators:
-
-        production = PlayProduction.objects.get(pk=1)
-
-        # Just the creators:
-        for creator in production.creators.all():
-            print(creator.name)
-
-        # Include their roles:
-        for role in production.roles.all():
-            print(role.production.play, role.production.title,\
-                    role.creator, role.role_name)
-
-        # The events:
-        for event in production.playproductionevent_set.all():
-            print(event.venue, event.date)
-    """
-    play = models.ForeignKey('Play', null=False, blank=False)
-
-    title = models.CharField(null=False, blank=True, max_length=255,
-            help_text="Optional title of this production of the play.")
-
-    creators = models.ManyToManyField('core.Creator',
-                    through='PlayProductionRole',
-                    related_name='play_productions',
-                    help_text="The director, actors, etc. in this production.")
-
-    class Meta:
-        ordering = ('play__title',)
-
-    def __str__(self):
-        if self.title:
-            return self.title
-        else:
-            roles = list(self.roles.all())
-            if len(roles) == 0:
-                return 'Production of {}'.format(self.play)
-            elif len(roles) == 1:
-                return '{} by {}'.format(self.play, roles[0].creator)
-            else:
-                return '{} by {} et al.'.format(
-                            self.play,
-                            roles[0].creator.name
-                        )
-
-
-class PlayProductionEvent(Event):
-    """
-    An occasion on which a PlayProduction was watched.
-    """
-    production = models.ForeignKey('PlayProduction', blank=False)
-    event_kind = 'play'
-
-    def __str__(self):
-        return str(self.production)
-
-
-class MiscEventRole(BaseRole):
-    """
-    Through model for linking a creator to a MiscEvent, optionally via their
-    role (e.g. 'Performer', 'Director', etc.)
-
-    Every time one of these is saved/deleted a signal re-saves the MiscEvent
-    in case its `title_sort` needs to change.
-    """
-    creator = models.ForeignKey('core.Creator', blank=False,
-                    on_delete=models.CASCADE, related_name='miscevent_roles')
-
-    miscevent = models.ForeignKey('MiscEvent', on_delete=models.CASCADE,
-                                                        related_name='roles')
-
-
-class MiscEvent(Event):
-
-    title = models.CharField(null=False, blank=True, max_length=255,
-            help_text="Optional. e.g., 'A Great Event'.")
-
-    title_sort = NaturalSortField('title_to_sort', max_length=255, default='',
-            help_text="e.g. 'great event, a'.")
-
-    creators = models.ManyToManyField('core.Creator',
-                            through='MiscEventRole', related_name='miscevents')
-    event_kind = 'misc'
-
-    class Meta:
-        ordering = ('title_sort',)
-
-    def __str__(self):
-        if self.title:
-            return self.title
-        else:
-            roles = list(self.roles.all())
-            if len(roles) == 0:
-                return 'Misc Event #{}'.format(self.pk)
-            elif len(roles) == 1:
-                return str(roles[0].creator.name)
-            else:
-                roles = [r.creator.name for r in roles]
-                # Join with commas but 'and' for the last one:
-                return '{} and {}'.format(
-                            ', '.join(roles[:-1]),
-                            roles[-1]
-                        )
-
-    def get_absolute_url(self):
-        return reverse('spectator:miscevent_detail', kwargs={'pk':self.pk})
-
-    @property
-    def title_to_sort(self):
-        """
-        The string we use to create the title_sort property.
-        We want to be able to sort by the concert's MiscEvent's, if it doesn't
-        have a title.
-        """
-        return self.__str__()
+        return reverse('spectator:event_detail',
+                        kwargs={'kind_slug': 'plays', 'pk':self.pk})
 
 
 class Venue(TimeStampedModelMixin, models.Model):

@@ -10,7 +10,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:movie_list' %}">Movies</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'spectator:event_list' kind_slug='movies' %}">Movies</a></li>
     <li class="breadcrumb-item active">{{ movie.title }}</li>
 {% endblock %}
 
@@ -27,7 +27,7 @@
         {% endif %}
     {% endwith %}
 
-    {% include 'spectator/events/includes/visits_list.html' with events=movie.movieevent_set.all heading_level='h2' only %}
+    {% include 'spectator/events/includes/visits_list.html' with events=movie.event_set.all heading_level='h2' only %}
 
 {% endblock content %}
 
@@ -37,7 +37,7 @@
         <div class="card mb-3">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
-                    <a href="{% url 'admin:spectator_movie_change' movie.id %}">Edit in Admin</a>
+                    <a href="{% url 'admin:events_movie_change' movie.id %}">Edit in Admin</a>
                 </li>
             </ul>
         </div>
