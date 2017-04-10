@@ -8,7 +8,7 @@ except ImportError:
 
 from .. import make_date
 from spectator.events import views
-from spectator.factories import ConcertFactory
+from spectator.events.factories import ConcertFactory
 
 
 class EventsUrlsTestCase(TestCase):

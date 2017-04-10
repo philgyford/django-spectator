@@ -1,7 +1,7 @@
 from django.http.response import Http404
 
 from .. import make_date
-from ..core import ViewTestCase
+from ..core.test_views import ViewTestCase
 from spectator.reading import views
 from spectator.reading.factories import PublicationFactory,\
         PublicationSeriesFactory, ReadingFactory

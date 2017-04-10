@@ -98,7 +98,7 @@ class PlayProductionLinkInline(admin.TabularInline):
             return '{}{}'.format(instance, events)
         else:
             playproduction_addform_url = urlresolvers.reverse(
-                'admin:spectator_playproduction_add'
+                'admin:events_playproduction_add'
             )
             return '<a href="{}" class="js-add-event-link">Add another Play Production and event</a>'.format(playproduction_addform_url)
     display_str.allow_tags = True
@@ -111,7 +111,7 @@ class PlayProductionLinkInline(admin.TabularInline):
         link = ''
         if instance.id:
             changeform_url = urlresolvers.reverse(
-                'admin:spectator_playproduction_change', args=(instance.id,)
+                'admin:events_playproduction_change', args=(instance.id,)
             )
 
             link = '<a href="{}">Change production and/or event(s)</a>'.format(changeform_url)

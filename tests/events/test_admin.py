@@ -4,6 +4,7 @@ from django import get_version
 from django.test import TestCase
 
 from .. import make_date
+from ..core.test_admin import AdminTestCase
 from spectator.core.factories import IndividualCreatorFactory
 from spectator.events.admin import PlayAdmin, PlayProductionAdmin,\
         PlayProductionLinkInline
@@ -37,7 +38,7 @@ class PlayProductionLinkInlineTestCase(AdminTestCase):
         ppli = PlayProductionLinkInline(pp, self.site)
         self.assertEqual(
             ppli.display_str(pp),
-            '<a href="/admin/spectator/playproduction/add/" class="js-add-event-link">Add another Play Production and event</a>'
+            '<a href="/admin/events/playproduction/add/" class="js-add-event-link">Add another Play Production and event</a>'
         )
 
     def test_get_max_num(self):
@@ -63,12 +64,12 @@ class PlayProductionLinkInlineTestCase(AdminTestCase):
         if StrictVersion(get_version()) < StrictVersion('1.9'):
             self.assertEqual(
                 ppli.changeform_link(pp),
-                '<a href="/admin/spectator/playproduction/1/">Change production and/or event(s)</a>'
+                '<a href="/admin/events/playproduction/1/">Change production and/or event(s)</a>'
             )
         else:
             self.assertEqual(
                 ppli.changeform_link(pp),
-                '<a href="/admin/spectator/playproduction/1/change/">Change production and/or event(s)</a>'
+                '<a href="/admin/events/playproduction/1/change/">Change production and/or event(s)</a>'
             )
 
     def test_changeform_link_with_no_instance(self):

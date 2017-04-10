@@ -7,8 +7,8 @@ except ImportError:
     from django.core.urlresolvers import resolve, reverse
 
 from spectator.reading import views
-from spectator.factories import PublicationFactory, PublicationSeriesFactory,\
-        ReadingFactory
+from spectator.reading.factories import PublicationFactory,\
+        PublicationSeriesFactory, ReadingFactory
 
 
 class ReadingUrlsTestCase(TestCase):

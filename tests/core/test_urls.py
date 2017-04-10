@@ -7,7 +7,7 @@ except ImportError:
     from django.core.urlresolvers import resolve, reverse
 
 from spectator.core import views
-from spectator.factories import IndividualCreatorFactory
+from spectator.core.factories import IndividualCreatorFactory
 
 
 # Testing that the named URLs map the correct name to URL,

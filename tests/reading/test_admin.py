@@ -1,10 +1,11 @@
 from django.test import TestCase
 
 from .. import make_date
+from ..core.test_admin import AdminTestCase
 from spectator.core.factories import IndividualCreatorFactory
 from spectator.reading.admin import PublicationAdmin
 from spectator.reading.factories import PublicationFactory,\
-        PublicationRoleFactory,
+        PublicationRoleFactory
 from spectator.reading.models import Publication
 
 

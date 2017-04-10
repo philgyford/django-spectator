@@ -3,7 +3,7 @@ from django.http.response import Http404
 from django.test import override_settings
 
 from .. import make_date
-from ..core import ViewTestCase
+from ..core.test_views import ViewTestCase
 from spectator.events import views
 from spectator.events.factories import ConcertFactory, MovieFactory,\
         MovieEventFactory, PlayFactory, PlayProductionEventFactory,\
