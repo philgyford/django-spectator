@@ -63,8 +63,24 @@ class EventAdmin(admin.ModelAdmin):
     inlines = [ EventRoleInline, ]
 
 
+class ProductionAdmin(admin.ModelAdmin):
+    """
+    A parent class for MovieAdmin and PlayAdmin.
+    """
+    def show_creators(self, instance):
+        names = [ str(r.creator) for r in instance.roles.all() ]
+        if len(names) == 0:
+            return '-'
+        elif len(names) <= 3:
+            return ', '.join(names)
+        else:
+            # Too many to list them all.
+            return '{} et al.'.format(names[0])
+    show_creators.short_description = 'Creators'
+
+
 @admin.register(Movie)
-class MovieAdmin(admin.ModelAdmin):
+class MovieAdmin(ProductionAdmin):
     list_display = ('title', 'year', 'show_creators',)
     list_filter = ('year',)
     search_fields = ('title',)
@@ -83,20 +99,9 @@ class MovieAdmin(admin.ModelAdmin):
 
     inlines = [ MovieRoleInline, ]
 
-    def show_creators(self, instance):
-        names = [ str(r.creator) for r in instance.roles.all() ]
-        if len(names) == 0:
-            return '-'
-        elif len(names) <= 3:
-            return ', '.join(names)
-        else:
-            # Too many to list them all.
-            return '{} et al.'.format(names[0])
-    show_creators.short_description = 'Creators'
-
 
 @admin.register(Play)
-class PlayAdmin(admin.ModelAdmin):
+class PlayAdmin(ProductionAdmin):
     list_display = ('title', 'show_creators')
     search_fields = ('title',)
 
@@ -113,17 +118,6 @@ class PlayAdmin(admin.ModelAdmin):
     readonly_fields = ('title_sort', 'time_created', 'time_modified',)
 
     inlines = [ PlayRoleInline, ]
-
-    def show_creators(self, instance):
-        names = [ str(r.creator) for r in instance.roles.all() ]
-        if len(names) == 0:
-            return '-'
-        elif len(names) <= 3:
-            return ', '.join(names)
-        else:
-            # Too many to list them all.
-            return '{} et al.'.format(names[0])
-    show_creators.short_description = 'Creators'
 
 
 @admin.register(Venue)

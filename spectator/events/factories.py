@@ -11,23 +11,6 @@ class VenueFactory(factory.DjangoModelFactory):
     name = factory.Sequence(lambda n: 'Venue %s' % n)
 
 
-class EventFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.Event
-
-    title = factory.Sequence(lambda n: 'Event %s' % n)
-    venue = factory.SubFactory(VenueFactory)
-
-
-class EventRoleFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.EventRole
-
-    role_name = factory.Sequence(lambda n: 'Role %s' % n)
-    creator = factory.SubFactory(IndividualCreatorFactory)
-    event = factory.SubFactory(EventFactory)
-
-
 class MovieFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Movie
@@ -59,3 +42,33 @@ class PlayRoleFactory(factory.DjangoModelFactory):
     creator = factory.SubFactory(IndividualCreatorFactory)
     play = factory.SubFactory(PlayFactory)
 
+
+class EventFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Event
+
+    title = factory.Sequence(lambda n: 'Event %s' % n)
+    venue = factory.SubFactory(VenueFactory)
+
+class GigEventFactory(EventFactory):
+    kind = 'gig'
+
+class MiscEventFactory(EventFactory):
+    kind = 'misc'
+
+class MovieEventFactory(EventFactory):
+    kind = 'movie'
+    movie = factory.SubFactory(MovieFactory)
+
+class PlayEventFactory(EventFactory):
+    kind = 'play'
+    play = factory.SubFactory(PlayFactory)
+
+
+class EventRoleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.EventRole
+
+    role_name = factory.Sequence(lambda n: 'Role %s' % n)
+    creator = factory.SubFactory(IndividualCreatorFactory)
+    event = factory.SubFactory(EventFactory)

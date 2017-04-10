@@ -3,106 +3,145 @@ from django.test import TestCase
 from .. import make_date
 from spectator.core.factories import *
 from spectator.events.factories import *
-from spectator.events.models import Concert, Movie, MovieEvent,\
-        Play, PlayProduction, PlayProductionEvent, MiscEvent, Venue
+from spectator.events.models import Event, Movie, Play, Venue
 
 
 class EventTestCase(TestCase):
-    "Testing the parent class."
-
-    def test_str(self):
-        e = EventFactory()
-        self.assertEqual(str(e), 'Event #{}'.format(e.pk))
-
-
-class ConcertTestCase(TestCase):
 
     def test_str_with_title(self):
-        "If concert has a title, that should be used."
+        "If event has a title, that should be used."
         band = GroupCreatorFactory(name='Martha')
-        concert = ConcertFactory(title='Indietracks 2017')
-        ConcertRoleFactory(concert=concert, creator=band)
-        self.assertEqual(str(concert), 'Indietracks 2017')
+        event = GigEventFactory(title='Indietracks 2017')
+        EventRoleFactory(event=event, creator=band)
+        self.assertEqual(str(event), 'Indietracks 2017')
 
     def test_str_with_no_title_or_creators(self):
-        "With no title or band names, it still has a __str__"
-        concert = ConcertFactory(title='')
-        self.assertEqual(str(concert), 'Concert #{}'.format(concert.pk))
+        "With no title or creator names, it still has a __str__"
+        event = GigEventFactory(title='')
+        self.assertEqual(str(event), 'Event #{}'.format(event.pk))
 
     def test_str_with_no_title_one_creator(self):
-        concert = ConcertFactory(title='')
-        ConcertRoleFactory(
-                concert=concert,
+        event = GigEventFactory(title='')
+        EventRoleFactory(
+                event=event,
                 creator=GroupCreatorFactory(name='Martha'),
                 role_name='Headliner')
-        self.assertEqual(str(concert), 'Martha')
+        self.assertEqual(str(event), 'Martha')
 
     def test_str_with_no_title_several_creators(self):
-        "If concert has no title, band names should be used."
-        concert = ConcertFactory(title='')
-        ConcertRoleFactory(
-                concert=concert,
+        "If event has no title, creator names should be used."
+        event = GigEventFactory(title='')
+        EventRoleFactory(
+                event=event,
                 creator=GroupCreatorFactory(name='Milky Wimpshake'),
                 role_name='Headliner', role_order=1)
-        ConcertRoleFactory(
-                concert=concert,
+        EventRoleFactory(
+                event=event,
                 creator=GroupCreatorFactory(name='The Tuts'),
                 role_name='Support', role_order=3)
-        ConcertRoleFactory(
-                concert=concert,
+        EventRoleFactory(
+                event=event,
                 creator=GroupCreatorFactory(name='Martha'),
                 role_name='Support', role_order=2)
-        self.assertEqual(str(concert), 'Milky Wimpshake, Martha and The Tuts')
+        self.assertEqual(str(event), 'Milky Wimpshake, Martha and The Tuts')
 
     def test_title_sort_with_no_title(self):
         "If there's no title, title_sort should be based on creators."
-        concert = ConcertFactory(title='')
-        role1 = ConcertRoleFactory(
-                concert=concert,
+        event = GigEventFactory(title='')
+        role1 = EventRoleFactory(
+                event=event,
                 creator=GroupCreatorFactory(name='Milky Wimpshake'),
                 role_order=1)
-        role2 = ConcertRoleFactory(
-                concert=concert,
+        role2 = EventRoleFactory(
+                event=event,
                 creator=GroupCreatorFactory(name='Martha'),
                 role_order=2)
 
-        concert.refresh_from_db()
-        self.assertEqual(concert.title_sort, 'milky wimpshake and martha')
+        event.refresh_from_db()
+        self.assertEqual(event.title_sort, 'milky wimpshake and martha')
 
         # And check it updates after deleting a relationship:
         role2.delete()
-        concert.refresh_from_db()
-        self.assertEqual(concert.title_sort, 'milky wimpshake')
+        event.refresh_from_db()
+        self.assertEqual(event.title_sort, 'milky wimpshake')
+
+    def test_valid_kind_slugs(self):
+        self.assertEqual(
+            sorted(Event.get_valid_kind_slugs()),
+            sorted(['gigs', 'misc', 'movies', 'plays',])
+        )
+
+    def test_kind_slug(self):
+        "Should be set on save."
+        self.assertEqual(GigEventFactory().kind_slug, 'gigs')
+        self.assertEqual(MiscEventFactory().kind_slug, 'misc')
+        self.assertEqual(MovieEventFactory().kind_slug, 'movies')
+        self.assertEqual(PlayEventFactory().kind_slug, 'plays')
+
+    def test_kind_name(self):
+        self.assertEqual(GigEventFactory().kind_name, 'Gig')
+        self.assertEqual(MiscEventFactory().kind_name, 'Other')
+        self.assertEqual(MovieEventFactory().kind_name, 'Movie')
+        self.assertEqual(PlayEventFactory().kind_name, 'Play')
+
+    def test_kind_name_plural(self):
+        self.assertEqual(GigEventFactory().kind_name_plural, 'Gigs')
+        self.assertEqual(MiscEventFactory().kind_name_plural, 'Others')
+        self.assertEqual(MovieEventFactory().kind_name_plural, 'Movies')
+        self.assertEqual(PlayEventFactory().kind_name_plural, 'Plays')
 
     def test_ordering(self):
+        "Should order by -date by default."
+        e2 = GigEventFactory(title='Event', date=make_date('2017-02-01'))
+        e3 = GigEventFactory(title='Abba Event', date=make_date('2017-01-01'))
+        e1 = GigEventFactory(title='The Big Event',
+                                                date=make_date('2017-03-01'))
+        events = Event.objects.all()
+        self.assertEqual(events[0], e1)
+        self.assertEqual(events[1], e2)
+        self.assertEqual(events[2], e3)
+
+    def test_title_sort_ordering(self):
         "Should order by title_sort"
-        c3 = ConcertFactory(title='Concert')
-        c1 = ConcertFactory(title='Abba Concert')
-        c2 = ConcertFactory(title='The Big Concert')
-        concerts = Concert.objects.all()
-        self.assertEqual(concerts[0], c1)
-        self.assertEqual(concerts[1], c2)
-        self.assertEqual(concerts[2], c3)
+        e3 = GigEventFactory(title='Event')
+        e1 = GigEventFactory(title='Abba Event')
+        e2 = GigEventFactory(title='The Big Event')
+        events = Event.objects.all().order_by('title_sort')
+        self.assertEqual(events[0], e1)
+        self.assertEqual(events[1], e2)
+        self.assertEqual(events[2], e3)
 
     def test_roles(self):
-        "It can have multiple ConcertRoles."
+        "It can have multiple EventRoles."
         bob = IndividualCreatorFactory(name='Bob')
         martha = GroupCreatorFactory(name='Martha')
-        concert = ConcertFactory()
-        bobs_role = ConcertRoleFactory(concert=concert, creator=bob,
+        event = GigEventFactory()
+        bobs_role = EventRoleFactory(event=event, creator=bob,
                                         role_name='Supporter', role_order=2)
-        marthas_role = ConcertRoleFactory(concert=concert, creator=martha,
+        marthas_role = EventRoleFactory(event=event, creator=martha,
                                         role_name='Headliner', role_order=1)
-        roles = concert.roles.all()
+        roles = event.roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], marthas_role)
         self.assertEqual(roles[1], bobs_role)
         self.assertEqual(roles[0].role_name, 'Headliner')
         self.assertEqual(roles[1].role_name, 'Supporter')
 
-    def test_absolute_url(self):
-        concert = ConcertFactory(pk=3)
-        self.assertEqual(concert.get_absolute_url(), '/events/concerts/3/')
+    def test_absolute_url_gig(self):
+        event = GigEventFactory(pk=3)
+        self.assertEqual(event.get_absolute_url(), '/events/gigs/3/')
+
+    def test_absolute_url_misc(self):
+        event = MiscEventFactory(pk=3)
+        self.assertEqual(event.get_absolute_url(), '/events/misc/3/')
+
+    def test_absolute_url_movie(self):
+        event = MovieEventFactory(pk=3, movie=MovieFactory(pk=6))
+        self.assertEqual(event.get_absolute_url(), '/events/movies/6/')
+
+    def test_absolute_url_play(self):
+        event = PlayEventFactory(pk=3, play=PlayFactory(pk=6))
+        self.assertEqual(event.get_absolute_url(), '/events/plays/6/')
 
 
 class MovieTestCase(TestCase):
@@ -145,24 +184,6 @@ class MovieTestCase(TestCase):
         self.assertEqual(movie.get_absolute_url(), '/events/movies/3/')
 
 
-class MovieEventTestCase(TestCase):
-
-    def test_str(self):
-        m = MovieFactory(title="Trust")
-        me = MovieEventFactory(movie=m, date=make_date('2017-02-28'))
-        self.assertEqual(str(me), 'Trust')
-
-    def test_ordering(self):
-        "Should order by date"
-        me3 = MovieEventFactory(date=make_date('2017-02-28'))
-        me1 = MovieEventFactory(date=make_date('2016-06-28'))
-        me2 = MovieEventFactory(date=make_date('2016-12-28'))
-        movie_events = MovieEvent.objects.all()
-        self.assertEqual(movie_events[0], me1)
-        self.assertEqual(movie_events[1], me2)
-        self.assertEqual(movie_events[2], me3)
-
-
 class PlayTestCase(TestCase):
 
     def test_str(self):
@@ -199,84 +220,6 @@ class PlayTestCase(TestCase):
         self.assertEqual(play.get_absolute_url(), '/events/plays/3/')
 
 
-class PlayProductionTestCase(TestCase):
-
-    def test_str_with_title(self):
-        production = PlayProductionFactory(
-                            play=PlayFactory(title='Twelfth Night'),
-                            title='Special Production')
-        self.assertEqual(str(production), 'Special Production')
-
-    def test_str_with_no_title_no_creators(self):
-        production = PlayProductionFactory(
-                            play=PlayFactory(title='Twelfth Night'),
-                            title='')
-        self.assertEqual(str(production), 'Production of Twelfth Night')
-
-    def test_str_with_no_title_one_creator(self):
-        production = PlayProductionFactory(
-                            play=PlayFactory(title='Twelfth Night'),
-                            title='')
-        PlayProductionRoleFactory(production=production,
-                            creator=IndividualCreatorFactory(name='Bob'))
-        self.assertEqual(str(production), 'Twelfth Night by Bob')
-
-    def test_str_with_no_title_several_creators(self):
-        production = PlayProductionFactory(
-                            play=PlayFactory(title='Twelfth Night'),
-                            title='')
-        PlayProductionRoleFactory(production=production,
-                            creator=IndividualCreatorFactory(name='Bob'),
-                            role_order=2)
-        PlayProductionRoleFactory(production=production,
-                            creator=IndividualCreatorFactory(name='Terry'),
-                            role_order=1)
-        self.assertEqual(str(production), 'Twelfth Night by Terry et al.')
-
-    def test_ordering(self):
-        p3 = PlayProductionFactory(play=PlayFactory(title='Play C'))
-        p1 = PlayProductionFactory(play=PlayFactory(title='Play A'))
-        p2 = PlayProductionFactory(play=PlayFactory(title='Play B'))
-        productions = PlayProduction.objects.all()
-        self.assertEqual(productions[0], p1)
-        self.assertEqual(productions[1], p2)
-        self.assertEqual(productions[2], p3)
-
-    def test_roles(self):
-        "It can have multiple PlayProductionRoles."
-        bob = IndividualCreatorFactory(name='Bob')
-        terry = IndividualCreatorFactory(name='Terry')
-        production = PlayProductionFactory()
-        bobs_role = PlayProductionRoleFactory(production=production,
-                            creator=bob, role_name='Actor', role_order=2)
-        terrys_role = PlayProductionRoleFactory(production=production,
-                            creator=terry, role_name='Director', role_order=1)
-        roles = production.roles.all()
-        self.assertEqual(len(roles), 2)
-        self.assertEqual(roles[0], terrys_role)
-        self.assertEqual(roles[1], bobs_role)
-        self.assertEqual(roles[0].role_name, 'Director')
-        self.assertEqual(roles[1].role_name, 'Actor')
-
-
-class PlayProductionEventTestCase(TestCase):
-
-    def test_str(self):
-        pp = PlayProductionFactory(title='Special Production')
-        ppe = PlayProductionEventFactory(production=pp)
-        self.assertEqual(str(ppe), 'Special Production')
-
-    def test_ordering(self):
-        "Should order by date"
-        ppe3 = PlayProductionEventFactory(date=make_date('2017-02-28'))
-        ppe1 = PlayProductionEventFactory(date=make_date('2016-06-28'))
-        ppe2 = PlayProductionEventFactory(date=make_date('2016-12-28'))
-        production_events = PlayProductionEvent.objects.all()
-        self.assertEqual(production_events[0], ppe1)
-        self.assertEqual(production_events[1], ppe2)
-        self.assertEqual(production_events[2], ppe3)
-
-
 class VenueTestCase(TestCase):
 
     def test_str(self):
@@ -304,95 +247,4 @@ class VenueTestCase(TestCase):
     def test_country_name_no(self):
         venue = VenueFactory(country='')
         self.assertEqual(venue.country_name, None)
-
-
-class MiscEventTestCase(TestCase):
-
-    def test_str_with_title(self):
-        "If event has a title, that should be used."
-        person = IndividualCreatorFactory(name='Stewart Lee')
-        event = MiscEventFactory(title='Comedy Gig')
-        MiscEventRoleFactory(miscevent=event, creator=person)
-        self.assertEqual(str(event), 'Comedy Gig')
-
-    def test_str_with_no_title_or_creators(self):
-        "With no title or creator names, it still has a __str__"
-        event = MiscEventFactory(title='')
-        self.assertEqual(str(event), 'Misc Event #{}'.format(event.pk))
-
-    def test_str_with_no_title_one_creator(self):
-        event = MiscEventFactory(title='')
-        MiscEventRoleFactory(
-                miscevent=event,
-                creator=IndividualCreatorFactory(name='Stewart Lee'),
-                role_name='Comedian')
-        self.assertEqual(str(event), 'Stewart Lee')
-
-    def test_str_with_no_title_several_creators(self):
-        "If event has no title, creator names should be used."
-        event = MiscEventFactory(title='')
-        MiscEventRoleFactory(
-                miscevent=event,
-                creator=IndividualCreatorFactory(name='Stewart Lee'),
-                role_order=1)
-        MiscEventRoleFactory(
-                miscevent=event,
-                creator=IndividualCreatorFactory(name='Simon Munnery'),
-                role_order=3)
-        MiscEventRoleFactory(
-                miscevent=event,
-                creator=IndividualCreatorFactory(name='Richard Herring'),
-                role_order=2)
-        self.assertEqual(str(event),
-                'Stewart Lee, Richard Herring and Simon Munnery')
-
-    def test_title_sort_with_no_title(self):
-        "If there's no title, title_sort should be based on creators."
-        event = MiscEventFactory(title='')
-        role1 = MiscEventRoleFactory(
-                miscevent=event,
-                creator=IndividualCreatorFactory(name='Stewart Lee'),
-                role_order=1)
-        role2 = MiscEventRoleFactory(
-                miscevent=event,
-                creator=IndividualCreatorFactory(name='Richard Herring'),
-                role_order=2)
-
-        event.refresh_from_db()
-        self.assertEqual(event.title_sort, 'stewart lee and richard herring')
-
-        # And check it updates after deleting a relationship:
-        role2.delete()
-        event.refresh_from_db()
-        self.assertEqual(event.title_sort, 'stewart lee')
-
-    def test_ordering(self):
-        "Should order by title_sort"
-        e3 = MiscEventFactory(title='Event')
-        e1 = MiscEventFactory(title='Amazing Event')
-        e2 = MiscEventFactory(title='The Big Event')
-        events = MiscEvent.objects.all()
-        self.assertEqual(events[0], e1)
-        self.assertEqual(events[1], e2)
-        self.assertEqual(events[2], e3)
-
-    def test_roles(self):
-        "It can have multiple MiscEventRoles."
-        bob = IndividualCreatorFactory(name='Bob')
-        martha = GroupCreatorFactory(name='Martha')
-        event = MiscEventFactory()
-        bobs_role = MiscEventRoleFactory(miscevent=event, creator=bob,
-                                        role_name='Supporter', role_order=2)
-        marthas_role = MiscEventRoleFactory(miscevent=event, creator=martha,
-                                        role_name='Headliner', role_order=1)
-        roles = event.roles.all()
-        self.assertEqual(len(roles), 2)
-        self.assertEqual(roles[0], marthas_role)
-        self.assertEqual(roles[1], bobs_role)
-        self.assertEqual(roles[0].role_name, 'Headliner')
-        self.assertEqual(roles[1].role_name, 'Supporter')
-
-    def test_absolute_url(self):
-        event = MiscEventFactory(pk=3)
-        self.assertEqual(event.get_absolute_url(), '/events/misc/3/')
 

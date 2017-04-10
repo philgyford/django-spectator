@@ -20,6 +20,13 @@ class EventListView(PaginatedListView):
     ordering = ['-date',]
     template_name = 'spectator/events/event_list.html'
 
+    def get(self, request, *args, **kwargs):
+        slug = self.kwargs.get('kind_slug', None)
+        if slug is not None and slug not in Event.get_valid_kind_slugs():
+            raise Http404("Invalid kind_slug: '%s'" % slug)
+
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -72,6 +79,9 @@ class EventDetailView(DetailView):
     """
     model = Event
     template_name = 'spectator/events/event_detail.html'
+    slug_url_kwarg = 'kind_slug'
+    slug_field = 'kind_slug'
+    query_pk_and_slug = True
 
     def get_queryset(self):
         """
@@ -82,9 +92,11 @@ class EventDetailView(DetailView):
         if kind == 'movie':
             self.model = Movie
             self.template_name = 'spectator/events/movie_detail.html'
+            self.query_pk_and_slug = False
         elif kind == 'play':
             self.model = Play
             self.template_name = 'spectator/events/play_detail.html'
+            self.query_pk_and_slug = False
         return super().get_queryset()
 
     def get_event_kind(self):

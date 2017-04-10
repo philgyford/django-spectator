@@ -42,7 +42,7 @@ class Event(TimeStampedModelMixin, models.Model):
         # ('dance',       'Dance'),
         # ('exhibition',  'Exhibition'),
         ('gig',         'Gig'),
-        ('misc',        'Misc'),
+        ('misc',        'Other'),
         ('movie',       'Movie'),
         ('play',        'Play'),
     )
@@ -80,7 +80,7 @@ class Event(TimeStampedModelMixin, models.Model):
             help_text="Set when the event is saved.")
 
     class Meta:
-        ordering = ['date',]
+        ordering = ['-date',]
 
     def __str__(self):
         if self.title:
@@ -94,7 +94,7 @@ class Event(TimeStampedModelMixin, models.Model):
             elif len(roles) == 1:
                 return str(roles[0].creator.name)
             elif len(roles) == 0:
-                return 'Event {}'.format(self.pk)
+                return 'Event #{}'.format(self.pk)
             else:
                 roles = [r.creator.name for r in roles]
                 # Join with commas but 'and' for the last one:
@@ -117,6 +117,10 @@ class Event(TimeStampedModelMixin, models.Model):
 
         return reverse('spectator:event_detail',
                         kwargs={'kind_slug': self.kind_slug, 'pk':pk})
+
+    def get_valid_kind_slugs():
+        "Returns a list of the slugs that different kinds of Events can have."
+        return list(Event.KIND_SLUGS.values())
 
     @property
     def kind_name(self):

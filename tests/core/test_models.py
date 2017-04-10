@@ -41,15 +41,15 @@ class CreatorTestCase(TestCase):
         self.assertEqual(roles[0].role_name, 'Author')
         self.assertEqual(roles[1].role_name, 'Editor')
 
-    def test_concert_roles(self):
+    def test_event_roles(self):
         bob = IndividualCreatorFactory(name='Bob')
-        concert1 = ConcertFactory()
-        concert2 = ConcertFactory()
-        role1 = ConcertRoleFactory(
-                        concert=concert1, creator=bob, role_name='Headliner')
-        role2 = ConcertRoleFactory(
-                        concert=concert2, creator=bob, role_name='Support')
-        roles = bob.concert_roles.all()
+        event1 = GigEventFactory()
+        event2 = GigEventFactory()
+        role1 = EventRoleFactory(
+                        event=event1, creator=bob, role_name='Headliner')
+        role2 = EventRoleFactory(
+                        event=event2, creator=bob, role_name='Support')
+        roles = bob.event_roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], role1)
         self.assertEqual(roles[1], role2)
@@ -126,84 +126,4 @@ class CreatorTestCase(TestCase):
         self.assertEqual(plays[1].creator_roles[1], prole3)
         self.assertEqual(len(plays[1].creator_role_names), 1)
         self.assertEqual(plays[1].creator_role_names[0], 'Author')
-
-    def test_get_play_productions(self):
-        bob = IndividualCreatorFactory()
-        # Two productions. 1 role in the first, 2 in the second.
-        p1 = PlayFactory(title='Play 1')
-        pp1 = PlayProductionFactory(play=p1, title='Production 1')
-        pprole1 = PlayProductionRoleFactory(
-                production=pp1, creator=bob, role_name='Director')
-        pp2 = PlayProductionFactory(play=p1, title='Production 2')
-        pprole2 = PlayProductionRoleFactory(
-                production=pp2, creator=bob, role_name='', role_order=2)
-        pprole3 = PlayProductionRoleFactory(
-                production=pp2, creator=bob, role_name='Actor', role_order=1)
-
-        pps = bob.get_play_productions()
-        self.assertEqual(len(pps), 2)
-
-        self.assertEqual(pps[0], pp1)
-        self.assertEqual(len(pps[0].creator_roles), 1)
-        self.assertEqual(pps[0].creator_roles[0], pprole1)
-        self.assertEqual(len(pps[0].creator_role_names), 1)
-        self.assertEqual(pps[0].creator_role_names[0], 'Director')
-
-        self.assertEqual(pps[1], pp2)
-        self.assertEqual(len(pps[1].creator_roles), 2)
-        self.assertEqual(pps[1].creator_roles[0], pprole3)
-        self.assertEqual(pps[1].creator_roles[1], pprole2)
-        self.assertEqual(len(pps[1].creator_role_names), 1)
-        self.assertEqual(pps[1].creator_role_names[0], 'Actor')
-
-    def test_get_plays_and_productions(self):
-        bob = IndividualCreatorFactory()
-
-        # One play, which Bob worked on:
-        p1 = PlayFactory(title='Play 1')
-        prole1 = PlayRoleFactory(play=p1, creator=bob, role_name='Writer')
-        # And two productions of it, which Bob worked on:
-        pp1a = PlayProductionFactory(play=p1, title='Production 1a')
-        pprole1a = PlayProductionRoleFactory(
-                production=pp1a, creator=bob, role_name='Director')
-        pp1b = PlayProductionFactory(play=p1, title='Production 1b')
-        pprole1b = PlayProductionRoleFactory(
-                production=pp1b, creator=bob, role_name='Actor')
-
-        # Another play which Bob worked on:
-        p2 = PlayFactory(title='Play 2')
-        prole2 = PlayRoleFactory(play=p2, creator=bob, role_name='Playwright')
-        # And a Production which Bob DIDN'T work on:
-        pp2 = PlayProductionFactory(play=p2, title='Production 2')
-        pprole2 = PlayProductionRoleFactory(
-                production=pp2, role_name='Director')
-
-        # And a play which Bob DIDN'T work on:
-        p3 = PlayFactory(title='Play 3')
-        # But a Production of it which he DID:
-        pp3 = PlayProductionFactory(play=p3, title='Production 3')
-        pprole3 = PlayProductionRoleFactory(
-                production=pp3, creator=bob, role_name='Producer')
-        
-        paps = bob.get_plays_and_productions()
-        self.assertEqual(len(paps), 3)
-
-        self.assertEqual(paps[0]['play'], p1)
-        self.assertEqual(len(paps[0]['productions']), 2)
-        self.assertEqual(paps[0]['productions'][0], pp1a)
-        self.assertEqual(paps[0]['productions'][1], pp1b)
-
-        self.assertEqual(len(paps[0]['play'].creator_roles), 1)
-        self.assertEqual(paps[0]['play'].creator_roles[0], prole1)
-        self.assertEqual(len(paps[0]['play'].creator_role_names), 1)
-        self.assertEqual(paps[0]['play'].creator_role_names[0], 'Writer')
-
-        self.assertEqual(len(paps[0]['productions'][0].creator_roles), 1)
-        self.assertEqual(len(paps[0]['productions'][1].creator_roles), 1)
-
-        self.assertEqual(paps[1]['play'], p2)
-        self.assertEqual(len(paps[1]['productions']), 0)
-
-        self.assertEqual(paps[2]['play'], p3)
-        self.assertEqual(len(paps[2]['productions']), 1)
 

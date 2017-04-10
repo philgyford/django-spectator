@@ -5,7 +5,7 @@ from .. import make_date
 from spectator.core import views
 from spectator.core.factories import GroupCreatorFactory,\
         IndividualCreatorFactory
-from spectator.events.factories import ConcertFactory, MovieEventFactory
+from spectator.events.factories import GigEventFactory, MovieEventFactory
 from spectator.reading.factories import ReadingFactory
 
 
@@ -50,16 +50,16 @@ class HomeViewTestCase(ViewTestCase):
 
     def test_context_recent_events(self):
         "It should have recent Events in the context."
-        c1 = ConcertFactory(   date=make_date('2017-02-20'))
-        c2 = ConcertFactory(   date=make_date('2017-02-05'))
+        g1 = GigEventFactory(  date=make_date('2017-02-20'))
+        g2 = GigEventFactory(  date=make_date('2017-02-05'))
         m1 = MovieEventFactory(date=make_date('2017-02-10'))
         response = views.HomeView.as_view()(self.request)
         context = response.context_data
         self.assertIn('recent_event_list', context)
         self.assertEqual(len(context['recent_event_list']), 3)
-        self.assertEqual(context['recent_event_list'][0], c1)
+        self.assertEqual(context['recent_event_list'][0], g1)
         self.assertEqual(context['recent_event_list'][1], m1)
-        self.assertEqual(context['recent_event_list'][2], c2)
+        self.assertEqual(context['recent_event_list'][2], g2)
 
 
 class CreatorListViewTestCase(ViewTestCase):
