@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from .. import make_date
@@ -100,6 +101,26 @@ class EventTestCase(TestCase):
         self.assertEqual(events[0], e1)
         self.assertEqual(events[1], e2)
         self.assertEqual(events[2], e3)
+
+    def test_validation_play_with_no_play(self):
+        play = PlayEventFactory(play=None)
+        with self.assertRaises(ValidationError):
+            play.clean()
+
+    def test_validation_not_play_with_a_play(self):
+        gig = GigEventFactory(play=PlayFactory())
+        with self.assertRaises(ValidationError):
+            gig.clean()
+
+    def test_validation_movie_with_no_movie(self):
+        movie = MovieEventFactory(movie=None)
+        with self.assertRaises(ValidationError):
+            movie.clean()
+
+    def test_validation_not_movie_with_a_movie(self):
+        gig = GigEventFactory(movie=MovieFactory())
+        with self.assertRaises(ValidationError):
+            gig.clean()
 
     def test_title_sort_ordering(self):
         "Should order by title_sort"

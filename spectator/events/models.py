@@ -1,6 +1,7 @@
 # coding: utf-8
 import datetime
 
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -71,10 +72,10 @@ class Event(TimeStampedModelMixin, models.Model):
                                 through='EventRole', related_name='events')
 
     movie = models.ForeignKey('Movie', null=True, blank=True,
-            help_text="Only used if event is of 'movie' kind.")
+            help_text="Only used if event is of 'Movie' kind.")
 
     play = models.ForeignKey('Play', null=True, blank=True,
-            help_text="Only used if event is of 'play' kind.")
+            help_text="Only used if event is of 'Play' kind.")
 
     kind_slug = models.SlugField(null=False, blank=True,
             help_text="Set when the event is saved.")
@@ -117,6 +118,25 @@ class Event(TimeStampedModelMixin, models.Model):
 
         return reverse('spectator:event_detail',
                         kwargs={'kind_slug': self.kind_slug, 'pk':pk})
+
+    def clean(self):
+        "Ensure Plays and Movies are assigned when appropriate."
+        errors = {}
+
+        if self.kind == 'play':
+            if self.play is None:
+                errors['play'] = ValidationError('If Kind is "Play" then the event should have a related play.', code='invalid')
+        elif self.play is not None:
+            errors['play'] = ValidationError('Only events of Kind "Play" should have a related play.', code='invalid')
+
+        if self.kind == 'movie':
+            if self.movie is None:
+                errors['movie'] = ValidationError('If Kind is "Movie" then the event should have a related movie.', code='invalid')
+        elif self.movie is not None:
+            errors['movie'] = ValidationError('Only events of Kind "Movie" should have a related movie.', code='invalid')
+
+        if len(errors) > 0:
+            raise ValidationError(errors)
 
     def get_valid_kind_slugs():
         "Returns a list of the slugs that different kinds of Events can have."
