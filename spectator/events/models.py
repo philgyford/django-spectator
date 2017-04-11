@@ -38,10 +38,10 @@ class Event(TimeStampedModelMixin, models.Model):
 
     # The keys are used as slugs, so should be appropriate:
     KIND_CHOICES = (
-        # ('comedy',      'Comedy'),
+        ('comedy',      'Comedy'),
         # ('concert',     'Classical concert'),
         # ('dance',       'Dance'),
-        # ('exhibition',  'Exhibition'),
+        ('exhibition',  'Exhibition'),
         ('gig',         'Gig'),
         ('misc',        'Other'),
         ('movie',       'Movie'),
@@ -50,10 +50,12 @@ class Event(TimeStampedModelMixin, models.Model):
 
     # Mapping keys from KIND_CHOICES to the slugs we'll use in URLs:
     KIND_SLUGS = {
-        'gig':      'gigs',
-        'misc':     'misc',
-        'movie':    'movies',
-        'play':     'plays'
+        'comedy':       'comedy',
+        'exhibition':   'exhibitions',
+        'gig':          'gigs',
+        'misc':         'misc',
+        'movie':        'movies',
+        'play':         'plays'
     }
 
     kind = models.CharField(max_length=20, choices=KIND_CHOICES, blank=False)
@@ -125,15 +127,23 @@ class Event(TimeStampedModelMixin, models.Model):
 
         if self.kind == 'play':
             if self.play is None:
-                errors['play'] = ValidationError('If Kind is "Play" then the event should have a related play.', code='invalid')
+                errors['play'] = ValidationError(
+                    'If Kind is "Play" the event should have a related play.',
+                    code='invalid')
         elif self.play is not None:
-            errors['play'] = ValidationError('Only events of Kind "Play" should have a related play.', code='invalid')
+            errors['play'] = ValidationError(
+                'Only events of Kind "Play" should have a related play.',
+                code='invalid')
 
         if self.kind == 'movie':
             if self.movie is None:
-                errors['movie'] = ValidationError('If Kind is "Movie" then the event should have a related movie.', code='invalid')
+                errors['movie'] = ValidationError(
+                    'If Kind is "Movie" the event should have a related movie.',
+                    code='invalid')
         elif self.movie is not None:
-            errors['movie'] = ValidationError('Only events of Kind "Movie" should have a related movie.', code='invalid')
+            errors['movie'] = ValidationError(
+                'Only events of Kind "Movie" should have a related movie.',
+                code='invalid')
 
         if len(errors) > 0:
             raise ValidationError(errors)
@@ -150,7 +160,10 @@ class Event(TimeStampedModelMixin, models.Model):
     @property
     def kind_name_plural(self):
         "e.g. 'Gigs' or 'Movies'."
-        return '{}s'.format(self.kind_name)
+        if self.kind == 'comedy':
+            return 'Comedy'
+        else:
+            return '{}s'.format(self.kind_name)
 
     @property
     def title_to_sort(self):

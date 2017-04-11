@@ -284,22 +284,40 @@ $ tox -e coverage
 Adding a new event type
 =======================
 
-Needs updating:
+If it's simple (like, Gigs, Comedy, etc.) and doesn't require extra models,
+then:
 
-* Add a child of the ``Event`` model, and a child of ``BaseRole`` for the through model and tests.
-* Add factories for both event and role models.
-* Add its admin.
-* Add URLs and tests.
-* Add Views and tests.
-* Add count of objects in ``EventListView``.
-* In ``events/event_list.html`` template, add tab.
-* Add ``events/newtype_list.html`` and ``events/newtype_detail.html`` templates.
-* Add to ``events/includes/event.html``.
-* Add ``events/includes/newtype.html``.
-* Add new type to ``core/creator_detail.html`` template.
+* Add entries for it in ``spectator.events.models.Event.KIND_CHOICES`` and ``spectator.events.models.Event.KIND_SLUGS``.
+* Possibly add a special case for it in ``Event.kind_name_plural()``.
+* Add a simple factory for it in ``spectator.events.factories``.
+* In ``tests.events.test_models.EventTestCase``:
+    * Add it to:
+        * ``test_valid_kind_slugs()``
+        * ``test_kind_slug()``
+        * ``test_kind_name()``
+        * ``test_kind_name_plural()``
+    * Add a ``test_absolute_url_*()`` test for this kind.
+* Add it to the breadcrumbs and tabs in
+  ``spectator/events/templates/spectator/events/event_list.html``.
 
-``Concert`` and ``MiscEvent`` are almost identical at the moment. Scope for
-refactoring?
+If it involves extra model(s) (like Movies and Plays do) then also:
+
+* Create the new model in ``spectator.events.models`` with a matching Role
+  model (like ``MovieRole``).
+* Associate the new model by ``ForeignKey`` or ``ManyToManyField`` to the
+  ``Event`` model.
+* Add any validation needed to ``Event.clean()``.
+* Add tests for the new new model and the ``clean()`` validation.
+* Add its Admin in ``spectator.events.admin``.
+* Add new URLs for the model's List and Detail views in
+  ``spectator.events.urls`` (and add tests).
+* Add the new List and Detail views in ``spectator.events.views``.
+* In ``spectator.events.views.EventDetailView.get_queryset()`` add a section to
+  adjust the queryset for this model.
+* Add templates in ``spectator/events/templates/spectator/events/`` for its
+  List and Detail views.
+* In ``spectator/core/templates/spectator/core/creator_detail.html`` add
+  a section to list the new models for a Creator.
 
 
 *******

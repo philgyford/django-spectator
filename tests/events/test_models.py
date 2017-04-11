@@ -69,23 +69,32 @@ class EventTestCase(TestCase):
     def test_valid_kind_slugs(self):
         self.assertEqual(
             sorted(Event.get_valid_kind_slugs()),
-            sorted(['gigs', 'misc', 'movies', 'plays',])
+            sorted(
+                ['comedy', 'exhibitions', 'gigs', 'misc', 'movies', 'plays',]
+            )
         )
 
     def test_kind_slug(self):
         "Should be set on save."
+        self.assertEqual(ComedyEventFactory().kind_slug, 'comedy')
+        self.assertEqual(ExhibitionEventFactory().kind_slug, 'exhibitions')
         self.assertEqual(GigEventFactory().kind_slug, 'gigs')
         self.assertEqual(MiscEventFactory().kind_slug, 'misc')
         self.assertEqual(MovieEventFactory().kind_slug, 'movies')
         self.assertEqual(PlayEventFactory().kind_slug, 'plays')
 
     def test_kind_name(self):
+        self.assertEqual(ComedyEventFactory().kind_name, 'Comedy')
+        self.assertEqual(ExhibitionEventFactory().kind_name, 'Exhibition')
         self.assertEqual(GigEventFactory().kind_name, 'Gig')
         self.assertEqual(MiscEventFactory().kind_name, 'Other')
         self.assertEqual(MovieEventFactory().kind_name, 'Movie')
         self.assertEqual(PlayEventFactory().kind_name, 'Play')
 
     def test_kind_name_plural(self):
+        self.assertEqual(ComedyEventFactory().kind_name_plural, 'Comedy')
+        self.assertEqual(ExhibitionEventFactory().kind_name_plural,
+                                                                'Exhibitions')
         self.assertEqual(GigEventFactory().kind_name_plural, 'Gigs')
         self.assertEqual(MiscEventFactory().kind_name_plural, 'Others')
         self.assertEqual(MovieEventFactory().kind_name_plural, 'Movies')
@@ -147,6 +156,14 @@ class EventTestCase(TestCase):
         self.assertEqual(roles[1], bobs_role)
         self.assertEqual(roles[0].role_name, 'Headliner')
         self.assertEqual(roles[1].role_name, 'Supporter')
+
+    def test_absolute_url_comedy(self):
+        event = ComedyEventFactory(pk=3)
+        self.assertEqual(event.get_absolute_url(), '/events/comedy/3/')
+
+    def test_absolute_url_exhibition(self):
+        event = ExhibitionEventFactory(pk=3)
+        self.assertEqual(event.get_absolute_url(), '/events/exhibitions/3/')
 
     def test_absolute_url_gig(self):
         event = GigEventFactory(pk=3)

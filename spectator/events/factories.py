@@ -50,6 +50,12 @@ class EventFactory(factory.DjangoModelFactory):
     title = factory.Sequence(lambda n: 'Event %s' % n)
     venue = factory.SubFactory(VenueFactory)
 
+class ComedyEventFactory(EventFactory):
+    kind = 'comedy'
+
+class ExhibitionEventFactory(EventFactory):
+    kind = 'exhibition'
+
 class GigEventFactory(EventFactory):
     kind = 'gig'
 

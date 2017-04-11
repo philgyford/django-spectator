@@ -9,7 +9,11 @@
         <li class="breadcrumb-item active">Events</li>
     {% else %}
         <li class="breadcrumb-item"><a href="{% url 'spectator:events_home' %}">Events</a></li>
-        {% if event_kind == 'gig' %}
+        {% if event_kind == 'comedy' %}
+            <li class="breadcrumb-item active">Comedy</li>
+        {% elif event_kind == 'exhibition' %}
+            <li class="breadcrumb-item active">Exhibition</li>
+        {% elif event_kind == 'gig' %}
             <li class="breadcrumb-item active">Gigs</li>
         {% elif event_kind == 'movie' %}
             <li class="breadcrumb-item active">Movies</li>
@@ -28,6 +32,20 @@
                 <li class="nav-item">
                     <a class="nav-link{% if not event_kind %} active{% endif %}" href="{% url 'spectator:events_home' %}">
                         All ({{ event_count }})
+                    </a>
+                </li>
+            {% endif %}
+            {% if comedy_count > 0 %}
+                <li class="nav-item">
+                    <a class="nav-link{% if event_kind == 'comedy' %} active{% endif %}" href="{% url 'spectator:event_list' kind_slug='comedy' %}">
+                        Comedy ({{ comedy_count }})
+                    </a>
+                </li>
+            {% endif %}
+            {% if exhibition_count > 0 %}
+                <li class="nav-item">
+                    <a class="nav-link{% if event_kind == 'exhibition' %} active{% endif %}" href="{% url 'spectator:event_list' kind_slug='exhibitions' %}">
+                        Exhibitions ({{ exhibition_count }})
                     </a>
                 </li>
             {% endif %}
