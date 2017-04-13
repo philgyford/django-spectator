@@ -292,10 +292,12 @@ then:
 * Add a simple factory for it in ``spectator.events.factories``.
 * In ``tests.events.test_models.EventTestCase``:
     * Add it to:
+        * ``test_get_kind()``
         * ``test_valid_kind_slugs()``
         * ``test_kind_slug()``
         * ``test_kind_name()``
         * ``test_kind_name_plural()``
+        * ``test_get_kinds_data()``
     * Add a ``test_absolute_url_*()`` test for this kind.
 
 If it involves an extra model (like Movies and Plays do) then also:

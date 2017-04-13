@@ -7,7 +7,8 @@ from spectator.events.factories import *
 from spectator.events.models import Event, Movie, Play, Venue
 
 
-class EventTestCase(TestCase):
+class EventStrTestCase(TestCase):
+    "Only testing the Event.__str__() method."
 
     def test_str_with_title(self):
         "If event has a title, that should be used."
@@ -46,6 +47,78 @@ class EventTestCase(TestCase):
                 role_name='Support', role_order=2)
         self.assertEqual(str(event), 'Milky Wimpshake, Martha and The Tuts')
 
+    # Concert
+
+    def test_str_concert_with_title(self):
+        event = ConcertEventFactory(title='Amazing Concert!')
+        self.assertEqual(str(event), 'Amazing Concert!')
+
+    def test_str_concert_with_no_title_one_work(self):
+        "With no title and one work, it uses the work's title."
+        event = ConcertEventFactory(
+                        title='',
+                        classicalworks=[ClassicalWorkFactory(title='Work A')])
+        self.assertEqual(str(event), 'Work A')
+
+    def test_str_concert_with_no_title_many_works(self):
+        "With no title it uses the titles of the classical works."
+        event = ConcertEventFactory(
+                        title='',
+                        classicalworks=[ClassicalWorkFactory(title='Work A'),
+                                        ClassicalWorkFactory(title='Work B'),
+                                        ClassicalWorkFactory(title='Work C')])
+        self.assertEqual(str(event), 'Work A, Work B and Work C')
+
+    def test_str_concert_with_no_title_and_no_works(self):
+        "With no title or works it uses the default."
+        event = ConcertEventFactory(title='', pk=5, classicalworks=[])
+        self.assertEqual(str(event), 'Concert #5')
+
+    # Dance
+
+    def test_str_dance_with_title(self):
+        event = DanceEventFactory(title='Amazing Dance!')
+        self.assertEqual(str(event), 'Amazing Dance!')
+
+    def test_str_dance_with_no_title_and_one_pieces(self):
+        "With no title and one piece it uses the piece's title."
+        event = DanceEventFactory(
+                        title='',
+                        dancepieces=[DancePieceFactory(title='Piece A')])
+        self.assertEqual(str(event), 'Piece A')
+
+    def test_str_dance_with_no_title_and_many_pieces(self):
+        "With no title it uses the titles of the pieces."
+        event = DanceEventFactory(
+                        title='',
+                        dancepieces=[DancePieceFactory(title='Piece A'),
+                                     DancePieceFactory(title='Piece B'),
+                                     DancePieceFactory(title='Piece C')])
+        self.assertEqual(str(event), 'Piece A, Piece B and Piece C')
+
+    def test_str_dance_with_no_title_and_no_pieces(self):
+        "With no title or pieces it uses the default."
+        event = DanceEventFactory(title='', pk=5, dancepieces=[])
+        self.assertEqual(str(event), 'Dance #5')
+
+    # Movie
+
+    def test_movie_with_no_title(self):
+        event = MovieEventFactory(title='',
+                                  movie=MovieFactory(title='My Great Movie'))
+        self.assertEqual(str(event), 'My Great Movie')
+
+    # Play
+
+    def test_play_with_no_title(self):
+        event = PlayEventFactory(title='',
+                                 play=PlayFactory(title='My Great Play'))
+        self.assertEqual(str(event), 'My Great Play')
+
+
+class EventTestCase(TestCase):
+    "Testing everything except the __str__() method."
+
     def test_title_sort_with_no_title(self):
         "If there's no title, title_sort should be based on creators."
         event = GigEventFactory(title='')
@@ -65,6 +138,13 @@ class EventTestCase(TestCase):
         role2.delete()
         event.refresh_from_db()
         self.assertEqual(event.title_sort, 'milky wimpshake')
+
+    def test_get_kinds(self):
+        self.assertEqual(
+            Event.get_kinds(),
+            ['concert', 'comedy', 'dance', 'exhibition', 'gig', 'misc',
+                    'movie', 'play',]
+        )
 
     def test_valid_kind_slugs(self):
         self.assertEqual(
@@ -107,6 +187,14 @@ class EventTestCase(TestCase):
         self.assertEqual(MiscEventFactory().kind_name_plural, 'Others')
         self.assertEqual(MovieEventFactory().kind_name_plural, 'Movies')
         self.assertEqual(PlayEventFactory().kind_name_plural, 'Plays')
+
+    def test_get_kinds_data(self):
+        # Not exhaustively testing every part of the data returned...
+        data = Event.get_kinds_data()
+        self.assertEqual(len(data), 8)
+        self.assertEqual(data['gig']['name'], 'Gig')
+        self.assertEqual(data['gig']['slug'], 'gigs')
+        self.assertEqual(data['gig']['name_plural'], 'Gigs')
 
     def test_ordering(self):
         "Should order by -date by default."
@@ -176,6 +264,20 @@ class EventTestCase(TestCase):
     def test_absolute_url_play(self):
         event = PlayEventFactory(pk=3, play=PlayFactory(pk=6))
         self.assertEqual(event.get_absolute_url(), '/events/plays/6/')
+
+
+class ClassicalWorkTestCase(TestCase):
+
+    def test_get_absolute_url(self):
+        work = ClassicalWorkFactory(pk=3)
+        self.assertEqual(work.get_absolute_url(), '/events/concerts/works/3/')
+
+
+class DancePieceTestCase(TestCase):
+
+    def test_get_absolute_url(self):
+        piece = DancePieceFactory(pk=3)
+        self.assertEqual(piece.get_absolute_url(), '/events/dance/pieces/3/')
 
 
 class MovieTestCase(TestCase):
@@ -252,6 +354,7 @@ class PlayTestCase(TestCase):
     def test_absolute_url(self):
         play = PlayFactory(pk=3)
         self.assertEqual(play.get_absolute_url(), '/events/plays/3/')
+
 
 
 class VenueTestCase(TestCase):

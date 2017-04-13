@@ -87,7 +87,7 @@ class EventFactory(factory.DjangoModelFactory):
         if extracted:
             # A list of works was passed in, use them
             for work in extracted:
-                self.classicalworks.add(piece)
+                self.classicalworks.add(work)
 
     @factory.post_generation
     def dancepieces(self, create, extracted, **kwargs):

@@ -97,19 +97,31 @@ class Event(TimeStampedModelMixin, models.Model):
             return self.title
         else:
             if self.kind == 'concert':
-                works = [str(c) for c in self.classicalworks.all()]
-                # Join with commas but 'and' for the last one:
-                return '{} and {}'.format(
-                            ', '.join(works[:-1]),
-                            works[-1]
-                        )
+                title = 'Concert #{}'.format(self.pk)
+                if self.pk:
+                    # If it hasn't been saved (no pk) it has no classicalworks.
+                    works = [str(c) for c in self.classicalworks.all()]
+                    if len(works) == 1:
+                        title = works[0]
+                    elif len(works) > 1:
+                        title = '{} and {}'.format(
+                                                ', '.join(works[:-1]),
+                                                works[-1])
+                return title
+
             elif self.kind == 'dance':
-                pieces = [str(p) for p in self.dancepieces.all()]
-                # Join with commas but 'and' for the last one:
-                return '{} and {}'.format(
-                            ', '.join(pieces[:-1]),
-                            pieces[-1]
-                        )
+                title = 'Dance #{}'.format(self.pk)
+                if self.pk:
+                    # If it hasn't been saved (no pk) it has no classicalworks.
+                    pieces = [str(p) for p in self.dancepieces.all()]
+                    if len(pieces) == 1:
+                        title = pieces[0]
+                    elif len(pieces) > 1:
+                        title = '{} and {}'.format(
+                                                ', '.join(pieces[:-1]),
+                                                pieces[-1])
+                return title
+
             elif self.kind == 'movie':
                 return str(self.movie)
             elif self.kind == 'play':
@@ -124,9 +136,8 @@ class Event(TimeStampedModelMixin, models.Model):
                     roles = [r.creator.name for r in roles]
                     # Join with commas but 'and' for the last one:
                     return '{} and {}'.format(
-                                ', '.join(roles[:-1]),
-                                roles[-1]
-                            )
+                                            ', '.join(roles[:-1]),
+                                            roles[-1])
 
     def save(self, *args, **kwargs):
         self.kind_slug = self.KIND_SLUGS[self.kind]
