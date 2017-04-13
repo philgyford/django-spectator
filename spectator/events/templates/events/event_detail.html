@@ -19,9 +19,9 @@
     {% include 'core/includes/roles_list.html' with roles=event.roles.all heading='Featuring' only %}
 
     {% if event.kind == 'concert' %}
-        {% include 'events/includes/m2m_work_list.html' with work_list=event.classical_works.all heading="Works" only %}
+        {% include 'events/includes/m2m_work_list.html' with work_list=event.classicalworks.all heading="Works" only %}
     {% elif event.kind == 'dance' %}
-        {% include 'events/includes/m2m_work_list.html' with work_list=event.dance_pieces.all heading="Pieces" only %}
+        {% include 'events/includes/m2m_work_list.html' with work_list=event.dancepieces.all heading="Pieces" only %}
     {% endif %}
 
 {% endblock content %}

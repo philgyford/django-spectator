@@ -39,9 +39,12 @@ class EventAdminForm(forms.ModelForm):
     Adding validation to ensure that plays, movies, classical works and dance
     pieces are added only when the Event's kind is appropriate.
     """
+    class Meta:
+        model = Event
+        fields = '__all__'
 
-    def clean_classical_works(self):
-        works = self.cleaned_data['classical_works']
+    def clean_classicalworks(self):
+        works = self.cleaned_data['classicalworks']
         num_works = len(works)
 
         if self.cleaned_data['kind'] == 'concert':
@@ -53,8 +56,8 @@ class EventAdminForm(forms.ModelForm):
                                     'should have related classical works.')
         return works
 
-    def clean_dance_pieces(self):
-        pieces = self.cleaned_data['dance_pieces']
+    def clean_dancepieces(self):
+        pieces = self.cleaned_data['dancepieces']
         num_pieces = len(pieces)
 
         if self.cleaned_data['kind'] == 'dance':
@@ -102,7 +105,7 @@ class EventAdmin(admin.ModelAdmin):
             'fields': ( 'kind', 'date', 'venue', 'title', 'title_sort',)
         }),
         ('Things seen', {
-            'fields': ('movie', 'play', 'classical_works', 'dance_pieces',)
+            'fields': ('movie', 'play', 'classicalworks', 'dancepieces',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -110,7 +113,7 @@ class EventAdmin(admin.ModelAdmin):
         }),
     )
 
-    filter_horizontal = ('classical_works', 'dance_pieces',)
+    filter_horizontal = ('classicalworks', 'dancepieces',)
     raw_id_fields = ('movie', 'play', 'venue',)
     readonly_fields = ('title_sort', 'time_created', 'time_modified',)
 

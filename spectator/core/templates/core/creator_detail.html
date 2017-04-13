@@ -23,12 +23,12 @@
         {% include 'events/includes/events.html' with event_list=creator.events.all %}
     {% endif %}
 
-    {% if creator.classical_works.count > 0 %}
-        {% include 'events/includes/m2m_work_list.html' with work_list=creator.classical_works.all heading="Classical works" only %}
+    {% if creator.classicalworks.count > 0 %}
+        {% include 'events/includes/m2m_work_list.html' with work_list=creator.classicalworks.all heading="Classical works" only %}
     {% endif %}
 
-    {% if creator.dance_pieces.count > 0 %}
-        {% include 'events/includes/m2m_work_list.html' with work_list=creator.dance_pieces.all heading="Dance pieces" only %}
+    {% if creator.dancepieces.count > 0 %}
+        {% include 'events/includes/m2m_work_list.html' with work_list=creator.dancepieces.all heading="Dance pieces" only %}
     {% endif %}
 
     {% if creator.movies.count > 0 %}

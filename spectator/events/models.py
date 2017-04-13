@@ -80,10 +80,10 @@ class Event(TimeStampedModelMixin, models.Model):
     play = models.ForeignKey('Play', null=True, blank=True,
             help_text="Only used if event is of 'Play' kind.")
 
-    classical_works = models.ManyToManyField('ClassicalWork', blank=True,
+    classicalworks = models.ManyToManyField('ClassicalWork', blank=True,
             help_text="Only used if event is of 'Classical Concert' kind.")
 
-    dance_pieces = models.ManyToManyField('DancePiece', blank=True,
+    dancepieces = models.ManyToManyField('DancePiece', blank=True,
             help_text="Only used if event is of 'Dance' kind.")
 
     kind_slug = models.SlugField(null=False, blank=True,
@@ -97,14 +97,14 @@ class Event(TimeStampedModelMixin, models.Model):
             return self.title
         else:
             if self.kind == 'concert':
-                works = [str(c) for c in self.classical_works.all()]
+                works = [str(c) for c in self.classicalworks.all()]
                 # Join with commas but 'and' for the last one:
                 return '{} and {}'.format(
                             ', '.join(works[:-1]),
                             works[-1]
                         )
             elif self.kind == 'dance':
-                pieces = [str(p) for p in self.dance_pieces.all()]
+                pieces = [str(p) for p in self.dancepieces.all()]
                 # Join with commas but 'and' for the last one:
                 return '{} and {}'.format(
                             ', '.join(pieces[:-1]),
@@ -266,7 +266,7 @@ class DancePiece(Work):
     A dance piece itself, not an occasion on which it was watched.
     """
     creators = models.ManyToManyField('core.Creator',
-                        through='DancePieceRole', related_name='dance_pieces')
+                        through='DancePieceRole', related_name='dancepieces')
 
     def get_absolute_url(self):
         return reverse('spectator:dancepiece_detail', kwargs={'pk': self.pk})
@@ -289,7 +289,7 @@ class ClassicalWork(Work):
     A classical work itself, not an occasion on which it was watched.
     """
     creators = models.ManyToManyField('core.Creator',
-                through='ClassicalWorkRole', related_name='classical_works')
+                through='ClassicalWorkRole', related_name='classicalworks')
 
     def get_absolute_url(self):
         return reverse('spectator:classicalwork_detail',

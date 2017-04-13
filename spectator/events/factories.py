@@ -79,7 +79,7 @@ class EventFactory(factory.DjangoModelFactory):
     venue = factory.SubFactory(VenueFactory)
 
     @factory.post_generation
-    def classical_works(self, create, extracted, **kwargs):
+    def classicalworks(self, create, extracted, **kwargs):
         if not create:
             # Simple build, do nothing.
             return
@@ -87,10 +87,10 @@ class EventFactory(factory.DjangoModelFactory):
         if extracted:
             # A list of works was passed in, use them
             for work in extracted:
-                self.classical_works.add(piece)
+                self.classicalworks.add(piece)
 
     @factory.post_generation
-    def dance_pieces(self, create, extracted, **kwargs):
+    def dancepieces(self, create, extracted, **kwargs):
         if not create:
             # Simple build, do nothing.
             return
@@ -98,7 +98,7 @@ class EventFactory(factory.DjangoModelFactory):
         if extracted:
             # A list of pieces was passed in, use them
             for piece in extracted:
-                self.dance_pieces.add(piece)
+                self.dancepieces.add(piece)
 
 
 class ComedyEventFactory(EventFactory):
