@@ -23,10 +23,10 @@ def get_item(dictionary, key):
     return dictionary.get(key)
 
 
-@register.inclusion_tag('core/includes/card_edit_object_link.html')
-def edit_object_link_card(obj, perms):
+@register.inclusion_tag('core/includes/card_change_object_link.html')
+def change_object_link_card(obj, perms):
     """
-    If the user has permission to edit `obj`, show a link to its Admin page.
+    If the user has permission to change `obj`, show a link to its Admin page.
     obj -- An object like Movie, Play, ClassicalWork, Publication, etc.
     perms -- The `perms` object that it's the template.
     """

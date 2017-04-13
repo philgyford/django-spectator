@@ -4,7 +4,19 @@ from django.http import QueryDict
 from django.test import TestCase
 
 from spectator.core.templatetags.spectator_core import domain_urlize,\
-        query_string
+        get_item, change_object_link_card, query_string
+from spectator.core.factories import IndividualCreatorFactory
+
+
+class GetItemTestCase(TestCase):
+
+    def test_key(self):
+        dict = {'a': 1,}
+        self.assertEqual( get_item(dict, 'a'), 1)
+
+    def test_key(self):
+        dict = {'a': 1,}
+        self.assertIsNone( get_item(dict, 'b') )
 
 
 class DomainUrlizeTestCase(TestCase):
@@ -14,6 +26,17 @@ class DomainUrlizeTestCase(TestCase):
             domain_urlize('http://www.example.org/foo/'),
             '<a href="http://www.example.org/foo/" rel="nofollow">www.example.org</a>'
         )
+
+
+class ChangeObjectLinkCardTestCase(TestCase):
+
+    def test_output_can_change(self):
+        creator = IndividualCreatorFactory(pk=5)
+        perms = ['spectator.can_edit_creator',]
+
+        result = change_object_link_card(creator, perms)
+        self.assertTrue(result['display_link'])
+        self.assertEqual(result['change_url'], '/admin/core/creator/5/change/')
 
 
 class QueryStringTestCase(TestCase):
