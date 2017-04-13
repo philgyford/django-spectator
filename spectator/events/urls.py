@@ -38,6 +38,27 @@ urlpatterns = [
         name='event_detail'
     ),
 
+    url(
+        regex=r"^concerts/works/$",
+        view=views.ClassicalWorkListView.as_view(),
+        name='classicalwork_list'
+    ),
+    url(
+        regex=r"^concerts/works/(?P<pk>\d+)/$",
+        view=views.ClassicalWorkDetailView.as_view(),
+        name='classicalwork_detail'
+    ),
+
+    url(
+        regex=r"^dance/pieces/$",
+        view=views.DancePieceListView.as_view(),
+        name='dancepiece_list'
+    ),
+    url(
+        regex=r"^dance/pieces/(?P<pk>\d+)/$",
+        view=views.DancePieceDetailView.as_view(),
+        name='dancepiece_detail'
+    ),
 ]
 
 

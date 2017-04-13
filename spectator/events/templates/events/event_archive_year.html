@@ -1,0 +1,36 @@
+{% extends 'events/base.html' %}
+
+{% block head_page_title %}{{ year|date:"Y" }} events{% endblock %}
+{% block content_title %}{{ year|date:"Y" }} events{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item active">{{ year|date:"Y" }}</li>
+{% endblock %}
+
+{% block content %}
+    {% include 'core/includes/pager.html' with url_name='spectator:event_year_archive' previous=previous_year next=next_year only %}
+
+    {% if event_list|length > 0 %}
+
+        {% for event in event_list %}
+            {% ifchanged event.date|date:"m" %}
+                {% if not forloop.first %}
+                    </ul>
+                {% endif %}
+                <h2>{{ event.date|date:"F"}}</h2>
+                <ul>
+            {% endifchanged %}
+            <li class="mb-2">
+                {% include 'events/includes/event.html' with event=event only %}
+            </li>
+        {% endfor %}
+        </ul>
+
+        {% include 'core/includes/pager.html' with url_name='spectator:event_year_archive' previous=previous_year next=next_year only %}
+
+    {% else %}
+        <p>No events in {{ year|date:"Y" }}.</p>
+    {% endif %}
+
+{% endblock content %}

@@ -62,3 +62,8 @@ class PlayAdminTestCase(AdminTestCase):
         self.assertEqual(pa.show_creators(play), '-')
 
 
+# from django.core.exceptions import ValidationError
+    # def test_validation_play_with_no_play(self):
+        # play = PlayEventFactory(play=None)
+        # with self.assertRaises(ValidationError):
+            # play.clean()

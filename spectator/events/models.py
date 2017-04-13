@@ -1,7 +1,6 @@
 # coding: utf-8
 import datetime
 
-from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -38,9 +37,9 @@ class Event(TimeStampedModelMixin, models.Model):
 
     # The keys are used as slugs, so should be appropriate:
     KIND_CHOICES = (
+        ('concert',     'Classical concert'),
         ('comedy',      'Comedy'),
-        # ('concert',     'Classical concert'),
-        # ('dance',       'Dance'),
+        ('dance',       'Dance'),
         ('exhibition',  'Exhibition'),
         ('gig',         'Gig'),
         ('misc',        'Other'),
@@ -51,6 +50,8 @@ class Event(TimeStampedModelMixin, models.Model):
     # Mapping keys from KIND_CHOICES to the slugs we'll use in URLs:
     KIND_SLUGS = {
         'comedy':       'comedy',
+        'concert':      'concerts',
+        'dance':        'dance',
         'exhibition':   'exhibitions',
         'gig':          'gigs',
         'misc':         'misc',
@@ -79,6 +80,12 @@ class Event(TimeStampedModelMixin, models.Model):
     play = models.ForeignKey('Play', null=True, blank=True,
             help_text="Only used if event is of 'Play' kind.")
 
+    classical_works = models.ManyToManyField('ClassicalWork', blank=True,
+            help_text="Only used if event is of 'Classical Concert' kind.")
+
+    dance_pieces = models.ManyToManyField('DancePiece', blank=True,
+            help_text="Only used if event is of 'Dance' kind.")
+
     kind_slug = models.SlugField(null=False, blank=True,
             help_text="Set when the event is saved.")
 
@@ -89,28 +96,51 @@ class Event(TimeStampedModelMixin, models.Model):
         if self.title:
             return self.title
         else:
-            roles = list(self.roles.all())
-            if self.kind == 'movie':
+            if self.kind == 'concert':
+                works = [str(c) for c in self.classical_works.all()]
+                # Join with commas but 'and' for the last one:
+                return '{} and {}'.format(
+                            ', '.join(works[:-1]),
+                            works[-1]
+                        )
+            elif self.kind == 'dance':
+                pieces = [str(p) for p in self.dance_pieces.all()]
+                # Join with commas but 'and' for the last one:
+                return '{} and {}'.format(
+                            ', '.join(pieces[:-1]),
+                            pieces[-1]
+                        )
+            elif self.kind == 'movie':
                 return str(self.movie)
             elif self.kind == 'play':
                 return str(self.play)
-            elif len(roles) == 1:
-                return str(roles[0].creator.name)
-            elif len(roles) == 0:
-                return 'Event #{}'.format(self.pk)
             else:
-                roles = [r.creator.name for r in roles]
-                # Join with commas but 'and' for the last one:
-                return '{} and {}'.format(
-                            ', '.join(roles[:-1]),
-                            roles[-1]
-                        )
+                roles = list(self.roles.all())
+                if len(roles) == 1:
+                    return str(roles[0].creator.name)
+                elif len(roles) == 0:
+                    return 'Event #{}'.format(self.pk)
+                else:
+                    roles = [r.creator.name for r in roles]
+                    # Join with commas but 'and' for the last one:
+                    return '{} and {}'.format(
+                                ', '.join(roles[:-1]),
+                                roles[-1]
+                            )
 
     def save(self, *args, **kwargs):
         self.kind_slug = self.KIND_SLUGS[self.kind]
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
+        """
+        Standard Events behave as you'd expect; their absolute_url is a page
+        about that Event only.
+
+        More complex Events (like play and movie) actually display info about
+        the Play or Movie (for example) itself, plus all associated Events.
+        So in those cases we use the `pk` of the Play, Movie, etc.
+        """
         pk = self.pk
 
         if self.kind == 'movie':
@@ -121,36 +151,47 @@ class Event(TimeStampedModelMixin, models.Model):
         return reverse('spectator:event_detail',
                         kwargs={'kind_slug': self.kind_slug, 'pk':pk})
 
-    def clean(self):
-        "Ensure Plays and Movies are assigned when appropriate."
-        errors = {}
-
-        if self.kind == 'play':
-            if self.play is None:
-                errors['play'] = ValidationError(
-                    'If Kind is "Play" the event should have a related play.',
-                    code='invalid')
-        elif self.play is not None:
-            errors['play'] = ValidationError(
-                'Only events of Kind "Play" should have a related play.',
-                code='invalid')
-
-        if self.kind == 'movie':
-            if self.movie is None:
-                errors['movie'] = ValidationError(
-                    'If Kind is "Movie" the event should have a related movie.',
-                    code='invalid')
-        elif self.movie is not None:
-            errors['movie'] = ValidationError(
-                'Only events of Kind "Movie" should have a related movie.',
-                code='invalid')
-
-        if len(errors) > 0:
-            raise ValidationError(errors)
+    def get_kinds():
+        """
+        Returns a list of the kind values ['gig', 'play', etc] in the order in
+        which they're listed in `KIND_CHOICES`.
+        """
+        return [k for k,v in Event.KIND_CHOICES]
 
     def get_valid_kind_slugs():
         "Returns a list of the slugs that different kinds of Events can have."
         return list(Event.KIND_SLUGS.values())
+
+    def get_kind_name_plural(kind):
+        "e.g. 'Gigs' or 'Movies'."
+        if kind == 'comedy':
+            return 'Comedy'
+        elif kind == 'dance':
+            return 'Dance'
+        else:
+            return '{}s'.format(Event.get_kind_name(kind))
+
+    def get_kind_name(kind):
+        return {k:v for (k,v) in Event.KIND_CHOICES}[kind]
+
+    def get_kinds_data():
+        """
+        Returns a dict of all the data about the kinds, keyed to the kind
+        value. e.g:
+            {
+                'gig': {
+                    'name': 'Gig',
+                    'slug': 'gigs',
+                    'name_plural': 'Gigs',
+                },
+                # etc
+            }
+        """
+        kinds = {k:{'name':v} for k,v in Event.KIND_CHOICES}
+        for k,data in kinds.items():
+            kinds[k]['slug'] = Event.KIND_SLUGS[k]
+            kinds[k]['name_plural'] = Event.get_kind_name_plural(k)
+        return kinds
 
     @property
     def kind_name(self):
@@ -160,10 +201,7 @@ class Event(TimeStampedModelMixin, models.Model):
     @property
     def kind_name_plural(self):
         "e.g. 'Gigs' or 'Movies'."
-        if self.kind == 'comedy':
-            return 'Comedy'
-        else:
-            return '{}s'.format(self.kind_name)
+        return Event.get_kind_name_plural(self.kind)
 
     @property
     def title_to_sort(self):
@@ -175,6 +213,89 @@ class Event(TimeStampedModelMixin, models.Model):
         return self.__str__()
 
 
+class Work(TimeStampedModelMixin, models.Model):
+    """
+    Abstract parent for things like DancePiece, Movie, Play, etc.
+    Just so we stop duplicating common things.
+
+    All children should also have a `creators` ManyToManyField to `core.Creator`.
+
+    Example of getting a Works's creators:
+
+        piece = DancePiece.objects.get(pk=1)
+
+        # Just the creators:
+        for creator in piece.creators.all():
+            print(creator.name)
+
+        # Include their roles:
+        for role in piece.roles.all():
+            print(role.dance_piece, role.creator, role.role_name)
+
+        # When it's been seen:
+        for ev in piece.event_set.all():
+            print(ev.venue, ev.date)
+    """
+    title = models.CharField(null=False, blank=False, max_length=255)
+
+    title_sort = NaturalSortField('title', max_length=255, default='',
+            help_text="e.g. 'big piece, a' or 'biggest piece, the'.")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        abstract = True
+        ordering = ('title_sort',)
+
+
+class DancePieceRole(BaseRole):
+    """
+    Through model for linking a Creator to a DancePiece, optionally via their
+    role (e.g. 'Choreographer'.)
+    """
+    creator = models.ForeignKey('core.Creator', blank=False,
+                    on_delete=models.CASCADE, related_name='dance_piece_roles')
+
+    dance_piece = models.ForeignKey('DancePiece',
+                    on_delete=models.CASCADE, related_name='roles')
+
+
+class DancePiece(Work):
+    """
+    A dance piece itself, not an occasion on which it was watched.
+    """
+    creators = models.ManyToManyField('core.Creator',
+                        through='DancePieceRole', related_name='dance_pieces')
+
+    def get_absolute_url(self):
+        return reverse('spectator:dancepiece_detail', kwargs={'pk': self.pk})
+
+
+class ClassicalWorkRole(BaseRole):
+    """
+    Through model for linking a Creator to a ClassicalWork, optionally via
+    their role (e.g. 'Composer'.)
+    """
+    creator = models.ForeignKey('core.Creator', blank=False,
+                on_delete=models.CASCADE, related_name='classical_work_roles')
+
+    classical_work = models.ForeignKey('ClassicalWork',
+                on_delete=models.CASCADE, related_name='roles')
+
+
+class ClassicalWork(Work):
+    """
+    A classical work itself, not an occasion on which it was watched.
+    """
+    creators = models.ManyToManyField('core.Creator',
+                through='ClassicalWorkRole', related_name='classical_works')
+
+    def get_absolute_url(self):
+        return reverse('spectator:classicalwork_detail',
+                                                        kwargs={'pk': self.pk})
+
+
 class MovieRole(BaseRole):
     """
     Through model for linking a Creator to a Movie, optionally via their role
@@ -183,37 +304,16 @@ class MovieRole(BaseRole):
     creator = models.ForeignKey('core.Creator', blank=False,
                         on_delete=models.CASCADE, related_name='movie_roles')
 
-    movie = models.ForeignKey('Movie', on_delete=models.CASCADE,
-                                                        related_name='roles')
+    movie = models.ForeignKey('Movie',
+                        on_delete=models.CASCADE, related_name='roles')
 
 
-class Movie(TimeStampedModelMixin, models.Model):
+class Movie(Work):
     """
     A movie itself, not an occasion on which it was watched.
-
-    Get a Movie's creators:
-
-        movie = Movie.objects.get(pk=1)
-
-        # Just the creators:
-        for creator in movie.creators.all():
-            print(creator.name)
-
-        # Include their roles:
-        for role in movie.roles.all():
-            print(role.movie, role.creator, role.role_name)
-
-        # When it's been seen:
-        for ev in movie.event_set.all():
-            print(ev.venue, ev.date)
     """
     YEAR_CHOICES = [(r,r) for r in range(1888, datetime.date.today().year+1)]
     YEAR_CHOICES.insert(0, ('', 'Select…'))
-
-    title = models.CharField(null=False, blank=False, max_length=255)
-
-    title_sort = NaturalSortField('title', max_length=255, default='',
-            help_text="e.g. 'haine, la' or 'unbelievable truth, the'.")
 
     creators = models.ManyToManyField('core.Creator',
                                     through='MovieRole', related_name='movies')
@@ -234,9 +334,6 @@ class Movie(TimeStampedModelMixin, models.Model):
                 default=None,
                 help_text="Year of release.")
 
-    class Meta:
-        ordering = ('title_sort',)
-
     def __str__(self):
         if self.year:
             return '{} ({})'.format(self.title, self.year)
@@ -244,6 +341,7 @@ class Movie(TimeStampedModelMixin, models.Model):
             return self.title
 
     def get_absolute_url(self):
+        "See `Event.get_absolute_url()` for why we use `event_detail` here."
         return reverse('spectator:event_detail',
                         kwargs={'kind_slug': 'movies', 'pk':self.pk})
 
@@ -256,45 +354,19 @@ class PlayRole(BaseRole):
     creator = models.ForeignKey('core.Creator', blank=False,
                         on_delete=models.CASCADE, related_name='play_roles')
 
-    play = models.ForeignKey('Play', on_delete=models.CASCADE,
-                                                        related_name='roles')
+    play = models.ForeignKey('Play',
+                        on_delete=models.CASCADE, related_name='roles')
 
 
-class Play(TimeStampedModelMixin, models.Model):
+class Play(Work):
     """
     A play itself, not an occasion on which it was watched.
-
-    Get a Play's creators:
-
-        play = Play.objects.get(pk=1)
-
-        # Just the creators:
-        for creator in play.creators.all():
-            print(creator.name)
-
-        # Include their roles:
-        for role in play.roles.all():
-            print(role.play, role.creator, role.role_name)
-
-        # When it's been seen:
-        for ev in play.event_set.all():
-            print(ev.venue, ev.date)
     """
-    title = models.CharField(null=False, blank=False, max_length=255)
-
-    title_sort = NaturalSortField('title', max_length=255, default='',
-            help_text="e.g. 'big play, a' or 'biggest play, the'.")
-
     creators = models.ManyToManyField('core.Creator',
                                     through='PlayRole', related_name='plays')
 
-    class Meta:
-        ordering = ('title_sort',)
-
-    def __str__(self):
-        return self.title
-
     def get_absolute_url(self):
+        "See `Event.get_absolute_url()` for why we use `event_detail` here."
         return reverse('spectator:event_detail',
                         kwargs={'kind_slug': 'plays', 'pk':self.pk})
 

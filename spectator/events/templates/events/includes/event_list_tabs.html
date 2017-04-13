@@ -1,0 +1,31 @@
+{% comment %}
+Displays the tabs to different event_list pages.
+Used by the event_list_tabs() template inclusion tag.
+{% endcomment %}
+
+{% load spectator_core %}
+
+<ul class="nav nav-tabs mb-4">
+
+	{% if counts.all > 0 %}
+		<li class="nav-item">
+			<a class="nav-link{% if not current_kind %} active{% endif %}" href="{% url 'spectator:events_home' %}">
+				All ({{ counts.all }})
+			</a>
+		</li>
+	{% endif %}
+
+	{% for kind in event_kinds %}
+		{% if counts|get_item:kind > 0 %}
+			<li class="nav-item">
+				{% with event_kinds_data|get_item:kind as kind_data %}
+					<a class="nav-link{% if current_kind == kind %} active{% endif %}" href="{% url 'spectator:event_list' kind_slug=kind_data|get_item:'slug' %}">
+						{{ kind_data|get_item:'name_plural' }}
+						({{ counts|get_item:kind }})
+					</a>
+				{% endwith %}
+			</li>
+		{% endif %}
+	{% endfor %}
+
+</ul>

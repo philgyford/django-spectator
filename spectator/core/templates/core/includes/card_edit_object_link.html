@@ -1,0 +1,19 @@
+{% comment %}
+Used by the edit_object_link_card core template tag.
+
+Expects:
+
+* display_link - Boolean, whether the user has permission to view this.
+* change_url - The link to change the object in the Admin.
+{% endcomment %}
+
+{% if display_link %}
+	<div class="card mb-3">
+		<ul class="list-group list-group-flush">
+			<li class="list-group-item">
+				<a href="{{ change_url }}">Edit in Admin</a>
+			</li>
+		</ul>
+	</div>
+{% endif %}
+

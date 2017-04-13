@@ -287,8 +287,8 @@ Adding a new event type
 If it's simple (like, Gigs, Comedy, etc.) and doesn't require extra models,
 then:
 
-* Add entries for it in ``spectator.events.models.Event.KIND_CHOICES`` and ``spectator.events.models.Event.KIND_SLUGS``.
-* Possibly add a special case for it in ``Event.kind_name_plural()``.
+* In ``spectator.events.models.Event`` add it in ``KIND_CHOICES`` and ``KIND_SLUGS``.
+* Possibly add a special case for it in ``Event.get_kind_name_plural()``.
 * Add a simple factory for it in ``spectator.events.factories``.
 * In ``tests.events.test_models.EventTestCase``:
     * Add it to:
@@ -297,27 +297,37 @@ then:
         * ``test_kind_name()``
         * ``test_kind_name_plural()``
     * Add a ``test_absolute_url_*()`` test for this kind.
-* Add it to the breadcrumbs and tabs in
-  ``spectator/events/templates/spectator/events/event_list.html``.
 
-If it involves extra model(s) (like Movies and Plays do) then also:
+If it involves an extra model (like Movies and Plays do) then also:
 
 * Create the new model in ``spectator.events.models`` with a matching Role
   model (like ``MovieRole``).
-* Associate the new model by ``ForeignKey`` or ``ManyToManyField`` to the
-  ``Event`` model.
-* Add any validation needed to ``Event.clean()``.
-* Add tests for the new new model and the ``clean()`` validation.
+* Associate the new model by ``ForeignKey`` to the ``Event`` model.
+* Add a special case for it in ``Event.get_absolute_url()``.
+* Add a special case for it in ``Event.__str__()``.
 * Add its Admin in ``spectator.events.admin``.
+* Add any validation needed to ``spectator.events.admin.EventAdminForm``.
 * Add new URLs for the model's List and Detail views in
   ``spectator.events.urls`` (and add tests).
 * Add the new List and Detail views in ``spectator.events.views``.
 * In ``spectator.events.views.EventDetailView.get_queryset()`` add a section to
   adjust the queryset for this model.
-* Add templates in ``spectator/events/templates/spectator/events/`` for its
-  List and Detail views.
-* In ``spectator/core/templates/spectator/core/creator_detail.html`` add
-  a section to list the new models for a Creator.
+* Add templates in ``spectator/events/templates/events/`` for its List and
+  Detail views.
+* In ``spectator/core/templates/core/creator_detail.html`` add a section to
+  list the new models for a Creator.
+
+If it involves several extra models (like Dance and Concert events do) then
+it's similar to above but absolute URLs are different; see the code for
+examples of those.
+
+* Instead of adding the new modely by ``ForeignKey``, it's
+  a ``ManyToManyField``.
+* It doesn't have a special case in ``Event.get_absolute_url()``.
+* Add URLs and Views for the List and Detail views for the new model
+  (e.g. DancePiece).
+* Add the ``get_absolute_url()`` method for that new model.
+* Add the display of its works (e.g. DancePieces) in ``spectator/events/templates/events/event_detail.html``.
 
 
 *******

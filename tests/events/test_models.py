@@ -70,13 +70,16 @@ class EventTestCase(TestCase):
         self.assertEqual(
             sorted(Event.get_valid_kind_slugs()),
             sorted(
-                ['comedy', 'exhibitions', 'gigs', 'misc', 'movies', 'plays',]
+                ['comedy', 'concerts', 'dance', 'exhibitions', 'gigs', 'misc',
+                    'movies', 'plays',]
             )
         )
 
     def test_kind_slug(self):
         "Should be set on save."
         self.assertEqual(ComedyEventFactory().kind_slug, 'comedy')
+        self.assertEqual(ConcertEventFactory().kind_slug, 'concerts')
+        self.assertEqual(DanceEventFactory().kind_slug, 'dance')
         self.assertEqual(ExhibitionEventFactory().kind_slug, 'exhibitions')
         self.assertEqual(GigEventFactory().kind_slug, 'gigs')
         self.assertEqual(MiscEventFactory().kind_slug, 'misc')
@@ -85,6 +88,8 @@ class EventTestCase(TestCase):
 
     def test_kind_name(self):
         self.assertEqual(ComedyEventFactory().kind_name, 'Comedy')
+        self.assertEqual(ConcertEventFactory().kind_name, 'Classical concert')
+        self.assertEqual(DanceEventFactory().kind_name, 'Dance')
         self.assertEqual(ExhibitionEventFactory().kind_name, 'Exhibition')
         self.assertEqual(GigEventFactory().kind_name, 'Gig')
         self.assertEqual(MiscEventFactory().kind_name, 'Other')
@@ -93,6 +98,9 @@ class EventTestCase(TestCase):
 
     def test_kind_name_plural(self):
         self.assertEqual(ComedyEventFactory().kind_name_plural, 'Comedy')
+        self.assertEqual(ConcertEventFactory().kind_name_plural,
+                                                        'Classical concerts')
+        self.assertEqual(DanceEventFactory().kind_name_plural, 'Dance')
         self.assertEqual(ExhibitionEventFactory().kind_name_plural,
                                                                 'Exhibitions')
         self.assertEqual(GigEventFactory().kind_name_plural, 'Gigs')
@@ -110,26 +118,6 @@ class EventTestCase(TestCase):
         self.assertEqual(events[0], e1)
         self.assertEqual(events[1], e2)
         self.assertEqual(events[2], e3)
-
-    def test_validation_play_with_no_play(self):
-        play = PlayEventFactory(play=None)
-        with self.assertRaises(ValidationError):
-            play.clean()
-
-    def test_validation_not_play_with_a_play(self):
-        gig = GigEventFactory(play=PlayFactory())
-        with self.assertRaises(ValidationError):
-            gig.clean()
-
-    def test_validation_movie_with_no_movie(self):
-        movie = MovieEventFactory(movie=None)
-        with self.assertRaises(ValidationError):
-            movie.clean()
-
-    def test_validation_not_movie_with_a_movie(self):
-        gig = GigEventFactory(movie=MovieFactory())
-        with self.assertRaises(ValidationError):
-            gig.clean()
 
     def test_title_sort_ordering(self):
         "Should order by title_sort"
@@ -160,6 +148,14 @@ class EventTestCase(TestCase):
     def test_absolute_url_comedy(self):
         event = ComedyEventFactory(pk=3)
         self.assertEqual(event.get_absolute_url(), '/events/comedy/3/')
+
+    def test_absolute_url_concert(self):
+        event = ConcertEventFactory(pk=3)
+        self.assertEqual(event.get_absolute_url(), '/events/concerts/3/')
+
+    def test_absolute_url_dance(self):
+        event = DanceEventFactory(pk=3)
+        self.assertEqual(event.get_absolute_url(), '/events/dance/3/')
 
     def test_absolute_url_exhibition(self):
         event = ExhibitionEventFactory(pk=3)

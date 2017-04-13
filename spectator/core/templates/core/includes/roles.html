@@ -1,0 +1,14 @@
+{% comment %}
+Displays Creators/Roles, separated by commas, with 'and' for the last one.
+
+Expects:
+* roles - A list/QuerySet of Roles.
+* intro - Optional text to display before the list, eg, 'By' or '<br>'.
+* show_role_name - Display the role names, if any. Default: True.
+
+{% endcomment %}
+
+{% if roles|length > 0 %}
+	{{ intro }}
+	{% for r in roles %}{% if forloop.first %}{% else %}{% if forloop.last %} and {% else %}, {% endif %}{% endif %}<a href="{{ r.creator.get_absolute_url }}">{{ r.creator.name }}</a>{% if r.role_name and show_role_name|default_if_none:True %} ({{ r.role_name }}){% endif %}{% endfor %}
+{% endif %}

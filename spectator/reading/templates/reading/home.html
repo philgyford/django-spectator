@@ -1,0 +1,33 @@
+{% extends 'reading/base.html' %}
+
+{% block head_page_title %}Reading{% endblock %}
+{% block content_title %}Reading{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
+    <li class="breadcrumb-item active">Reading</li>
+{% endblock %}
+
+{% block content %}
+
+    {% if in_progress_publication_list|length > 0 %}
+        <h2>Currently reading</h2>
+
+        {% include 'reading/includes/publications.html' with publication_list=in_progress_publication_list show_readings='current' only %}
+    {% endif %}
+
+    {% if publication_list|length > 0 %}
+        <h2>Unread</h2>
+
+        {% include 'reading/includes/publications.html' with publication_list=publication_list only %}
+    {% endif %}
+
+{% endblock content %}
+
+{% block sidebar %}
+
+    {% include 'core/includes/card_nav.html' %}
+    {% include 'reading/includes/card_nav.html' %}
+
+    {{ block.super }}
+{% endblock sidebar %}

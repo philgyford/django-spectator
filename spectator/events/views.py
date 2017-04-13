@@ -5,9 +5,15 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.views.generic import DetailView, ListView, YearArchiveView
 from django.views.generic.detail import SingleObjectMixin
+try:
+    # Django >= 1.10
+    from django.urls import reverse
+except ImportError:
+    # Django < 1.10
+    from django.core.urlresolvers import reverse
 
 from spectator.core.views import PaginatedListView
-from .models import Event, Movie, Play, Venue
+from .models import ClassicalWork, DancePiece, Event, Movie, Play, Venue
 
 
 class EventListView(PaginatedListView):
@@ -18,7 +24,6 @@ class EventListView(PaginatedListView):
     """
     model = Event
     ordering = ['-date',]
-    template_name = 'spectator/events/event_list.html'
 
     def get(self, request, *args, **kwargs):
         slug = self.kwargs.get('kind_slug', None)
@@ -37,13 +42,21 @@ class EventListView(PaginatedListView):
         return context
 
     def get_event_counts(self):
-        counts = {'event_count': Event.objects.count(),}
+        """
+        Returns a dict like:
+            {'counts': {
+                'all': 30,
+                'movie': 12,
+                'gig': 10,
+            }}
+        """
+        counts = {'all': Event.objects.count(),}
 
         for k,v in Event.KIND_CHOICES:
             # e.g. 'movie_count':
-            counts['{}_count'.format(k)] = \
-                                        Event.objects.filter(kind=k).count()
-        return counts
+            counts[k] = Event.objects.filter(kind=k).count()
+
+        return {'counts': counts,}
 
     def get_event_kind(self):
         """
@@ -78,7 +91,6 @@ class EventDetailView(DetailView):
     determined by the value of `kind_slug`.
     """
     model = Event
-    template_name = 'spectator/events/event_detail.html'
     slug_url_kwarg = 'kind_slug'
     slug_field = 'kind_slug'
     query_pk_and_slug = True
@@ -91,11 +103,11 @@ class EventDetailView(DetailView):
         kind = self.get_event_kind()
         if kind == 'movie':
             self.model = Movie
-            self.template_name = 'spectator/events/movie_detail.html'
+            self.template_name = 'events/movie_detail.html'
             self.query_pk_and_slug = False
         elif kind == 'play':
             self.model = Play
-            self.template_name = 'spectator/events/play_detail.html'
+            self.template_name = 'events/play_detail.html'
             self.query_pk_and_slug = False
         return super().get_queryset()
 
@@ -112,7 +124,6 @@ class EventYearArchiveView(YearArchiveView):
     make_object_list = True
     model = Event
     ordering = 'date'
-    template_name = 'spectator/events/event_archive_year.html'
 
     def get_queryset(self):
         "Reduce the number of queries and speed things up."
@@ -141,36 +152,66 @@ class EventYearArchiveView(YearArchiveView):
         return items, qs, info
 
 
-# MOVIE AND PLAY LISTS/DETAILS.
+# CLASSICAL WORK, DANCE PIECE, MOVIE AND PLAY LISTS/DETAILS.
 
-class MovieListView(PaginatedListView):
+class WorkListView(PaginatedListView):
+    """
+    Parent class for all the "work" list views.
+    """
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.prefetch_related('roles__creator')
+        return qs
+
+class MovieListView(WorkListView):
     model = Movie
-    ordering = ['title_sort']
-    template_name = 'spectator/events/movie_list.html'
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.prefetch_related('roles__creator')
-        return qs
-
-class PlayListView(PaginatedListView):
-    model = Play
-    ordering = ['title_sort']
-    template_name = 'spectator/events/play_list.html'
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.prefetch_related('roles__creator')
-        return qs
-
 
 class MovieDetailView(DetailView):
     model = Movie
-    template_name = 'spectator/events/movie_detail.html'
+
+class PlayListView(WorkListView):
+    model = Play
 
 class PlayDetailView(DetailView):
     model = Play
-    template_name = 'spectator/events/play_detail.html'
+
+class ClassicalWorkListView(WorkListView):
+    model = ClassicalWork
+    template_name = 'events/m2m_work_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Classical works'
+        return context
+
+class ClassicalWorkDetailView(DetailView):
+    model = ClassicalWork
+    template_name = 'events/m2m_work_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumb_list_title'] = 'Classical works'
+        context['breadcrumb_list_url'] = reverse('spectator:classicalwork_list')
+        return context
+
+class DancePieceListView(WorkListView):
+    model = DancePiece
+    template_name = 'events/m2m_work_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Dance pieces'
+        return context
+
+class DancePieceDetailView(DetailView):
+    model = DancePiece
+    template_name = 'events/m2m_work_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumb_list_title'] = 'Dance pieces'
+        context['breadcrumb_list_url'] = reverse('spectator:dancepiece_list')
+        return context
 
 
 # VENUES
@@ -178,11 +219,10 @@ class PlayDetailView(DetailView):
 class VenueListView(PaginatedListView):
     model = Venue
     ordering = ['name_sort']
-    template_name = 'spectator/events/venue_list.html'
 
 
 class VenueDetailView(SingleObjectMixin, PaginatedListView):
-    template_name = 'spectator/events/venue_detail.html'
+    template_name = 'events/venue_detail.html'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=Venue.objects.all())

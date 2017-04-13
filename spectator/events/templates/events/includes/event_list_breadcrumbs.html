@@ -1,0 +1,28 @@
+{% comment %}
+Displays the breadcrumbs on the event_list pages.
+Used by the event_list_breadcrumbs() template inclusion tag.
+{% endcomment %}
+
+{% load spectator_core %}
+
+<li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
+
+{% if current_kind is None %}
+	<li class="breadcrumb-item active">Events</li>
+{% else %}
+
+	<li class="breadcrumb-item">
+		<a href="{% url 'spectator:events_home' %}">Events</a>
+	</li>
+
+	{% for kind in event_kinds %}
+		{% if kind == current_kind %}
+			{% with event_kinds_data|get_item:kind as kind_data %}
+				<li class="breadcrumb-item active">
+					{{ kind_data|get_item:'name_plural' }}
+				</li>
+			{% endwith %}
+		{% endif %}
+	{% endfor %}
+
+{% endif %}

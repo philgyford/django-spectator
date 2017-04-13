@@ -1,0 +1,29 @@
+{% comment %}
+Displays an unordered list of Creators/Roles.
+
+Expects:
+* roles - A list/QuerySet of Roles.
+* show_role_name - Display the role names, if any. Default: True.
+* heading - Optional text to use for the heading. If none, no heading is shown.
+
+{% endcomment %}
+
+{% if roles|length > 0 %}
+	{% if heading %}
+		<h2>{{ heading }}</h2>
+	{% endif %}
+
+	<ul>
+		{% for role in roles %}
+			<li>
+				<a href="{{ role.creator.get_absolute_url }}">
+					{{ role.creator.name }}
+				</a>
+				{% if role.role_name and show_role_name|default_if_none:True %}
+					({{ role.role_name }})
+				{% endif %}
+			</li>
+		{% endfor %}
+	</ul>
+{% endif %}
+

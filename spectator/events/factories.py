@@ -11,12 +11,41 @@ class VenueFactory(factory.DjangoModelFactory):
     name = factory.Sequence(lambda n: 'Venue %s' % n)
 
 
+class ClassicalWorkFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ClassicalWork
+
+    title = factory.Sequence(lambda n: 'Classical Work %s' % n)
+
+class ClassicalWorkRoleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ClassicalWorkRole
+
+    role_name = factory.Sequence(lambda n: 'Role %s' % n)
+    creator = factory.SubFactory(IndividualCreatorFactory)
+    classical_work = factory.SubFactory(ClassicalWorkFactory)
+
+
+class DancePieceFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.DancePiece
+
+    title = factory.Sequence(lambda n: 'Dance Piece %s' % n)
+
+class DancePieceRoleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.DancePieceRole
+
+    role_name = factory.Sequence(lambda n: 'Role %s' % n)
+    creator = factory.SubFactory(IndividualCreatorFactory)
+    dance_piece = factory.SubFactory(DancePieceFactory)
+
+
 class MovieFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Movie
 
     title = factory.Sequence(lambda n: 'Movie %s' % n)
-
 
 class MovieRoleFactory(factory.DjangoModelFactory):
     class Meta:
@@ -32,7 +61,6 @@ class PlayFactory(factory.DjangoModelFactory):
         model = models.Play
 
     title = factory.Sequence(lambda n: 'Play %s' % n)
-
 
 class PlayRoleFactory(factory.DjangoModelFactory):
     class Meta:
@@ -50,8 +78,37 @@ class EventFactory(factory.DjangoModelFactory):
     title = factory.Sequence(lambda n: 'Event %s' % n)
     venue = factory.SubFactory(VenueFactory)
 
+    @factory.post_generation
+    def classical_works(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            # A list of works was passed in, use them
+            for work in extracted:
+                self.classical_works.add(piece)
+
+    @factory.post_generation
+    def dance_pieces(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            # A list of pieces was passed in, use them
+            for piece in extracted:
+                self.dance_pieces.add(piece)
+
+
 class ComedyEventFactory(EventFactory):
     kind = 'comedy'
+
+class ConcertEventFactory(EventFactory):
+    kind = 'concert'
+
+class DanceEventFactory(EventFactory):
+    kind = 'dance'
 
 class ExhibitionEventFactory(EventFactory):
     kind = 'exhibition'

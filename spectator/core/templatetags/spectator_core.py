@@ -3,8 +3,43 @@ from urllib.parse import urlparse
 from django import template
 from django.http import QueryDict
 from django.utils.html import format_html
+try:
+    # Django >= 1.10
+    from django.urls import reverse
+except ImportError:
+    # Django < 1.10
+    from django.core.urlresolvers import reverse
 
 register = template.Library()
+
+
+@register.filter
+def get_item(dictionary, key):
+    """
+    For getting an item from a dictionary in a template using a variable.
+    Use like:
+        {{ mydict|get_item:my_var }}
+    """
+    return dictionary.get(key)
+
+
+@register.inclusion_tag('core/includes/card_edit_object_link.html')
+def edit_object_link_card(obj, perms):
+    """
+    If the user has permission to edit `obj`, show a link to its Admin page.
+    obj -- An object like Movie, Play, ClassicalWork, Publication, etc.
+    perms -- The `perms` object that it's the template.
+    """
+    # eg: 'movie' or 'classicalwork':
+    name = obj.__class__.__name__.lower()
+    permission = 'spectator.can_edit_{}'.format(name)
+    # eg: 'admin:events_classicalwork_change':
+    change_url_name = 'admin:{}_{}_change'.format(obj._meta.app_label, name)
+
+    return {
+        'display_link': (permission in perms),
+        'change_url': reverse(change_url_name, args=[obj.id])
+    }
 
 
 @register.filter
