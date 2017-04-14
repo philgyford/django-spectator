@@ -88,31 +88,6 @@ class EventListViewTestCase(ViewTestCase):
         self.assertEqual(context['event_list'][5], dance)
 
 
-class VenueListViewTestCase(ViewTestCase):
-
-    def test_response_200(self):
-        "It should respond with 200."
-        response = views.VenueListView.as_view()(self.request)
-        self.assertEqual(response.status_code, 200)
-
-    def test_templates(self):
-        response = views.VenueListView.as_view()(self.request)
-        self.assertEqual(response.template_name[0], 'events/venue_list.html')
-
-    def test_context_events_list(self):
-        "It should have Venues in the context, in title_sort order."
-        p1 = VenueFactory(name="Classic Venue")
-        p2 = VenueFactory(name="The Amazing Venue")
-        p3 = VenueFactory(name="A Brilliant Venue")
-        response = views.VenueListView.as_view()(self.request)
-        context = response.context_data
-        self.assertIn('venue_list', context)
-        self.assertEqual(len(context['venue_list']), 3)
-        self.assertEqual(context['venue_list'][0], p2)
-        self.assertEqual(context['venue_list'][1], p3)
-        self.assertEqual(context['venue_list'][2], p1)
-
-
 class EventDetailViewTestCase(ViewTestCase):
     "A basic EventDetail page e.g. for a gig or misc Event."
 
@@ -217,6 +192,94 @@ class PlayEventDetailViewTestCase(ViewTestCase):
         self.assertEqual(context['play'], self.event.play)
 
 
+class EventYearArchiveViewTestCase(ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.gig1 = GigEventFactory(date=make_date('2017-01-31'))
+
+    def test_response_200(self):
+        "It should respond with 200 if there's an event in that year."
+        response = views.EventYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        self.assertEqual(response.status_code, 200)
+
+    def test_response_404(self):
+        "It should raise 404 if it's a date before our first year."
+        with self.assertRaises(Http404):
+            response = views.EventYearArchiveView.as_view()(
+                                                    self.request, year='2016')
+
+    def test_templates(self):
+        response = views.EventYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        self.assertEqual(response.template_name[0],
+                         'events/event_archive_year.html')
+
+    def test_context_event_list(self):
+        "It should only include events in chosen year, earliest first."
+        gig2 = GigEventFactory(date=make_date('2016-07-15'))
+        gig3 = GigEventFactory(date=make_date('2017-01-20'))
+
+        response = views.EventYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        context = response.context_data
+        self.assertIn('event_list', context)
+        self.assertEqual(len(context['event_list']), 2)
+        self.assertEqual(context['event_list'][0], gig3)
+        self.assertEqual(context['event_list'][1], self.gig1)
+
+    def test_context_year(self):
+        "Context should include a date object representing the chosen year."
+        response = views.EventYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        self.assertIn('year', response.context_data)
+        self.assertEqual(response.context_data['year'], make_date('2017-01-01'))
+
+    def test_context_next_prev_years(self):
+        "Context should include date objects representing next/prev years."
+        GigEventFactory(date=make_date('2016-07-15'))
+        response = views.EventYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        self.assertIn('previous_year', response.context_data)
+        self.assertIn('next_year', response.context_data)
+        self.assertEqual(response.context_data['previous_year'],
+                        make_date('2016-01-01'))
+        self.assertIsNone(response.context_data['next_year'])
+
+    def test_context_no_prev_year(self):
+        "There should be no previous year if we're on the earliest year."
+        response = views.EventYearArchiveView.as_view()(
+                                                    self.request, year='2017')
+        self.assertIn('previous_year', response.context_data)
+        self.assertIsNone(response.context_data['previous_year'])
+
+
+class VenueListViewTestCase(ViewTestCase):
+
+    def test_response_200(self):
+        "It should respond with 200."
+        response = views.VenueListView.as_view()(self.request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_templates(self):
+        response = views.VenueListView.as_view()(self.request)
+        self.assertEqual(response.template_name[0], 'events/venue_list.html')
+
+    def test_context_events_list(self):
+        "It should have Venues in the context, in title_sort order."
+        p1 = VenueFactory(name="Classic Venue")
+        p2 = VenueFactory(name="The Amazing Venue")
+        p3 = VenueFactory(name="A Brilliant Venue")
+        response = views.VenueListView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('venue_list', context)
+        self.assertEqual(len(context['venue_list']), 3)
+        self.assertEqual(context['venue_list'][0], p2)
+        self.assertEqual(context['venue_list'][1], p3)
+        self.assertEqual(context['venue_list'][2], p1)
+
+
 class VenueDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
@@ -280,67 +343,4 @@ class VenueDetailViewTestCase(ViewTestCase):
         venue = VenueFactory(pk=4, latitude=51, longitude=0)
         response = views.VenueDetailView.as_view()(self.request, pk=4)
         self.assertNotIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
-
-
-class EventYearArchiveViewTestCase(ViewTestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.gig1 = GigEventFactory(date=make_date('2017-01-31'))
-
-    def test_response_200(self):
-        "It should respond with 200 if there's an event in that year."
-        response = views.EventYearArchiveView.as_view()(
-                                                    self.request, year='2017')
-        self.assertEqual(response.status_code, 200)
-
-    def test_response_404(self):
-        "It should raise 404 if it's a date before our first year."
-        with self.assertRaises(Http404):
-            response = views.EventYearArchiveView.as_view()(
-                                                    self.request, year='2016')
-
-    def test_templates(self):
-        response = views.EventYearArchiveView.as_view()(
-                                                    self.request, year='2017')
-        self.assertEqual(response.template_name[0],
-                         'events/event_archive_year.html')
-
-    def test_context_event_list(self):
-        "It should only include events in chosen year, earliest first."
-        gig2 = GigEventFactory(date=make_date('2016-07-15'))
-        gig3 = GigEventFactory(date=make_date('2017-01-20'))
-
-        response = views.EventYearArchiveView.as_view()(
-                                                    self.request, year='2017')
-        context = response.context_data
-        self.assertIn('event_list', context)
-        self.assertEqual(len(context['event_list']), 2)
-        self.assertEqual(context['event_list'][0], gig3)
-        self.assertEqual(context['event_list'][1], self.gig1)
-
-    def test_context_year(self):
-        "Context should include a date object representing the chosen year."
-        response = views.EventYearArchiveView.as_view()(
-                                                    self.request, year='2017')
-        self.assertIn('year', response.context_data)
-        self.assertEqual(response.context_data['year'], make_date('2017-01-01'))
-
-    def test_context_next_prev_years(self):
-        "Context should include date objects representing next/prev years, if any."
-        GigEventFactory(date=make_date('2016-07-15'))
-        response = views.EventYearArchiveView.as_view()(
-                                                    self.request, year='2017')
-        self.assertIn('previous_year', response.context_data)
-        self.assertIn('next_year', response.context_data)
-        self.assertEqual(response.context_data['previous_year'],
-                        make_date('2016-01-01'))
-        self.assertIsNone(response.context_data['next_year'])
-
-    def test_context_no_prev_year(self):
-        "There should be no previous year if we're on the earliest year."
-        response = views.EventYearArchiveView.as_view()(
-                                                    self.request, year='2017')
-        self.assertIn('previous_year', response.context_data)
-        self.assertIsNone(response.context_data['previous_year'])
 
