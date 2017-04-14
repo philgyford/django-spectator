@@ -10,8 +10,8 @@
 
 A Django app to track book reading, movie viewing, gig going and play watching.
 
-So far only used with Python 3.6 and Django 1.10. Should work with Python
-3.5+ and Django 1.8+.
+So far only used with Python 3.6 and Django 1.10 or 1.11. Should work with
+Python 3.5+ and Django 1.8+.
 
 It has URLs, views and templates to create a site displaying all the data, and
 Django admin screens to add and edit them. The templates use `Bootstrap v4-alpha.6 <https://v4-alpha.getbootstrap.com>`_.
@@ -269,13 +269,13 @@ Run all tests in all environments like::
 
 $ tox
 
-To run tests in only one environment, specify it. In this case, Python 3.6 and Django 1.10::
+To run tests in only one environment, specify it. In this case, Python 3.6 and Django 1.11::
 
-$ tox -e py36-django110
+$ tox -e py36-django111
 
 To run a specific test, add its path after ``--``, eg::
 
-$ tox -e py36-django110 -- tests.core.test_models.CreatorTestCase.test_ordering
+$ tox -e py36-django111 -- tests.core.test_models.CreatorTestCase.test_ordering
 
 Running the tests in all environments will generate coverage output. There will also be an ``htmlcov/`` directory containing an HTML report. You can also generate these reports without running all the other tests::
 
