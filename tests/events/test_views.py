@@ -255,6 +255,107 @@ class EventYearArchiveViewTestCase(ViewTestCase):
         self.assertIsNone(response.context_data['previous_year'])
 
 
+class ClassicalWorkListViewTestCase(ViewTestCase):
+
+    def test_response_200(self):
+        "It should respond with 200."
+        response = views.ClassicalWorkListView.as_view()(self.request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_templates(self):
+        response = views.ClassicalWorkListView.as_view()(self.request)
+        self.assertEqual(response.template_name[0],
+                         'events/m2m_work_list.html')
+
+    def test_context(self):
+        response = views.ClassicalWorkListView.as_view()(self.request)
+        self.assertIn('page_title', response.context_data)
+        self.assertEqual(response.context_data['page_title'],
+                         'Classical works')
+
+
+class ClassicalWorkDetailViewTestCase(ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        ClassicalWorkFactory(pk=5)
+
+    def test_response_200(self):
+        "It should respond with 200."
+        response = views.ClassicalWorkDetailView.as_view()(self.request, pk=5)
+        self.assertEqual(response.status_code, 200)
+
+    def test_response_404(self):
+        "It should respond with 404."
+        with self.assertRaises(Http404):
+            response = views.ClassicalWorkDetailView.as_view()(
+                                                            self.request, pk=3)
+
+    def test_templates(self):
+        response = views.ClassicalWorkDetailView.as_view()(self.request, pk=5)
+        self.assertEqual(response.template_name[0],
+                         'events/m2m_work_detail.html')
+
+    def test_context(self):
+        response = views.ClassicalWorkDetailView.as_view()(self.request, pk=5)
+        self.assertIn('breadcrumb_list_title', response.context_data)
+        self.assertEqual(response.context_data['breadcrumb_list_title'],
+                         'Classical works')
+        self.assertIn('breadcrumb_list_url', response.context_data)
+        self.assertEqual(response.context_data['breadcrumb_list_url'],
+                         '/events/concerts/works/')
+
+
+class DancePieceListViewTestCase(ViewTestCase):
+
+    def test_response_200(self):
+        "It should respond with 200."
+        response = views.DancePieceListView.as_view()(self.request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_templates(self):
+        response = views.DancePieceListView.as_view()(self.request)
+        self.assertEqual(response.template_name[0],
+                         'events/m2m_work_list.html')
+
+    def test_context(self):
+        response = views.DancePieceListView.as_view()(self.request)
+        self.assertIn('page_title', response.context_data)
+        self.assertEqual(response.context_data['page_title'],
+                         'Dance pieces')
+
+
+class DancePieceDetailViewTestCase(ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        DancePieceFactory(pk=5)
+
+    def test_response_200(self):
+        "It should respond with 200."
+        response = views.DancePieceDetailView.as_view()(self.request, pk=5)
+        self.assertEqual(response.status_code, 200)
+
+    def test_response_404(self):
+        "It should respond with 404."
+        with self.assertRaises(Http404):
+            response = views.DancePieceDetailView.as_view()(self.request, pk=3)
+
+    def test_templates(self):
+        response = views.DancePieceDetailView.as_view()(self.request, pk=5)
+        self.assertEqual(response.template_name[0],
+                         'events/m2m_work_detail.html')
+
+    def test_context(self):
+        response = views.DancePieceDetailView.as_view()(self.request, pk=5)
+        self.assertIn('breadcrumb_list_title', response.context_data)
+        self.assertEqual(response.context_data['breadcrumb_list_title'],
+                         'Dance pieces')
+        self.assertIn('breadcrumb_list_url', response.context_data)
+        self.assertEqual(response.context_data['breadcrumb_list_url'],
+                         '/events/dance/pieces/')
+
+
 class VenueListViewTestCase(ViewTestCase):
 
     def test_response_200(self):

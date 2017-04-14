@@ -1,6 +1,3 @@
-from distutils.version import StrictVersion
-
-from django import get_version
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
@@ -19,7 +16,7 @@ class EventAdminFormTestCase(TestCase):
     def test_clean_classicalworks_valid(self):
         "No error when a concert has classicalworks."
         form = EventAdminForm({'kind': 'concert',
-                               'classicalworks': [ClassicalWorkFactory()]})
+                               'classicalworks': [ClassicalWorkFactory().pk]})
         self.assertNotIn('classicalworks', form.errors)
 
     def test_clean_classicalworks_no_works(self):
@@ -30,13 +27,13 @@ class EventAdminFormTestCase(TestCase):
     def test_clean_classicalworks_not_concert(self):
         "Error when not-a-concert has classicalworks."
         form = EventAdminForm({'kind': 'movie',
-                               'classicalworks': [ClassicalWorkFactory()]})
+                               'classicalworks': [ClassicalWorkFactory().pk]})
         self.assertIn('classicalworks', form.errors)
 
     def test_clean_dancepieces_valid(self):
         "No error when a dance has dancepieces."
         form = EventAdminForm({'kind': 'dance',
-                               'dancepieces': [DancePieceFactory()]})
+                               'dancepieces': [DancePieceFactory().pk]})
         self.assertNotIn('dancepieces', form.errors)
 
     def test_clean_dancepieces_no_works(self):
@@ -47,7 +44,7 @@ class EventAdminFormTestCase(TestCase):
     def test_clean_dancepieces_not_dance(self):
         "Error when not-a-dance has dancepieces."
         form = EventAdminForm({'kind': 'movie',
-                               'dancepieces': [DancePieceFactory()]})
+                               'dancepieces': [DancePieceFactory().pk]})
         self.assertIn('dancepieces', form.errors)
 
     def test_clean_movie_event_valid(self):
