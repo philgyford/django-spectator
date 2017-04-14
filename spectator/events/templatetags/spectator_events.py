@@ -101,6 +101,12 @@ def events_years():
 
 @register.inclusion_tag('events/includes/card_years.html')
 def events_years_card(current_year=None):
+    """
+    Displays a card showing all years in which we have Events, with a link to
+    the archive pages.
+
+    current_year is a date object representing the year we're displaying.
+    """
     return {
             'current_year': current_year,
             'years': events_years(),
