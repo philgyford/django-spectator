@@ -10,7 +10,14 @@ except ImportError:
     # Django < 1.10
     from django.core.urlresolvers import reverse
 
+from ..apps import spectator_apps
+
 register = template.Library()
+
+
+@register.simple_tag
+def get_enabled_apps():
+    return spectator_apps.enabled()
 
 
 @register.filter

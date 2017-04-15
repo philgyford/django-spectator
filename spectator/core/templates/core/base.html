@@ -14,6 +14,8 @@
         {% endblock %}
     </head>
     <body>
+        {% load spectator_core %}
+        {% get_enabled_apps as enabled_apps %}
 
         {% block navbar %}
             <nav class="navbar navbar-toggleable navbar-inverse bg-inverse">
@@ -28,17 +30,21 @@
                             {% block navbar_list_start %}
                             {% endblock %}
 
-                            <li class="nav-item {% block reading_nav_active %}{% endblock %}">
-                                <a class="nav-link" href="{% url 'spectator:reading_home' %}">
-                                    Reading
-                                </a>
-                            </li>
+                            {% if 'reading' in enabled_apps %}
+                                <li class="nav-item {% block reading_nav_active %}{% endblock %}">
+                                    <a class="nav-link" href="{% url 'spectator:reading_home' %}">
+                                        Reading
+                                    </a>
+                                </li>
+                            {% endif %}
 
-                            <li class="nav-item {% block events_nav_active %}{% endblock %}">
-                                <a class="nav-link" href="{% url 'spectator:events_home' %}">
-                                    Events
-                                </a>
-                            </li>
+                            {% if 'events' in enabled_apps %}
+                                <li class="nav-item {% block events_nav_active %}{% endblock %}">
+                                    <a class="nav-link" href="{% url 'spectator:events_home' %}">
+                                        Events
+                                    </a>
+                                </li>
+                            {% endif %}
 
                             {% block navbar_list_end %}
                             {% endblock %}
@@ -52,7 +58,9 @@
 
             <ol class="breadcrumb">
                 {% block breadcrumbs %}
-                    <li class="breadcrumb-item"><a href="{% url 'spectator:home' %}">Home</a></li>
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'spectator:home' %}">Home</a>
+                    </li>
                 {% endblock %}
             </ol>
 
@@ -72,8 +80,12 @@
                     <div class="col-md-3">
                         {% block sidebar %}
                             {% include 'core/includes/card_nav.html' %}
-                            {% include 'reading/includes/card_nav.html' %}
-                            {% include 'events/includes/card_nav.html' %}
+                            {% if 'reading' in enabled_apps %}
+                                {% include 'reading/includes/card_nav.html' %}
+                            {% endif %}
+                            {% if 'events' in enabled_apps %}
+                                {% include 'events/includes/card_nav.html' %}
+                            {% endif %}
                         {% endblock %}
                     </div>
                 </div>

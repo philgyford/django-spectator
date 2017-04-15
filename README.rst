@@ -37,6 +37,9 @@ Add the apps to your project's ``INSTALLED_APPS`` in ``settings.py``::
         'spectator.reading',
     ]
 
+While ``spectator.core`` is required, you can omit either ``spectator.events``
+or ``spectator.reading`` if you only want to use one of them.
+
 Run migrations::
 
     ./manage.py makemigrations
@@ -259,6 +262,7 @@ Local development
 
 $ pip install -r devproject/requirements.txt
 $ python setup.py develop
+$ ./devproject/manage.py migrate
 $ ./devproject/manage.py runserver
 
 Run tests with tox. Install it with::

@@ -5,9 +5,14 @@ from django.views.generic import DetailView, ListView, YearArchiveView,\
         TemplateView
 
 from .models import Creator
-from spectator.events.models import Event
-from spectator.reading.models import Publication
 from .paginator import DiggPaginator
+from .apps import spectator_apps
+
+if spectator_apps.is_enabled('events'):
+    from spectator.events.models import Event
+
+if spectator_apps.is_enabled('reading'):
+    from spectator.reading.models import Publication
 
 
 class PaginatedListView(ListView):
@@ -73,13 +78,15 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['in_progress_publication_list'] = \
+        if spectator_apps.is_enabled('reading'):
+            context['in_progress_publication_list'] = \
                                     Publication.in_progress_objects\
                                     .select_related('series')\
                                     .prefetch_related('roles__creator').all()
-        context['recent_event_list'] = Event.objects\
-                                    .select_related('venue')\
-                                    .order_by('-date')[:10]
+        if spectator_apps.is_enabled('events'):
+            context['recent_event_list'] = Event.objects\
+                                            .select_related('venue')\
+                                            .order_by('-date')[:10]
         return context
 
 

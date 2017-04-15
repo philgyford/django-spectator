@@ -1,13 +1,29 @@
 from distutils.version import StrictVersion
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from django import get_version
 from django.http import QueryDict
 from django.test import TestCase
 
+from spectator.core.apps import Apps
 from spectator.core.templatetags.spectator_core import domain_urlize,\
-        get_item, change_object_link_card, query_string
+        get_enabled_apps, get_item, change_object_link_card, query_string
 from spectator.core.factories import IndividualCreatorFactory
+
+
+class GetEnabledAppsTestCase(TestCase):
+
+    @patch.object(Apps, 'all')
+    def test_results(self, patched_all):
+        # all() will return an app that is not installed:
+        patched_all.return_value = [
+                        'events', 'reading', 'NOPE',]
+
+        # So 'NOPE' shouldn't be returned here:
+        enabled_apps = get_enabled_apps()
+        self.assertEqual(2, len(enabled_apps))
+        self.assertEqual(enabled_apps[0], 'events')
+        self.assertEqual(enabled_apps[1], 'reading')
 
 
 class GetItemTestCase(TestCase):
