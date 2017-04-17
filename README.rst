@@ -8,7 +8,11 @@
 .. image:: https://coveralls.io/repos/github/philgyford/django-spectator/badge.svg?branch=master
   :target: https://coveralls.io/github/philgyford/django-spectator?branch=master
 
-A Django app to track book reading, movie viewing, gig going and play watching.
+Two Django apps:
+
+* One to track book and periodical reading, including start and end dates, authors.
+* One to track events attended (movie, plays, gigs, exhibitions, comedy, dance,
+  classical), including date, venue, and people/organisations involved.
 
 So far only used with Python 3.6 and Django 1.10 or 1.11. Should work with
 Python 3.5+ and Django 1.8+.
