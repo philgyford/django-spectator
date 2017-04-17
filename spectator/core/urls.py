@@ -30,13 +30,3 @@ urlpatterns = [
     ),
 ]
 
-if spectator_apps.is_enabled('events'):
-    urlpatterns.append(
-        url(r'^events/', include('spectator.events.urls')),
-    )
-
-if spectator_apps.is_enabled('reading'):
-    urlpatterns.append(
-        url(r'^reading/', include('spectator.reading.urls')),
-    )
-

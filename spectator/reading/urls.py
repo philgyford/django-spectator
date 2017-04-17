@@ -7,7 +7,7 @@ urlpatterns = [
     url(
         regex=r"^$",
         view=views.ReadingHomeView.as_view(),
-        name='reading_home'
+        name='home'
     ),
     url(
         regex=r"^series/$",

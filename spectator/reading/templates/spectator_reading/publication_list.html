@@ -14,14 +14,14 @@
         <ul class="nav nav-tabs mb-4">
             {% if book_count > 0 %}
                 <li class="nav-item">
-                    <a class="nav-link{% if publication_kind == 'book' %} active{% endif %}" href="{% url 'spectator:publication_list' %}">
+                    <a class="nav-link{% if publication_kind == 'book' %} active{% endif %}" href="{% url 'spectator_reading:publication_list' %}">
                         Books ({{ book_count }})
                     </a>
                 </li>
             {% endif %}
             {% if periodical_count > 0 %}
                 <li class="nav-item">
-                    <a class="nav-link{% if publication_kind == 'periodical' %} active{% endif %}" href="{% url 'spectator:publication_list_periodical' %}">
+                    <a class="nav-link{% if publication_kind == 'periodical' %} active{% endif %}" href="{% url 'spectator_reading:publication_list_periodical' %}">
                         Periodicals ({{ periodical_count }})
                     </a>
                 </li>

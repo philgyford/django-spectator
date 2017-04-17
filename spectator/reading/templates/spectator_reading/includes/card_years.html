@@ -16,10 +16,10 @@ Expects:
             <ul class="list-inline mb-0">
                 {% for reading_year in years %}
                     <li class="list-inline-item">
-                        {% if url_name == 'spectator:reading_year_archive' and current_year|date:"Y" == reading_year|date:"Y" %}
+                        {% if url_name == 'spectator_reading:reading_year_archive' and current_year|date:"Y" == reading_year|date:"Y" %}
                             {{ reading_year|date:"Y" }}
                         {% else %}
-                            <a href="{% url 'spectator:reading_year_archive' year=reading_year|date:"Y" %}">{{ reading_year|date:"Y" }}</a>
+                            <a href="{% url 'spectator_reading:reading_year_archive' year=reading_year|date:"Y" %}">{{ reading_year|date:"Y" }}</a>
                         {% endif %}
                     </li>
                 {% endfor %}

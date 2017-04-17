@@ -5,7 +5,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:event_list' kind_slug=event.kind_slug %}">{{ event.kind_name_plural }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'spectator_events:event_list' kind_slug=event.kind_slug %}">{{ event.kind_name_plural }}</a></li>
     <li class="breadcrumb-item active">{{ event }}</li>
 {% endblock %}
 

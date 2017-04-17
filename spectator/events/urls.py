@@ -7,7 +7,7 @@ urlpatterns = [
     url(
         regex=r"^$",
         view=views.EventListView.as_view(),
-        name='events_home'
+        name='home'
     ),
 
     url(

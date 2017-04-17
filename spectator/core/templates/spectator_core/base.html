@@ -20,7 +20,7 @@
         {% block navbar %}
             <nav class="navbar navbar-toggleable navbar-inverse bg-inverse">
                 <div class="container">
-                    <a class="navbar-brand" href="{% url 'spectator:home' %}">
+                    <a class="navbar-brand" href="{% url 'spectator_core:home' %}">
                         {% block navbar_title %}
                             Spectator
                         {% endblock %}
@@ -32,7 +32,7 @@
 
                             {% if 'reading' in enabled_apps %}
                                 <li class="nav-item {% block reading_nav_active %}{% endblock %}">
-                                    <a class="nav-link" href="{% url 'spectator:reading_home' %}">
+                                    <a class="nav-link" href="{% url 'spectator_reading:home' %}">
                                         Reading
                                     </a>
                                 </li>
@@ -40,7 +40,7 @@
 
                             {% if 'events' in enabled_apps %}
                                 <li class="nav-item {% block events_nav_active %}{% endblock %}">
-                                    <a class="nav-link" href="{% url 'spectator:events_home' %}">
+                                    <a class="nav-link" href="{% url 'spectator_events:home' %}">
                                         Events
                                     </a>
                                 </li>
@@ -59,7 +59,7 @@
             <ol class="breadcrumb">
                 {% block breadcrumbs %}
                     <li class="breadcrumb-item">
-                        <a href="{% url 'spectator:home' %}">Home</a>
+                        <a href="{% url 'spectator_core:home' %}">Home</a>
                     </li>
                 {% endblock %}
             </ol>

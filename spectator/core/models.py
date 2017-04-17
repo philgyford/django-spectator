@@ -106,7 +106,7 @@ class Creator(TimeStampedModelMixin, models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('spectator:creator_detail', kwargs={'pk':self.pk})
+        return reverse('spectator_core:creator_detail', kwargs={'pk':self.pk})
 
     @property
     def sort_as(self):

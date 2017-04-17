@@ -161,7 +161,7 @@ class Event(TimeStampedModelMixin, models.Model):
         elif self.kind == 'play':
             pk = self.play.pk
 
-        return reverse('spectator:event_detail',
+        return reverse('spectator_events:event_detail',
                         kwargs={'kind_slug': self.kind_slug, 'pk':pk})
 
     def get_kinds():
@@ -283,7 +283,8 @@ class DancePiece(Work):
                         through='DancePieceRole', related_name='dancepieces')
 
     def get_absolute_url(self):
-        return reverse('spectator:dancepiece_detail', kwargs={'pk': self.pk})
+        return reverse('spectator_events:dancepiece_detail',
+                                                        kwargs={'pk': self.pk})
 
 
 class ClassicalWorkRole(BaseRole):
@@ -306,7 +307,7 @@ class ClassicalWork(Work):
                 through='ClassicalWorkRole', related_name='classicalworks')
 
     def get_absolute_url(self):
-        return reverse('spectator:classicalwork_detail',
+        return reverse('spectator_events:classicalwork_detail',
                                                         kwargs={'pk': self.pk})
 
 
@@ -356,7 +357,7 @@ class Movie(Work):
 
     def get_absolute_url(self):
         "See `Event.get_absolute_url()` for why we use `event_detail` here."
-        return reverse('spectator:event_detail',
+        return reverse('spectator_events:event_detail',
                         kwargs={'kind_slug': 'movies', 'pk':self.pk})
 
 
@@ -381,7 +382,7 @@ class Play(Work):
 
     def get_absolute_url(self):
         "See `Event.get_absolute_url()` for why we use `event_detail` here."
-        return reverse('spectator:event_detail',
+        return reverse('spectator_events:event_detail',
                         kwargs={'kind_slug': 'plays', 'pk':self.pk})
 
 
@@ -668,7 +669,7 @@ class Venue(TimeStampedModelMixin, models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('spectator:venue_detail', kwargs={'pk':self.pk})
+        return reverse('spectator_events:venue_detail', kwargs={'pk':self.pk})
 
     @property
     def country_name(self):

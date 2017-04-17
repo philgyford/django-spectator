@@ -5,10 +5,10 @@
 <div class="card mb-3">
     <ul class="list-group list-group-flush">
         <li class="list-group-item">
-            {% if url_name == 'spectator:creator_list' %}
+            {% if url_name == 'spectator_core:creator_list' %}
                 Creators
             {% else %}
-                <a href="{% url 'spectator:creator_list' %}">Creators</a>
+                <a href="{% url 'spectator_core:creator_list' %}">Creators</a>
             {% endif %}
         </li>
     </ul>
