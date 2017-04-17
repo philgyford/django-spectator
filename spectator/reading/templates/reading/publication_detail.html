@@ -1,0 +1,75 @@
+{% extends 'reading/base.html' %}
+
+{% block head_page_title %}
+    {% if publication.series %}
+        {{ publication.series.title }}, {{ publication.title }}
+    {% else %}
+        {{ publication.title }}
+    {% endif %}
+{% endblock %}
+
+{% block content_title %}
+    {% if publication.series %}
+        <a href="{{ publication.series.get_absolute_url }}">{{ publication.series.title }}</a><br>
+    {% endif %}
+    {{ publication.title }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:publication_list' %}">Publications</a></li>
+    <li class="breadcrumb-item active">{{ publication }}</li>
+{% endblock %}
+
+{% block content %}
+
+    <p class="lead">
+        {% include 'core/includes/roles.html' with roles=publication.roles.all intro='By' %}
+    </p>
+
+    {% if publication.has_urls %}
+        {% load spectator_core %}
+        <ul>
+            {% if publication.notes_url %}
+                <li>View notes at {{ publication.notes_url|domain_urlize }}.</li>
+            {% endif %}
+
+            {% if publication.official_url %}
+                <li>View official site at {{ publication.official_url|domain_urlize }}.</li>
+            {% endif %}
+
+            {% with publication.amazon_urls as urls %}
+                {% if urls|length > 0 %}
+                    <li>
+                        View at
+                        {% for url in urls %}{% if forloop.first %}{% else %}{% if forloop.last %} or {% else %}, {% endif %}{% endif %}<a href="{{ url.url }}">{{ url.name }}</a>{% endfor %}.
+                    </li>
+                {% endif %}
+            {% endwith %}
+        </ul>
+    {% endif %}
+
+    {% with publication.reading_set.all as readings %}
+        {% if readings|length > 0 %}
+            <h2>Readings</h2>
+            <ul>
+                {% for reading in readings %}
+                    <li>
+                        {% include 'reading/includes/reading.html' with reading=reading only %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Unread.</p>
+        {% endif %}
+    {% endwith %}
+
+{% endblock content %}
+
+
+{% block sidebar %}
+    {% load spectator_core %}
+    {% change_object_link_card object perms %}
+
+    {{ block.super }}
+{% endblock %}

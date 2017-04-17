@@ -1,12 +1,9 @@
 __title__ = 'Django Spectator'
-__version__ = '1.0.1'
+__version__ = '2.0.0'
 __author__ = 'Phil Gyford'
 __author_email__ = 'phil@gyford.com'
 __license__ = 'MIT'
 
 VERSION = __version__  # synonym
 TITLE = __title__  # synonym
-
-
-default_app_config = 'spectator.apps.SpectatorAppConfig'
 

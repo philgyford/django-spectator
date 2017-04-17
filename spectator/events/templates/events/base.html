@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+
+{% block events_nav_active %}active{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:events_home' %}">Events</a></li>
+{% endblock %}
+
+{% block sidebar %}
+
+    {% load spectator_core %}
+    {% current_url_name as url_name %}
+
+    {% if url_name != 'spectator:events_home' %}
+		{% load spectator_events %}
+        {% recent_events_card 5 %}
+    {% endif %}
+
+    {% events_years_card current_year=year %}
+
+{% endblock sidebar %}

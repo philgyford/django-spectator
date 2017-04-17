@@ -1,0 +1,35 @@
+{% extends 'events/base.html' %}
+
+{% block head_page_title %}{{ event }}{% endblock %}
+{% block content_title %}{{ event }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:event_list' kind_slug=event.kind_slug %}">{{ event.kind_name_plural }}</a></li>
+    <li class="breadcrumb-item active">{{ event }}</li>
+{% endblock %}
+
+{% block content %}
+
+    <p>
+        At <a href="{{ event.venue.get_absolute_url }}">{{ event.venue }}</a>
+        on {{ event.date|date:"j M Y" }}.
+    </p>
+
+    {% include 'core/includes/roles_list.html' with roles=event.roles.all heading='Featuring' only %}
+
+    {% if event.kind == 'concert' %}
+        {% include 'events/includes/m2m_work_list.html' with work_list=event.classicalworks.all heading="Works" only %}
+    {% elif event.kind == 'dance' %}
+        {% include 'events/includes/m2m_work_list.html' with work_list=event.dancepieces.all heading="Pieces" only %}
+    {% endif %}
+
+{% endblock content %}
+
+
+{% block sidebar %}
+    {% load spectator_core %}
+    {% change_object_link_card object perms %}
+
+    {{ block.super }}
+{% endblock %}

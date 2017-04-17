@@ -1,0 +1,17 @@
+{% comment %}
+Used by the recent_events_card template tag.
+
+Expects:
+* event_list - A QuerySet of Publications.
+* card_title - The title for the card.
+{% endcomment %}
+
+{% if event_list|length > 0 %}
+	<div class="card mb-3">
+		<div class="card-block">
+			<h2 class="h6 card-title">{{ card_title }}</h2>
+			{% include 'events/includes/events.html' with event_list=event_list style='unstyled' only %}
+		</div>
+	</div>
+{% endif %}
+

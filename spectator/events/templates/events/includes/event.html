@@ -1,0 +1,35 @@
+{% comment %}
+Display a single Event, probably in a list.
+
+Expects:
+
+* event - A child of the Event model.
+{% endcomment %}
+
+
+{% if event.kind == 'movie'  %}
+    <strong>
+        <a href="{{ event.get_absolute_url }}">{{ event.movie.title }}</a>
+    </strong>
+    {% if event.movie.year %}
+        <small class="text-muted">({{ event.movie.year }})</small>
+    {% endif %}
+{% else %}
+    <strong>
+        <a href="{{ event.get_absolute_url }}">{{ event }}</a>
+    </strong>
+{% endif %}
+
+<br>
+
+{% load spectator_core %}
+{% current_url_name as url_name %}
+
+{% if url_name == 'spectator:venue_detail' %}
+    {{ event.venue.name }},
+{% else %}
+    <a href="{% url 'spectator:venue_detail' pk=event.venue.pk %}">{{ event.venue.name }}</a>,
+{% endif %}
+
+{{ event.date|date:"j M Y" }}
+
