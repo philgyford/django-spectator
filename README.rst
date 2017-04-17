@@ -104,27 +104,50 @@ A Venue has a name and, optionally, location details. Events can be different
 kinds, e.g. "gig", "movie", "play".
 
 While an Event is a thing at a place on a day, with some optional Creators,
-some kids of Events are slightly more complicated.
+some kinds of Events are slightly more complicated.
 
-Gigs and MiscEvents
--------------------
+Gigs, Comedy, Exhibitions and Other 
+-----------------------------------
 
-A gig, and the generic misc Events, are the simplest. A date when you went to a
-Venue to see one or more Creators. The Event can optionally have a title.
+Events of kind "gig", "comedy", "exhibition" and "misc" are the simplest. A
+date when you went to a Venue to see one or more Creators. The Event can
+optionally have a title. "Other" is for events that don't fit into one of the
+other kinds.
 
 Plays
 -----
 
-An Event of type "play" can have a Play object (e.g. "King Lear") connected to
-it. A Play is created by (optionally) one or more Creators. A Play can
-therefore have several Events (occasions when you saw that one play).
+An Event of kind "play" can have one Play object (e.g. "King Lear") connected to
+it. A Play is created by (optionally) one or more Creators (e.g. "William 
+Shakespeare (Playwright)"). A Play can therefore have several Events (occasions
+when you saw that one play), with its own Creators (e.g. "Anthony Sher 
+(Actor)").
 
 Movies
 ------
 
-An Event of type "movie" can have a Movie object connected to it. A Movie is created by (optionally) one or more Creators. It can optionally have a year and
+An Event of kind "movie" can have one Movie object connected to it. A Movie is
+created by (optionally) one or more Creators. It can optionally have a year and
 an IMDb ID. A Movie can therefore have several Events (occasions when you saw
-that one film).
+that one film). Although you could add Creators to the Event itself, that
+probably doesn't make sense usually, unless, there was a post-screening
+interview or something.
+
+Classical concert
+-----------------
+
+An Event of kind "concert" is when one *or more* Classical Works were 
+seen/heard. A Classical Work can have zero or more Creators (e.g. "Wolfgang
+Amadeus Mozart (Composer)"). The Event itself can also have zero or more
+Creators (e.g. "Ian Page (Conductor)").
+
+Dance
+-----
+
+An Event of kind "dance" is when one *or more* Dance Pieces were seen. A Dance
+Piece can have zero or more Creators (e.g. "Pina Bausch (Choreographer)"). The
+Event itself can also have zero or more Creators (e.g. "English National
+Ballet").
 
 
 *************
@@ -134,7 +157,7 @@ Template tags
 Each app, `core`, `events` and `reading`, has some template tags.
 
 Events template tags
-===================
+====================
 
 To use any of these in a template, first::
 
@@ -192,8 +215,8 @@ Or to display as a Bootstrap card, with each year linking to the
 
 Here, ``year`` is a date object indicating a year which shouldn't be linked.
 
-Events template tags
-===================
+Reading template tags
+=====================
 
 To use any of these in a template, first::
 
