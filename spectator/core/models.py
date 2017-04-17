@@ -26,10 +26,10 @@ class BaseRole(TimeStampedModelMixin, models.Model):
 
     Child classes should add fields like:
 
-        creator = models.ForeignKey('Creator', blank=False,
+        creator = models.ForeignKey('spectator_core.Creator', blank=False,
                     on_delete=models.CASCADE, related_name='publication_roles')
 
-        publication = models.ForeignKey('Publication',
+        publication = models.ForeignKey('spectator_reading.Publication',
                     on_delete=models.CASCADE, related_name='roles')
     """
     role_name = models.CharField(null=False, blank=True, max_length=50,

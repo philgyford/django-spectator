@@ -1,0 +1,25 @@
+{% comment %}
+Displays a list of publications, with pagination.
+
+Expects:
+* publication_list - List or Queryset of Publications.
+* show_readings: 'none' (default), 'all' or 'current' (the in-progress reading, if any).
+* page_obj, a DiggPaginator instance.
+
+{% endcomment %}
+
+{% if publication_list|length > 0 %}
+    {% if page_obj|default:False and page_obj.number > 1 %}
+        {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+    {% endif %}
+
+    {% include 'spectator_reading/includes/publications.html' with publication_list=publication_list show_readings=show_readings|default:'none' only %}
+
+    {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+
+{% else %}
+
+    <p>There are no publications to display.</p>
+
+{% endif %}
+

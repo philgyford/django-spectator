@@ -18,7 +18,7 @@ def in_progress_publications():
                         .order_by('time_created')
 
 
-@register.inclusion_tag('reading/includes/card_publications.html')
+@register.inclusion_tag('spectator_reading/includes/card_publications.html')
 def in_progress_publications_card():
     """
     Displays Publications that are currently being read.
@@ -46,7 +46,7 @@ def day_publications(date):
                         .prefetch_related('roles__creator')
 
 
-@register.inclusion_tag('reading/includes/card_publications.html')
+@register.inclusion_tag('spectator_reading/includes/card_publications.html')
 def day_publications_card(date):
     """
     Displays Publications that were being read on `date`.
@@ -68,7 +68,7 @@ def reading_years():
     return Reading.objects.dates('end_date', 'year')
 
 
-@register.inclusion_tag('reading/includes/card_years.html')
+@register.inclusion_tag('spectator_reading/includes/card_years.html')
 def reading_years_card(current_year=None):
     """
     Displays the years in which there are Readings.

@@ -1,0 +1,67 @@
+{% extends 'spectator_events/base.html' %}
+
+{% block head_extra %}
+    {% if SPECTATOR_GOOGLE_MAPS_API_KEY %}
+        <style type="text/css">
+            .venue-map {
+                max-width: 100%;
+                height: 300px;
+                border: 1px solid #eee;
+                margin-bottom: 1em;
+            }
+        </style>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}
+
+{% block head_page_title %}{{ venue.name }}{% endblock %}
+{% block content_title %}{{ venue.name }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:venue_list' %}">Venues</a></li>
+    <li class="breadcrumb-item active">{{ venue.name }}</li>
+{% endblock %}
+
+{% block content %}
+
+    <p class="lead">
+        {{ venue.address }}, {{ venue.country_name }}
+    </p>
+
+    {% if SPECTATOR_GOOGLE_MAPS_API_KEY %}
+        <div class="js-venue-map-container"></div>
+    {% endif %}
+
+    {% if event_list|length > 0 %}
+        <h2>Events</h2>
+        {% include 'spectator_events/includes/events_paginated.html' with event_list=event_list page_obj=page_obj only %}
+    {% else %}
+        <p>There are no events to show.</p>
+    {% endif %}
+
+{% endblock content %}
+
+
+{% block sidebar %}
+    {% load spectator_core %}
+    {% change_object_link_card object perms %}
+
+    {{ block.super }}
+{% endblock %}
+
+
+{% block foot_extra %}
+    {% if SPECTATOR_GOOGLE_MAPS_API_KEY %}
+        {% load static %}
+        <script>
+            var spectator_map_latitude = '{{ venue.latitude }}';
+            var spectator_map_longitude = '{{ venue.longitude }}';
+        </script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ SPECTATOR_GOOGLE_MAPS_API_KEY }}&callback=spectatorInitMap"></script>
+        <script src="{% static "js/venue_map.js" %}"></script>
+    {% endif %}
+
+    {{ block.super }}
+{% endblock %}
+

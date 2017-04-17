@@ -2,6 +2,7 @@ from django.apps import apps, AppConfig
 
 
 class SpectatorCoreAppConfig(AppConfig):
+    label = 'spectator_core'
     name = 'spectator.core'
     verbose_name = 'Spectator Core'
 

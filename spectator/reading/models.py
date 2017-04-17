@@ -47,11 +47,11 @@ class PublicationRole(BaseRole):
     Linking a creator to a Publication, optionally via their role (e.g.
     'Author', 'Editor', etc.)
     """
-    creator = models.ForeignKey('core.Creator', blank=False,
+    creator = models.ForeignKey('spectator_core.Creator', blank=False,
                     on_delete=models.CASCADE, related_name='publication_roles')
 
-    publication = models.ForeignKey('Publication', on_delete=models.CASCADE,
-                                                        related_name='roles')
+    publication = models.ForeignKey('spectator_reading.Publication',
+            on_delete=models.CASCADE, related_name='roles')
 
 
 class Publication(TimeStampedModelMixin, models.Model):
@@ -85,8 +85,8 @@ class Publication(TimeStampedModelMixin, models.Model):
     title_sort = NaturalSortField('title', max_length=255, default='',
             help_text="e.g. 'clockwork orange, a' or 'world cities, the'.")
 
-    series = models.ForeignKey('PublicationSeries', blank=True, null=True,
-                                                    on_delete=models.SET_NULL)
+    series = models.ForeignKey('spectator_reading.PublicationSeries',
+            blank=True, null=True, on_delete=models.SET_NULL)
 
     kind = models.CharField(max_length=20, choices=KIND_CHOICES,
                                                         default='book')
@@ -104,7 +104,7 @@ class Publication(TimeStampedModelMixin, models.Model):
     notes_url = models.URLField(null=False, blank=True, max_length=255,
             verbose_name='Notes URL', help_text="URL of your notes/review.")
 
-    creators = models.ManyToManyField('core.Creator',
+    creators = models.ManyToManyField('spectator_core.Creator',
                     through='PublicationRole', related_name='publications')
 
     objects = models.Manager()
@@ -185,7 +185,8 @@ class Reading(TimeStampedModelMixin, models.Model):
         # (8, 'Circa...'),
     )
 
-    publication = models.ForeignKey('Publication', null=False, blank=False)
+    publication = models.ForeignKey('spectator_reading.Publication',
+            null=False, blank=False)
 
     start_date = models.DateField(null=True, blank=True)
     start_granularity = models.PositiveSmallIntegerField(null=False,

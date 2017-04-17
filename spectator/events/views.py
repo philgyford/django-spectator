@@ -103,11 +103,11 @@ class EventDetailView(DetailView):
         kind = self.get_event_kind()
         if kind == 'movie':
             self.model = Movie
-            self.template_name = 'events/movie_detail.html'
+            self.template_name = 'spectator_events/movie_detail.html'
             self.query_pk_and_slug = False
         elif kind == 'play':
             self.model = Play
-            self.template_name = 'events/play_detail.html'
+            self.template_name = 'spectator_events/play_detail.html'
             self.query_pk_and_slug = False
         return super().get_queryset()
 
@@ -177,7 +177,7 @@ class PlayDetailView(DetailView):
 
 class ClassicalWorkListView(WorkListView):
     model = ClassicalWork
-    template_name = 'events/m2m_work_list.html'
+    template_name = 'spectator_events/m2m_work_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -186,7 +186,7 @@ class ClassicalWorkListView(WorkListView):
 
 class ClassicalWorkDetailView(DetailView):
     model = ClassicalWork
-    template_name = 'events/m2m_work_detail.html'
+    template_name = 'spectator_events/m2m_work_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -196,7 +196,7 @@ class ClassicalWorkDetailView(DetailView):
 
 class DancePieceListView(WorkListView):
     model = DancePiece
-    template_name = 'events/m2m_work_list.html'
+    template_name = 'spectator_events/m2m_work_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -205,7 +205,7 @@ class DancePieceListView(WorkListView):
 
 class DancePieceDetailView(DetailView):
     model = DancePiece
-    template_name = 'events/m2m_work_detail.html'
+    template_name = 'spectator_events/m2m_work_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -222,7 +222,7 @@ class VenueListView(PaginatedListView):
 
 
 class VenueDetailView(SingleObjectMixin, PaginatedListView):
-    template_name = 'events/venue_detail.html'
+    template_name = 'spectator_events/venue_detail.html'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=Venue.objects.all())

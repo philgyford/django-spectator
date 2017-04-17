@@ -1,0 +1,12 @@
+include .travis.yml
+include LICENSE
+include README.rst
+include tox.ini
+include devproject/manage.py
+include devproject/requirements.txt
+recursive-include devproject/devproject *.py
+recursive-include spectator *
+recursive-include tests *
+
+recursive-exclude * *.pyc *.pyo *.sw* *.sv* *.un~ *.DS_Store
+

@@ -1,0 +1,20 @@
+{% comment %}
+Displays a paginated list of Events.
+
+Expects:
+* event_list - List or Queryset of Events.
+* page_obj - A DiggPaginator instance.
+{% endcomment %}
+
+{% if event_list|length > 0 %}
+    {% if page_obj|default:False and page_obj.number > 1 %}
+        {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+    {% endif %}
+
+    {% include 'spectator_events/includes/events.html' with event_list=event_list only %}
+
+    {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+
+{% else %}
+    <p>There are no events to show.</p>
+{% endif %}

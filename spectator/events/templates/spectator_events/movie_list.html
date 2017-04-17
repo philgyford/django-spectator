@@ -1,0 +1,36 @@
+{% extends 'spectator_events/base.html' %}
+
+{% block head_page_title %}Movies{% endblock %}
+{% block content_title %}Movies{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item active">Movies</li>
+{% endblock %}
+
+{% block content %}
+
+    {% if movie_list|length > 0 %}
+        {% if page_obj|default:False and page_obj.number > 1 %}
+            {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+        {% endif %}
+
+        <ul>
+            {% for movie in movie_list %}
+                <li class="mb-2">
+                    <a href="{{ movie.get_absolute_url }}">
+                        <strong>{{ movie.title }}</strong>
+                    </a>
+                    {% if movie.year %}({{ movie.year }}){% endif %}
+                    {% include 'spectator_core/includes/roles.html' with roles=movie.roles.all intro='<br>' show_role_name=False %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+
+    {% else %}
+        <p>There are no movies to show.</p>
+    {% endif %}
+
+{% endblock content %}

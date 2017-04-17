@@ -1,0 +1,35 @@
+{% extends 'spectator_events/base.html' %}
+
+{% block head_page_title %}{{ movie.title }} {% if movie.year %}({{ movie.year }}){% endif %}{% endblock %}
+{% block content_title %}
+    {{ movie.title }}
+    {% if movie.year %}
+        <small class="text-muted">({{ movie.year }})</small>
+    {% endif %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:event_list' kind_slug='movies' %}">Movies</a></li>
+    <li class="breadcrumb-item active">{{ movie.title }}</li>
+{% endblock %}
+
+{% block content %}
+
+    {% if movie.imdb_id %}
+        <p><a href="http://www.imdb.com/title/{{ movie.imdb_id }}">View at IMDb</a></p>
+    {% endif %}
+
+    {% include 'spectator_core/includes/roles_list.html' with roles=movie.roles.all heading='Cast and crew' only %}
+
+    {% include 'spectator_events/includes/visits_list.html' with events=movie.event_set.all heading_level='h2' only %}
+
+{% endblock content %}
+
+
+{% block sidebar %}
+    {% load spectator_core %}
+    {% change_object_link_card object perms %}
+
+    {{ block.super }}
+{% endblock %}

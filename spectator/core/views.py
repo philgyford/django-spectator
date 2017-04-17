@@ -74,7 +74,7 @@ class PaginatedListView(ListView):
 
 
 class HomeView(TemplateView):
-    template_name = 'core/home.html'
+    template_name = 'spectator_core/home.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

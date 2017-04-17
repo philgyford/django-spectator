@@ -11,7 +11,7 @@ from .models import Publication, PublicationSeries, Reading
 
 class ReadingHomeView(ListView):
     model = Publication
-    template_name = 'reading/home.html'
+    template_name = 'spectator_reading/home.html'
     queryset = Publication.unread_objects.select_related('series')\
                             .prefetch_related('roles__creator').all()
     ordering = ['time_created',]
@@ -32,7 +32,7 @@ class PublicationSeriesListView(ListView):
 
 
 class PublicationSeriesDetailView(SingleObjectMixin, PaginatedListView):
-    template_name = 'reading/publicationseries_detail.html'
+    template_name = 'spectator_reading/publicationseries_detail.html'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=PublicationSeries.objects.all())

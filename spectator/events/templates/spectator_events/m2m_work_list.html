@@ -1,0 +1,19 @@
+{% extends 'spectator_events/base.html' %}
+
+{% comment %}
+Displays a paginated list of ClassicalWorks or DancePieces.
+{% endcomment %}
+
+{% block head_page_title %}{{ page_title }}{% endblock %}
+{% block content_title %}{{ page_title }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item active">{{ page_title }}</li>
+{% endblock %}
+
+{% block content %}
+
+    {% include 'spectator_events/includes/m2m_work_list_paginated.html' with work_list=object_list page_obj=page_obj only %}
+
+{% endblock content %}

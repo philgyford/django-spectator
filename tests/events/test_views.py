@@ -27,7 +27,8 @@ class EventListViewTestCase(ViewTestCase):
 
     def test_templates(self):
         response = views.EventListView.as_view()(self.request)
-        self.assertEqual(response.template_name[0], 'events/event_list.html')
+        self.assertEqual(response.template_name[0],
+                'spectator_events/event_list.html')
 
     def test_context_counts(self):
         ConcertEventFactory.create_batch(6)
@@ -116,7 +117,8 @@ class EventDetailViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.EventDetailView.as_view()(
                                         self.request, kind_slug='gigs', pk=3)
-        self.assertEqual(response.template_name[0], 'events/event_detail.html')
+        self.assertEqual(response.template_name[0],
+                'spectator_events/event_detail.html')
 
     def test_context(self):
         "It should have the event in the context."
@@ -148,7 +150,8 @@ class MovieEventDetailViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.EventDetailView.as_view()(
                                         self.request, kind_slug='movies', pk=6)
-        self.assertEqual(response.template_name[0], 'events/movie_detail.html')
+        self.assertEqual(response.template_name[0],
+                'spectator_events/movie_detail.html')
 
     def test_context(self):
         "It should have the Movie (not the Event) in the context."
@@ -181,7 +184,8 @@ class PlayEventDetailViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.EventDetailView.as_view()(
                                         self.request, kind_slug='plays', pk=6)
-        self.assertEqual(response.template_name[0], 'events/play_detail.html')
+        self.assertEqual(response.template_name[0],
+                'spectator_events/play_detail.html')
 
     def test_context(self):
         "It should have the Play (not the Event) in the context."
@@ -214,7 +218,7 @@ class EventYearArchiveViewTestCase(ViewTestCase):
         response = views.EventYearArchiveView.as_view()(
                                                     self.request, year='2017')
         self.assertEqual(response.template_name[0],
-                         'events/event_archive_year.html')
+                         'spectator_events/event_archive_year.html')
 
     def test_context_event_list(self):
         "It should only include events in chosen year, earliest first."
@@ -265,7 +269,7 @@ class ClassicalWorkListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.ClassicalWorkListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'events/m2m_work_list.html')
+                         'spectator_events/m2m_work_list.html')
 
     def test_context(self):
         response = views.ClassicalWorkListView.as_view()(self.request)
@@ -294,7 +298,7 @@ class ClassicalWorkDetailViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.ClassicalWorkDetailView.as_view()(self.request, pk=5)
         self.assertEqual(response.template_name[0],
-                         'events/m2m_work_detail.html')
+                         'spectator_events/m2m_work_detail.html')
 
     def test_context(self):
         response = views.ClassicalWorkDetailView.as_view()(self.request, pk=5)
@@ -316,7 +320,7 @@ class DancePieceListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.DancePieceListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'events/m2m_work_list.html')
+                         'spectator_events/m2m_work_list.html')
 
     def test_context(self):
         response = views.DancePieceListView.as_view()(self.request)
@@ -344,7 +348,7 @@ class DancePieceDetailViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.DancePieceDetailView.as_view()(self.request, pk=5)
         self.assertEqual(response.template_name[0],
-                         'events/m2m_work_detail.html')
+                         'spectator_events/m2m_work_detail.html')
 
     def test_context(self):
         response = views.DancePieceDetailView.as_view()(self.request, pk=5)
@@ -365,7 +369,8 @@ class VenueListViewTestCase(ViewTestCase):
 
     def test_templates(self):
         response = views.VenueListView.as_view()(self.request)
-        self.assertEqual(response.template_name[0], 'events/venue_list.html')
+        self.assertEqual(response.template_name[0],
+                'spectator_events/venue_list.html')
 
     def test_context_events_list(self):
         "It should have Venues in the context, in title_sort order."
@@ -403,7 +408,8 @@ class VenueDetailViewTestCase(ViewTestCase):
 
     def test_templates(self):
         response = views.VenueDetailView.as_view()(self.request, pk=3)
-        self.assertEqual(response.template_name[0], 'events/venue_detail.html')
+        self.assertEqual(response.template_name[0],
+                'spectator_events/venue_detail.html')
 
     def test_context_venue(self):
         "It should have the venue in the context."

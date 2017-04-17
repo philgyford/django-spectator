@@ -1,0 +1,26 @@
+{% extends 'spectator_core/base.html' %}
+
+{% block head_title %}Spectator{% endblock %}
+{% block content_title %}Spectator{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item active">Home</li>
+{% endblock %}
+
+{% block content %}
+
+    {% if in_progress_publication_list|length > 0 %}
+        <h2>Currently reading</h2>
+
+        {% include 'spectator_reading/includes/publications.html' with publication_list=in_progress_publication_list show_readings='current' only %}
+    {% endif %}
+
+    {% if recent_event_list|length > 0 %}
+        <h2>Recent events</h2>
+
+        {% include 'spectator_events/includes/events.html' with event_list=recent_event_list only %}
+
+    {% endif %}
+
+{% endblock content %}
+

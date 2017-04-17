@@ -6,7 +6,7 @@ from ..models import Event
 register = template.Library()
 
 
-@register.inclusion_tag('events/includes/event_list_breadcrumbs.html')
+@register.inclusion_tag('spectator_events/includes/event_list_breadcrumbs.html')
 def event_list_breadcrumbs(current_kind):
     """
     Displays the breadcrumbs on the event_list pages.
@@ -25,7 +25,7 @@ def event_list_breadcrumbs(current_kind):
         }
 
 
-@register.inclusion_tag('events/includes/event_list_tabs.html')
+@register.inclusion_tag('spectator_events/includes/event_list_tabs.html')
 def event_list_tabs(counts, current_kind):
     """
     Displays the tabs to different event_list pages.
@@ -57,7 +57,7 @@ def recent_events(num=10):
     return Event.objects.select_related('venue').order_by('-date')[:num]
 
 
-@register.inclusion_tag('events/includes/card_events.html')
+@register.inclusion_tag('spectator_events/includes/card_events.html')
 def recent_events_card(num=10):
     """
     Displays Events that happened recently.
@@ -77,7 +77,7 @@ def day_events(date):
     return Event.objects.filter(date=date).select_related('venue')
 
 
-@register.inclusion_tag('events/includes/card_events.html')
+@register.inclusion_tag('spectator_events/includes/card_events.html')
 def day_events_card(date):
     """
     Displays Events that happened on the supplied date.
@@ -99,7 +99,7 @@ def events_years():
     return Event.objects.dates('date', 'year')
 
 
-@register.inclusion_tag('events/includes/card_years.html')
+@register.inclusion_tag('spectator_events/includes/card_years.html')
 def events_years_card(current_year=None):
     """
     Displays a card showing all years in which we have Events, with a link to

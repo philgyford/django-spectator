@@ -1,0 +1,34 @@
+{% extends 'spectator_reading/base.html' %}
+
+{% block head_page_title %}Publications{% endblock %}
+{% block content_title %}Publications{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item active">Publications</li>
+{% endblock %}
+
+{% block content %}
+
+    {% if book_count > 0 or periodical_count > 0 %}
+        <ul class="nav nav-tabs mb-4">
+            {% if book_count > 0 %}
+                <li class="nav-item">
+                    <a class="nav-link{% if publication_kind == 'book' %} active{% endif %}" href="{% url 'spectator:publication_list' %}">
+                        Books ({{ book_count }})
+                    </a>
+                </li>
+            {% endif %}
+            {% if periodical_count > 0 %}
+                <li class="nav-item">
+                    <a class="nav-link{% if publication_kind == 'periodical' %} active{% endif %}" href="{% url 'spectator:publication_list_periodical' %}">
+                        Periodicals ({{ periodical_count }})
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
+
+    {% include 'spectator_reading/includes/publications_paginated.html' with publication_list=publication_list show_readings='none' page_obj=page_obj only %}
+
+{% endblock content %}

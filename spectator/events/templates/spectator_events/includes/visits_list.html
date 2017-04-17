@@ -1,0 +1,26 @@
+{% comment %}
+Used for Plays and Movies, listing different Events that item was visited.
+
+Expects:
+
+* events - A list or Queryset of Event objects.
+* heading_level - The level of heading to use, eg ('h2'). Default is None; no heading.
+{% endcomment %}
+
+{% if events|length > 0 %}
+    {% if heading_level|default:False %}
+        <{{ heading_level }}>Viewings</{{ heading_level }}>
+    {% endif %}
+    <ul>
+        {% for event in events %}
+            <li class="mb-2">
+                {% if event.title %}
+                    <strong>{{ event.title }}</strong><br>
+                {% endif %}
+                <a href="{{ event.venue.get_absolute_url }}">{{ event.venue }}</a>,
+                {{ event.date|date:"j M Y" }}
+                {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

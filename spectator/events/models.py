@@ -23,10 +23,10 @@ class EventRole(BaseRole):
     Every time one of these is saved/deleted a signal re-saves the Event
     in case its `title_sort` needs to change.
     """
-    creator = models.ForeignKey('core.Creator', blank=False,
+    creator = models.ForeignKey('spectator_core.Creator', blank=False,
                         on_delete=models.CASCADE, related_name='event_roles')
 
-    event = models.ForeignKey('Event', on_delete=models.CASCADE,
+    event = models.ForeignKey('spectator_events.Event', on_delete=models.CASCADE,
                                                         related_name='roles')
 
 
@@ -63,7 +63,7 @@ class Event(TimeStampedModelMixin, models.Model):
 
     date = models.DateField(null=True, blank=False)
 
-    venue = models.ForeignKey('Venue', blank=False)
+    venue = models.ForeignKey('spectator_events.Venue', blank=False)
 
     title = models.CharField(null=False, blank=True, max_length=255,
             help_text="Optional. e.g., 'Indietracks 2017', 'Radio 1 Roadshow'.")
@@ -71,19 +71,21 @@ class Event(TimeStampedModelMixin, models.Model):
     title_sort = NaturalSortField('title_to_sort', max_length=255, default='',
             help_text="e.g. 'reading festival, the' or 'drifters, the'.")
 
-    creators = models.ManyToManyField('core.Creator',
+    creators = models.ManyToManyField('spectator_core.Creator',
                                 through='EventRole', related_name='events')
 
-    movie = models.ForeignKey('Movie', null=True, blank=True,
+    movie = models.ForeignKey('spectator_events.Movie', null=True, blank=True,
             help_text="Only used if event is of 'Movie' kind.")
 
-    play = models.ForeignKey('Play', null=True, blank=True,
+    play = models.ForeignKey('spectator_events.Play', null=True, blank=True,
             help_text="Only used if event is of 'Play' kind.")
 
-    classicalworks = models.ManyToManyField('ClassicalWork', blank=True,
+    classicalworks = models.ManyToManyField('spectator_events.ClassicalWork',
+            blank=True,
             help_text="Only used if event is of 'Classical Concert' kind.")
 
-    dancepieces = models.ManyToManyField('DancePiece', blank=True,
+    dancepieces = models.ManyToManyField('spectator_events.DancePiece',
+            blank=True,
             help_text="Only used if event is of 'Dance' kind.")
 
     kind_slug = models.SlugField(null=False, blank=True,
@@ -229,7 +231,8 @@ class Work(TimeStampedModelMixin, models.Model):
     Abstract parent for things like DancePiece, Movie, Play, etc.
     Just so we stop duplicating common things.
 
-    All children should also have a `creators` ManyToManyField to `core.Creator`.
+    All children should also have a `creators` ManyToManyField to
+    `spectator_core.Creator`.
 
     Example of getting a Works's creators:
 
@@ -265,10 +268,10 @@ class DancePieceRole(BaseRole):
     Through model for linking a Creator to a DancePiece, optionally via their
     role (e.g. 'Choreographer'.)
     """
-    creator = models.ForeignKey('core.Creator', blank=False,
+    creator = models.ForeignKey('spectator_core.Creator', blank=False,
                     on_delete=models.CASCADE, related_name='dance_piece_roles')
 
-    dance_piece = models.ForeignKey('DancePiece',
+    dance_piece = models.ForeignKey('spectator_events.DancePiece',
                     on_delete=models.CASCADE, related_name='roles')
 
 
@@ -276,7 +279,7 @@ class DancePiece(Work):
     """
     A dance piece itself, not an occasion on which it was watched.
     """
-    creators = models.ManyToManyField('core.Creator',
+    creators = models.ManyToManyField('spectator_core.Creator',
                         through='DancePieceRole', related_name='dancepieces')
 
     def get_absolute_url(self):
@@ -288,10 +291,10 @@ class ClassicalWorkRole(BaseRole):
     Through model for linking a Creator to a ClassicalWork, optionally via
     their role (e.g. 'Composer'.)
     """
-    creator = models.ForeignKey('core.Creator', blank=False,
+    creator = models.ForeignKey('spectator_core.Creator', blank=False,
                 on_delete=models.CASCADE, related_name='classical_work_roles')
 
-    classical_work = models.ForeignKey('ClassicalWork',
+    classical_work = models.ForeignKey('spectator_events.ClassicalWork',
                 on_delete=models.CASCADE, related_name='roles')
 
 
@@ -299,7 +302,7 @@ class ClassicalWork(Work):
     """
     A classical work itself, not an occasion on which it was watched.
     """
-    creators = models.ManyToManyField('core.Creator',
+    creators = models.ManyToManyField('spectator_core.Creator',
                 through='ClassicalWorkRole', related_name='classicalworks')
 
     def get_absolute_url(self):
@@ -312,10 +315,10 @@ class MovieRole(BaseRole):
     Through model for linking a Creator to a Movie, optionally via their role
     (e.g.  'Director', 'Actor', etc.)
     """
-    creator = models.ForeignKey('core.Creator', blank=False,
+    creator = models.ForeignKey('spectator_core.Creator', blank=False,
                         on_delete=models.CASCADE, related_name='movie_roles')
 
-    movie = models.ForeignKey('Movie',
+    movie = models.ForeignKey('spectator_events.Movie',
                         on_delete=models.CASCADE, related_name='roles')
 
 
@@ -326,7 +329,7 @@ class Movie(Work):
     YEAR_CHOICES = [(r,r) for r in range(1888, datetime.date.today().year+1)]
     YEAR_CHOICES.insert(0, ('', 'Select…'))
 
-    creators = models.ManyToManyField('core.Creator',
+    creators = models.ManyToManyField('spectator_core.Creator',
                                     through='MovieRole', related_name='movies')
 
     imdb_id = models.CharField(null=False, blank=True, max_length=12,
@@ -362,10 +365,10 @@ class PlayRole(BaseRole):
     Through model for linking a Creator to a Play, optionally via their role
     (e.g. 'Playwright'.)
     """
-    creator = models.ForeignKey('core.Creator', blank=False,
+    creator = models.ForeignKey('spectator_core.Creator', blank=False,
                         on_delete=models.CASCADE, related_name='play_roles')
 
-    play = models.ForeignKey('Play',
+    play = models.ForeignKey('spectator_events.Play',
                         on_delete=models.CASCADE, related_name='roles')
 
 
@@ -373,7 +376,7 @@ class Play(Work):
     """
     A play itself, not an occasion on which it was watched.
     """
-    creators = models.ManyToManyField('core.Creator',
+    creators = models.ManyToManyField('spectator_core.Creator',
                                     through='PlayRole', related_name='plays')
 
     def get_absolute_url(self):

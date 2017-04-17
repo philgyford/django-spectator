@@ -1,0 +1,36 @@
+{% extends 'spectator_reading/base.html' %}
+
+{% block head_page_title %}Publications finished in {{ year|date:"Y" }}{% endblock %}
+{% block content_title %}Publications finished in {{ year|date:"Y" }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item active">{{ year|date:"Y" }}</li>
+{% endblock %}
+
+{% block content %}
+    {% include 'spectator_core/includes/pager.html' with url_name='spectator:reading_year_archive' previous=previous_year next=next_year only %}
+
+    {% if reading_list|length > 0 %}
+
+        {% for reading in reading_list %}
+            {% ifchanged reading.end_date|date:"m" %}
+                {% if not forloop.first %}
+                    </ul>
+                {% endif %}
+                <h2>{{ reading.end_date|date:"F"}}</h2>
+                <ul>
+            {% endifchanged %}
+            <li class="mb-2">
+                {% include 'spectator_reading/includes/publication.html' with publication=reading.publication show_readings='none' only %}
+            </li>
+        {% endfor %}
+        </ul>
+
+        {% include 'spectator_core/includes/pager.html' with url_name='spectator:reading_year_archive' previous=previous_year next=next_year only %}
+
+    {% else %}
+        <p>Nothing was read in {{ year|date:"Y" }}.</p>
+    {% endif %}
+
+{% endblock content %}

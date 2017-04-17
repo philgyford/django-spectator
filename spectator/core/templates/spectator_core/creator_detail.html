@@ -1,0 +1,79 @@
+{% extends 'spectator_core/base.html' %}
+
+{% block head_page_title %}{{ creator.name }}{% endblock %}
+{% block content_title %}{{ creator.name }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:creator_list' %}">Creators</a></li>
+    <li class="breadcrumb-item active">{{ creator.name }}</li>
+{% endblock %}
+
+{% block content %}
+
+    {% if creator.publications.count > 0 %}
+        <h2>Publications</h2>
+
+        {% include 'spectator_reading/includes/publications.html' with publication_list=creator.publications.all show_readings='none' only %}
+    {% endif %}
+
+    {% if creator.events.count > 0 %}
+        <h2>Events</h2>
+
+        {% include 'spectator_events/includes/events.html' with event_list=creator.events.all %}
+    {% endif %}
+
+    {% if creator.classicalworks.count > 0 %}
+        {% include 'spectator_events/includes/m2m_work_list.html' with work_list=creator.classicalworks.all heading="Classical works" only %}
+    {% endif %}
+
+    {% if creator.dancepieces.count > 0 %}
+        {% include 'spectator_events/includes/m2m_work_list.html' with work_list=creator.dancepieces.all heading="Dance pieces" only %}
+    {% endif %}
+
+    {% if creator.movies.count > 0 %}
+        <h2>Movies</h2>
+
+        <ul>
+            {% for movie in creator.get_movies %}
+                <li>
+                    <a href="{{ movie.get_absolute_url }}">
+                        <strong>{{ movie.title }}</strong>
+                    </a>
+                    {% if movie.year %}
+                        <small class="text-muted">({{ movie.year }})</small>
+                    {% endif %}
+                    {% if movie.creator_role_names|length > 0 %}
+                        <br>{{ movie.creator_role_names|join:', ' }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if creator.plays.count > 0  %}
+        <h2>Plays</h2>
+
+        <ul>
+            {% for play in creator.get_plays %}
+                <li>
+                    <a href="{{ play.get_absolute_url }}">
+                        <strong>{{ play.title }}</strong>
+                    </a>
+                    {% if play.creator_role_names|length > 0 %}
+                        <br>{{ play.creator_role_names|join:', ' }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock content %}
+
+
+{% block sidebar %}
+    {% load spectator_core %}
+    {% change_object_link_card object perms %}
+
+    {{ block.super }}
+{% endblock %}

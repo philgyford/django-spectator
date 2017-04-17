@@ -1,0 +1,32 @@
+{% extends 'spectator_events/base.html' %}
+
+{% block head_page_title %}{{ play.title }}{% endblock %}
+{% block content_title %}{{ play.title }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:event_list' kind_slug='plays' %}">Plays</a></li>
+    <li class="breadcrumb-item active">{{ play.title }}</li>
+{% endblock %}
+
+{% block content %}
+
+    {% with play.roles.all as roles %}
+        {% if roles|length > 0 %}
+            <p class="lead">
+                {% include 'spectator_core/includes/roles.html' with roles=roles intro='By' %}
+            </p>
+        {% endif %}
+    {% endwith %}
+
+    {% include 'spectator_events/includes/visits_list.html' with events=play.event_set.all heading_level='h2' only %}
+
+{% endblock content %}
+
+
+{% block sidebar %}
+    {% load spectator_core %}
+    {% change_object_link_card object perms %}
+
+    {{ block.super }}
+{% endblock %}

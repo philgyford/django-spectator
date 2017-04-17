@@ -1,0 +1,47 @@
+{% comment %}
+Display a single Publication, probably used in a list.
+
+Expects:
+
+* publication: The Publication to display.
+* show_readings: 'none' (default), 'all' or 'current' (the in-progress reading, if any).
+
+{% endcomment %}
+
+<a href="{{ publication.get_absolute_url }}">
+	<strong>
+        {% if publication.series %}
+            <cite>{{ publication.series.title }}</cite>, 
+            {{ publication.title }}
+        {% else %}
+            <cite>{{ publication.title }}</cite>
+        {% endif %}
+	</strong>
+</a>
+
+{% include 'spectator_core/includes/roles.html' with roles=publication.roles.all intro='<br>by' %}
+
+{% if show_readings == 'all' or show_readings == 'current' %}
+    <ul class="text-muted">
+        {% if show_readings == 'all' %}
+            {% with publication.reading_set.all as readings %}
+                {% if readings|length > 0 %}
+                    {% for reading in readings %}
+                        <li>
+                            {% include 'spectator_reading/includes/reading.html' with reading=reading only %}
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        {% else %}
+            {% with publication.get_current_reading as reading %}
+                {% if reading %}
+                    <li>
+                        {% include 'spectator_reading/includes/reading.html' with reading=reading only %}
+                    </li>
+                {% endif %}
+            {% endwith %}
+        {% endif %}
+    </ul>
+{% endif %}
+

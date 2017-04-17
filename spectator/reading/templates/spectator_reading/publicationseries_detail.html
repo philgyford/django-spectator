@@ -1,0 +1,24 @@
+{% extends 'spectator_reading/base.html' %}
+
+{% block head_page_title %}{{ publicationseries.title }}{% endblock %}
+{% block content_title %}{{ publicationseries.title }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:publicationseries_list' %}">Series</a></li>
+    <li class="breadcrumb-item active">{{ publicationseries.title }}</li>
+{% endblock %}
+
+{% block content %}
+
+    {% include 'spectator_reading/includes/publications_paginated.html' with publication_list=publication_list show_readings='all' page_obj=page_obj show_readings='none' only %}
+
+{% endblock content %}
+
+
+{% block sidebar %}
+    {% load spectator_core %}
+    {% change_object_link_card object perms %}
+
+    {{ block.super }}
+{% endblock %}

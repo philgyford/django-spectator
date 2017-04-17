@@ -1,0 +1,29 @@
+{% extends 'spectator_events/base.html' %}
+
+{% block head_page_title %}Events{% endblock %}
+{% block content_title %}Events{% endblock %}
+
+{% load spectator_events %}
+
+{% block breadcrumbs %}
+	{% event_list_breadcrumbs event_kind %}
+{% endblock %}
+
+{% block content %}
+
+    {% if event_list|length > 0 %}
+		{% event_list_tabs counts event_kind %}
+    {% endif %}
+
+    {% include 'spectator_events/includes/events_paginated.html' with event_list=event_list page_obj=page_obj only %}
+
+{% endblock content %}
+
+
+{% block sidebar %}
+
+    {% include 'spectator_core/includes/card_nav.html' %}
+    {% include 'spectator_events/includes/card_nav.html' %}
+
+    {{ block.super }}
+{% endblock sidebar %}

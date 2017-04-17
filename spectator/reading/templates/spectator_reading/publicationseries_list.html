@@ -1,0 +1,21 @@
+{% extends 'spectator_reading/base.html' %}
+
+{% block head_page_title %}Series{% endblock %}
+{% block content_title %}Series{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item active">Series</li>
+{% endblock %}
+
+{% block content %}
+
+    {% if publicationseries_list|length > 0 %}
+        <ul>
+            {% for series in publicationseries_list %}
+            <li><a href="{{ series.get_absolute_url }}">{{ series.title }}</a> ({{ series.publication_set.count }})</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock content %}

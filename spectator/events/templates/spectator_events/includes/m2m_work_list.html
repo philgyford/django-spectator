@@ -1,0 +1,25 @@
+{% comment %}
+For displaying a list of works that are attached to an Event by a ManyToManyField. e.g., Classical Works or Dance Pieces.
+
+Expects:
+* work_list - A list/QuerySet of ClassicalWorks or DancePieces.
+* heading - Optional text to use for the heading. If none, no heading is shown.
+{% endcomment %}
+
+{% if work_list|length > 0 %}
+	{% if heading %}
+		<h2>{{ heading }}</h2>
+	{% endif %}
+
+	<ul>
+		{% for work in work_list %}
+			<li>
+				<a href="{{ work.get_absolute_url }}">
+					<strong>{{ work }}</strong>
+				</a>
+				{% include 'spectator_core/includes/roles.html' with roles=work.roles.all intro='<br>' %}
+			</li>
+		{% endfor %}
+	</ul>
+{% endif %}
+

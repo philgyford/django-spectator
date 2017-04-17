@@ -1,0 +1,36 @@
+{% extends 'spectator_events/base.html' %}
+
+{% block head_page_title %}Plays{% endblock %}
+{% block content_title %}Plays{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item active">Plays</li>
+{% endblock %}
+
+{% block content %}
+
+    {% if play_list|length > 0 %}
+        {% if page_obj|default:False and page_obj.number > 1 %}
+            {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+        {% endif %}
+
+        <ul>
+            {% for play in play_list %}
+                <li class="mb-2">
+                    <a href="{{ play.get_absolute_url }}">
+                        <strong>{{ play.title }}</strong>
+                    </a>
+                    {% include 'spectator_core/includes/roles.html' with roles=play.roles.all intro='<br>by ' show_role_name=False %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+
+    {% else %}
+        <p>There are no plays to show.</p>
+    {% endif %}
+
+{% endblock content %}
+

@@ -1,0 +1,18 @@
+{% comment %}
+Displays a list of Events.
+
+Expects:
+* event_list - List or Queryset of children of Event.
+* style: 'bullets' (default) or 'unstyled'.
+
+{% endcomment %}
+
+{% if event_list|length > 0 %}
+    <ul{% if style|default:'bullets' == 'unstyled' %} class="list-unstyled mb-0"{% endif %}>
+        {% for event in event_list %}
+            <li class="mb-2">
+                {% include 'spectator_events/includes/event.html' with event=event only %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
