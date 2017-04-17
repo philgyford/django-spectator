@@ -46,7 +46,16 @@ or ``spectator.reading`` if you only want to use one of them.
 
 Run migrations::
 
-    ./manage.py makemigrations
+    ./manage.py migrate
+
+Add to your project's ``urls.py`` with the namespace ``'spectator'``, e.g.::
+
+    urlpatterns = [
+        # ...
+
+        url(r'^spectator/', include('spectator.core.urls', namespace='spectator')),
+    ] 
+
 
 Optionally get a `Google Maps JavaScript API key <https://developers.google.com/maps/documentation/javascript/get-api-key>`_ and add it to your ``settings.py`` like this::
 
