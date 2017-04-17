@@ -4,7 +4,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'spectator_reading:home' %}">Reading</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'spectator:reading:home' %}">Reading</a></li>
 {% endblock %}
 
 
@@ -13,7 +13,7 @@
     {% load spectator_core %}
     {% current_url_name as url_name %}
 
-    {% if url_name != 'spectator_reading:home' %}
+    {% if url_name != 'spectator:reading:home' %}
 		{% load spectator_reading %}
         {% in_progress_publications_card %}
     {% endif %}

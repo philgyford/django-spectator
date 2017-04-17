@@ -48,22 +48,16 @@ Run migrations::
 
     ./manage.py migrate
 
-Add to your project's ``urls.py`` with the following namespaces::
+Add to your project's ``urls.py`` with the ``'spectator'`` namespace::
 
     urlpatterns = [
         # ...
 
-        url(r'^spectator/', include('spectator.core.urls', namespace='spectator_core')),
-
-        url(r'^spectator/events/', include('spectator.events.urls', namespace='spectator_events')),
-
-        url(r'^spectator/reading/', include('spectator.reading.urls', namespace='spectator_reading')),
+        url(r'^spectator/', include('spectator.core.urls', namespace='spectator')),
     ] 
 
-You can change the initial URLs (``spectator/`` etc.) to whatever suits you.
-
-If you're not using either the events or reading app, then don't include that
-app's URLs.
+You can change the initial path (``r'^spectator/'``) to whatever suits you. e.g.
+use ``r'^'`` to have Spectator's home page be the front page of your site.
 
 Optionally get a `Google Maps JavaScript API key <https://developers.google.com/maps/documentation/javascript/get-api-key>`_ and add it to your ``settings.py`` like this::
 

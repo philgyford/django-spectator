@@ -5,14 +5,14 @@ Used by the event_list_breadcrumbs() template inclusion tag.
 
 {% load spectator_core %}
 
-<li class="breadcrumb-item"><a href="{% url 'spectator_core:home' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'spectator:core:home' %}">Home</a></li>
 
 {% if current_kind is None %}
 	<li class="breadcrumb-item active">Events</li>
 {% else %}
 
 	<li class="breadcrumb-item">
-		<a href="{% url 'spectator_events:home' %}">Events</a>
+		<a href="{% url 'spectator:events:home' %}">Events</a>
 	</li>
 
 	{% for kind in event_kinds %}

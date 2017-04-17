@@ -38,7 +38,7 @@ class PublicationSeries(TimeStampedModelMixin, models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('spectator_reading:publicationseries_detail',
+        return reverse('spectator:reading:publicationseries_detail',
                                                         kwargs={'pk':self.pk})
 
 
@@ -120,7 +120,7 @@ class Publication(TimeStampedModelMixin, models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('spectator_reading:publication_detail',
+        return reverse('spectator:reading:publication_detail',
                                                         kwargs={'pk':self.pk})
 
     def get_current_reading(self):

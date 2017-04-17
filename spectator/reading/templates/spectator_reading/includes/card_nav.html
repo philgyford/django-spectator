@@ -5,17 +5,17 @@
 <div class="card mb-3">
     <ul class="list-group list-group-flush">
         <li class="list-group-item">
-            {% if url_name == 'spectator_reading:publication_list' %}
+            {% if url_name == 'spectator:reading:publication_list' %}
                 Publications
             {% else %}
-                <a href="{% url 'spectator_reading:publication_list' %}">Publications</a>
+                <a href="{% url 'spectator:reading:publication_list' %}">Publications</a>
             {% endif %}
         </li>
         <li class="list-group-item">
-            {% if url_name == 'spectator_reading:publicationseries_list' %}
+            {% if url_name == 'spectator:reading:publicationseries_list' %}
                 Publication series
             {% else %}
-                <a href="{% url 'spectator_reading:publicationseries_list' %}">Publication series</a>
+                <a href="{% url 'spectator:reading:publicationseries_list' %}">Publication series</a>
             {% endif %}
         </li>
 </div>

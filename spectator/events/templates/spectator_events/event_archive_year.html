@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-    {% include 'spectator_core/includes/pager.html' with url_name='spectator_events:event_year_archive' previous=previous_year next=next_year only %}
+    {% include 'spectator_core/includes/pager.html' with url_name='spectator:events:event_year_archive' previous=previous_year next=next_year only %}
 
     {% if event_list|length > 0 %}
 
@@ -27,7 +27,7 @@
         {% endfor %}
         </ul>
 
-        {% include 'spectator_core/includes/pager.html' with url_name='spectator_events:event_year_archive' previous=previous_year next=next_year only %}
+        {% include 'spectator_core/includes/pager.html' with url_name='spectator:events:event_year_archive' previous=previous_year next=next_year only %}
 
     {% else %}
         <p>No events in {{ year|date:"Y" }}.</p>

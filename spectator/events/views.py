@@ -192,7 +192,7 @@ class ClassicalWorkDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['breadcrumb_list_title'] = 'Classical works'
         context['breadcrumb_list_url'] = reverse(
-                                        'spectator_events:classicalwork_list')
+                'spectator:events:classicalwork_list')
         return context
 
 class DancePieceListView(WorkListView):
@@ -212,7 +212,7 @@ class DancePieceDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['breadcrumb_list_title'] = 'Dance pieces'
         context['breadcrumb_list_url'] = reverse(
-                                            'spectator_events:dancepiece_list')
+                'spectator:events:dancepiece_list')
         return context
 
 

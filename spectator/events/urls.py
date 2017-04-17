@@ -3,6 +3,8 @@ from django.conf.urls import url
 from . import views
 
 
+# This should be under the namespace 'spectator:events'.
+
 urlpatterns = [
     url(
         regex=r"^$",

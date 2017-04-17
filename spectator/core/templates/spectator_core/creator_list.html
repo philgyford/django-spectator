@@ -14,14 +14,14 @@
         <ul class="nav nav-tabs mb-4">
             {% if individual_count > 0 %}
                 <li class="nav-item">
-                    <a class="nav-link{% if creator_kind == 'individual' %} active{% endif %}" href="{% url 'spectator_core:creator_list' %}">
+                    <a class="nav-link{% if creator_kind == 'individual' %} active{% endif %}" href="{% url 'spectator:creators:creator_list' %}">
                         People ({{ individual_count }})
                     </a>
                 </li>
             {% endif %}
             {% if group_count > 0 %}
                 <li class="nav-item">
-                    <a class="nav-link{% if creator_kind == 'group' %} active{% endif %}" href="{% url 'spectator_core:creator_list_group' %}">
+                    <a class="nav-link{% if creator_kind == 'group' %} active{% endif %}" href="{% url 'spectator:creators:creator_list_group' %}">
                         Groups ({{ group_count }})
                     </a>
                 </li>
