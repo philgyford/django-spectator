@@ -17,6 +17,10 @@ register = template.Library()
 
 @register.simple_tag
 def get_enabled_apps():
+    """
+    Returns a list of the optional Spectator apps that are currently installed
+    and enabled. e.g. `['events', 'reading',]`.
+    """
     return spectator_apps.enabled()
 
 
