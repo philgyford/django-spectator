@@ -14,7 +14,7 @@
  * Also requires:
  *
  *  Including the Google Maps JavaScript API.
- *  Using CSS to give #setloc-map a width and height.
+ *  Using CSS to give div.setloc-map a width and height.
  */
 ;(function($) {
 
@@ -48,8 +48,9 @@
    * Create HTML elements, display map, set up event listenerss.
    */
   function initMap() {
-    $prevEl = $(prev_el_selector);
-    if ($prevEl.length == 0) {
+    var $prevEl = $(prev_el_selector);
+
+    if ($prevEl.length === 0) {
       // Can't find where to put the map.
       return;
     };
@@ -198,4 +199,3 @@
   });
 
 })(django.jQuery);
-
