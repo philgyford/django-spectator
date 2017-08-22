@@ -18,7 +18,7 @@ So far only used with Python 3.6 and Django 1.10 or 1.11. Should work with
 Python 3.5+ and Django 1.8+.
 
 It has URLs, views and templates to create a site displaying all the data, and
-Django admin screens to add and edit them. The templates use `Bootstrap v4-alpha.6 <https://v4-alpha.getbootstrap.com>`_.
+Django admin screens to add and edit them. The templates use `Bootstrap v4-beta.6 <https://getbootstrap.com>`_.
 
 There are also template tags for displaying data in your own templates (see
 below).
