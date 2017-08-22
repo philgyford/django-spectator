@@ -19,7 +19,7 @@ previous -- date.
                 </span>
             {% endif %}
             {% if next %}
-                <span class="col-6{% if not previous %} offset-6{% endif %}">
+                <span class="col-6{% if not previous %} ml-auto{% endif %}">
                     <a href="{% url url_name year=next|date:"Y" %}" class="btn btn-outline-primary float-right">
                         {{ next|date:'Y' }} &rarr;
                     </a>

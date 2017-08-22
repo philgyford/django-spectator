@@ -8,7 +8,7 @@ Expects:
 
 {% if event_list|length > 0 %}
 	<div class="card mb-3">
-		<div class="card-block">
+		<div class="card-body">
 			<h2 class="h6 card-title">{{ card_title }}</h2>
 			{% include 'spectator_events/includes/events.html' with event_list=event_list style='unstyled' only %}
 		</div>
