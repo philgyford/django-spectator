@@ -60,6 +60,18 @@ class DayPublicationsTestCase(TestCase):
         self.assertEqual(len(qs), 1)
         self.assertEqual(qs[0], pub1)
 
+    def test_two_readings(self):
+        "Shouldn't return a pub if it it had a reading before, and a reading after, the chosen date."
+        pub = PublicationFactory()
+        r1 = ReadingFactory(publication=pub,
+                            start_date=make_date('2017-01-01'),
+                            end_date=make_date('2017-01-31'))
+        r2 = ReadingFactory(publication=pub,
+                            start_date=make_date('2017-03-01'),
+                            end_date=make_date('2017-03-31'))
+        qs = day_publications(make_date('2017-02-15'))
+        self.assertEqual(len(qs), 0)
+
 
 class ReadingYearsTestCase(TestCase):
 

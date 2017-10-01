@@ -35,15 +35,19 @@ def day_publications(date):
     Returns a QuerySet of Publications that were being read on `date`.
     `date` is a date tobject.
     """
-    return Publication.objects\
-                        .filter(reading__start_date__lte=date)\
+    readings = Reading.objects \
+                        .filter(start_date__lte=date) \
                         .filter(
-                            Q(reading__end_date__gte=date)
+                            Q(end_date__gte=date)
                             |
-                            Q(reading__end_date__isnull=True)
-                        )\
-                        .select_related('series')\
+                            Q(end_date__isnull=True)
+                        )
+    if readings:
+        return Publication.objects.filter(reading__in=readings) \
+                        .select_related('series') \
                         .prefetch_related('roles__creator')
+    else:
+        return Publication.objects.none()
 
 
 @register.inclusion_tag('spectator_reading/includes/card_publications.html')
