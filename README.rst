@@ -323,6 +323,17 @@ Running the tests in all environments will generate coverage output. There will 
 
 $ tox -e coverage
 
+Making a new release
+--------------------
+
+So I don't forget...
+
+1. Put new changes on `master`.
+2. Update the `__version__` in `spectator.__init__.py`.
+3. Do `python setup.py tag`.
+4. Do `python setup.py publish`.
+
+
 Adding a new event type
 =======================
 
