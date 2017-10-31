@@ -1,10 +1,30 @@
 from django.conf.urls import include, static, url
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
+
+from spectator.core.sitemaps import CreatorSitemap
+from spectator.events.sitemaps import EventSitemap, VenueSitemap
+from spectator.reading.sitemaps import PublicationSitemap,\
+        PublicationSeriesSitemap
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     url(r'^', include('spectator.core.urls', namespace='spectator')),
+
+    url(r'^sitemap\.xml$',
+        sitemap,
+        {
+            'sitemaps': {
+                'publications': PublicationSitemap,
+                'publicationseries': PublicationSeriesSitemap,
+                'events': EventSitemap,
+                'venues': VenueSitemap,
+                'creators': CreatorSitemap,
+            },
+        },
+        name='django.contrib.sitemaps.views.sitemap'),
 ]
 
 
