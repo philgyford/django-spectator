@@ -1,6 +1,50 @@
 from django.contrib.sitemaps import Sitemap
 
-from .models import Event, Venue
+from .models import ClassicalWork, DancePiece, Event, Movie, Play, Venue
+
+
+class ClassicalWorkSitemap(Sitemap):
+    changefreq = 'monthly'
+    priority = 0.5
+
+    def items(self):
+        return ClassicalWork.objects.all()
+
+    def lastmod(self, obj):
+        return obj.time_modified
+
+
+class DancePieceSitemap(Sitemap):
+    changefreq = 'monthly'
+    priority = 0.5
+
+    def items(self):
+        return DancePiece.objects.all()
+
+    def lastmod(self, obj):
+        return obj.time_modified
+
+
+class MovieSitemap(Sitemap):
+    changefreq = 'monthly'
+    priority = 0.5
+
+    def items(self):
+        return Movie.objects.all()
+
+    def lastmod(self, obj):
+        return obj.time_modified
+
+
+class PlaySitemap(Sitemap):
+    changefreq = 'monthly'
+    priority = 0.5
+
+    def items(self):
+        return Play.objects.all()
+
+    def lastmod(self, obj):
+        return obj.time_modified
 
 
 class EventSitemap(Sitemap):
@@ -8,7 +52,10 @@ class EventSitemap(Sitemap):
     priority = 0.5
 
     def items(self):
-        return Event.objects.all()
+        # Exclude movies and plays because they'll have the same URLs as their
+        # Movie and Play objects.
+        return Event.objects.exclude(kind='movie')\
+                            .exclude(kind='play')
 
     def lastmod(self, obj):
         return obj.time_modified

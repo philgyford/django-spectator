@@ -3,7 +3,9 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 
 from spectator.core.sitemaps import CreatorSitemap
-from spectator.events.sitemaps import EventSitemap, VenueSitemap
+from spectator.events.sitemaps import ClassicalWorkSitemap,\
+        DancePieceSitemap, EventSitemap, MovieSitemap, PlaySitemap,\
+        VenueSitemap
 from spectator.reading.sitemaps import PublicationSitemap,\
         PublicationSeriesSitemap
 
@@ -19,7 +21,11 @@ urlpatterns = [
             'sitemaps': {
                 'publications': PublicationSitemap,
                 'publicationseries': PublicationSeriesSitemap,
+                'classicalworks': ClassicalWorkSitemap,
+                'dancepieces': DancePieceSitemap,
                 'events': EventSitemap,
+                'movies': MovieSitemap,
+                'plays': PlaySitemap,
                 'venues': VenueSitemap,
                 'creators': CreatorSitemap,
             },
