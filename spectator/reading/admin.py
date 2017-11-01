@@ -24,7 +24,7 @@ class PublicationSeriesAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('title', 'title_sort', 'url', )
+            'fields': ('title', 'title_sort', 'slug', 'url', )
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -32,7 +32,7 @@ class PublicationSeriesAdmin(admin.ModelAdmin):
         }),
     )
 
-    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
+    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
 
 
 @admin.register(Publication)
@@ -44,7 +44,7 @@ class PublicationAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'title_sort', 'kind', 'series',
+            'fields': ( 'title', 'title_sort', 'slug', 'kind', 'series',
                         'isbn_uk', 'isbn_us',
                         'official_url', 'notes_url', )
         }),
@@ -55,7 +55,7 @@ class PublicationAdmin(admin.ModelAdmin):
     )
 
     radio_fields = {'kind': admin.HORIZONTAL}
-    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
+    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
 
     inlines = [ PublicationRoleInline, ReadingInline, ]
 

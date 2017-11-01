@@ -18,7 +18,7 @@ urlpatterns = [
         name='venue_list',
     ),
     url(
-        regex=r"^venues/(?P<pk>\d+)/$",
+        regex=r"^venues/(?P<slug>[\w-]+)/$",
         view=views.VenueDetailView.as_view(),
         name='venue_detail'
     ),
@@ -35,7 +35,7 @@ urlpatterns = [
         name='event_list'
     ),
     url(
-        regex=r"^(?P<kind_slug>[-\w]+)/(?P<pk>\d+)/$",
+        regex=r"^(?P<kind_slug>[-\w]+)/(?P<slug>[\w-]+)/$",
         view=views.EventDetailView.as_view(),
         name='event_detail'
     ),
@@ -46,7 +46,7 @@ urlpatterns = [
         name='classicalwork_list'
     ),
     url(
-        regex=r"^concerts/works/(?P<pk>\d+)/$",
+        regex=r"^concerts/works/(?P<slug>[\w-]+)/$",
         view=views.ClassicalWorkDetailView.as_view(),
         name='classicalwork_detail'
     ),
@@ -57,7 +57,7 @@ urlpatterns = [
         name='dancepiece_list'
     ),
     url(
-        regex=r"^dance/pieces/(?P<pk>\d+)/$",
+        regex=r"^dance/pieces/(?P<slug>[\w-]+)/$",
         view=views.DancePieceDetailView.as_view(),
         name='dancepiece_detail'
     ),

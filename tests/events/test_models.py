@@ -139,6 +139,15 @@ class EventTestCase(TestCase):
         event.refresh_from_db()
         self.assertEqual(event.title_sort, 'milky wimpshake')
 
+    def test_slug(self):
+        event = GigEventFactory(title='My Gig')
+        self.assertEqual(event.slug, 'my-gig')
+
+    def test_slug_duplicate(self):
+        e1 = GigEventFactory(title='My Gig')
+        e2 = GigEventFactory(title='My Gig')
+        self.assertEqual(e2.slug, 'my-gig-2')
+
     def test_get_kinds(self):
         self.assertEqual(
             Event.get_kinds(),
@@ -234,50 +243,70 @@ class EventTestCase(TestCase):
         self.assertEqual(roles[1].role_name, 'Supporter')
 
     def test_absolute_url_comedy(self):
-        event = ComedyEventFactory(pk=3)
-        self.assertEqual(event.get_absolute_url(), '/events/comedy/3/')
+        event = ComedyEventFactory(title='My Show')
+        self.assertEqual(event.get_absolute_url(), '/events/comedy/my-show/')
 
     def test_absolute_url_concert(self):
-        event = ConcertEventFactory(pk=3)
-        self.assertEqual(event.get_absolute_url(), '/events/concerts/3/')
+        event = ConcertEventFactory(title='My Concert')
+        self.assertEqual(event.get_absolute_url(), '/events/concerts/my-concert/')
 
     def test_absolute_url_dance(self):
-        event = DanceEventFactory(pk=3)
-        self.assertEqual(event.get_absolute_url(), '/events/dance/3/')
+        event = DanceEventFactory(title='My Dance')
+        self.assertEqual(event.get_absolute_url(), '/events/dance/my-dance/')
 
     def test_absolute_url_exhibition(self):
-        event = ExhibitionEventFactory(pk=3)
-        self.assertEqual(event.get_absolute_url(), '/events/exhibitions/3/')
+        event = ExhibitionEventFactory(title='My Exhibition')
+        self.assertEqual(event.get_absolute_url(), '/events/exhibitions/my-exhibition/')
 
     def test_absolute_url_gig(self):
-        event = GigEventFactory(pk=3)
-        self.assertEqual(event.get_absolute_url(), '/events/gigs/3/')
+        event = GigEventFactory(title='My Gig')
+        self.assertEqual(event.get_absolute_url(), '/events/gigs/my-gig/')
 
     def test_absolute_url_misc(self):
-        event = MiscEventFactory(pk=3)
-        self.assertEqual(event.get_absolute_url(), '/events/misc/3/')
+        event = MiscEventFactory(title='My Misc')
+        self.assertEqual(event.get_absolute_url(), '/events/misc/my-misc/')
 
     def test_absolute_url_movie(self):
-        event = MovieEventFactory(pk=3, movie=MovieFactory(pk=6))
-        self.assertEqual(event.get_absolute_url(), '/events/movies/6/')
+        event = MovieEventFactory(title='My Event',
+                                  movie=MovieFactory(title='My Movie'))
+        self.assertEqual(event.get_absolute_url(), '/events/movies/my-movie/')
 
     def test_absolute_url_play(self):
-        event = PlayEventFactory(pk=3, play=PlayFactory(pk=6))
-        self.assertEqual(event.get_absolute_url(), '/events/plays/6/')
+        event = PlayEventFactory(title='My Event',
+                                 play=PlayFactory(title='My Play'))
+        self.assertEqual(event.get_absolute_url(), '/events/plays/my-play/')
 
 
 class ClassicalWorkTestCase(TestCase):
 
+    def test_slug(self):
+        work = ClassicalWorkFactory(title='My Work')
+        self.assertEqual(work.slug, 'my-work')
+
+    def test_slug_duplicate(self):
+        w1 = ClassicalWorkFactory(title='My Work')
+        w2 = ClassicalWorkFactory(title='My Work')
+        self.assertEqual(w2.slug, 'my-work-2')
+
     def test_get_absolute_url(self):
-        work = ClassicalWorkFactory(pk=3)
-        self.assertEqual(work.get_absolute_url(), '/events/concerts/works/3/')
+        work = ClassicalWorkFactory(title='My Work')
+        self.assertEqual(work.get_absolute_url(), '/events/concerts/works/my-work/')
 
 
 class DancePieceTestCase(TestCase):
 
+    def test_slug(self):
+        piece = DancePieceFactory(title='My Piece')
+        self.assertEqual(piece.slug, 'my-piece')
+
+    def test_slug_duplicate(self):
+        p1 = DancePieceFactory(title='My Piece')
+        p2 = DancePieceFactory(title='My Piece')
+        self.assertEqual(p2.slug, 'my-piece-2')
+
     def test_get_absolute_url(self):
-        piece = DancePieceFactory(pk=3)
-        self.assertEqual(piece.get_absolute_url(), '/events/dance/pieces/3/')
+        piece = DancePieceFactory(title='My Piece')
+        self.assertEqual(piece.get_absolute_url(), '/events/dance/pieces/my-piece/')
 
 
 class MovieTestCase(TestCase):
@@ -299,6 +328,15 @@ class MovieTestCase(TestCase):
         self.assertEqual(movies[1], m2)
         self.assertEqual(movies[2], m3)
 
+    def test_slug(self):
+        movie = MovieFactory(title='My Movie')
+        self.assertEqual(movie.slug, 'my-movie')
+
+    def test_slug_duplicate(self):
+        m1 = MovieFactory(title='My Movie')
+        m2 = MovieFactory(title='My Movie')
+        self.assertEqual(m2.slug, 'my-movie-2')
+
     def test_roles(self):
         "It can have multiple MovieRoles."
         bob = IndividualCreatorFactory(name='Bob')
@@ -316,8 +354,8 @@ class MovieTestCase(TestCase):
         self.assertEqual(roles[1].role_name, 'Actor')
 
     def test_absolute_url(self):
-        movie = MovieFactory(pk=3)
-        self.assertEqual(movie.get_absolute_url(), '/events/movies/3/')
+        movie = MovieFactory(title='My Movie')
+        self.assertEqual(movie.get_absolute_url(), '/events/movies/my-movie/')
 
 
 class PlayTestCase(TestCase):
@@ -334,6 +372,15 @@ class PlayTestCase(TestCase):
         self.assertEqual(plays[0], p1)
         self.assertEqual(plays[1], p2)
         self.assertEqual(plays[2], p3)
+
+    def test_slug(self):
+        play = PlayFactory(title='My Play')
+        self.assertEqual(play.slug, 'my-play')
+
+    def test_slug_duplicate(self):
+        p1 = PlayFactory(title='My Play')
+        p2 = PlayFactory(title='My Play')
+        self.assertEqual(p2.slug, 'my-play-2')
 
     def test_roles(self):
         "It can have multiple PlayRoles."
@@ -352,9 +399,8 @@ class PlayTestCase(TestCase):
         self.assertEqual(roles[1].role_name, 'Author')
 
     def test_absolute_url(self):
-        play = PlayFactory(pk=3)
-        self.assertEqual(play.get_absolute_url(), '/events/plays/3/')
-
+        play = PlayFactory(title='My Play')
+        self.assertEqual(play.get_absolute_url(), '/events/plays/my-play/')
 
 
 class VenueTestCase(TestCase):
@@ -373,9 +419,18 @@ class VenueTestCase(TestCase):
         self.assertEqual(venues[1], v2)
         self.assertEqual(venues[2], v3)
 
+    def test_slug(self):
+        venue = VenueFactory(name='My Venue')
+        self.assertEqual(venue.slug, 'my-venue')
+
+    def test_slug_duplicate(self):
+        v1 = VenueFactory(name='My Venue')
+        v2 = VenueFactory(name='My Venue')
+        self.assertEqual(v2.slug, 'my-venue-2')
+
     def test_absolute_url(self):
-        venue = VenueFactory(pk=3)
-        self.assertEqual(venue.get_absolute_url(), '/events/venues/3/')
+        venue = VenueFactory(name='My Venue')
+        self.assertEqual(venue.get_absolute_url(), '/events/venues/my-venue/')
 
     def test_country_name_yes(self):
         venue = VenueFactory(country='GB')

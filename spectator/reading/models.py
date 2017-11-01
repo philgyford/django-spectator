@@ -10,7 +10,7 @@ except ImportError:
 
 from spectator.core.models import BaseRole, Creator, TimeStampedModelMixin
 from . import managers
-from spectator.core.fields import NaturalSortField
+from spectator.core.fields import AutoSlugField, NaturalSortField
 
 
 class PublicationSeries(TimeStampedModelMixin, models.Model):
@@ -30,6 +30,9 @@ class PublicationSeries(TimeStampedModelMixin, models.Model):
     url = models.URLField(null=False, blank=True, max_length=255,
             verbose_name='URL', help_text="e.g. 'https://www.lrb.co.uk/'.")
 
+    slug = AutoSlugField(max_length=50, populate_from='title',
+            separator='-', null=True)
+
     class Meta:
         ordering = ('title_sort',)
         verbose_name_plural = 'Publication series'
@@ -39,7 +42,7 @@ class PublicationSeries(TimeStampedModelMixin, models.Model):
 
     def get_absolute_url(self):
         return reverse('spectator:reading:publicationseries_detail',
-                                                        kwargs={'pk':self.pk})
+                                                        kwargs={'slug':self.slug})
 
 
 class PublicationRole(BaseRole):
@@ -85,6 +88,9 @@ class Publication(TimeStampedModelMixin, models.Model):
     title_sort = NaturalSortField('title', max_length=255, default='',
             help_text="e.g. 'clockwork orange, a' or 'world cities, the'.")
 
+    slug = AutoSlugField(max_length=50, populate_from='title',
+            separator='-', null=True)
+
     series = models.ForeignKey('spectator_reading.PublicationSeries',
             blank=True, null=True, on_delete=models.SET_NULL)
 
@@ -121,7 +127,7 @@ class Publication(TimeStampedModelMixin, models.Model):
 
     def get_absolute_url(self):
         return reverse('spectator:reading:publication_detail',
-                                                        kwargs={'pk':self.pk})
+                                                        kwargs={'slug':self.slug})
 
     def get_current_reading(self):
         try:

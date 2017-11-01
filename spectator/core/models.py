@@ -1,4 +1,5 @@
 from django.db import models
+
 try:
     # Django >= 1.10
     from django.urls import reverse
@@ -6,7 +7,7 @@ except ImportError:
     # Django < 1.10
     from django.core.urlresolvers import reverse
 
-from .fields import NaturalSortField
+from .fields import AutoSlugField, NaturalSortField
 
 
 class TimeStampedModelMixin(models.Model):
@@ -99,6 +100,9 @@ class Creator(TimeStampedModelMixin, models.Model):
     kind = models.CharField(max_length=20, choices=KIND_CHOICES,
                                                         default='individual')
 
+    slug = AutoSlugField(max_length=50, populate_from='name',
+            separator='-', null=False, default='slug')
+
     class Meta:
         ordering = ('name_sort',)
 
@@ -106,7 +110,8 @@ class Creator(TimeStampedModelMixin, models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('spectator:creators:creator_detail', kwargs={'pk':self.pk})
+        return reverse('spectator:creators:creator_detail',
+                                                    kwargs={'slug':self.slug})
 
     @property
     def sort_as(self):

@@ -52,38 +52,38 @@ class PublicationSeriesDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        series = PublicationSeriesFactory(pk=3)
+        series = PublicationSeriesFactory(title='My Series', pk=3)
         PublicationFactory.create_batch(2, series=series)
 
     def test_response_200(self):
-        "It should respond with 200 if there's a PublicationSeries with that pk."
+        "It should respond with 200 if there's a PublicationSeries with that slug."
         response = views.PublicationSeriesDetailView.as_view()(
-                                                        self.request, pk=3)
+                                                self.request, slug='my-series')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
-        "It should raise 404 if there's no PublicationSeries with that pk."
+        "It should raise 404 if there's no PublicationSeries with that slug."
         with self.assertRaises(Http404):
             response = views.PublicationSeriesDetailView.as_view()(
-                                                        self.request, pk=5)
+                                                        self.request, slug='nope')
 
     def test_templates(self):
         response = views.PublicationSeriesDetailView.as_view()(
-                                                        self.request, pk=3)
+                                                    self.request, slug='my-series')
         self.assertEqual(response.template_name[0],
                          'spectator_reading/publicationseries_detail.html')
 
     def test_context_series(self):
         "It should include the PublicationSeries in the context."
         response = views.PublicationSeriesDetailView.as_view()(
-                                                        self.request, pk=3)
+                                                    self.request, slug='my-series')
         self.assertIn('publicationseries', response.context_data)
         self.assertEqual(response.context_data['publicationseries'].pk, 3)
 
     def test_context_publication_list(self):
         "It should include the publication_list in the context."
         response = views.PublicationSeriesDetailView.as_view()(
-                                                        self.request, pk=3)
+                                                    self.request, slug='my-series')
         self.assertIn('publication_list', response.context_data)
         self.assertEqual(len(response.context_data['publication_list']), 2)
 
@@ -194,20 +194,20 @@ class PublicationDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        PublicationFactory(pk=3)
+        PublicationFactory(title='My Book')
 
     def test_response_200(self):
-        "It should respond with 200 if there's a Publication with that pk."
-        response = views.PublicationDetailView.as_view()(self.request, pk=3)
+        "It should respond with 200 if there's a Publication with that slug."
+        response = views.PublicationDetailView.as_view()(self.request, slug='my-book')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
-        "It should raise 404 if there's no Publication with that pk."
+        "It should raise 404 if there's no Publication with that slug."
         with self.assertRaises(Http404):
-            response = views.PublicationDetailView.as_view()(self.request, pk=5)
+            response = views.PublicationDetailView.as_view()(self.request, slug='nope')
 
     def test_templates(self):
-        response = views.PublicationDetailView.as_view()(self.request, pk=3)
+        response = views.PublicationDetailView.as_view()(self.request, slug='my-book')
         self.assertEqual(response.template_name[0],
                          'spectator_reading/publication_detail.html')
 

@@ -17,7 +17,7 @@ urlpatterns = [
         name='publicationseries_list'
     ),
     url(
-        regex=r"^series/(?P<pk>\d+)/$",
+        regex=r"^series/(?P<slug>[\w-]+)/$",
         view=views.PublicationSeriesDetailView.as_view(),
         name='publicationseries_detail'
     ),
@@ -33,7 +33,7 @@ urlpatterns = [
         kwargs={'kind': 'periodical',}
     ),
     url(
-        regex=r"^publications/(?P<pk>\d+)/$",
+        regex=r"^publications/(?P<slug>[\w-]+)/$",
         view=views.PublicationDetailView.as_view(),
         name='publication_detail'
     ),

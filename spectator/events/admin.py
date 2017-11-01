@@ -102,7 +102,7 @@ class EventAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ( 'kind', 'date', 'venue', 'title', 'title_sort',)
+            'fields': ( 'kind', 'date', 'venue', 'title', 'title_sort', 'slug',)
         }),
         ('Things seen', {
             'fields': ('movie', 'play', 'classicalworks', 'dancepieces',)
@@ -115,7 +115,7 @@ class EventAdmin(admin.ModelAdmin):
 
     filter_horizontal = ('classicalworks', 'dancepieces',)
     raw_id_fields = ('movie', 'play', 'venue',)
-    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
+    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
 
     inlines = [EventRoleInline, ]
 
@@ -145,7 +145,7 @@ class ProductionAdmin(admin.ModelAdmin):
 class ClassicalWorkAdmin(ProductionAdmin):
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'title_sort', )
+            'fields': ( 'title', 'title_sort', 'slug',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -153,6 +153,7 @@ class ClassicalWorkAdmin(ProductionAdmin):
         }),
     )
 
+    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
     inlines = [ ClassicalWorkRoleInline, ]
 
 
@@ -160,7 +161,7 @@ class ClassicalWorkAdmin(ProductionAdmin):
 class DancePieceAdmin(ProductionAdmin):
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'title_sort', )
+            'fields': ( 'title', 'title_sort',  'slug',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -168,6 +169,7 @@ class DancePieceAdmin(ProductionAdmin):
         }),
     )
 
+    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
     inlines = [ DancePieceRoleInline, ]
 
 
@@ -178,7 +180,7 @@ class MovieAdmin(ProductionAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'title_sort', 'year', 'imdb_id',)
+            'fields': ( 'title', 'title_sort', 'slug', 'year', 'imdb_id',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -186,6 +188,7 @@ class MovieAdmin(ProductionAdmin):
         }),
     )
 
+    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
     inlines = [ MovieRoleInline, ]
 
 
@@ -193,7 +196,7 @@ class MovieAdmin(ProductionAdmin):
 class PlayAdmin(ProductionAdmin):
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'title_sort', )
+            'fields': ( 'title', 'title_sort', 'slug',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -201,6 +204,7 @@ class PlayAdmin(ProductionAdmin):
         }),
     )
 
+    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
     inlines = [ PlayRoleInline, ]
 
 

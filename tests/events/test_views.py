@@ -94,35 +94,36 @@ class EventDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.event = GigEventFactory(pk=3)
+        self.event = GigEventFactory(title='My Gig')
 
     def test_response_200(self):
         "It should respond with 200."
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='gigs', pk=3)
+                                        self.request, kind_slug='gigs', slug='my-gig')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404_kind_slug(self):
         "It should raise 404 if there's no Event with that kind_slug."
         with self.assertRaises(Http404):
             response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='nope', pk=3)
+                                        self.request, kind_slug='nope', slug='my-gig')
 
     def test_response_404_pk(self):
-        "It should raise 404 if there's no Event with that pk."
+        "It should raise 404 if there's no Event with that slug."
         with self.assertRaises(Http404):
             response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='gigs', pk=5)
+                                        self.request, kind_slug='gigs', slug='nope')
 
     def test_templates(self):
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='gigs', pk=3)
+                                        self.request, kind_slug='gigs', slug='my-gig')
         self.assertEqual(response.template_name[0],
                 'spectator_events/event_detail.html')
 
     def test_context(self):
         "It should have the event in the context."
-        response = views.EventDetailView.as_view()(self.request, pk=3)
+        response = views.EventDetailView.as_view()(
+                                self.request, kind_slug='gigs', slug='my-gig')
         context = response.context_data
         self.assertIn('event', context)
         self.assertEqual(context['event'], self.event)
@@ -133,30 +134,30 @@ class MovieEventDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.event = MovieEventFactory(pk=3, movie=MovieFactory(pk=6))
+        self.event = MovieEventFactory(movie=MovieFactory(title='My Movie'))
 
     def test_response_200(self):
         "It should respond with 200."
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='movies', pk=6)
+                                self.request, kind_slug='movies', slug='my-movie')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
-        "It should raise 404 if there's no Movie with that pk."
+        "It should raise 404 if there's no Movie with that slug."
         with self.assertRaises(Http404):
             response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='movies', pk=3)
+                                    self.request, kind_slug='movies', slug='nope')
 
     def test_templates(self):
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='movies', pk=6)
+                                    self.request, kind_slug='movies', slug='my-movie')
         self.assertEqual(response.template_name[0],
                 'spectator_events/movie_detail.html')
 
     def test_context(self):
         "It should have the Movie (not the Event) in the context."
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='movies', pk=6)
+                                self.request, kind_slug='movies', slug='my-movie')
         context = response.context_data
         self.assertIn('movie', context)
         self.assertEqual(context['movie'], self.event.movie)
@@ -167,30 +168,30 @@ class PlayEventDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.event = PlayEventFactory(pk=3, play=PlayFactory(pk=6))
+        self.event = PlayEventFactory(play=PlayFactory(title='My Play'))
 
     def test_response_200(self):
         "It should respond with 200."
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='plays', pk=6)
+                                self.request, kind_slug='plays', slug='my-play')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
-        "It should raise 404 if there's no Play with that pk."
+        "It should raise 404 if there's no Play with that slug."
         with self.assertRaises(Http404):
             response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='plays', pk=3)
+                                    self.request, kind_slug='plays', slug='nope')
 
     def test_templates(self):
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='plays', pk=6)
+                                self.request, kind_slug='plays', slug='my-play')
         self.assertEqual(response.template_name[0],
                 'spectator_events/play_detail.html')
 
     def test_context(self):
         "It should have the Play (not the Event) in the context."
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='plays', pk=6)
+                                self.request, kind_slug='plays', slug='my-play')
         context = response.context_data
         self.assertIn('play', context)
         self.assertEqual(context['play'], self.event.play)
@@ -282,26 +283,29 @@ class ClassicalWorkDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        ClassicalWorkFactory(pk=5)
+        ClassicalWorkFactory(title='My Work')
 
     def test_response_200(self):
         "It should respond with 200."
-        response = views.ClassicalWorkDetailView.as_view()(self.request, pk=5)
+        response = views.ClassicalWorkDetailView.as_view()(
+                                                self.request, slug='my-work')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
         "It should respond with 404."
         with self.assertRaises(Http404):
             response = views.ClassicalWorkDetailView.as_view()(
-                                                            self.request, pk=3)
+                                                        self.request, slug='nope')
 
     def test_templates(self):
-        response = views.ClassicalWorkDetailView.as_view()(self.request, pk=5)
+        response = views.ClassicalWorkDetailView.as_view()(
+                                                    self.request, slug='my-work')
         self.assertEqual(response.template_name[0],
                          'spectator_events/m2m_work_detail.html')
 
     def test_context(self):
-        response = views.ClassicalWorkDetailView.as_view()(self.request, pk=5)
+        response = views.ClassicalWorkDetailView.as_view()(
+                                                self.request, slug='my-work')
         self.assertIn('breadcrumb_list_title', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_title'],
                          'Classical works')
@@ -333,25 +337,26 @@ class DancePieceDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        DancePieceFactory(pk=5)
+        DancePieceFactory(title='My Piece')
 
     def test_response_200(self):
         "It should respond with 200."
-        response = views.DancePieceDetailView.as_view()(self.request, pk=5)
+        response = views.DancePieceDetailView.as_view()(
+                                                self.request, slug='my-piece')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
         "It should respond with 404."
         with self.assertRaises(Http404):
-            response = views.DancePieceDetailView.as_view()(self.request, pk=3)
+            response = views.DancePieceDetailView.as_view()(self.request, slug='nope')
 
     def test_templates(self):
-        response = views.DancePieceDetailView.as_view()(self.request, pk=5)
+        response = views.DancePieceDetailView.as_view()(self.request, slug='my-piece')
         self.assertEqual(response.template_name[0],
                          'spectator_events/m2m_work_detail.html')
 
     def test_context(self):
-        response = views.DancePieceDetailView.as_view()(self.request, pk=5)
+        response = views.DancePieceDetailView.as_view()(self.request, slug='my-piece')
         self.assertIn('breadcrumb_list_title', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_title'],
                          'Dance pieces')
@@ -390,7 +395,7 @@ class VenueDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.venue = VenueFactory(pk=3)
+        self.venue = VenueFactory(pk=3, name='My Venue')
 
     def test_ancestor(self):
         self.assertTrue(issubclass(views.VenueListView,
@@ -398,22 +403,22 @@ class VenueDetailViewTestCase(ViewTestCase):
 
     def test_response_200(self):
         "It should respond with 200."
-        response = views.VenueDetailView.as_view()(self.request, pk=3)
+        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
-        "It should raise 404 if there's no Venue with that pk."
+        "It should raise 404 if there's no Venue with that slug."
         with self.assertRaises(Http404):
-            response = views.VenueDetailView.as_view()(self.request, pk=5)
+            response = views.VenueDetailView.as_view()(self.request, slug='nope')
 
     def test_templates(self):
-        response = views.VenueDetailView.as_view()(self.request, pk=3)
+        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
         self.assertEqual(response.template_name[0],
                 'spectator_events/venue_detail.html')
 
     def test_context_venue(self):
         "It should have the venue in the context."
-        response = views.VenueDetailView.as_view()(self.request, pk=3)
+        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
         context = response.context_data
         self.assertIn('venue', context)
         self.assertEqual(context['venue'], self.venue)
@@ -422,7 +427,7 @@ class VenueDetailViewTestCase(ViewTestCase):
         "It should have the venue's events in the context."
         MovieEventFactory.create_batch(3, venue=self.venue)
         MovieEventFactory()
-        response = views.VenueDetailView.as_view()(self.request, pk=3)
+        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
         context = response.context_data
         self.assertIn('event_list', context)
         self.assertEqual(len(context['event_list']), 3)
@@ -430,8 +435,8 @@ class VenueDetailViewTestCase(ViewTestCase):
     @override_settings(SPECTATOR_GOOGLE_MAPS_API_KEY='123456')
     def test_context_map_on(self):
         "It should put the api key in context when it, and lat/lon, exist."
-        venue = VenueFactory(pk=4, latitude=51, longitude=0)
-        response = views.VenueDetailView.as_view()(self.request, pk=4)
+        venue = VenueFactory(name='My Venue 2', latitude=51, longitude=0)
+        response = views.VenueDetailView.as_view()(self.request, slug='my-venue-2')
         self.assertIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
         self.assertEqual(response.context_data['SPECTATOR_GOOGLE_MAPS_API_KEY'],
                         '123456')
@@ -439,15 +444,15 @@ class VenueDetailViewTestCase(ViewTestCase):
     @override_settings(SPECTATOR_GOOGLE_MAPS_API_KEY='123456')
     def test_context_map_off_1(self):
         "It should NOT put the api key in context when it exists but lat/lon, don't."
-        venue = VenueFactory(pk=4, latitude=None, longitude=None)
-        response = views.VenueDetailView.as_view()(self.request, pk=4)
+        venue = VenueFactory(name='My Venue 2', latitude=None, longitude=None)
+        response = views.VenueDetailView.as_view()(self.request, slug='my-venue-2')
         self.assertNotIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
 
     @override_settings()
     def test_context_map_off_2(self):
         "It should NOT put the api key in context when it does not exist but lat/lon do."
         del settings.SPECTATOR_GOOGLE_MAPS_API_KEY
-        venue = VenueFactory(pk=4, latitude=51, longitude=0)
-        response = views.VenueDetailView.as_view()(self.request, pk=4)
+        venue = VenueFactory(name='My Venue 2', latitude=51, longitude=0)
+        response = views.VenueDetailView.as_view()(self.request, slug='my-venue-2')
         self.assertNotIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
 

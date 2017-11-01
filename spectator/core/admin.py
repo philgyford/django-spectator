@@ -11,7 +11,7 @@ class CreatorAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('name', 'name_sort', 'kind',)
+            'fields': ('name', 'name_sort', 'slug', 'kind',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -20,5 +20,5 @@ class CreatorAdmin(admin.ModelAdmin):
     )
 
     radio_fields = {'kind': admin.HORIZONTAL}
-    readonly_fields = ('name_sort', 'time_created', 'time_modified',)
+    readonly_fields = ('slug', 'name_sort', 'time_created', 'time_modified',)
 

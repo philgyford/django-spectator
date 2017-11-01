@@ -89,33 +89,58 @@ class EventDetailView(DetailView):
 
     For Movies and Plays it's actually a MovieDetail or PlayDetail view, as
     determined by the value of `kind_slug`.
+
+    Expects:
+        * kind_slug - Like 'gigs', movies', 'plays', etc.
+        * slug - The slug of the Event, Movie or Play.
     """
     model = Event
-    slug_url_kwarg = 'kind_slug'
-    slug_field = 'kind_slug'
-    query_pk_and_slug = True
+    # Will be like 'gig', 'movie', 'play', etc:
+    event_kind = None
+
+    def get_object(self, queryset=None):
+        self.event_kind = self.get_event_kind()
+
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        slug = self.kwargs.get('slug')
+        kind_slug = self.kwargs.get('kind_slug')
+        if slug is None and kind_slug is None:
+            raise AttributeError("Generic detail view %s must be called with "
+                                 "a kind_slug and a slug."
+                                 % self.__class__.__name__)
+        elif self.event_kind in ['movie', 'play',]:
+            queryset = queryset.filter(slug=slug)
+        else:
+            queryset = queryset.filter(kind_slug=kind_slug, slug=slug)
+
+        try:
+            # Get the single item from the filtered queryset
+            obj = queryset.get()
+        except queryset.model.DoesNotExist:
+            raise Http404(_("No %(verbose_name)s found matching the query") %
+                          {'verbose_name': queryset.model._meta.verbose_name})
+        return obj
 
     def get_queryset(self):
         """
         Determine if we need to change the model and template_name due to the
         `kind_slug`.
         """
-        kind = self.get_event_kind()
-        if kind == 'movie':
+        if self.event_kind == 'movie':
             self.model = Movie
             self.template_name = 'spectator_events/movie_detail.html'
-            self.query_pk_and_slug = False
-        elif kind == 'play':
+        elif self.event_kind == 'play':
             self.model = Play
             self.template_name = 'spectator_events/play_detail.html'
-            self.query_pk_and_slug = False
         return super().get_queryset()
 
     def get_event_kind(self):
         "Translate the `kind_slug` into an event `kind` like 'movie'."
-        slug = self.kwargs.get('kind_slug')
+        kind_slug = self.kwargs.get('kind_slug')
         slugs_to_kinds = {v:k for k,v in Event.KIND_SLUGS.items()}
-        return slugs_to_kinds.get(slug, None)
+        return slugs_to_kinds.get(kind_slug, None)
 
 
 class EventYearArchiveView(YearArchiveView):

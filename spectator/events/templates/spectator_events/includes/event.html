@@ -28,7 +28,7 @@ Expects:
 {% if url_name == 'spectator:venue_detail' %}
     {{ event.venue.name }},
 {% else %}
-    <a href="{% url 'spectator:events:venue_detail' pk=event.venue.pk %}">{{ event.venue.name }}</a>,
+	<a href="{{ event.venue.get_absolute_url }}">{{ event.venue.name }}</a>,
 {% endif %}
 
 {{ event.date|date:"j M Y" }}

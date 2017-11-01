@@ -45,13 +45,13 @@ class CoreUrlsTestCase(TestCase):
 
 
     def test_creator_detail_url(self):
-        IndividualCreatorFactory(pk=3)
-        self.assertEqual(reverse('spectator:creators:creator_detail', kwargs={'pk': 3}),
-                        '/creators/3/')
+        IndividualCreatorFactory(name='Bob Ferris')
+        self.assertEqual(reverse('spectator:creators:creator_detail', kwargs={'slug': 'bob-ferris'}),
+                        '/creators/bob-ferris/')
 
     def test_creator_detail_view(self):
         "Should use the correct view."
-        IndividualCreatorFactory(pk=3)
-        self.assertEqual(resolve('/creators/3/').func.__name__,
+        IndividualCreatorFactory(name='Bob Ferris')
+        self.assertEqual(resolve('/creators/bob-ferris/').func.__name__,
                          views.CreatorDetailView.__name__)
 

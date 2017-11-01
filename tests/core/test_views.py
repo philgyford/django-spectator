@@ -117,20 +117,20 @@ class CreatorDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        IndividualCreatorFactory(pk=3)
+        IndividualCreatorFactory(name='Bob Ferris')
 
     def test_response_200(self):
-        "It should respond with 200 if there's a Creator with that pk."
-        response = views.CreatorDetailView.as_view()(self.request, pk=3)
+        "It should respond with 200 if there's a Creator with that slug."
+        response = views.CreatorDetailView.as_view()(self.request, slug='bob-ferris')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
-        "It should raise 404 if there's no Creator with that pk."
+        "It should raise 404 if there's no Creator with that slug."
         with self.assertRaises(Http404):
-            response = views.CreatorDetailView.as_view()(self.request, pk=5)
+            response = views.CreatorDetailView.as_view()(self.request, slug='nope')
 
     def test_templates(self):
-        response = views.CreatorDetailView.as_view()(self.request, pk=3)
+        response = views.CreatorDetailView.as_view()(self.request, slug='bob-ferris')
         self.assertEqual(response.template_name[0],
                 'spectator_core/creator_detail.html')
 

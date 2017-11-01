@@ -33,15 +33,15 @@ class ReadingUrlsTestCase(TestCase):
 
 
     def test_publicationseries_detail_url(self):
-        PublicationSeriesFactory(pk=3)
+        PublicationSeriesFactory(title='My Series')
         self.assertEqual(
-                reverse('spectator:reading:publicationseries_detail', kwargs={'pk': 3}),
-                        '/reading/series/3/')
+            reverse('spectator:reading:publicationseries_detail', kwargs={'slug': 'my-series'}),
+                    '/reading/series/my-series/')
 
     def test_publicationseries_detail_view(self):
         "Should use the correct view."
-        PublicationSeriesFactory(pk=3)
-        self.assertEqual(resolve('/reading/series/3/').func.__name__,
+        PublicationSeriesFactory(title='My Series')
+        self.assertEqual(resolve('/reading/series/my-series/').func.__name__,
                          views.PublicationSeriesDetailView.__name__)
 
 
@@ -66,15 +66,15 @@ class ReadingUrlsTestCase(TestCase):
 
 
     def test_publication_detail_url(self):
-        PublicationFactory(pk=3)
+        PublicationFactory(title='My Book')
         self.assertEqual(
-                reverse('spectator:reading:publication_detail', kwargs={'pk': 3}),
-                        '/reading/publications/3/')
+            reverse('spectator:reading:publication_detail', kwargs={'slug': 'my-book'}),
+                    '/reading/publications/my-book/')
 
     def test_publication_detail_view(self):
         "Should use the correct view."
-        PublicationFactory(pk=3)
-        self.assertEqual(resolve('/reading/publications/3/').func.__name__,
+        PublicationFactory(title='My Book')
+        self.assertEqual(resolve('/reading/publications/my-book/').func.__name__,
                          views.PublicationDetailView.__name__)
 
 

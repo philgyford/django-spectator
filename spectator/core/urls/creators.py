@@ -21,7 +21,7 @@ urlpatterns = [
         kwargs={'kind': 'group',}
     ),
     url(
-        regex=r"^(?P<pk>\d+)/$",
+        regex=r"^(?P<slug>[\w-]+)/$",
         view=views.CreatorDetailView.as_view(),
         name='creator_detail'
     ),

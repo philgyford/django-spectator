@@ -12,7 +12,7 @@ except ImportError:
     from django.core.urlresolvers import reverse
 
 from spectator.core.models import BaseRole, TimeStampedModelMixin
-from spectator.core.fields import NaturalSortField
+from spectator.core.fields import AutoSlugField, NaturalSortField
 
 
 class EventRole(BaseRole):
@@ -70,6 +70,9 @@ class Event(TimeStampedModelMixin, models.Model):
 
     title_sort = NaturalSortField('title_to_sort', max_length=255, default='',
             help_text="e.g. 'reading festival, the' or 'drifters, the'.")
+
+    slug = AutoSlugField(max_length=50, populate_from='title',
+            separator='-', null=True)
 
     creators = models.ManyToManyField('spectator_core.Creator',
                                 through='EventRole', related_name='events')
@@ -152,17 +155,17 @@ class Event(TimeStampedModelMixin, models.Model):
 
         More complex Events (like play and movie) actually display info about
         the Play or Movie (for example) itself, plus all associated Events.
-        So in those cases we use the `pk` of the Play, Movie, etc.
+        So in those cases we use the `slug` of the Play, Movie, etc.
         """
-        pk = self.pk
+        slug = self.slug
 
         if self.kind == 'movie':
-            pk = self.movie.pk
+            slug = self.movie.slug
         elif self.kind == 'play':
-            pk = self.play.pk
+            slug = self.play.slug
 
         return reverse('spectator:events:event_detail',
-                        kwargs={'kind_slug': self.kind_slug, 'pk':pk})
+                        kwargs={'kind_slug': self.kind_slug, 'slug':slug})
 
     def get_kinds():
         """
@@ -255,6 +258,9 @@ class Work(TimeStampedModelMixin, models.Model):
     title_sort = NaturalSortField('title', max_length=255, default='',
             help_text="e.g. 'big piece, a' or 'biggest piece, the'.")
 
+    slug = AutoSlugField(max_length=50, populate_from='title',
+            separator='-', null=True)
+
     def __str__(self):
         return self.title
 
@@ -284,7 +290,7 @@ class DancePiece(Work):
 
     def get_absolute_url(self):
         return reverse('spectator:events:dancepiece_detail',
-                                                        kwargs={'pk': self.pk})
+                                                    kwargs={'slug': self.slug})
 
 
 class ClassicalWorkRole(BaseRole):
@@ -308,7 +314,7 @@ class ClassicalWork(Work):
 
     def get_absolute_url(self):
         return reverse('spectator:events:classicalwork_detail',
-                                                        kwargs={'pk': self.pk})
+                                                    kwargs={'slug': self.slug})
 
 
 class MovieRole(BaseRole):
@@ -358,7 +364,7 @@ class Movie(Work):
     def get_absolute_url(self):
         "See `Event.get_absolute_url()` for why we use `event_detail` here."
         return reverse('spectator:events:event_detail',
-                        kwargs={'kind_slug': 'movies', 'pk':self.pk})
+                        kwargs={'kind_slug': 'movies', 'slug':self.slug})
 
 
 class PlayRole(BaseRole):
@@ -383,7 +389,7 @@ class Play(Work):
     def get_absolute_url(self):
         "See `Event.get_absolute_url()` for why we use `event_detail` here."
         return reverse('spectator:events:event_detail',
-                        kwargs={'kind_slug': 'plays', 'pk':self.pk})
+                        kwargs={'kind_slug': 'plays', 'slug':self.slug})
 
 
 class Venue(TimeStampedModelMixin, models.Model):
@@ -651,6 +657,9 @@ class Venue(TimeStampedModelMixin, models.Model):
     name_sort = NaturalSortField('name', max_length=255, default='',
             help_text="e.g. 'venue, a' or 'biggest venue, the'.")
 
+    slug = AutoSlugField(max_length=50, populate_from='name',
+            separator='-', null=True)
+
     latitude = models.DecimalField(max_digits=9, decimal_places=6,
                                                         null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6,
@@ -669,7 +678,7 @@ class Venue(TimeStampedModelMixin, models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('spectator:events:venue_detail', kwargs={'pk':self.pk})
+        return reverse('spectator:events:venue_detail', kwargs={'slug':self.slug})
 
     @property
     def country_name(self):

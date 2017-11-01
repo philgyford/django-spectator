@@ -34,12 +34,13 @@ class EventsUrlsTestCase(TestCase):
                          views.VenueListView.__name__)
 
     def test_venue_detail_url(self):
-        self.assertEqual(reverse('spectator:events:venue_detail', kwargs={'pk':34,}),
-                        '/events/venues/34/')
+        self.assertEqual(reverse('spectator:events:venue_detail',
+                                kwargs={'slug':'my-venue',}),
+                        '/events/venues/my-venue/')
 
     def test_venue_detail_view(self):
         "Should use the correct view."
-        self.assertEqual(resolve('/events/venues/34/').func.__name__,
+        self.assertEqual(resolve('/events/venues/my-venue/').func.__name__,
                          views.VenueDetailView.__name__)
 
     # YEARS
@@ -71,11 +72,11 @@ class EventsUrlsTestCase(TestCase):
     def test_event_detail_url(self):
         self.assertEqual(
                 reverse('spectator:events:event_detail',
-                kwargs={'kind_slug': 'gigs', 'pk':34,}),
-            '/events/gigs/34/')
+                kwargs={'kind_slug': 'gigs', 'slug':'my-event',}),
+            '/events/gigs/my-event/')
 
     def test_event_detail_view(self):
         "Should use the correct view."
-        self.assertEqual(resolve('/events/gigs/34/').func.__name__,
+        self.assertEqual(resolve('/events/gigs/my-event/').func.__name__,
                          views.EventDetailView.__name__)
 

@@ -22,9 +22,18 @@ class CreatorTestCase(TestCase):
         self.assertEqual(creators[0], a)
         self.assertEqual(creators[1], b)
 
+    def test_slug(self):
+        creator = IndividualCreatorFactory(name='Bob Ferris')
+        self.assertEqual(creator.slug, 'bob-ferris')
+
+    def test_slug_duplicate(self):
+        c1 = IndividualCreatorFactory(name='Bob Ferris')
+        c2 = IndividualCreatorFactory(name='Bob Ferris')
+        self.assertEqual(c2.slug, 'bob-ferris-2')
+
     def test_absolute_url(self):
-        creator = IndividualCreatorFactory(pk=3)
-        self.assertEqual(creator.get_absolute_url(), '/creators/3/')
+        creator = IndividualCreatorFactory(name='Bob Ferris')
+        self.assertEqual(creator.get_absolute_url(), '/creators/bob-ferris/')
 
     def test_publication_roles(self):
         bob = IndividualCreatorFactory(name='Bob')
