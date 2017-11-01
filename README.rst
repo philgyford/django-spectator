@@ -367,6 +367,8 @@ If it involves an extra model (like Movies and Plays do) then also:
 * Add the new List and Detail views in ``spectator.events.views``.
 * In ``spectator.events.views.EventDetailView.get_queryset()`` add a section to
   adjust the queryset for this model.
+* In ``spectator.events.views.EventDetailView.get_queryset()`` add include the
+  event kind in the ``if`` clause in ``get_object()``.
 * Add templates in ``spectator/events/templates/events/`` for its List and
   Detail views.
 * In ``spectator/core/templates/core/creator_detail.html`` add a section to
