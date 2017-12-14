@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib import admin
-from django.core import urlresolvers
 from django.core.exceptions import ValidationError
 from django import forms
 
