@@ -63,7 +63,8 @@ class Event(TimeStampedModelMixin, models.Model):
 
     date = models.DateField(null=True, blank=False)
 
-    venue = models.ForeignKey('spectator_events.Venue', blank=False)
+    venue = models.ForeignKey('spectator_events.Venue', blank=False,
+                                                    on_delete=models.CASCADE)
 
     title = models.CharField(null=False, blank=True, max_length=255,
             help_text="Optional. e.g., 'Indietracks 2017', 'Radio 1 Roadshow'.")
@@ -78,9 +79,11 @@ class Event(TimeStampedModelMixin, models.Model):
                                 through='EventRole', related_name='events')
 
     movie = models.ForeignKey('spectator_events.Movie', null=True, blank=True,
+            on_delete=models.SET_NULL,
             help_text="Only used if event is of 'Movie' kind.")
 
     play = models.ForeignKey('spectator_events.Play', null=True, blank=True,
+            on_delete=models.SET_NULL,
             help_text="Only used if event is of 'Play' kind.")
 
     classicalworks = models.ManyToManyField('spectator_events.ClassicalWork',

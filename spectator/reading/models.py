@@ -193,7 +193,7 @@ class Reading(TimeStampedModelMixin, models.Model):
     )
 
     publication = models.ForeignKey('spectator_reading.Publication',
-            null=False, blank=False)
+            null=False, blank=False, on_delete=models.CASCADE)
 
     start_date = models.DateField(null=True, blank=True)
     start_granularity = models.PositiveSmallIntegerField(null=False,
