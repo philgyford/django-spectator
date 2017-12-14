@@ -7,7 +7,7 @@ from ..models import Publication, Reading
 register = template.Library()
 
 
-@register.assignment_tag
+@register.simple_tag
 def in_progress_publications():
     """
     Returns a QuerySet of any Publications that are currently being read.
@@ -29,7 +29,7 @@ def in_progress_publications_card():
             }
 
 
-@register.assignment_tag
+@register.simple_tag
 def day_publications(date):
     """
     Returns a QuerySet of Publications that were being read on `date`.
@@ -63,7 +63,7 @@ def day_publications_card(date):
             }
 
 
-@register.assignment_tag
+@register.simple_tag
 def reading_years():
     """
     Returns a QuerySet of date objects, one for each year in which there are

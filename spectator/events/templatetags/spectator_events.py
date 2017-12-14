@@ -48,7 +48,7 @@ def event_list_tabs(counts, current_kind):
         }
 
 
-@register.assignment_tag
+@register.simple_tag
 def recent_events(num=10):
     """
     Returns a QuerySet of Events that happened recently.
@@ -68,7 +68,7 @@ def recent_events_card(num=10):
             'event_list': recent_events(num=num),
             }
 
-@register.assignment_tag
+@register.simple_tag
 def day_events(date):
     """
     Returns a QuerySet of Events that happened on the supplied date.
@@ -90,7 +90,7 @@ def day_events_card(date):
             }
 
 
-@register.assignment_tag
+@register.simple_tag
 def events_years():
     """
     Returns a QuerySet of date objects, one for each year in which there are
