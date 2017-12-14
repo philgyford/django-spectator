@@ -1,6 +1,11 @@
 Changelog (Django Spectator)
 ============================
 
+4.0.1
+-----
+
+-- Fix README formatting.
+
 4.0.0
 -----
 
