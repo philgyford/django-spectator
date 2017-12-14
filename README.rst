@@ -14,8 +14,7 @@ Two Django apps:
 * One to track events attended (movie, plays, gigs, exhibitions, comedy, dance,
   classical), including date, venue, and people/organisations involved.
 
-So far only used with Python 3.6 and Django 1.10 or 1.11. Should work with
-Python 3.5+ and Django 1.8+.
+For Django 1.11 or Django 2.0 running on Python 3.5 or 3.6.
 
 It has URLs, views and templates to create a site displaying all the data, and
 Django admin screens to add and edit them. The templates use `Bootstrap v4-beta <https://getbootstrap.com>`_.
@@ -48,12 +47,12 @@ Run migrations::
 
     ./manage.py migrate
 
-Add to your project's ``urls.py`` with the ``'spectator'`` namespace::
+Add to your project's ``urls.py``::
 
     urlpatterns = [
         # ...
 
-        url(r'^spectator/', include('spectator.core.urls', namespace='spectator')),
+        url(r'^spectator/', include('spectator.core.urls')),
     ] 
 
 You can change the initial path (``r'^spectator/'``) to whatever suits you. e.g.
@@ -311,13 +310,13 @@ Run all tests in all environments like::
 
 $ tox
 
-To run tests in only one environment, specify it. In this case, Python 3.6 and Django 1.11::
+To run tests in only one environment, specify it. In this case, Python 3.6 and Django 2.0::
 
-$ tox -e py36-django111
+$ tox -e py36-django20
 
 To run a specific test, add its path after ``--``, eg::
 
-$ tox -e py36-django111 -- tests.core.test_models.CreatorTestCase.test_ordering
+$ tox -e py36-django20 -- tests.core.test_models.CreatorTestCase.test_ordering
 
 Running the tests in all environments will generate coverage output. There will also be an ``htmlcov/`` directory containing an HTML report. You can also generate these reports without running all the other tests::
 
@@ -328,10 +327,11 @@ Making a new release
 
 So I don't forget...
 
-1. Put new changes on `master`.
-2. Update the `__version__` in `spectator.__init__.py`.
-3. Do `python setup.py tag`.
-4. Do `python setup.py publish`.
+1. Put new changes on ``master``.
+2. Update the ``__version__`` in ``spectator.__init__.py``.
+3. Update ``CHANGES.rst``.
+3. Do ``python setup.py tag``.
+4. Do ``python setup.py publish``.
 
 
 Adding a new event type
