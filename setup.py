@@ -61,7 +61,7 @@ setup(
     dependency_links=[
     ],
     tests_require=[
-        'factory-boy>=2.8.1,<2.9',
+        'factory-boy>=2.9.2,<3.0',
         'coverage'
     ],
     include_package_data=True,
@@ -75,10 +75,8 @@ setup(
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 1.8',
-        'Framework :: Django :: 1.9',
-        'Framework :: Django :: 1.10',
         'Framework :: Django :: 1.11',
+        'Framework :: Django :: 2.0',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',

@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 
 
-# This should be under the namespace 'spectator:events'.
+app_name = 'events'
 
 urlpatterns = [
     url(

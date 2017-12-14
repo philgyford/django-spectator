@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 
 
-# This should be under the namespace 'spectator:reading'.
+app_name = 'reading'
 
 urlpatterns = [
     url(

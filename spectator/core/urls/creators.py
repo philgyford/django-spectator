@@ -2,9 +2,8 @@ from django.conf.urls import url
 
 from .. import views
 
-# All Creator-specific URLs, so they can be included under whatever path is
-# required.
-# This should be under the namespace 'spectator:creators'.
+
+app_name = 'creators'
 
 urlpatterns = [
     # Individuals:

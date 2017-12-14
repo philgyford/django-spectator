@@ -13,7 +13,7 @@ from spectator.reading.sitemaps import PublicationSitemap,\
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
-    url(r'^', include('spectator.core.urls', namespace='spectator')),
+    url(r'^', include('spectator.core.urls')),
 
     url(r'^sitemap\.xml$',
         sitemap,

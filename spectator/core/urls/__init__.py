@@ -7,14 +7,12 @@ from ..apps import spectator_apps
 # a) Make it easy to include Spectator's URLs in a project with a single line.
 # b) Also make it easy to only include parts of the project, if necessary.
 
-# This URL conf should be included under the namespace 'spectator'.
-
+app_name='spectator'
 
 urlpatterns = [
-    url(r'^', include('spectator.core.urls.core', namespace='core')),
+    url(r'^', include('spectator.core.urls.core')),
 
-    url(r'^creators/', include('spectator.core.urls.creators',
-                                                        namespace='creators')),
+    url(r'^creators/', include('spectator.core.urls.creators')),
 ]
 
 if spectator_apps.is_enabled('events'):
