@@ -1,6 +1,11 @@
 Changelog (Django Spectator)
 ============================
 
+4.1.0
+-----
+
+-- Update Bootstrap to v4 beta 3.
+
 4.0.1
 -----
 
