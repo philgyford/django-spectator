@@ -395,17 +395,12 @@ class VenueTestCase(TestCase):
         self.assertEqual(venues[2], v3)
 
     def test_slug(self):
-        venue = VenueFactory(name='My Venue')
-        self.assertEqual(venue.slug, 'my-venue')
-
-    def test_slug_duplicate(self):
-        v1 = VenueFactory(name='My Venue')
-        v2 = VenueFactory(name='My Venue')
-        self.assertEqual(v2.slug, 'my-venue-2')
+        venue = VenueFactory(pk=123)
+        self.assertEqual(venue.slug, '9g5o8')
 
     def test_absolute_url(self):
-        venue = VenueFactory(name='My Venue')
-        self.assertEqual(venue.get_absolute_url(), '/events/venues/my-venue/')
+        venue = VenueFactory(pk=123)
+        self.assertEqual(venue.get_absolute_url(), '/events/venues/9g5o8/')
 
     def test_country_name_yes(self):
         venue = VenueFactory(country='GB')

@@ -13,7 +13,7 @@ except ImportError:
 
 from spectator.core.models import BaseRole, SluggedModelMixin,\
         TimeStampedModelMixin
-from spectator.core.fields import AutoSlugField, NaturalSortField
+from spectator.core.fields import NaturalSortField
 
 
 class EventRole(BaseRole):
@@ -390,7 +390,7 @@ class Play(Work):
                         kwargs={'kind_slug': 'plays', 'slug':self.slug})
 
 
-class Venue(TimeStampedModelMixin, models.Model):
+class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     Where an event happens.
     """
@@ -654,9 +654,6 @@ class Venue(TimeStampedModelMixin, models.Model):
 
     name_sort = NaturalSortField('name', max_length=255, default='',
             help_text="e.g. 'venue, a' or 'biggest venue, the'.")
-
-    slug = AutoSlugField(max_length=50, populate_from='name',
-            separator='-', null=True)
 
     latitude = models.DecimalField(max_digits=9, decimal_places=6,
                                                         null=True, blank=True)

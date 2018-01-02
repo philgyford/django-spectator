@@ -398,7 +398,7 @@ class VenueDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.venue = VenueFactory(pk=3, name='My Venue')
+        self.venue = VenueFactory(pk=123)
 
     def test_ancestor(self):
         self.assertTrue(issubclass(views.VenueListView,
@@ -406,7 +406,7 @@ class VenueDetailViewTestCase(ViewTestCase):
 
     def test_response_200(self):
         "It should respond with 200."
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
+        response = views.VenueDetailView.as_view()(self.request, slug='9g5o8')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
@@ -415,13 +415,13 @@ class VenueDetailViewTestCase(ViewTestCase):
             response = views.VenueDetailView.as_view()(self.request, slug='nope')
 
     def test_templates(self):
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
+        response = views.VenueDetailView.as_view()(self.request, slug='9g5o8')
         self.assertEqual(response.template_name[0],
                 'spectator_events/venue_detail.html')
 
     def test_context_venue(self):
         "It should have the venue in the context."
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
+        response = views.VenueDetailView.as_view()(self.request, slug='9g5o8')
         context = response.context_data
         self.assertIn('venue', context)
         self.assertEqual(context['venue'], self.venue)
@@ -430,7 +430,7 @@ class VenueDetailViewTestCase(ViewTestCase):
         "It should have the venue's events in the context."
         MovieEventFactory.create_batch(3, venue=self.venue)
         MovieEventFactory()
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
+        response = views.VenueDetailView.as_view()(self.request, slug='9g5o8')
         context = response.context_data
         self.assertIn('event_list', context)
         self.assertEqual(len(context['event_list']), 3)
@@ -438,8 +438,8 @@ class VenueDetailViewTestCase(ViewTestCase):
     @override_settings(SPECTATOR_GOOGLE_MAPS_API_KEY='123456')
     def test_context_map_on(self):
         "It should put the api key in context when it, and lat/lon, exist."
-        venue = VenueFactory(name='My Venue 2', latitude=51, longitude=0)
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue-2')
+        venue = VenueFactory(pk=456, latitude=51, longitude=0)
+        response = views.VenueDetailView.as_view()(self.request, slug='8wozp')
         self.assertIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
         self.assertEqual(response.context_data['SPECTATOR_GOOGLE_MAPS_API_KEY'],
                         '123456')
@@ -447,15 +447,15 @@ class VenueDetailViewTestCase(ViewTestCase):
     @override_settings(SPECTATOR_GOOGLE_MAPS_API_KEY='123456')
     def test_context_map_off_1(self):
         "It should NOT put the api key in context when it exists but lat/lon, don't."
-        venue = VenueFactory(name='My Venue 2', latitude=None, longitude=None)
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue-2')
+        venue = VenueFactory(pk=456, latitude=None, longitude=None)
+        response = views.VenueDetailView.as_view()(self.request, slug='8wozp')
         self.assertNotIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
 
     @override_settings()
     def test_context_map_off_2(self):
         "It should NOT put the api key in context when it does not exist but lat/lon do."
         del settings.SPECTATOR_GOOGLE_MAPS_API_KEY
-        venue = VenueFactory(name='My Venue 2', latitude=51, longitude=0)
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue-2')
+        venue = VenueFactory(pk=456, latitude=51, longitude=0)
+        response = views.VenueDetailView.as_view()(self.request, slug='8wozp')
         self.assertNotIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
 
