@@ -3,13 +3,8 @@ import datetime
 
 from django.core.validators import RegexValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-try:
-    # Django >= 1.10
-    from django.urls import reverse
-except ImportError:
-    # Django < 1.10
-    from django.core.urlresolvers import reverse
 
 from spectator.core.models import BaseRole, SluggedModelMixin,\
         TimeStampedModelMixin
