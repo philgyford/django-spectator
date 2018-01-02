@@ -230,7 +230,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         return self.__str__()
 
 
-class Work(TimeStampedModelMixin, models.Model):
+class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     Abstract parent for things like DancePiece, Movie, Play, etc.
     Just so we stop duplicating common things.
@@ -258,9 +258,6 @@ class Work(TimeStampedModelMixin, models.Model):
 
     title_sort = NaturalSortField('title', max_length=255, default='',
             help_text="e.g. 'big piece, a' or 'biggest piece, the'.")
-
-    slug = AutoSlugField(max_length=50, populate_from='title',
-            separator='-', null=True)
 
     def __str__(self):
         return self.title
