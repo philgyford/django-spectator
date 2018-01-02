@@ -96,12 +96,12 @@ class EventDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.event = GigEventFactory(title='My Gig')
+        self.event = GigEventFactory(pk=123)
 
     def test_response_200(self):
         "It should respond with 200."
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='gigs', slug='my-gig')
+                                        self.request, kind_slug='gigs', slug='9g5o8')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404_kind_slug(self):
@@ -118,14 +118,14 @@ class EventDetailViewTestCase(ViewTestCase):
 
     def test_templates(self):
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='gigs', slug='my-gig')
+                                        self.request, kind_slug='gigs', slug='9g5o8')
         self.assertEqual(response.template_name[0],
                 'spectator_events/event_detail.html')
 
     def test_context(self):
         "It should have the event in the context."
         response = views.EventDetailView.as_view()(
-                                self.request, kind_slug='gigs', slug='my-gig')
+                                self.request, kind_slug='gigs', slug='9g5o8')
         context = response.context_data
         self.assertIn('event', context)
         self.assertEqual(context['event'], self.event)

@@ -140,13 +140,8 @@ class EventTestCase(TestCase):
         self.assertEqual(event.title_sort, 'milky wimpshake')
 
     def test_slug(self):
-        event = GigEventFactory(title='My Gig')
-        self.assertEqual(event.slug, 'my-gig')
-
-    def test_slug_duplicate(self):
-        e1 = GigEventFactory(title='My Gig')
-        e2 = GigEventFactory(title='My Gig')
-        self.assertEqual(e2.slug, 'my-gig-2')
+        event = GigEventFactory(pk=123)
+        self.assertEqual(event.slug, '9g5o8')
 
     def test_get_kinds(self):
         self.assertEqual(
@@ -243,28 +238,28 @@ class EventTestCase(TestCase):
         self.assertEqual(roles[1].role_name, 'Supporter')
 
     def test_absolute_url_comedy(self):
-        event = ComedyEventFactory(title='My Show')
-        self.assertEqual(event.get_absolute_url(), '/events/comedy/my-show/')
+        event = ComedyEventFactory(pk=123)
+        self.assertEqual(event.get_absolute_url(), '/events/comedy/9g5o8/')
 
     def test_absolute_url_concert(self):
-        event = ConcertEventFactory(title='My Concert')
-        self.assertEqual(event.get_absolute_url(), '/events/concerts/my-concert/')
+        event = ConcertEventFactory(pk=123)
+        self.assertEqual(event.get_absolute_url(), '/events/concerts/9g5o8/')
 
     def test_absolute_url_dance(self):
-        event = DanceEventFactory(title='My Dance')
-        self.assertEqual(event.get_absolute_url(), '/events/dance/my-dance/')
+        event = DanceEventFactory(pk=123)
+        self.assertEqual(event.get_absolute_url(), '/events/dance/9g5o8/')
 
     def test_absolute_url_exhibition(self):
-        event = ExhibitionEventFactory(title='My Exhibition')
-        self.assertEqual(event.get_absolute_url(), '/events/exhibitions/my-exhibition/')
+        event = ExhibitionEventFactory(pk=123)
+        self.assertEqual(event.get_absolute_url(), '/events/exhibitions/9g5o8/')
 
     def test_absolute_url_gig(self):
-        event = GigEventFactory(title='My Gig')
-        self.assertEqual(event.get_absolute_url(), '/events/gigs/my-gig/')
+        event = GigEventFactory(pk=123)
+        self.assertEqual(event.get_absolute_url(), '/events/gigs/9g5o8/')
 
     def test_absolute_url_misc(self):
-        event = MiscEventFactory(title='My Misc')
-        self.assertEqual(event.get_absolute_url(), '/events/misc/my-misc/')
+        event = MiscEventFactory(pk=123)
+        self.assertEqual(event.get_absolute_url(), '/events/misc/9g5o8/')
 
     def test_absolute_url_movie(self):
         event = MovieEventFactory(title='My Event',

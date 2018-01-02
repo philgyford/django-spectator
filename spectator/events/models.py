@@ -11,7 +11,8 @@ except ImportError:
     # Django < 1.10
     from django.core.urlresolvers import reverse
 
-from spectator.core.models import BaseRole, TimeStampedModelMixin
+from spectator.core.models import BaseRole, SluggedModelMixin,\
+        TimeStampedModelMixin
 from spectator.core.fields import AutoSlugField, NaturalSortField
 
 
@@ -30,7 +31,7 @@ class EventRole(BaseRole):
                                                         related_name='roles')
 
 
-class Event(TimeStampedModelMixin, models.Model):
+class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     A thing that happened at a particular venue on a particular date.
     """
@@ -71,9 +72,6 @@ class Event(TimeStampedModelMixin, models.Model):
 
     title_sort = NaturalSortField('title_to_sort', max_length=255, default='',
             help_text="e.g. 'reading festival, the' or 'drifters, the'.")
-
-    slug = AutoSlugField(max_length=50, populate_from='title',
-            separator='-', null=True)
 
     creators = models.ManyToManyField('spectator_core.Creator',
                                 through='EventRole', related_name='events')
