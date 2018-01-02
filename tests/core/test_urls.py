@@ -51,7 +51,7 @@ class CoreUrlsTestCase(TestCase):
 
     def test_creator_detail_view(self):
         "Should use the correct view."
-        IndividualCreatorFactory(name='Bob Ferris')
-        self.assertEqual(resolve('/creators/bob-ferris/').func.__name__,
+        IndividualCreatorFactory(pk=123)
+        self.assertEqual(resolve('/creators/9g5o8/').func.__name__,
                          views.CreatorDetailView.__name__)
 

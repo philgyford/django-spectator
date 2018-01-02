@@ -1,13 +1,10 @@
+from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
-try:
-    # Django >= 1.10
-    from django.urls import reverse
-except ImportError:
-    # Django < 1.10
-    from django.core.urlresolvers import reverse
+from hashids import Hashids
 
-from .fields import AutoSlugField, NaturalSortField
+from .fields import NaturalSortField
 
 
 class TimeStampedModelMixin(models.Model):
@@ -19,6 +16,49 @@ class TimeStampedModelMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class SluggedModelMixin(models.Model):
+    """
+    Adds a `slug` field which is generated from a Hashid of the model's pk.
+
+    `slug` is generated on save, if it doesn't already exist.
+
+    In theory we could use the Hashid'd slug in reverse to get the object's
+    pk (e.g. in a view). But we're not relying on that, and simply using
+    Hashid as a good method to generate unique, short URL-friendly slugs.
+    """
+    slug = models.SlugField(max_length=10, null=False, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if not self.slug:
+            self.slug = self._generate_slug(self.pk)
+            # Don't want to insert again, if that's what was forced:
+            kwargs['force_insert'] = False
+            self.save(*args, **kwargs)
+
+    def _generate_slug(self, value):
+        """
+        Generates a slug using a Hashid of `value`.
+        """
+        # Defaults:
+        alphabet = 'abcdefghijkmnopqrstuvwxyz23456789'
+        salt = 'Django Spectator'
+
+        if hasattr(settings, 'SPECTATOR_SLUG_ALPHABET'):
+            alphabet = settings.SPECTATOR_SLUG_ALPHABET
+
+        if hasattr(settings, 'SPECTATOR_SLUG_SALT'):
+            salt = settings.SPECTATOR_SLUG_SALT
+
+        hashids = Hashids(alphabet=alphabet, salt=salt, min_length=5)
+
+        return hashids.encode(value)
 
 
 class BaseRole(TimeStampedModelMixin, models.Model):
@@ -51,7 +91,7 @@ class BaseRole(TimeStampedModelMixin, models.Model):
             return str(self.creator)
 
 
-class Creator(TimeStampedModelMixin, models.Model):
+class Creator(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     A person or a group/company/organisation that is responsible for making all
     or part of a book, play, movie, gig, etc.
@@ -99,9 +139,6 @@ class Creator(TimeStampedModelMixin, models.Model):
 
     kind = models.CharField(max_length=20, choices=KIND_CHOICES,
                                                         default='individual')
-
-    slug = AutoSlugField(max_length=50, populate_from='name',
-            separator='-', null=False, default='slug')
 
     class Meta:
         ordering = ('name_sort',)

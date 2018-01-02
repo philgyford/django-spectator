@@ -2,6 +2,8 @@ from django.conf import settings
 from django.http.response import Http404
 from django.test import override_settings
 
+from freezegun import freeze_time
+
 from .. import make_date
 from ..core.test_views import ViewTestCase
 from spectator.events import views
@@ -94,12 +96,12 @@ class EventDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.event = GigEventFactory(title='My Gig')
+        self.event = GigEventFactory(pk=123)
 
     def test_response_200(self):
         "It should respond with 200."
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='gigs', slug='my-gig')
+                                        self.request, kind_slug='gigs', slug='9g5o8')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404_kind_slug(self):
@@ -116,14 +118,14 @@ class EventDetailViewTestCase(ViewTestCase):
 
     def test_templates(self):
         response = views.EventDetailView.as_view()(
-                                        self.request, kind_slug='gigs', slug='my-gig')
+                                        self.request, kind_slug='gigs', slug='9g5o8')
         self.assertEqual(response.template_name[0],
                 'spectator_events/event_detail.html')
 
     def test_context(self):
         "It should have the event in the context."
         response = views.EventDetailView.as_view()(
-                                self.request, kind_slug='gigs', slug='my-gig')
+                                self.request, kind_slug='gigs', slug='9g5o8')
         context = response.context_data
         self.assertIn('event', context)
         self.assertEqual(context['event'], self.event)
@@ -134,12 +136,12 @@ class MovieEventDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.event = MovieEventFactory(movie=MovieFactory(title='My Movie'))
+        self.event = MovieEventFactory(movie=MovieFactory(pk=123))
 
     def test_response_200(self):
         "It should respond with 200."
         response = views.EventDetailView.as_view()(
-                                self.request, kind_slug='movies', slug='my-movie')
+                                self.request, kind_slug='movies', slug='9g5o8')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
@@ -150,14 +152,14 @@ class MovieEventDetailViewTestCase(ViewTestCase):
 
     def test_templates(self):
         response = views.EventDetailView.as_view()(
-                                    self.request, kind_slug='movies', slug='my-movie')
+                                    self.request, kind_slug='movies', slug='9g5o8')
         self.assertEqual(response.template_name[0],
                 'spectator_events/movie_detail.html')
 
     def test_context(self):
         "It should have the Movie (not the Event) in the context."
         response = views.EventDetailView.as_view()(
-                                self.request, kind_slug='movies', slug='my-movie')
+                                self.request, kind_slug='movies', slug='9g5o8')
         context = response.context_data
         self.assertIn('movie', context)
         self.assertEqual(context['movie'], self.event.movie)
@@ -168,12 +170,12 @@ class PlayEventDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.event = PlayEventFactory(play=PlayFactory(title='My Play'))
+        self.event = PlayEventFactory(play=PlayFactory(pk=123))
 
     def test_response_200(self):
         "It should respond with 200."
         response = views.EventDetailView.as_view()(
-                                self.request, kind_slug='plays', slug='my-play')
+                                self.request, kind_slug='plays', slug='9g5o8')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
@@ -184,14 +186,14 @@ class PlayEventDetailViewTestCase(ViewTestCase):
 
     def test_templates(self):
         response = views.EventDetailView.as_view()(
-                                self.request, kind_slug='plays', slug='my-play')
+                                self.request, kind_slug='plays', slug='9g5o8')
         self.assertEqual(response.template_name[0],
                 'spectator_events/play_detail.html')
 
     def test_context(self):
         "It should have the Play (not the Event) in the context."
         response = views.EventDetailView.as_view()(
-                                self.request, kind_slug='plays', slug='my-play')
+                                self.request, kind_slug='plays', slug='9g5o8')
         context = response.context_data
         self.assertIn('play', context)
         self.assertEqual(context['play'], self.event.play)
@@ -241,6 +243,7 @@ class EventYearArchiveViewTestCase(ViewTestCase):
         self.assertIn('year', response.context_data)
         self.assertEqual(response.context_data['year'], make_date('2017-01-01'))
 
+    @freeze_time("2017-06-01 12:00:00")
     def test_context_next_prev_years(self):
         "Context should include date objects representing next/prev years."
         GigEventFactory(date=make_date('2016-07-15'))
@@ -283,12 +286,12 @@ class ClassicalWorkDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        ClassicalWorkFactory(title='My Work')
+        ClassicalWorkFactory(pk=123)
 
     def test_response_200(self):
         "It should respond with 200."
         response = views.ClassicalWorkDetailView.as_view()(
-                                                self.request, slug='my-work')
+                                                self.request, slug='9g5o8')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
@@ -299,13 +302,13 @@ class ClassicalWorkDetailViewTestCase(ViewTestCase):
 
     def test_templates(self):
         response = views.ClassicalWorkDetailView.as_view()(
-                                                    self.request, slug='my-work')
+                                                    self.request, slug='9g5o8')
         self.assertEqual(response.template_name[0],
                          'spectator_events/m2m_work_detail.html')
 
     def test_context(self):
         response = views.ClassicalWorkDetailView.as_view()(
-                                                self.request, slug='my-work')
+                                                self.request, slug='9g5o8')
         self.assertIn('breadcrumb_list_title', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_title'],
                          'Classical works')
@@ -337,12 +340,12 @@ class DancePieceDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        DancePieceFactory(title='My Piece')
+        DancePieceFactory(pk=123)
 
     def test_response_200(self):
         "It should respond with 200."
         response = views.DancePieceDetailView.as_view()(
-                                                self.request, slug='my-piece')
+                                                self.request, slug='9g5o8')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
@@ -351,12 +354,12 @@ class DancePieceDetailViewTestCase(ViewTestCase):
             response = views.DancePieceDetailView.as_view()(self.request, slug='nope')
 
     def test_templates(self):
-        response = views.DancePieceDetailView.as_view()(self.request, slug='my-piece')
+        response = views.DancePieceDetailView.as_view()(self.request, slug='9g5o8')
         self.assertEqual(response.template_name[0],
                          'spectator_events/m2m_work_detail.html')
 
     def test_context(self):
-        response = views.DancePieceDetailView.as_view()(self.request, slug='my-piece')
+        response = views.DancePieceDetailView.as_view()(self.request, slug='9g5o8')
         self.assertIn('breadcrumb_list_title', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_title'],
                          'Dance pieces')
@@ -395,7 +398,7 @@ class VenueDetailViewTestCase(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.venue = VenueFactory(pk=3, name='My Venue')
+        self.venue = VenueFactory(pk=123)
 
     def test_ancestor(self):
         self.assertTrue(issubclass(views.VenueListView,
@@ -403,7 +406,7 @@ class VenueDetailViewTestCase(ViewTestCase):
 
     def test_response_200(self):
         "It should respond with 200."
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
+        response = views.VenueDetailView.as_view()(self.request, slug='9g5o8')
         self.assertEqual(response.status_code, 200)
 
     def test_response_404(self):
@@ -412,13 +415,13 @@ class VenueDetailViewTestCase(ViewTestCase):
             response = views.VenueDetailView.as_view()(self.request, slug='nope')
 
     def test_templates(self):
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
+        response = views.VenueDetailView.as_view()(self.request, slug='9g5o8')
         self.assertEqual(response.template_name[0],
                 'spectator_events/venue_detail.html')
 
     def test_context_venue(self):
         "It should have the venue in the context."
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
+        response = views.VenueDetailView.as_view()(self.request, slug='9g5o8')
         context = response.context_data
         self.assertIn('venue', context)
         self.assertEqual(context['venue'], self.venue)
@@ -427,7 +430,7 @@ class VenueDetailViewTestCase(ViewTestCase):
         "It should have the venue's events in the context."
         MovieEventFactory.create_batch(3, venue=self.venue)
         MovieEventFactory()
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue')
+        response = views.VenueDetailView.as_view()(self.request, slug='9g5o8')
         context = response.context_data
         self.assertIn('event_list', context)
         self.assertEqual(len(context['event_list']), 3)
@@ -435,8 +438,8 @@ class VenueDetailViewTestCase(ViewTestCase):
     @override_settings(SPECTATOR_GOOGLE_MAPS_API_KEY='123456')
     def test_context_map_on(self):
         "It should put the api key in context when it, and lat/lon, exist."
-        venue = VenueFactory(name='My Venue 2', latitude=51, longitude=0)
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue-2')
+        venue = VenueFactory(pk=456, latitude=51, longitude=0)
+        response = views.VenueDetailView.as_view()(self.request, slug='8wozp')
         self.assertIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
         self.assertEqual(response.context_data['SPECTATOR_GOOGLE_MAPS_API_KEY'],
                         '123456')
@@ -444,15 +447,15 @@ class VenueDetailViewTestCase(ViewTestCase):
     @override_settings(SPECTATOR_GOOGLE_MAPS_API_KEY='123456')
     def test_context_map_off_1(self):
         "It should NOT put the api key in context when it exists but lat/lon, don't."
-        venue = VenueFactory(name='My Venue 2', latitude=None, longitude=None)
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue-2')
+        venue = VenueFactory(pk=456, latitude=None, longitude=None)
+        response = views.VenueDetailView.as_view()(self.request, slug='8wozp')
         self.assertNotIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
 
     @override_settings()
     def test_context_map_off_2(self):
         "It should NOT put the api key in context when it does not exist but lat/lon do."
         del settings.SPECTATOR_GOOGLE_MAPS_API_KEY
-        venue = VenueFactory(name='My Venue 2', latitude=51, longitude=0)
-        response = views.VenueDetailView.as_view()(self.request, slug='my-venue-2')
+        venue = VenueFactory(pk=456, latitude=51, longitude=0)
+        response = views.VenueDetailView.as_view()(self.request, slug='8wozp')
         self.assertNotIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
 

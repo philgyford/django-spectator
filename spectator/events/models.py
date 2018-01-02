@@ -3,16 +3,12 @@ import datetime
 
 from django.core.validators import RegexValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-try:
-    # Django >= 1.10
-    from django.urls import reverse
-except ImportError:
-    # Django < 1.10
-    from django.core.urlresolvers import reverse
 
-from spectator.core.models import BaseRole, TimeStampedModelMixin
-from spectator.core.fields import AutoSlugField, NaturalSortField
+from spectator.core.models import BaseRole, SluggedModelMixin,\
+        TimeStampedModelMixin
+from spectator.core.fields import NaturalSortField
 
 
 class EventRole(BaseRole):
@@ -30,7 +26,7 @@ class EventRole(BaseRole):
                                                         related_name='roles')
 
 
-class Event(TimeStampedModelMixin, models.Model):
+class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     A thing that happened at a particular venue on a particular date.
     """
@@ -71,9 +67,6 @@ class Event(TimeStampedModelMixin, models.Model):
 
     title_sort = NaturalSortField('title_to_sort', max_length=255, default='',
             help_text="e.g. 'reading festival, the' or 'drifters, the'.")
-
-    slug = AutoSlugField(max_length=50, populate_from='title',
-            separator='-', null=True)
 
     creators = models.ManyToManyField('spectator_core.Creator',
                                 through='EventRole', related_name='events')
@@ -232,7 +225,7 @@ class Event(TimeStampedModelMixin, models.Model):
         return self.__str__()
 
 
-class Work(TimeStampedModelMixin, models.Model):
+class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     Abstract parent for things like DancePiece, Movie, Play, etc.
     Just so we stop duplicating common things.
@@ -260,9 +253,6 @@ class Work(TimeStampedModelMixin, models.Model):
 
     title_sort = NaturalSortField('title', max_length=255, default='',
             help_text="e.g. 'big piece, a' or 'biggest piece, the'.")
-
-    slug = AutoSlugField(max_length=50, populate_from='title',
-            separator='-', null=True)
 
     def __str__(self):
         return self.title
@@ -395,7 +385,7 @@ class Play(Work):
                         kwargs={'kind_slug': 'plays', 'slug':self.slug})
 
 
-class Venue(TimeStampedModelMixin, models.Model):
+class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     Where an event happens.
     """
@@ -659,9 +649,6 @@ class Venue(TimeStampedModelMixin, models.Model):
 
     name_sort = NaturalSortField('name', max_length=255, default='',
             help_text="e.g. 'venue, a' or 'biggest venue, the'.")
-
-    slug = AutoSlugField(max_length=50, populate_from='name',
-            separator='-', null=True)
 
     latitude = models.DecimalField(max_digits=9, decimal_places=6,
                                                         null=True, blank=True)

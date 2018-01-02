@@ -1,10 +1,30 @@
 # coding: utf-8
-from django.test import TestCase
+from django.test import override_settings, TestCase
 
 from spectator.core.factories import *
 from spectator.events.factories import *
 from spectator.reading.factories import *
 from spectator.core.models import Creator
+
+
+class SluggedModelMixinTestCase(TestCase):
+    """
+    Using the Creator model to test that SluggedModelMixin works correctly.
+    """
+
+    def test_default_alphabet_and_slug(self):
+        creator = IndividualCreatorFactory(pk=123)
+        self.assertEqual(creator.slug, '9g5o8')
+
+    @override_settings(SPECTATOR_SLUG_ALPHABET='ABCDEFG1234567890')
+    def test_custom_alphabet(self):
+        creator = IndividualCreatorFactory(pk=123)
+        self.assertEqual(creator.slug, '18G28')
+
+    @override_settings(SPECTATOR_SLUG_SALT='My new salt')
+    def test_custom_salt(self):
+        creator = IndividualCreatorFactory(pk=123)
+        self.assertEqual(creator.slug, 'y9xgy')
 
 
 class CreatorTestCase(TestCase):
@@ -23,17 +43,12 @@ class CreatorTestCase(TestCase):
         self.assertEqual(creators[1], b)
 
     def test_slug(self):
-        creator = IndividualCreatorFactory(name='Bob Ferris')
-        self.assertEqual(creator.slug, 'bob-ferris')
-
-    def test_slug_duplicate(self):
-        c1 = IndividualCreatorFactory(name='Bob Ferris')
-        c2 = IndividualCreatorFactory(name='Bob Ferris')
-        self.assertEqual(c2.slug, 'bob-ferris-2')
+        creator = IndividualCreatorFactory(pk=123)
+        self.assertEqual(creator.slug, '9g5o8')
 
     def test_absolute_url(self):
-        creator = IndividualCreatorFactory(name='Bob Ferris')
-        self.assertEqual(creator.get_absolute_url(), '/creators/bob-ferris/')
+        creator = IndividualCreatorFactory(pk=123)
+        self.assertEqual(creator.get_absolute_url(), '/creators/9g5o8/')
 
     def test_publication_roles(self):
         bob = IndividualCreatorFactory(name='Bob')
