@@ -58,6 +58,12 @@ Add to your project's ``urls.py``::
 You can change the initial path (``r'^spectator/'``) to whatever suits you. e.g.
 use ``r'^'`` to have Spectator's home page be the front page of your site.
 
+Then, go to Django Admin to add your data.
+
+
+Settings
+========
+
 Optionally get a `Google Maps JavaScript API key <https://developers.google.com/maps/documentation/javascript/get-api-key>`_ and add it to your ``settings.py`` like this::
 
     SPECTATOR_GOOGLE_MAPS_API_KEY = 'YOUR-API-KEY'
@@ -65,7 +71,21 @@ Optionally get a `Google Maps JavaScript API key <https://developers.google.com/
 This will enable using a map in the Django Admin to set the location of Venues,
 and the displaying of Venues' maps in the public templates.
 
-Then, go to Django Admin to add your data.
+URLs for all objects include automatically-generated slugs, which are based on
+[Hashids](http://hashids.org) of the object's ID. You can change which
+characters are used in these slugs with this setting::
+
+    SPECTATOR_SLUG_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+
+The default is ``'abcdefghijkmnopqrstuvwxyz23456789'``.
+
+You can also change the salt value used to encode the slugs. While the slugs
+don't provide complete security (i.e. it's not impossible to determine the ID on
+which a slug is based), using your own salt value can't hurt::
+
+    SPECTATOR_SLUG_SALT = 'My special salt value is here'
+
+The default is ``'Django Spectator'``.
 
 
 ********
