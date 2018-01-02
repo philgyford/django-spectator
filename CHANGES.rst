@@ -1,6 +1,11 @@
 Changelog (Django Spectator)
 ============================
 
+5.0.0
+-----
+
+-- All URL slugs have changed again. Now based on Hashids of objects' IDs.
+
 4.1.0
 -----
 
