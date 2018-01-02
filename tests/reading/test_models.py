@@ -27,12 +27,12 @@ class PublicationSeriesTestCase(TestCase):
         self.assertEqual(str(series), 'The London Review of Books')
 
     def test_slug(self):
-        series = PublicationSeriesFactory(title='The London Review of Books')
-        self.assertEqual(series.slug, 'the-london-review-of-books')
+        series = PublicationSeriesFactory(pk=123)
+        self.assertEqual(series.slug, '9g5o8')
 
     def test_absolute_url(self):
-        series = PublicationSeriesFactory(title='My Series')
-        self.assertEqual(series.get_absolute_url(), '/reading/series/my-series/')
+        series = PublicationSeriesFactory(pk=123)
+        self.assertEqual(series.get_absolute_url(), '/reading/series/9g5o8/')
 
 
 class PublicationTestCase(TestCase):
@@ -42,8 +42,8 @@ class PublicationTestCase(TestCase):
         self.assertEqual(str(pub), 'Aurora')
 
     def test_slug(self):
-        pub = PublicationFactory(title='My Publication')
-        self.assertEqual(pub.slug, 'my-publication')
+        pub = PublicationFactory(pk=123)
+        self.assertEqual(pub.slug, '9g5o8')
 
     def test_ordering(self):
         "Should order by book title."
@@ -56,8 +56,8 @@ class PublicationTestCase(TestCase):
         self.assertEqual(pubs[2], b3)
 
     def test_absolute_url(self):
-        pub = PublicationFactory(title='My Book')
-        self.assertEqual(pub.get_absolute_url(), '/reading/publications/my-book/')
+        pub = PublicationFactory(pk=123)
+        self.assertEqual(pub.get_absolute_url(), '/reading/publications/9g5o8/')
 
     def test_roles(self):
         "It can have multiple PublicationRoles."

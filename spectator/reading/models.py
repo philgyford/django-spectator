@@ -1,19 +1,15 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-try:
-    # Django >= 1.10
-    from django.urls import reverse
-except ImportError:
-    # Django < 1.10
-    from django.core.urlresolvers import reverse
+from django.urls import reverse
 
-from spectator.core.models import BaseRole, Creator, TimeStampedModelMixin
+from spectator.core.models import BaseRole, Creator, SluggedModelMixin,\
+        TimeStampedModelMixin
 from . import managers
-from spectator.core.fields import AutoSlugField, NaturalSortField
+from spectator.core.fields import NaturalSortField
 
 
-class PublicationSeries(TimeStampedModelMixin, models.Model):
+class PublicationSeries(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     A way to group `Publication`s into series.
 
@@ -29,9 +25,6 @@ class PublicationSeries(TimeStampedModelMixin, models.Model):
 
     url = models.URLField(null=False, blank=True, max_length=255,
             verbose_name='URL', help_text="e.g. 'https://www.lrb.co.uk/'.")
-
-    slug = AutoSlugField(max_length=50, populate_from='title',
-            separator='-', null=True)
 
     class Meta:
         ordering = ('title_sort',)
@@ -57,7 +50,7 @@ class PublicationRole(BaseRole):
             on_delete=models.CASCADE, related_name='roles')
 
 
-class Publication(TimeStampedModelMixin, models.Model):
+class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     Get a Publication's creators:
 
@@ -87,9 +80,6 @@ class Publication(TimeStampedModelMixin, models.Model):
 
     title_sort = NaturalSortField('title', max_length=255, default='',
             help_text="e.g. 'clockwork orange, a' or 'world cities, the'.")
-
-    slug = AutoSlugField(max_length=50, populate_from='title',
-            separator='-', null=True)
 
     series = models.ForeignKey('spectator_reading.PublicationSeries',
             blank=True, null=True, on_delete=models.SET_NULL)
