@@ -2,6 +2,8 @@ from django.conf import settings
 from django.http.response import Http404
 from django.test import override_settings
 
+from freezegun import freeze_time
+
 from .. import make_date
 from ..core.test_views import ViewTestCase
 from spectator.events import views
@@ -241,6 +243,7 @@ class EventYearArchiveViewTestCase(ViewTestCase):
         self.assertIn('year', response.context_data)
         self.assertEqual(response.context_data['year'], make_date('2017-01-01'))
 
+    @freeze_time("2017-06-01 12:00:00")
     def test_context_next_prev_years(self):
         "Context should include date objects representing next/prev years."
         GigEventFactory(date=make_date('2016-07-15'))

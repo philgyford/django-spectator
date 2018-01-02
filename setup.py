@@ -56,12 +56,14 @@ setup(
     version=get_version(),
     packages=['spectator'],
     install_requires=[
+        'hashids>=1.2.0,<1.3',
         'pytz',
     ],
     dependency_links=[
     ],
     tests_require=[
         'factory-boy>=2.9.2,<3.0',
+        'freezegun>=0.3.8,<0.4',
         'coverage'
     ],
     include_package_data=True,
