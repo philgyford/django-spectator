@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='creator',
             name='slug',
             field=models.SlugField(blank=True, max_length=10),
