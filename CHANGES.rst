@@ -1,6 +1,12 @@
 Changelog (Django Spectator)
 ============================
 
+
+5.1.0
+-----
+
+-- Fix broken migration for Creators.
+
 5.0.0
 -----
 
