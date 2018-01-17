@@ -2,6 +2,16 @@ Changelog (Django Spectator)
 ============================
 
 
+5.1.3
+-----
+
+-- Remove some leading and trailing spaces within links in some templates (also in 5.1.1 and 5.1.2)
+
+5.1.1
+-----
+
+-- Fix display of a movie's year if `USE_THOUSAND_SEPARATOR` is True
+
 5.1.0
 -----
 
@@ -55,5 +65,3 @@ Changelog (Django Spectator)
 -----
 
 - The apps all have new labels (e.g., ``spectator_core`` instead of ``core`` to make them less likely to clash with other apps. But this breaks everything, so all-new migrations again.
-
-
