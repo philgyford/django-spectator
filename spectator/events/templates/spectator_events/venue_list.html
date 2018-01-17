@@ -18,9 +18,7 @@
         <ul>
             {% for venue in venue_list %}
                 <li class="mb-2">
-                    <a href="{{ venue.get_absolute_url }}">
-                        <strong>{{ venue.name }}</strong>
-                    </a><br>
+                    <a href="{{ venue.get_absolute_url }}"><strong>{{ venue.name }}</strong></a><br>
                     {{ venue.address }}, {{ venue.country_name }}
                 </li>
             {% endfor %}

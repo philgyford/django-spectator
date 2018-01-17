@@ -9,9 +9,7 @@ Used by the event_list_tabs() template inclusion tag.
 
 	{% if counts.all > 0 %}
 		<li class="nav-item">
-			<a class="nav-link{% if not current_kind %} active{% endif %}" href="{% url 'spectator:events:home' %}">
-				All ({{ counts.all }})
-			</a>
+			<a class="nav-link{% if not current_kind %} active{% endif %}" href="{% url 'spectator:events:home' %}">All ({{ counts.all }})</a>
 		</li>
 	{% endif %}
 
@@ -19,10 +17,7 @@ Used by the event_list_tabs() template inclusion tag.
 		{% if counts|get_item:kind > 0 %}
 			<li class="nav-item">
 				{% with event_kinds_data|get_item:kind as kind_data %}
-					<a class="nav-link{% if current_kind == kind %} active{% endif %}" href="{% url 'spectator:events:event_list' kind_slug=kind_data|get_item:'slug' %}">
-						{{ kind_data|get_item:'name_plural' }}
-						({{ counts|get_item:kind }})
-					</a>
+					<a class="nav-link{% if current_kind == kind %} active{% endif %}" href="{% url 'spectator:events:event_list' kind_slug=kind_data|get_item:'slug' %}">{{ kind_data|get_item:'name_plural' }} ({{ counts|get_item:kind }})</a>
 				{% endwith %}
 			</li>
 		{% endif %}

@@ -18,9 +18,7 @@
         <ul>
             {% for play in play_list %}
                 <li class="mb-2">
-                    <a href="{{ play.get_absolute_url }}">
-                        <strong>{{ play.title }}</strong>
-                    </a>
+                    <a href="{{ play.get_absolute_url }}"><strong>{{ play.title }}</strong></a>
                     {% include 'spectator_core/includes/roles.html' with roles=play.roles.all intro='<br>by ' show_role_name=False %}
                 </li>
             {% endfor %}
@@ -33,4 +31,3 @@
     {% endif %}
 
 {% endblock content %}
-
