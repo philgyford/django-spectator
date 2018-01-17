@@ -164,3 +164,5 @@ INTERNAL_IPS = ['127.0.0.1', '::1',]
 
 SPECTATOR_GOOGLE_MAPS_API_KEY = os.getenv('SPECTATOR_GOOGLE_MAPS_API_KEY', None)
 
+# To show up places where we don't want it, like in years.
+USE_THOUSAND_SEPARATOR = True

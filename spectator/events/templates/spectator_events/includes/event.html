@@ -6,13 +6,14 @@ Expects:
 * event - A child of the Event model.
 {% endcomment %}
 
+{% load l10n %}
 
 {% if event.kind == 'movie'  %}
     <strong>
         <a href="{{ event.get_absolute_url }}">{{ event.movie.title }}</a>
     </strong>
     {% if event.movie.year %}
-        <small class="text-muted">({{ event.movie.year }})</small>
+        <small class="text-muted">({{ event.movie.year|unlocalize }})</small>
     {% endif %}
 {% else %}
     <strong>
@@ -32,4 +33,3 @@ Expects:
 {% endif %}
 
 {{ event.date|date:"j M Y" }}
-

@@ -1,10 +1,11 @@
 {% extends 'spectator_events/base.html' %}
+{% load l10n %}
 
-{% block head_page_title %}{{ movie.title }} {% if movie.year %}({{ movie.year }}){% endif %}{% endblock %}
+{% block head_page_title %}{{ movie.title }} {% if movie.year %}({{ movie.year|unlocalize }}){% endif %}{% endblock %}
 {% block content_title %}
     {{ movie.title }}
     {% if movie.year %}
-        <small class="text-muted">({{ movie.year }})</small>
+        <small class="text-muted">({{ movie.year|unlocalize }})</small>
     {% endif %}
 {% endblock %}
 
