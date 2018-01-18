@@ -119,6 +119,12 @@ class EventAdmin(admin.ModelAdmin):
 
     inlines = [EventRoleInline, ]
 
+    class Media:
+        js = (
+            'js/admin/event.js',
+        )
+
+
 
 class ProductionAdmin(admin.ModelAdmin):
     """
