@@ -1,42 +1,48 @@
 Changelog (Django Spectator)
 ============================
 
+5.2.0
+-----
+
+- Add a Note field to Events.
+
+- Add JavaScript to the Admin Event Change form to show/hide fields that aren't required for the chosen Event kind.
 
 5.1.3
 -----
 
--- Remove some leading and trailing spaces within links in some templates (also in 5.1.1 and 5.1.2)
+- Remove some leading and trailing spaces within links in some templates (also in 5.1.1 and 5.1.2)
 
 5.1.1
 -----
 
--- Fix display of a movie's year if `USE_THOUSAND_SEPARATOR` is True
+- Fix display of a movie's year if `USE_THOUSAND_SEPARATOR` is True
 
 5.1.0
 -----
 
--- Fix broken migration for Creators.
+- Fix broken migration for Creators.
 
 5.0.0
 -----
 
--- All URL slugs have changed again. Now based on Hashids of objects' IDs.
+- All URL slugs have changed again. Now based on Hashids of objects' IDs.
 
 4.1.0
 -----
 
--- Update Bootstrap to v4 beta 3.
+- Update Bootstrap to v4 beta 3.
 
 4.0.1
 -----
 
--- Fix README formatting.
+- Fix README formatting.
 
 4.0.0
 -----
 
--- Works in Django 2.0.
--- No longer works in Django 1.8.
+- Works in Django 2.0.
+- No longer works in Django 1.8.
 
 3.3.0
 -----
