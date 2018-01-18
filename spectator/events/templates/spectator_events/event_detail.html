@@ -16,6 +16,10 @@
         on {{ event.date|date:"j M Y" }}.
     </p>
 
+    {% if event.note %}
+      {{ event.note|safe|linebreaks }}
+    {% endif %}
+
     {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all heading='Featuring' only %}
 
     {% if event.kind == 'concert' %}

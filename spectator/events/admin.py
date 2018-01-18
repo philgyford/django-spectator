@@ -101,7 +101,8 @@ class EventAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ( 'kind', 'date', 'venue', 'title', 'title_sort', 'slug',)
+            'fields': ( 'kind', 'date', 'venue', 'title', 'title_sort', 'slug',
+                        'note',)
         }),
         ('Things seen', {
             'fields': ('movie', 'play', 'classicalworks', 'dancepieces',)
@@ -235,4 +236,3 @@ class VenueAdmin(admin.ModelAdmin):
                 'https://maps.googleapis.com/maps/api/js?key={}'.format(settings.SPECTATOR_GOOGLE_MAPS_API_KEY),
                 'js/admin/location_picker.js',
             )
-

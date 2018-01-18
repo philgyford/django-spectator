@@ -68,6 +68,9 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     title_sort = NaturalSortField('title_to_sort', max_length=255, default='',
             help_text="e.g. 'reading festival, the' or 'drifters, the'.")
 
+    note = models.TextField(null=False, blank=True,
+        help_text="Optional. Paragraphs will be surrounded with &lt;p&gt;&lt;/p&gt; tags. HTML allowed.")
+
     creators = models.ManyToManyField('spectator_core.Creator',
                                 through='EventRole', related_name='events')
 
@@ -676,4 +679,3 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             return self.COUNTRIES[self.country]
         else:
             return None
-
