@@ -222,7 +222,7 @@ class PlayAdmin(ProductionAdmin):
 
 @admin.register(Venue)
 class VenueAdmin(admin.ModelAdmin):
-    list_display = ('name', 'latitude', 'longitude', 'country',)
+    list_display = ('name', 'address', 'country',)
     list_filter = ('country',)
     search_fields = ('name',)
 
