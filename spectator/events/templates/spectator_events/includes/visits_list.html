@@ -22,7 +22,7 @@ Expects:
                     {{ event.date|date:"j M Y" }}
                 </p>
                 {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all %}
-                {{ event.note|linebreaks }}
+                {{ event.note|safe|linebreaks }}
             </li>
         {% endfor %}
     </ul>
