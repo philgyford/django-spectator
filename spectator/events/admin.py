@@ -1,7 +1,8 @@
+from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import ValidationError
-from django import forms
+from django.templatetags.l10n import unlocalize
 
 from .models import Event, EventRole, ClassicalWork, ClassicalWorkRole,\
         DancePiece, DancePieceRole, Movie, MovieRole, Play, PlayRole, Venue
@@ -181,7 +182,7 @@ class DancePieceAdmin(ProductionAdmin):
 
 @admin.register(Movie)
 class MovieAdmin(ProductionAdmin):
-    list_display = ('title', 'year', 'show_creators',)
+    list_display = ('title', 'tidy_year', 'show_creators',)
     list_filter = ('year',)
 
     fieldsets = (
@@ -196,6 +197,11 @@ class MovieAdmin(ProductionAdmin):
 
     readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
     inlines = [ MovieRoleInline, ]
+
+    def tidy_year(self, obj):
+        "Stop the year appearing like '2,018' when USE_THOUSAND_SEPARATOR=True"
+        return unlocalize(obj.year)
+
 
 
 @admin.register(Play)
