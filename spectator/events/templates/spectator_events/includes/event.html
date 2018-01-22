@@ -4,6 +4,7 @@ Display a single Event, probably in a list.
 Expects:
 
 * event - A child of the Event model.
+* hide_venue: Optional. Boolean (default is False).
 {% endcomment %}
 
 {% load l10n %}
@@ -28,7 +29,7 @@ Expects:
 
 {% if url_name == 'spectator:venue_detail' %}
     {{ event.venue.name }},
-{% else %}
+{% elif not hide_venue|default:False %}
 	<a href="{{ event.venue.get_absolute_url }}">{{ event.venue.name }}</a>,
 {% endif %}
 
