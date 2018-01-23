@@ -21,6 +21,8 @@ class EventListView(PaginatedListView):
     Includes context of counts of all different Event types,
     plus the kind of event this page is for,
     plus adding `event_list` (synonym for `object_list`).
+
+    Expects a `kind_slug` like 'movies', 'gigs', 'concerts', etc.
     """
     model = Event
     ordering = ['-date',]
@@ -84,63 +86,7 @@ class EventListView(PaginatedListView):
 
 
 class EventDetailView(DetailView):
-    """
-    For simple events, like Gigs and Misc, it's a standard EventDetail view.
-
-    For Movies and Plays it's actually a MovieDetail or PlayDetail view, as
-    determined by the value of `kind_slug`.
-
-    Expects:
-        * kind_slug - Like 'gigs', movies', 'plays', etc.
-        * slug - The slug of the Event, Movie or Play.
-    """
     model = Event
-    # Will be like 'gig', 'movie', 'play', etc:
-    event_kind = None
-
-    def get_object(self, queryset=None):
-        self.event_kind = self.get_event_kind()
-
-        if queryset is None:
-            queryset = self.get_queryset()
-
-        slug = self.kwargs.get('slug')
-        kind_slug = self.kwargs.get('kind_slug')
-        if slug is None and kind_slug is None:
-            raise AttributeError("Generic detail view %s must be called with "
-                                 "a kind_slug and a slug."
-                                 % self.__class__.__name__)
-        elif self.event_kind in ['movie', 'play',]:
-            queryset = queryset.filter(slug=slug)
-        else:
-            queryset = queryset.filter(kind_slug=kind_slug, slug=slug)
-
-        try:
-            # Get the single item from the filtered queryset
-            obj = queryset.get()
-        except queryset.model.DoesNotExist:
-            raise Http404(_("No %(verbose_name)s found matching the query") %
-                          {'verbose_name': queryset.model._meta.verbose_name})
-        return obj
-
-    def get_queryset(self):
-        """
-        Determine if we need to change the model and template_name due to the
-        `kind_slug`.
-        """
-        if self.event_kind == 'movie':
-            self.model = Movie
-            self.template_name = 'spectator_events/movie_detail.html'
-        elif self.event_kind == 'play':
-            self.model = Play
-            self.template_name = 'spectator_events/play_detail.html'
-        return super().get_queryset()
-
-    def get_event_kind(self):
-        "Translate the `kind_slug` into an event `kind` like 'movie'."
-        kind_slug = self.kwargs.get('kind_slug')
-        slugs_to_kinds = {v:k for k,v in Event.KIND_SLUGS.items()}
-        return slugs_to_kinds.get(kind_slug, None)
 
 
 class EventYearArchiveView(YearArchiveView):
@@ -188,14 +134,22 @@ class WorkListView(PaginatedListView):
         qs = qs.prefetch_related('roles__creator')
         return qs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['kind'] = self.model().kind
+        context['kind_plural'] = self.model().kind_plural
+        return context
+
 class MovieListView(WorkListView):
     model = Movie
+    template_name = 'spectator_events/fk_work_list.html'
 
 class MovieDetailView(DetailView):
     model = Movie
 
 class PlayListView(WorkListView):
     model = Play
+    template_name = 'spectator_events/fk_work_list.html'
 
 class PlayDetailView(DetailView):
     model = Play
@@ -203,11 +157,6 @@ class PlayDetailView(DetailView):
 class ClassicalWorkListView(WorkListView):
     model = ClassicalWork
     template_name = 'spectator_events/m2m_work_list.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['page_title'] = 'Classical works'
-        return context
 
 class ClassicalWorkDetailView(DetailView):
     model = ClassicalWork
@@ -223,11 +172,6 @@ class ClassicalWorkDetailView(DetailView):
 class DancePieceListView(WorkListView):
     model = DancePiece
     template_name = 'spectator_events/m2m_work_list.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['page_title'] = 'Dance pieces'
-        return context
 
 class DancePieceDetailView(DetailView):
     model = DancePiece
@@ -266,5 +210,3 @@ class VenueDetailView(SingleObjectMixin, PaginatedListView):
 
     def get_queryset(self):
         return self.object.event_set.order_by('-date')
-
-

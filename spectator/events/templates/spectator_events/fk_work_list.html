@@ -1,0 +1,36 @@
+{% extends 'spectator_events/base.html' %}
+{# Used to list Plays and Movies. #}
+{% load l10n %}
+
+{% block head_page_title %}{{ kind_plural|title }}{% endblock %}
+{% block content_title %}{{ kind_plural|title }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item active">{{ kind_plural|title }}</li>
+{% endblock %}
+
+{% block content %}
+
+    {% if object_list|length > 0 %}
+        {% if page_obj|default:False and page_obj.number > 1 %}
+            {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+        {% endif %}
+
+        <ul>
+            {% for object in object_list %}
+                <li class="mb-2">
+                    <a href="{{ object.get_absolute_url }}"><strong>{{ object.title }}</strong></a>
+                    {% if object.year %}({{ object.year|unlocalize }}){% endif %}
+                    {% include 'spectator_core/includes/roles.html' with roles=object.roles.all intro='<br>' show_role_name=False %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+
+    {% else %}
+        <p>There are no {{ kind_plural }} to show.</p>
+    {% endif %}
+
+{% endblock content %}

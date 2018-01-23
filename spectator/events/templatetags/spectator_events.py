@@ -6,25 +6,6 @@ from ..models import Event
 register = template.Library()
 
 
-@register.inclusion_tag('spectator_events/includes/event_list_breadcrumbs.html')
-def event_list_breadcrumbs(current_kind):
-    """
-    Displays the breadcrumbs on the event_list pages.
-
-    `current_kind` is the event kind that's active, if any. e.g. 'gig',
-        'movie', etc.
-    """
-    return {
-            'current_kind': current_kind,
-            # A list of all the kinds we might show tabs for, like
-            # ['gig', 'movie', 'play', ...]
-            'event_kinds': Event.get_kinds(),
-            # A dict of data about each kind, keyed by kind ('gig') including
-            # data about 'name', 'name_plural' and 'slug':
-            'event_kinds_data': Event.get_kinds_data(),
-        }
-
-
 @register.inclusion_tag('spectator_events/includes/event_list_tabs.html')
 def event_list_tabs(counts, current_kind):
     """
@@ -111,5 +92,3 @@ def events_years_card(current_year=None):
             'current_year': current_year,
             'years': events_years(),
             }
-
-

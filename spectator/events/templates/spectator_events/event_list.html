@@ -6,7 +6,13 @@
 {% load spectator_events %}
 
 {% block breadcrumbs %}
-	{% event_list_breadcrumbs event_kind %}
+	{% if event_kind %}
+		{{ block.super }}
+	{% else %}
+		<li class="breadcrumb-item"><a href="{% url 'spectator:core:home' %}">Home</a></li>
+		<li class="breadcrumb-item active">Events</li>
+	{% endif %}
+
 {% endblock %}
 
 {% block content %}
@@ -23,7 +29,7 @@
 {% block sidebar %}
 
     {% include 'spectator_core/includes/card_nav.html' %}
-    {% include 'spectator_events/includes/card_nav.html' %}
+    {% include 'spectator_events/includes/card_nav.html' with counts=counts only %}
 
     {{ block.super }}
 {% endblock sidebar %}

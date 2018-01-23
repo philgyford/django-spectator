@@ -4,12 +4,12 @@
 Displays a paginated list of ClassicalWorks or DancePieces.
 {% endcomment %}
 
-{% block head_page_title %}{{ page_title }}{% endblock %}
-{% block content_title %}{{ page_title }}{% endblock %}
+{% block head_page_title %}{{ kind_plural|title }}{% endblock %}
+{% block content_title %}{{ kind_plural|title }}{% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li class="breadcrumb-item active">{{ page_title }}</li>
+    <li class="breadcrumb-item active">{{ kind_plural|title }}</li>
 {% endblock %}
 
 {% block content %}

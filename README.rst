@@ -53,7 +53,7 @@ Add to your project's ``urls.py``::
         # ...
 
         url(r'^spectator/', include('spectator.core.urls')),
-    ] 
+    ]
 
 You can change the initial path (``r'^spectator/'``) to whatever suits you. e.g.
 use ``r'^'`` to have Spectator's home page be the front page of your site.
@@ -140,7 +140,7 @@ kinds, e.g. "gig", "movie", "play".
 While an Event is a thing at a place on a day, with some optional Creators,
 some kinds of Events are slightly more complicated.
 
-Gigs, Comedy, Exhibitions and Other 
+Gigs, Comedy, Exhibitions and Other
 -----------------------------------
 
 Events of kind "gig", "comedy", "exhibition" and "misc" are the simplest. A
@@ -152,9 +152,9 @@ Plays
 -----
 
 An Event of kind "play" can have one Play object (e.g. "King Lear") connected to
-it. A Play is created by (optionally) one or more Creators (e.g. "William 
+it. A Play is created by (optionally) one or more Creators (e.g. "William
 Shakespeare (Playwright)"). A Play can therefore have several Events (occasions
-when you saw that one play), with its own Creators (e.g. "Anthony Sher 
+when you saw that one play), with its own Creators (e.g. "Anthony Sher
 (Actor)").
 
 Movies
@@ -170,7 +170,7 @@ interview or something.
 Classical concert
 -----------------
 
-An Event of kind "concert" is when one *or more* Classical Works were 
+An Event of kind "concert" is when one *or more* Classical Works were
 seen/heard. A Classical Work can have zero or more Creators (e.g. "Wolfgang
 Amadeus Mozart (Composer)"). The Event itself can also have zero or more
 Creators (e.g. "Ian Page (Conductor)").
@@ -378,19 +378,18 @@ If it involves an extra model (like Movies and Plays do) then also:
 * Create the new model in ``spectator.events.models`` with a matching Role
   model (like ``MovieRole``).
 * Associate the new model by ``ForeignKey`` to the ``Event`` model.
-* Add a special case for it in ``Event.get_absolute_url()``.
 * Add a special case for it in ``Event.__str__()``.
 * Add its Admin in ``spectator.events.admin``.
 * Add any validation needed to ``spectator.events.admin.EventAdminForm``.
+* Add cases in ``spectator/events/static/js/admin/events.js`` to show/hide the
+  relevant fields.
 * Add new URLs for the model's List and Detail views in
   ``spectator.events.urls`` (and add tests).
 * Add the new List and Detail views in ``spectator.events.views``.
-* In ``spectator.events.views.EventDetailView.get_queryset()`` add a section to
-  adjust the queryset for this model.
-* In ``spectator.events.views.EventDetailView.get_queryset()`` add include the
-  event kind in the ``if`` clause in ``get_object()``.
 * Add templates in ``spectator/events/templates/events/`` for its List and
   Detail views.
+* In ``spectator/events/templates/event_detail.html`` add a link to its Detail
+  view.
 * In ``spectator/core/templates/core/creator_detail.html`` add a section to
   list the new models for a Creator.
 
@@ -414,5 +413,3 @@ Contact
 * Phil Gyford
 * phil@gyford.com
 * @philgyford on Twitter
-
-

@@ -11,7 +11,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:events:event_list' kind_slug='movies' %}">Movies</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'spectator:events:movie_list' %}">Movies</a></li>
     <li class="breadcrumb-item active">{{ movie.title }}</li>
 {% endblock %}
 

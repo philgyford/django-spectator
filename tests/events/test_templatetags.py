@@ -4,24 +4,9 @@ from .. import make_date
 from spectator.events.factories import GigEventFactory, MovieEventFactory
 from spectator.events.models import Event
 from spectator.events.templatetags.spectator_events import\
-        day_events, day_events_card, event_list_breadcrumbs, event_list_tabs,\
+        day_events, day_events_card, event_list_tabs,\
         events_years, events_years_card,\
         recent_events, recent_events_card
-
-
-class EventListBreadcrumbsTestCase(TestCase):
-
-    def test_result(self):
-        result = event_list_breadcrumbs('gig')
-        self.assertEqual(result['current_kind'], 'gig')
-        self.assertEqual(
-            sorted(result['event_kinds']),
-            sorted(Event.get_kinds())
-        )
-        self.assertEqual(
-            sorted(result['event_kinds_data'].keys()),
-            sorted(Event.get_kinds_data().keys())
-        )
 
 
 class EventListTabsTestCase(TestCase):
@@ -114,5 +99,3 @@ class EventsYearsCardTestCase(TestCase):
         self.assertEqual(len(result['years']), 2)
         self.assertEqual(result['years'][0], make_date('2015-01-01'))
         self.assertEqual(result['years'][1], make_date('2017-01-01'))
-
-

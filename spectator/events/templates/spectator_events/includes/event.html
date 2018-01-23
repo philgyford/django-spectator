@@ -4,33 +4,20 @@ Display a single Event, probably in a list.
 Expects:
 
 * event - A child of the Event model.
-* hide_venue: Optional. Boolean (default is False).
 {% endcomment %}
 
 {% load l10n %}
 
+<a href="{{ event.get_absolute_url }}">
 {% if event.kind == 'movie'  %}
-    <strong>
-        <a href="{{ event.get_absolute_url }}">{{ event.movie.title }}</a>
-    </strong>
+    <strong>{{ event.movie.title }}</strong>
     {% if event.movie.year %}
         <small class="text-muted">({{ event.movie.year|unlocalize }})</small>
     {% endif %}
 {% else %}
-    <strong>
-        <a href="{{ event.get_absolute_url }}">{{ event }}</a>
-    </strong>
+    <strong>{{ event }}</strong>
 {% endif %}
 
 <br>
 
-{% load spectator_core %}
-{% current_url_name as url_name %}
-
-{% if url_name == 'spectator:venue_detail' %}
-    {{ event.venue.name }},
-{% elif not hide_venue|default:False %}
-	<a href="{{ event.venue.get_absolute_url }}">{{ event.venue.name }}</a>,
-{% endif %}
-
-{{ event.date|date:"j M Y" }}
+{{ event.venue.name }}, {{ event.date|date:"j M Y" }}</a>

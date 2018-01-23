@@ -4,7 +4,7 @@ from django.test import TestCase
 from .. import make_date
 from spectator.core.factories import *
 from spectator.events.factories import *
-from spectator.events.models import Event, Movie, Play, Venue
+from spectator.events.models import Event, Movie, Play, Venue, Work
 
 
 class EventStrTestCase(TestCase):
@@ -239,37 +239,42 @@ class EventTestCase(TestCase):
 
     def test_absolute_url_comedy(self):
         event = ComedyEventFactory(pk=123)
-        self.assertEqual(event.get_absolute_url(), '/events/comedy/9g5o8/')
+        self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
     def test_absolute_url_concert(self):
         event = ConcertEventFactory(pk=123)
-        self.assertEqual(event.get_absolute_url(), '/events/concerts/9g5o8/')
+        self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
     def test_absolute_url_dance(self):
         event = DanceEventFactory(pk=123)
-        self.assertEqual(event.get_absolute_url(), '/events/dance/9g5o8/')
+        self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
     def test_absolute_url_exhibition(self):
         event = ExhibitionEventFactory(pk=123)
-        self.assertEqual(event.get_absolute_url(), '/events/exhibitions/9g5o8/')
+        self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
     def test_absolute_url_gig(self):
         event = GigEventFactory(pk=123)
-        self.assertEqual(event.get_absolute_url(), '/events/gigs/9g5o8/')
+        self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
     def test_absolute_url_misc(self):
         event = MiscEventFactory(pk=123)
-        self.assertEqual(event.get_absolute_url(), '/events/misc/9g5o8/')
+        self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
     def test_absolute_url_movie(self):
-        event = MovieEventFactory(title='My Event',
-                                  movie=MovieFactory(pk=123))
-        self.assertEqual(event.get_absolute_url(), '/events/movies/9g5o8/')
+        event = MovieEventFactory(pk=123)
+        self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
     def test_absolute_url_play(self):
-        event = PlayEventFactory(title='My Event',
-                                 play=PlayFactory(pk=123))
-        self.assertEqual(event.get_absolute_url(), '/events/plays/9g5o8/')
+        event = PlayEventFactory(pk=123)
+        self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
+
+
+class WorkTestCase(TestCase):
+
+    def test_kind(self):
+        work = Work()
+        self.assertEqual(work.kind, 'work')
 
 
 class ClassicalWorkTestCase(TestCase):
@@ -282,6 +287,11 @@ class ClassicalWorkTestCase(TestCase):
         work = ClassicalWorkFactory(pk=123)
         self.assertEqual(work.get_absolute_url(), '/events/concerts/works/9g5o8/')
 
+    def test_kind(self):
+        work = ClassicalWorkFactory()
+        self.assertEqual(work.kind, 'classical work')
+        self.assertEqual(work.kind_plural, 'classical works')
+
 
 class DancePieceTestCase(TestCase):
 
@@ -292,6 +302,11 @@ class DancePieceTestCase(TestCase):
     def test_get_absolute_url(self):
         piece = DancePieceFactory(pk=123)
         self.assertEqual(piece.get_absolute_url(), '/events/dance/pieces/9g5o8/')
+
+    def test_kind(self):
+        work = DancePieceFactory()
+        self.assertEqual(work.kind, 'dance piece')
+        self.assertEqual(work.kind_plural, 'dance pieces')
 
 
 class MovieTestCase(TestCase):
@@ -337,6 +352,11 @@ class MovieTestCase(TestCase):
         movie = MovieFactory(pk=123)
         self.assertEqual(movie.get_absolute_url(), '/events/movies/9g5o8/')
 
+    def test_kind(self):
+        work = MovieFactory()
+        self.assertEqual(work.kind, 'movie')
+        self.assertEqual(work.kind_plural, 'movies')
+
 
 class PlayTestCase(TestCase):
 
@@ -377,6 +397,11 @@ class PlayTestCase(TestCase):
         play = PlayFactory(pk=123)
         self.assertEqual(play.get_absolute_url(), '/events/plays/9g5o8/')
 
+    def test_kind(self):
+        work = PlayFactory()
+        self.assertEqual(work.kind, 'play')
+        self.assertEqual(work.kind_plural, 'plays')
+
 
 class VenueTestCase(TestCase):
 
@@ -409,4 +434,3 @@ class VenueTestCase(TestCase):
     def test_country_name_no(self):
         venue = VenueFactory(country='')
         self.assertEqual(venue.country_name, None)
-

@@ -4,7 +4,6 @@ Displays a list of Events.
 Expects:
 * event_list - List or Queryset of children of Event.
 * style: 'bullets' (default) or 'unstyled'.
-* hide_venue: Optional. Boolean (default is False).
 
 {% endcomment %}
 
@@ -12,7 +11,7 @@ Expects:
     <ul{% if style|default:'bullets' == 'unstyled' %} class="list-unstyled mb-0"{% endif %}>
         {% for event in event_list %}
             <li class="mb-2">
-                {% include 'spectator_events/includes/event.html' with event=event hide_venue=hide_venue|default:False only %}
+                {% include 'spectator_events/includes/event.html' with event=event only %}
             </li>
         {% endfor %}
     </ul>

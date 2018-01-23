@@ -14,15 +14,12 @@ Expects:
     <ul>
         {% for event in events %}
             <li class="mb-2">
-                <p>
-                    {% if event.title %}
-                      <strong>{{ event.title }}</strong><br>
-                    {% endif %}
-                    <a href="{{ event.venue.get_absolute_url }}">{{ event.venue }}</a>,
-                    {{ event.date|date:"j M Y" }}
-                </p>
+                {% if event.title %}
+                  <strong>{{ event.title }}</strong><br>
+                {% endif %}
+                <a href="{{ event.get_absolute_url }}">{{ event.venue }},
+                {{ event.date|date:"j M Y" }}</a>
                 {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all %}
-                {{ event.note|safe|linebreaks }}
             </li>
         {% endfor %}
     </ul>

@@ -5,7 +5,6 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:events:event_list' kind_slug=event.kind_slug %}">{{ event.kind_name_plural }}</a></li>
     <li class="breadcrumb-item active">{{ event }}</li>
 {% endblock %}
 
@@ -22,7 +21,11 @@
 
     {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all heading='Featuring' only %}
 
-    {% if event.kind == 'concert' %}
+    {% if event.kind == 'movie' %}
+        <p><a href="{{ event.movie.get_absolute_url }}">More about this movie.</a></p>
+    {% elif event.kind == 'play' %}
+        <p><a href="{{ event.play.get_absolute_url }}">More about this play.</a></p>
+    {% elif event.kind == 'concert' %}
         {% include 'spectator_events/includes/m2m_work_list.html' with work_list=event.classicalworks.all heading="Works" only %}
     {% elif event.kind == 'dance' %}
         {% include 'spectator_events/includes/m2m_work_list.html' with work_list=event.dancepieces.all heading="Pieces" only %}

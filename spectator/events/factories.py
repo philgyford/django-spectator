@@ -121,11 +121,9 @@ class MiscEventFactory(EventFactory):
 
 class MovieEventFactory(EventFactory):
     kind = 'movie'
-    movie = factory.SubFactory(MovieFactory)
 
 class PlayEventFactory(EventFactory):
     kind = 'play'
-    play = factory.SubFactory(PlayFactory)
 
 
 class EventRoleFactory(factory.DjangoModelFactory):

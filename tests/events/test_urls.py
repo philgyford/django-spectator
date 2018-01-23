@@ -62,21 +62,20 @@ class EventsUrlsTestCase(TestCase):
     def test_event_list_url(self):
         self.assertEqual(
                 reverse('spectator:events:event_list', kwargs={'kind_slug': 'gigs'}),
-            '/events/gigs/')
+            '/events/types/gigs/')
 
     def test_event_list_view(self):
         "Should use the correct view."
-        self.assertEqual(resolve('/events/gigs/').func.__name__,
+        self.assertEqual(resolve('/events/types/gigs/').func.__name__,
                          views.EventListView.__name__)
 
     def test_event_detail_url(self):
         self.assertEqual(
                 reverse('spectator:events:event_detail',
-                kwargs={'kind_slug': 'gigs', 'slug':'my-event',}),
-            '/events/gigs/my-event/')
+                kwargs={'slug':'my-event',}),
+            '/events/my-event/')
 
     def test_event_detail_view(self):
         "Should use the correct view."
-        self.assertEqual(resolve('/events/gigs/my-event/').func.__name__,
+        self.assertEqual(resolve('/events/my-event/').func.__name__,
                          views.EventDetailView.__name__)
-

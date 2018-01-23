@@ -35,7 +35,7 @@
 
     {% if event_list|length > 0 %}
         <h2>Events</h2>
-        {% include 'spectator_events/includes/events_paginated.html' with event_list=event_list page_obj=page_obj hide_venue=True only %}
+        {% include 'spectator_events/includes/events_paginated.html' with event_list=event_list page_obj=page_obj only %}
     {% else %}
         <p>There are no events to show.</p>
     {% endif %}

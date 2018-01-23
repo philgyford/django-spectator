@@ -148,23 +148,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        """
-        Standard Events behave as you'd expect; their absolute_url is a page
-        about that Event only.
-
-        More complex Events (like play and movie) actually display info about
-        the Play or Movie (for example) itself, plus all associated Events.
-        So in those cases we use the `slug` of the Play, Movie, etc.
-        """
-        slug = self.slug
-
-        if self.kind == 'movie':
-            slug = self.movie.slug
-        elif self.kind == 'play':
-            slug = self.play.slug
-
-        return reverse('spectator:events:event_detail',
-                        kwargs={'kind_slug': self.kind_slug, 'slug':slug})
+        return reverse('spectator:events:event_detail', kwargs={'slug':self.slug})
 
     def get_kinds():
         """
@@ -264,6 +248,16 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         abstract = True
         ordering = ('title_sort',)
 
+    @property
+    def kind(self):
+        "Handy in templates. Override in child classes."
+        return 'work'
+
+    @property
+    def kind_plural(self):
+        "Handy in templates"
+        return '{}s'.format(self.kind)
+
 
 class DancePieceRole(BaseRole):
     """
@@ -288,6 +282,10 @@ class DancePiece(Work):
         return reverse('spectator:events:dancepiece_detail',
                                                     kwargs={'slug': self.slug})
 
+    @property
+    def kind(self):
+        return 'dance piece'
+
 
 class ClassicalWorkRole(BaseRole):
     """
@@ -311,6 +309,10 @@ class ClassicalWork(Work):
     def get_absolute_url(self):
         return reverse('spectator:events:classicalwork_detail',
                                                     kwargs={'slug': self.slug})
+
+    @property
+    def kind(self):
+        return 'classical work'
 
 
 class MovieRole(BaseRole):
@@ -358,9 +360,11 @@ class Movie(Work):
             return self.title
 
     def get_absolute_url(self):
-        "See `Event.get_absolute_url()` for why we use `event_detail` here."
-        return reverse('spectator:events:event_detail',
-                        kwargs={'kind_slug': 'movies', 'slug':self.slug})
+        return reverse('spectator:events:movie_detail', kwargs={'slug':self.slug})
+
+    @property
+    def kind(self):
+        return 'movie'
 
 
 class PlayRole(BaseRole):
@@ -383,9 +387,11 @@ class Play(Work):
                                     through='PlayRole', related_name='plays')
 
     def get_absolute_url(self):
-        "See `Event.get_absolute_url()` for why we use `event_detail` here."
-        return reverse('spectator:events:event_detail',
-                        kwargs={'kind_slug': 'plays', 'slug':self.slug})
+        return reverse('spectator:events:play_detail', kwargs={'slug':self.slug})
+
+    @property
+    def kind(self):
+        return 'play'
 
 
 class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
