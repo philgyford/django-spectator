@@ -275,7 +275,7 @@ class ClassicalWorkDetailViewTestCase(ViewTestCase):
                          'Classical works')
         self.assertIn('breadcrumb_list_url', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_url'],
-                         '/events/concerts/works/')
+                         '/events/classical-works/')
 
 
 class DancePieceListViewTestCase(ViewTestCase):
@@ -325,7 +325,7 @@ class DancePieceDetailViewTestCase(ViewTestCase):
                          'Dance pieces')
         self.assertIn('breadcrumb_list_url', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_url'],
-                         '/events/dance/pieces/')
+                         '/events/dance-pieces/')
 
 
 class VenueListViewTestCase(ViewTestCase):

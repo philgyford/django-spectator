@@ -285,7 +285,7 @@ class ClassicalWorkTestCase(TestCase):
 
     def test_get_absolute_url(self):
         work = ClassicalWorkFactory(pk=123)
-        self.assertEqual(work.get_absolute_url(), '/events/concerts/works/9g5o8/')
+        self.assertEqual(work.get_absolute_url(), '/events/classical-works/9g5o8/')
 
     def test_kind(self):
         work = ClassicalWorkFactory()
@@ -301,7 +301,7 @@ class DancePieceTestCase(TestCase):
 
     def test_get_absolute_url(self):
         piece = DancePieceFactory(pk=123)
-        self.assertEqual(piece.get_absolute_url(), '/events/dance/pieces/9g5o8/')
+        self.assertEqual(piece.get_absolute_url(), '/events/dance-pieces/9g5o8/')
 
     def test_kind(self):
         work = DancePieceFactory()

@@ -61,23 +61,23 @@ urlpatterns = [
     ),
 
     url(
-        regex=r"^concerts/works/$",
+        regex=r"^classical-works/$",
         view=views.ClassicalWorkListView.as_view(),
         name='classicalwork_list'
     ),
     url(
-        regex=r"^concerts/works/(?P<slug>[\w-]+)/$",
+        regex=r"^classical-works/(?P<slug>[\w-]+)/$",
         view=views.ClassicalWorkDetailView.as_view(),
         name='classicalwork_detail'
     ),
 
     url(
-        regex=r"^dance/pieces/$",
+        regex=r"^dance-pieces/$",
         view=views.DancePieceListView.as_view(),
         name='dancepiece_list'
     ),
     url(
-        regex=r"^dance/pieces/(?P<slug>[\w-]+)/$",
+        regex=r"^dance-pieces/(?P<slug>[\w-]+)/$",
         view=views.DancePieceDetailView.as_view(),
         name='dancepiece_detail'
     ),
