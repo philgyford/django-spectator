@@ -1,6 +1,24 @@
 Changelog (Django Spectator)
 ============================
 
+6.0.0
+-----
+
+- Rationalise (change) URLs around Events, Movies and Plays. It used to be that
+  Movies' and Plays' Detail page served as the place where their Events were
+  listed. That's still the case, but now we also have individual Event Detail
+  pages for Movie- and Play-related Events.
+
+- Change URLs of Dance Pieces and Classical Works. From
+  ``/events/classical/works/`` to ``/events/classical-works/`` and from
+  ``/events/dance/pieces/`` to ``/events/dance-pieces/``.
+
+- Fix some templates when there's missing Venue address or country.
+
+- In Venue admin list, in the countries filter, only show countries in use.
+
+- A few other bits of template tidying.
+
 5.2.0
 -----
 
