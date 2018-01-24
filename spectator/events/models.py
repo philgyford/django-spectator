@@ -27,6 +27,7 @@ class EventRole(BaseRole):
 
     class Meta:
         verbose_name = 'event role'
+        ordering = ('role_order', 'role_name',)
 
 
 class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
@@ -273,6 +274,10 @@ class DancePieceRole(BaseRole):
     dance_piece = models.ForeignKey('spectator_events.DancePiece',
                     on_delete=models.CASCADE, related_name='roles')
 
+    class Meta:
+        ordering = ('role_order', 'role_name',)
+        verbose_name = 'dance piece role'
+
 
 class DancePiece(Work):
     """
@@ -286,6 +291,7 @@ class DancePiece(Work):
                                                     kwargs={'slug': self.slug})
 
     class Meta:
+        ordering = ('title_sort',)
         verbose_name = 'dance piece'
 
     @property
@@ -305,6 +311,7 @@ class ClassicalWorkRole(BaseRole):
                 on_delete=models.CASCADE, related_name='roles')
 
     class Meta:
+        ordering = ('role_order', 'role_name',)
         verbose_name = 'classical work role'
 
 
@@ -320,6 +327,7 @@ class ClassicalWork(Work):
                                                     kwargs={'slug': self.slug})
 
     class Meta:
+        ordering = ('title_sort',)
         verbose_name = 'classical work'
 
     @property
@@ -339,6 +347,7 @@ class MovieRole(BaseRole):
                         on_delete=models.CASCADE, related_name='roles')
 
     class Meta:
+        ordering = ('role_order', 'role_name',)
         verbose_name = 'movie role'
 
 
@@ -394,6 +403,7 @@ class PlayRole(BaseRole):
                         on_delete=models.CASCADE, related_name='roles')
 
     class Meta:
+        ordering = ('role_order', 'role_name',)
         verbose_name = 'play role'
 
 

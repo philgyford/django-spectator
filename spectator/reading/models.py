@@ -51,6 +51,7 @@ class PublicationRole(BaseRole):
             on_delete=models.CASCADE, related_name='roles')
 
     class Meta:
+        ordering = ('role_order', 'role_name',)
         verbose_name = 'Publication role'
 
 
