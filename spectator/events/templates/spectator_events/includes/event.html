@@ -12,12 +12,9 @@ Expects:
 {% if event.kind == 'movie'  %}
     <strong>{{ event.movie.title }}</strong>
     {% if event.movie.year %}
-        <small class="text-muted">({{ event.movie.year|unlocalize }})</small>
-    {% endif %}
+        <small class="text-muted">({{ event.movie.year|unlocalize }})</small>{% endif %}<br>
 {% else %}
-    <strong>{{ event }}</strong>
+    <strong>{{ event }}</strong><br>
 {% endif %}
-
-<br>
 
 {{ event.venue.name }}, {{ event.date|date:"j M Y" }}</a>
