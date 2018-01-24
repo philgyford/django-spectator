@@ -28,6 +28,7 @@ class PublicationSeries(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     class Meta:
         ordering = ('title_sort',)
+        verbose_name = 'Publication series'
         verbose_name_plural = 'Publication series'
 
     def __str__(self):
@@ -48,6 +49,9 @@ class PublicationRole(BaseRole):
 
     publication = models.ForeignKey('spectator_reading.Publication',
             on_delete=models.CASCADE, related_name='roles')
+
+    class Meta:
+        verbose_name = 'Publication role'
 
 
 class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
@@ -205,4 +209,3 @@ class Reading(TimeStampedModelMixin, models.Model):
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValidationError(
                     "A Reading's end date can't be before its start date.")
-
