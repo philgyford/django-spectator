@@ -25,6 +25,9 @@ class EventRole(BaseRole):
     event = models.ForeignKey('spectator_events.Event', on_delete=models.CASCADE,
                                                         related_name='roles')
 
+    class Meta:
+        verbose_name = 'event role'
+
 
 class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
@@ -282,6 +285,9 @@ class DancePiece(Work):
         return reverse('spectator:events:dancepiece_detail',
                                                     kwargs={'slug': self.slug})
 
+    class Meta:
+        verbose_name = 'dance piece'
+
     @property
     def kind(self):
         return 'dance piece'
@@ -298,6 +304,9 @@ class ClassicalWorkRole(BaseRole):
     classical_work = models.ForeignKey('spectator_events.ClassicalWork',
                 on_delete=models.CASCADE, related_name='roles')
 
+    class Meta:
+        verbose_name = 'classical work role'
+
 
 class ClassicalWork(Work):
     """
@@ -309,6 +318,9 @@ class ClassicalWork(Work):
     def get_absolute_url(self):
         return reverse('spectator:events:classicalwork_detail',
                                                     kwargs={'slug': self.slug})
+
+    class Meta:
+        verbose_name = 'classical work'
 
     @property
     def kind(self):
@@ -325,6 +337,9 @@ class MovieRole(BaseRole):
 
     movie = models.ForeignKey('spectator_events.Movie',
                         on_delete=models.CASCADE, related_name='roles')
+
+    class Meta:
+        verbose_name = 'movie role'
 
 
 class Movie(Work):
@@ -377,6 +392,9 @@ class PlayRole(BaseRole):
 
     play = models.ForeignKey('spectator_events.Play',
                         on_delete=models.CASCADE, related_name='roles')
+
+    class Meta:
+        verbose_name = 'play role'
 
 
 class Play(Work):
