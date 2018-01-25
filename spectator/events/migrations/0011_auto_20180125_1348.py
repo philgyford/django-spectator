@@ -39,14 +39,4 @@ class Migration(migrations.Migration):
             name='playrole',
             options={'ordering': ('role_order', 'role_name'), 'verbose_name': 'play role'},
         ),
-        migrations.AlterField(
-            model_name='event',
-            name='movie',
-            field=models.ForeignKey(blank=True, help_text="Only used if event is of 'Movie' kind.", null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='old_movie', to='spectator_events.Movie'),
-        ),
-        migrations.AlterField(
-            model_name='event',
-            name='play',
-            field=models.ForeignKey(blank=True, help_text="Only used if event is of 'Play' kind.", null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='old_play', to='spectator_events.Play'),
-        ),
     ]
