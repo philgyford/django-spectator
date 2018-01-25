@@ -263,42 +263,6 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         return '{}s'.format(self.kind)
 
 
-class DancePiece(Work):
-    """
-    A dance piece itself, not an occasion on which it was watched.
-    """
-    creators = models.ManyToManyField('spectator_core.Creator',
-                        through='DancePieceRole', related_name='dancepieces')
-
-    def get_absolute_url(self):
-        return reverse('spectator:events:dancepiece_detail',
-                                                    kwargs={'slug': self.slug})
-
-    class Meta:
-        ordering = ('title_sort',)
-        verbose_name = 'dance piece'
-
-    @property
-    def kind(self):
-        return 'dance piece'
-
-
-class DancePieceRole(BaseRole):
-    """
-    Through model for linking a Creator to a DancePiece, optionally via their
-    role (e.g. 'Choreographer'.)
-    """
-    creator = models.ForeignKey('spectator_core.Creator', blank=False,
-                    on_delete=models.CASCADE, related_name='dance_piece_roles')
-
-    dance_piece = models.ForeignKey('spectator_events.DancePiece',
-                    on_delete=models.CASCADE, related_name='roles')
-
-    class Meta:
-        ordering = ('role_order', 'role_name',)
-        verbose_name = 'dance piece role'
-
-
 class ClassicalWork(Work):
     """
     A classical work itself, not an occasion on which it was watched.
@@ -333,6 +297,42 @@ class ClassicalWorkRole(BaseRole):
     class Meta:
         ordering = ('role_order', 'role_name',)
         verbose_name = 'classical work role'
+
+
+class DancePiece(Work):
+    """
+    A dance piece itself, not an occasion on which it was watched.
+    """
+    creators = models.ManyToManyField('spectator_core.Creator',
+                        through='DancePieceRole', related_name='dancepieces')
+
+    def get_absolute_url(self):
+        return reverse('spectator:events:dancepiece_detail',
+                                                    kwargs={'slug': self.slug})
+
+    class Meta:
+        ordering = ('title_sort',)
+        verbose_name = 'dance piece'
+
+    @property
+    def kind(self):
+        return 'dance piece'
+
+
+class DancePieceRole(BaseRole):
+    """
+    Through model for linking a Creator to a DancePiece, optionally via their
+    role (e.g. 'Choreographer'.)
+    """
+    creator = models.ForeignKey('spectator_core.Creator', blank=False,
+                    on_delete=models.CASCADE, related_name='dance_piece_roles')
+
+    dance_piece = models.ForeignKey('spectator_events.DancePiece',
+                    on_delete=models.CASCADE, related_name='roles')
+
+    class Meta:
+        ordering = ('role_order', 'role_name',)
+        verbose_name = 'dance piece role'
 
 
 class Movie(Work):
