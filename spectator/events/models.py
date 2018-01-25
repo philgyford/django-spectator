@@ -263,22 +263,6 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         return '{}s'.format(self.kind)
 
 
-class DancePieceRole(BaseRole):
-    """
-    Through model for linking a Creator to a DancePiece, optionally via their
-    role (e.g. 'Choreographer'.)
-    """
-    creator = models.ForeignKey('spectator_core.Creator', blank=False,
-                    on_delete=models.CASCADE, related_name='dance_piece_roles')
-
-    dance_piece = models.ForeignKey('spectator_events.DancePiece',
-                    on_delete=models.CASCADE, related_name='roles')
-
-    class Meta:
-        ordering = ('role_order', 'role_name',)
-        verbose_name = 'dance piece role'
-
-
 class DancePiece(Work):
     """
     A dance piece itself, not an occasion on which it was watched.
@@ -299,20 +283,20 @@ class DancePiece(Work):
         return 'dance piece'
 
 
-class ClassicalWorkRole(BaseRole):
+class DancePieceRole(BaseRole):
     """
-    Through model for linking a Creator to a ClassicalWork, optionally via
-    their role (e.g. 'Composer'.)
+    Through model for linking a Creator to a DancePiece, optionally via their
+    role (e.g. 'Choreographer'.)
     """
     creator = models.ForeignKey('spectator_core.Creator', blank=False,
-                on_delete=models.CASCADE, related_name='classical_work_roles')
+                    on_delete=models.CASCADE, related_name='dance_piece_roles')
 
-    classical_work = models.ForeignKey('spectator_events.ClassicalWork',
-                on_delete=models.CASCADE, related_name='roles')
+    dance_piece = models.ForeignKey('spectator_events.DancePiece',
+                    on_delete=models.CASCADE, related_name='roles')
 
     class Meta:
         ordering = ('role_order', 'role_name',)
-        verbose_name = 'classical work role'
+        verbose_name = 'dance piece role'
 
 
 class ClassicalWork(Work):
@@ -335,20 +319,20 @@ class ClassicalWork(Work):
         return 'classical work'
 
 
-class MovieRole(BaseRole):
+class ClassicalWorkRole(BaseRole):
     """
-    Through model for linking a Creator to a Movie, optionally via their role
-    (e.g.  'Director', 'Actor', etc.)
+    Through model for linking a Creator to a ClassicalWork, optionally via
+    their role (e.g. 'Composer'.)
     """
     creator = models.ForeignKey('spectator_core.Creator', blank=False,
-                        on_delete=models.CASCADE, related_name='movie_roles')
+                on_delete=models.CASCADE, related_name='classical_work_roles')
 
-    movie = models.ForeignKey('spectator_events.Movie',
-                        on_delete=models.CASCADE, related_name='roles')
+    classical_work = models.ForeignKey('spectator_events.ClassicalWork',
+                on_delete=models.CASCADE, related_name='roles')
 
     class Meta:
         ordering = ('role_order', 'role_name',)
-        verbose_name = 'movie role'
+        verbose_name = 'classical work role'
 
 
 class Movie(Work):
@@ -391,20 +375,20 @@ class Movie(Work):
         return 'movie'
 
 
-class PlayRole(BaseRole):
+class MovieRole(BaseRole):
     """
-    Through model for linking a Creator to a Play, optionally via their role
-    (e.g. 'Playwright'.)
+    Through model for linking a Creator to a Movie, optionally via their role
+    (e.g.  'Director', 'Actor', etc.)
     """
     creator = models.ForeignKey('spectator_core.Creator', blank=False,
-                        on_delete=models.CASCADE, related_name='play_roles')
+                        on_delete=models.CASCADE, related_name='movie_roles')
 
-    play = models.ForeignKey('spectator_events.Play',
+    movie = models.ForeignKey('spectator_events.Movie',
                         on_delete=models.CASCADE, related_name='roles')
 
     class Meta:
         ordering = ('role_order', 'role_name',)
-        verbose_name = 'play role'
+        verbose_name = 'movie role'
 
 
 class Play(Work):
@@ -420,6 +404,22 @@ class Play(Work):
     @property
     def kind(self):
         return 'play'
+
+
+class PlayRole(BaseRole):
+    """
+    Through model for linking a Creator to a Play, optionally via their role
+    (e.g. 'Playwright'.)
+    """
+    creator = models.ForeignKey('spectator_core.Creator', blank=False,
+                        on_delete=models.CASCADE, related_name='play_roles')
+
+    play = models.ForeignKey('spectator_events.Play',
+                        on_delete=models.CASCADE, related_name='roles')
+
+    class Meta:
+        ordering = ('role_order', 'role_name',)
+        verbose_name = 'play role'
 
 
 class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
