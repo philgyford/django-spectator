@@ -9,8 +9,8 @@ from .models import (
     Event, EventRole,
     ClassicalWork, ClassicalWorkRole, ClassicalWorkSelection,
     DancePiece, DancePieceRole, DancePieceSelection,
-    Movie, MovieRole,
-    Play, PlayRole,
+    Movie, MovieRole, MovieSelection,
+    Play, PlayRole, PlaySelection,
     Venue
 )
 
@@ -21,7 +21,7 @@ class RoleInline(admin.TabularInline):
     "Parent class for the other *RoleInlines."
     fields = ( 'creator', 'role_name', 'role_order',)
     raw_id_fields = ('creator',)
-    extra = 0 
+    extra = 0
 
 class EventRoleInline(RoleInline):
     model = EventRole
@@ -50,6 +50,18 @@ class DancePieceSelectionInline(admin.TabularInline):
     model = DancePieceSelection
     fields = ('dance_piece', 'order',)
     raw_id_fields = ('dance_piece',)
+    extra = 0
+
+class MovieSelectionInline(admin.TabularInline):
+    model = MovieSelection
+    fields = ('movie', 'order',)
+    raw_id_fields = ('movie',)
+    extra = 0
+
+class PlaySelectionInline(admin.TabularInline):
+    model = PlaySelection
+    fields = ('play', 'order',)
+    raw_id_fields = ('play',)
     extra = 0
 
 
@@ -123,11 +135,7 @@ class EventAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ( 'kind', 'date', 'venue', 'title', 'title_sort', 'slug',
-                        'note',)
-        }),
-        ('Things seen', {
-            'fields': ('movie', 'play',)
+            'fields': ( 'kind', 'date', 'venue', 'title', 'title_sort', 'slug', 'note',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -135,10 +143,11 @@ class EventAdmin(admin.ModelAdmin):
         }),
     )
 
-    raw_id_fields = ('movie', 'play', 'venue',)
+    raw_id_fields = ('venue',)
     readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
 
     inlines = [ClassicalWorkSelectionInline, DancePieceSelectionInline,
+                MovieSelectionInline, PlaySelectionInline,
                 EventRoleInline, ]
 
     class Media:

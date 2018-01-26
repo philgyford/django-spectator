@@ -78,12 +78,14 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     creators = models.ManyToManyField('spectator_core.Creator',
                                 through='EventRole', related_name='events')
 
-    movie = models.ForeignKey('spectator_events.Movie', null=True, blank=True,
-            on_delete=models.SET_NULL,
+    movies = models.ManyToManyField('spectator_events.Movie',
+            through='spectator_events.MovieSelection',
+            blank=True,
             help_text="Only used if event is of 'Movie' kind.")
 
-    play = models.ForeignKey('spectator_events.Play', null=True, blank=True,
-            on_delete=models.SET_NULL,
+    plays = models.ManyToManyField('spectator_events.Play',
+            through='spectator_events.PlaySelection',
+            blank=True,
             help_text="Only used if event is of 'Play' kind.")
 
     classicalworks = models.ManyToManyField('spectator_events.ClassicalWork',
@@ -103,51 +105,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         ordering = ['-date',]
 
     def __str__(self):
-        if self.title:
-            return self.title
-        else:
-            if self.kind == 'concert':
-                title = 'Concert #{}'.format(self.pk)
-                if self.pk:
-                    # If it hasn't been saved (no pk) it has no classicalworks.
-                    works = [str(c) for c in self.classicalworks.all()]
-                    if len(works) == 1:
-                        title = works[0]
-                    elif len(works) > 1:
-                        title = '{} and {}'.format(
-                                                ', '.join(works[:-1]),
-                                                works[-1])
-                return title
-
-            elif self.kind == 'dance':
-                title = 'Dance #{}'.format(self.pk)
-                if self.pk:
-                    # If it hasn't been saved (no pk) it has no classicalworks.
-                    pieces = [str(p) for p in self.dancepieces.all()]
-                    if len(pieces) == 1:
-                        title = pieces[0]
-                    elif len(pieces) > 1:
-                        title = '{} and {}'.format(
-                                                ', '.join(pieces[:-1]),
-                                                pieces[-1])
-                return title
-
-            elif self.kind == 'movie':
-                return str(self.movie)
-            elif self.kind == 'play':
-                return str(self.play)
-            else:
-                roles = list(self.roles.all())
-                if len(roles) == 1:
-                    return str(roles[0].creator.name)
-                elif len(roles) == 0:
-                    return 'Event #{}'.format(self.pk)
-                else:
-                    roles = [r.creator.name for r in roles]
-                    # Join with commas but 'and' for the last one:
-                    return '{} and {}'.format(
-                                            ', '.join(roles[:-1]),
-                                            roles[-1])
+        return self.get_title()
 
     def save(self, *args, **kwargs):
         self.kind_slug = self.KIND_SLUGS[self.kind]
@@ -155,6 +113,40 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     def get_absolute_url(self):
         return reverse('spectator:events:event_detail', kwargs={'slug':self.slug})
+
+    def get_title(self):
+        if self.title:
+            title = self.title
+        else:
+            title_start = Event.get_kind_name_plural(self.kind)
+            title = '{} #{}'.format(title_start, self.pk)
+
+            # works will be like self.movies or self.classical_works:
+            works_set = self.get_works()
+            if works_set is not None:
+                # Movies, Plays, Classical or Dance.
+                if self.pk:
+                    # (If it hasn't been saved it has no works yet.)
+                    works = [str(w) for w in works_set.all()]
+                    if len(works) == 1:
+                        title = works[0]
+                    elif len(works) > 1:
+                        title = '{} and {}'.format(
+                                        ', '.join(works[:-1]), works[-1])
+            else:
+                # It's like a Gig or Comedy; no works.
+                roles = list(self.roles.all())
+                if len(roles) == 1:
+                    title = str(roles[0].creator.name)
+                elif len(roles) == 0:
+                    title = 'Event #{}'.format(self.pk)
+                else:
+                    roles = [r.creator.name for r in roles]
+                    # Join with commas but 'and' for the last one:
+                    title = '{} and {}'.format(
+                                            ', '.join(roles[:-1]), roles[-1])
+
+        return title
 
     def get_kinds():
         """
@@ -197,6 +189,22 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             kinds[k]['slug'] = Event.KIND_SLUGS[k]
             kinds[k]['name_plural'] = Event.get_kind_name_plural(k)
         return kinds
+
+    def get_works(self):
+        """
+        Returns the m2m field of works for this event, depending on what
+        kind it is. Or None if it's like a Gig or Comedy.
+        """
+        works = None
+        if self.kind == 'concert':
+            works = self.classicalworks
+        elif self.kind == 'dance':
+            works = self.dancepieces
+        elif self.kind == 'movie':
+            works = self.movies
+        elif self.kind == 'play':
+            works = self.plays
+        return works
 
     @property
     def kind_name(self):
@@ -449,6 +457,33 @@ class MovieRole(BaseRole):
         verbose_name = 'movie role'
 
 
+class MovieSelection(models.Model):
+    """
+    Through model for linking a Movie to an Event with an order.
+    """
+    event = models.ForeignKey('spectator_events.Event',
+                blank=False,
+                on_delete=models.CASCADE,
+                related_name='movie_selections')
+
+    movie = models.ForeignKey('spectator_events.Movie',
+                blank=False,
+                on_delete=models.CASCADE,
+                related_name='events')
+
+    order = models.PositiveSmallIntegerField(
+                default=1,
+                blank=False, null=False,
+                help_text="Position on the Event programme." )
+
+    class Meta:
+        ordering = ('order',)
+        verbose_name = 'movie selection'
+
+    def __str__(self):
+        return '{}: {}'.format(self.event, self.movie)
+
+
 class Play(Work):
     """
     A play itself, not an occasion on which it was watched.
@@ -478,6 +513,33 @@ class PlayRole(BaseRole):
     class Meta:
         ordering = ('role_order', 'role_name',)
         verbose_name = 'play role'
+
+
+class PlaySelection(models.Model):
+    """
+    Through model for linking a Play to an Event with an order.
+    """
+    event = models.ForeignKey('spectator_events.Event',
+                blank=False,
+                on_delete=models.CASCADE,
+                related_name='play_selections')
+
+    play = models.ForeignKey('spectator_events.Play',
+                blank=False,
+                on_delete=models.CASCADE,
+                related_name='events')
+
+    order = models.PositiveSmallIntegerField(
+                default=1,
+                blank=False, null=False,
+                help_text="Position on the Event programme." )
+
+    class Meta:
+        ordering = ('order',)
+        verbose_name = 'play selection'
+
+    def __str__(self):
+        return '{}: {}'.format(self.event, self.play)
 
 
 class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
