@@ -142,17 +142,19 @@ class WorkListView(PaginatedListView):
 
 class MovieListView(WorkListView):
     model = Movie
-    template_name = 'spectator_events/fk_work_list.html'
+    template_name = 'spectator_events/m2m_work_list.html'
 
 class MovieDetailView(DetailView):
     model = Movie
+    template_name = 'spectator_events/movie_detail.html'
 
 class PlayListView(WorkListView):
     model = Play
-    template_name = 'spectator_events/fk_work_list.html'
+    template_name = 'spectator_events/m2m_work_list.html'
 
 class PlayDetailView(DetailView):
     model = Play
+    template_name = 'spectator_events/m2m_work_detail.html'
 
 class ClassicalWorkListView(WorkListView):
     model = ClassicalWork
