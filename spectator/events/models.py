@@ -421,12 +421,6 @@ class Movie(Work):
                 default=None,
                 help_text="Year of release.")
 
-    def __str__(self):
-        if self.year:
-            return '{} ({})'.format(self.title, self.year)
-        else:
-            return self.title
-
     def get_absolute_url(self):
         return reverse('spectator:events:movie_detail', kwargs={'slug':self.slug})
 
