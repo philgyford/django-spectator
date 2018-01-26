@@ -67,67 +67,8 @@ class PlaySelectionInline(admin.TabularInline):
 
 # MODEL ADMINS.
 
-class EventAdminForm(forms.ModelForm):
-    """
-    Adding validation to ensure that plays, movies, classical works and dance
-    pieces are added only when the Event's kind is appropriate.
-    """
-    class Meta:
-        model = Event
-        fields = '__all__'
-
-    def clean_classicalworks(self):
-        works = self.cleaned_data['classicalworks']
-        num_works = len(works)
-
-        if self.cleaned_data['kind'] == 'concert':
-            if num_works == 0:
-                raise ValidationError('If kind is "Classical concert" the '
-                            'event should have at least one classical work.')
-        elif num_works > 0:
-            raise ValidationError('Only events of kind "Classical concert" '
-                                    'should have related classical works.')
-        return works
-
-    def clean_dancepieces(self):
-        pieces = self.cleaned_data['dancepieces']
-        num_pieces = len(pieces)
-
-        if self.cleaned_data['kind'] == 'dance':
-            if num_pieces == 0:
-                raise ValidationError('If kind is "Dance" the event should '
-                                            'have at least one dance piece.')
-        elif num_pieces > 0:
-            raise ValidationError('Only events of kind "Dance" should have '
-                                                    'related dance piece.')
-        return pieces
-
-    def clean_movie(self):
-        movie = self.cleaned_data['movie']
-        if self.cleaned_data['kind'] == 'movie':
-            if movie is None:
-                raise ValidationError(
-                'If kind is "Movie" the event should have a related movie.')
-        elif movie is not None:
-            raise ValidationError(
-                'Only events of kind "Movie" should have a related movie.')
-        return movie
-
-    def clean_play(self):
-        play = self.cleaned_data['play']
-        if self.cleaned_data['kind'] == 'play':
-            if play is None:
-                raise ValidationError(
-                'If kind is "Play" the event should have a related play.')
-        elif play is not None:
-            raise ValidationError(
-                'Only events of kind "Play" should have a related play.')
-        return play
-
-
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    form = EventAdminForm
 
     list_display = ('__str__', 'date', 'kind_name', 'venue',)
     list_filter = ('kind', 'date',)
@@ -149,11 +90,6 @@ class EventAdmin(admin.ModelAdmin):
     inlines = [ClassicalWorkSelectionInline, DancePieceSelectionInline,
                 MovieSelectionInline, PlaySelectionInline,
                 EventRoleInline, ]
-
-    class Media:
-        js = (
-            'js/admin/event.js',
-        )
 
 
 class ProductionAdmin(admin.ModelAdmin):
