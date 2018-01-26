@@ -121,13 +121,13 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             title_start = Event.get_kind_name_plural(self.kind)
             title = '{} #{}'.format(title_start, self.pk)
 
-            # works will be like self.movies or self.classical_works:
-            works_set = self.get_works()
-            if works_set is not None:
-                # Movies, Plays, Classical or Dance.
+            # works will be an array of Movies, Dance Pieces, etc.
+            works = self.get_works()
+            # We only need their titles:
+            works = [str(w) for w in works]
+            if len(works) > 0:
                 if self.pk:
                     # (If it hasn't been saved it has no works yet.)
-                    works = [str(w) for w in works_set.all()]
                     if len(works) == 1:
                         title = works[0]
                     elif len(works) > 1:
@@ -192,18 +192,12 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     def get_works(self):
         """
-        Returns the m2m field of works for this event, depending on what
-        kind it is. Or None if it's like a Gig or Comedy.
+        Returns a list of all the Event's Works (Movies, Dance Pieces, etc).
         """
-        works = None
-        if self.kind == 'concert':
-            works = self.classicalworks
-        elif self.kind == 'dance':
-            works = self.dancepieces
-        elif self.kind == 'movie':
-            works = self.movies
-        elif self.kind == 'play':
-            works = self.plays
+        works = [] + list(self.classicalworks.all()) \
+                    + list(self.dancepieces.all()) \
+                    + list(self.movies.all()) \
+                    + list(self.plays.all())
         return works
 
     @property
