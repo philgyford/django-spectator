@@ -87,10 +87,12 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             help_text="Only used if event is of 'Play' kind.")
 
     classicalworks = models.ManyToManyField('spectator_events.ClassicalWork',
+            through='spectator_events.ClassicalWorkSelection',
             blank=True,
             help_text="Only used if event is of 'Classical Concert' kind.")
 
     dancepieces = models.ManyToManyField('spectator_events.DancePiece',
+            through='spectator_events.DancePieceSelection',
             blank=True,
             help_text="Only used if event is of 'Dance' kind.")
 
@@ -288,15 +290,44 @@ class ClassicalWorkRole(BaseRole):
     Through model for linking a Creator to a ClassicalWork, optionally via
     their role (e.g. 'Composer'.)
     """
-    creator = models.ForeignKey('spectator_core.Creator', blank=False,
+    creator = models.ForeignKey('spectator_core.Creator',
+                blank=False,
                 on_delete=models.CASCADE, related_name='classical_work_roles')
 
     classical_work = models.ForeignKey('spectator_events.ClassicalWork',
-                on_delete=models.CASCADE, related_name='roles')
+                on_delete=models.CASCADE,
+                related_name='roles')
 
     class Meta:
         ordering = ('role_order', 'role_name',)
         verbose_name = 'classical work role'
+
+
+class ClassicalWorkSelection(models.Model):
+    """
+    Through model for linking a ClassicalWork to an Event with an order.
+    """
+    event = models.ForeignKey('spectator_events.Event',
+                blank=False,
+                on_delete=models.CASCADE,
+                related_name='classical_work_selections')
+
+    classical_work = models.ForeignKey('spectator_events.ClassicalWork',
+                blank=False,
+                on_delete=models.CASCADE,
+                related_name='events')
+
+    order = models.PositiveSmallIntegerField(
+                default=1,
+                blank=False, null=False,
+                help_text="Position on the Event programme." )
+
+    class Meta:
+        ordering = ('order',)
+        verbose_name = 'classical work selection'
+
+    def __str__(self):
+        return '{}: {}'.format(self.event, self.classical_work)
 
 
 class DancePiece(Work):
@@ -333,6 +364,33 @@ class DancePieceRole(BaseRole):
     class Meta:
         ordering = ('role_order', 'role_name',)
         verbose_name = 'dance piece role'
+
+
+class DancePieceSelection(models.Model):
+    """
+    Through model for linking a DancePiece to an Event with an order.
+    """
+    event = models.ForeignKey('spectator_events.Event',
+                blank=False,
+                on_delete=models.CASCADE,
+                related_name='dance_piece_selections')
+
+    dance_piece = models.ForeignKey('spectator_events.DancePiece',
+                blank=False,
+                on_delete=models.CASCADE,
+                related_name='events')
+
+    order = models.PositiveSmallIntegerField(
+                default=1,
+                blank=False, null=False,
+                help_text="Position on the Event programme." )
+
+    class Meta:
+        ordering = ('order',)
+        verbose_name = 'dance piece selection'
+
+    def __str__(self):
+        return '{}: {}'.format(self.event, self.dance_piece)
 
 
 class Movie(Work):

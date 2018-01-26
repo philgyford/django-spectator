@@ -5,17 +5,23 @@ from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.templatetags.l10n import unlocalize
 
-from .models import Event, EventRole, ClassicalWork, ClassicalWorkRole,\
-        DancePiece, DancePieceRole, Movie, MovieRole, Play, PlayRole, Venue
+from .models import (
+    Event, EventRole,
+    ClassicalWork, ClassicalWorkRole, ClassicalWorkSelection,
+    DancePiece, DancePieceRole, DancePieceSelection,
+    Movie, MovieRole,
+    Play, PlayRole,
+    Venue
+)
 
 
-# INLINES.
+# ROLE INLINES.
 
 class RoleInline(admin.TabularInline):
     "Parent class for the other *RoleInlines."
     fields = ( 'creator', 'role_name', 'role_order',)
     raw_id_fields = ('creator',)
-    extra = 1
+    extra = 0 
 
 class EventRoleInline(RoleInline):
     model = EventRole
@@ -31,6 +37,20 @@ class MovieRoleInline(RoleInline):
 
 class PlayRoleInline(RoleInline):
     model = PlayRole
+
+# WORK SELECTION INLINES.
+
+class ClassicalWorkSelectionInline(admin.TabularInline):
+    model = ClassicalWorkSelection
+    fields = ('classical_work', 'order',)
+    raw_id_fields = ('classical_work',)
+    extra = 0
+
+class DancePieceSelectionInline(admin.TabularInline):
+    model = DancePieceSelection
+    fields = ('dance_piece', 'order',)
+    raw_id_fields = ('dance_piece',)
+    extra = 0
 
 
 # MODEL ADMINS.
@@ -107,7 +127,7 @@ class EventAdmin(admin.ModelAdmin):
                         'note',)
         }),
         ('Things seen', {
-            'fields': ('movie', 'play', 'classicalworks', 'dancepieces',)
+            'fields': ('movie', 'play',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -115,11 +135,11 @@ class EventAdmin(admin.ModelAdmin):
         }),
     )
 
-    filter_horizontal = ('classicalworks', 'dancepieces',)
     raw_id_fields = ('movie', 'play', 'venue',)
     readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
 
-    inlines = [EventRoleInline, ]
+    inlines = [ClassicalWorkSelectionInline, DancePieceSelectionInline,
+                EventRoleInline, ]
 
     class Media:
         js = (
