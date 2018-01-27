@@ -1,6 +1,11 @@
 Changelog (Django Spectator)
 ============================
 
+7.0.1
+-----
+
+- Fix order of works (Movies, Plays, etc) on EventDetail pages.
+
 7.0.0
 -----
 
