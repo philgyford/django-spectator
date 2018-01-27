@@ -18,7 +18,7 @@
 {% block content %}
 
     {% if event_list|length > 0 %}
-		{% event_list_tabs counts event_kind %}
+			{% event_list_tabs counts event_kind %}
     {% endif %}
 
     {% include 'spectator_events/includes/events_paginated.html' with event_list=event_list page_obj=page_obj only %}

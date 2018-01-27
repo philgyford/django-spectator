@@ -134,54 +134,43 @@ Events
 ======
 
 An Event specifies a date on which you saw a thing at a particular Venue.
-A Venue has a name and, optionally, location details. Events can be different
-kinds, e.g. "gig", "movie", "play".
 
-While an Event is a thing at a place on a day, with some optional Creators,
-some kinds of Events are slightly more complicated.
+A Venue has a name and, optionally, location details.
 
-Gigs, Comedy, Exhibitions and Other
------------------------------------
+Each Event can have zero or more Creators associated directly with it. e.g. the
+performers at a gig, the comedians at a comedy event. These can be in a spectific
+order, and each with an optional role. e.g:
 
-Events of kind "gig", "comedy", "exhibition" and "misc" are the simplest. A
-date when you went to a Venue to see one or more Creators. The Event can
-optionally have a title. "Other" is for events that don't fit into one of the
-other kinds.
+* The Wedding Present
+    * Role: Headliner
+    * Order: 1
+* Buffalo Tom
+    * Role: Support
+    * Order: 2
 
-Plays
------
+Events can be different kinds, e.g. "gig", "movie", "play".
 
-An Event of kind "play" can have one Play object (e.g. "King Lear") connected to
-it. A Play is created by (optionally) one or more Creators (e.g. "William
-Shakespeare (Playwright)"). A Play can therefore have several Events (occasions
-when you saw that one play), with its own Creators (e.g. "Anthony Sher
-(Actor)").
+Each Event can have zero or more works associated with it, of four different
+types. Each can have zero or more Creators, each with optional roles, associated
+directly with it. e.g. "Wolfgang Amadeus Mozart (Composer)", "William
+Shakespeare (Playwright)" or "Steven Spielberg (Director)":
 
-Movies
-------
+* Classical work
+* Dance piece
+* Movie (can also have a year of release and an IMDb ID associated with it)
+* Play
 
-An Event of kind "movie" can have one Movie object connected to it. A Movie is
-created by (optionally) one or more Creators. It can optionally have a year and
-an IMDb ID. A Movie can therefore have several Events (occasions when you saw
-that one film). Although you could add Creators to the Event itself, that
-probably doesn't make sense usually, unless, there was a post-screening
-interview or something.
+Although Events are specified as being of a certain kind ("gig", "movie", etc)
+this does not affect the kinds of work that are associated with it. e.g. you
+could create a "play" Event and say that one or more movies were shown there.The
+Event kinds are used to produce different lists (e.g. all the movie events).
 
-Classical concert
------------------
-
-An Event of kind "concert" is when one *or more* Classical Works were
-seen/heard. A Classical Work can have zero or more Creators (e.g. "Wolfgang
-Amadeus Mozart (Composer)"). The Event itself can also have zero or more
-Creators (e.g. "Ian Page (Conductor)").
-
-Dance
------
-
-An Event of kind "dance" is when one *or more* Dance Pieces were seen. A Dance
-Piece can have zero or more Creators (e.g. "Pina Bausch (Choreographer)"). The
-Event itself can also have zero or more Creators (e.g. "English National
-Ballet").
+Events can be given an optional title (e.g. "Glastonbury Festival"). If a title
+isn't specified one is created automatically when needed, based on any works
+(movies, plays, etc) associated with it, or else any Creators associated with
+it. When a title is automatically created, it only includes works relevant to
+the Event's kind. e.g. A "play" Event that featured two plays and, for some
+reason, a movie, would have a title displayed that only listed the plays.
 
 
 *************
@@ -373,37 +362,31 @@ then:
         * ``test_get_kinds_data()``
     * Add a ``test_absolute_url_*()`` test for this kind.
 
-If it involves an extra model (like Movies and Plays do) then also:
+If it involves an extra model (like Movies and Concerts do) then also:
 
-* Create the new model in ``spectator.events.models`` with a matching Role
-  model (like ``MovieRole``).
-* Associate the new model by ``ForeignKey`` to the ``Event`` model.
-* Add a special case for it in ``Event.__str__()``.
-* Add its Admin in ``spectator.events.admin``.
-* Add any validation needed to ``spectator.events.admin.EventAdminForm``.
-* Add cases in ``spectator/events/static/js/admin/events.js`` to show/hide the
-  relevant fields.
+* Create the new model in ``spectator.events.models`` that inherits from the
+  ``Work`` model (like ``Movie``).
+* Create a matching role model, (like ``MovieRole``).
+* Create a matching selection model, (like ``MovieSelection``).
+* Associate the new model by a ``ManyToManyField``, through the selection model,
+  to the ``Event`` model (like ``Event.movies``).
+* In ``spectator.events.admin`` add the Inlines for the role and selection
+  models, and include them in the ``EventAdmin``.
 * Add new URLs for the model's List and Detail views in
   ``spectator.events.urls`` (and add tests).
 * Add the new List and Detail views in ``spectator.events.views``.
-* Add templates in ``spectator/events/templates/events/`` for its List and
-  Detail views.
-* In ``spectator/events/templates/event_detail.html`` add a link to its Detail
-  view.
+* If necessary, add templates in ``spectator/events/templates/events/`` for its
+  List and Detail views. This is only necessary if your new work has special
+  requirements, like Movies do (with their years and IMDb IDs). Otherwise the
+  generic ``m2m_work_*.html`` templates can be used).
+* In ``spectator/events/templates/event_detail.html`` add an include to list the
+  works.
 * In ``spectator/core/templates/core/creator_detail.html`` add a section to
   list the new models for a Creator.
 
 If it involves several extra models (like Dance and Concert events do) then
 it's similar to above but absolute URLs are different; see the code for
 examples of those.
-
-* Instead of adding the new modely by ``ForeignKey``, it's
-  a ``ManyToManyField``.
-* It doesn't have a special case in ``Event.get_absolute_url()``.
-* Add URLs and Views for the List and Detail views for the new model
-  (e.g. DancePiece).
-* Add the ``get_absolute_url()`` method for that new model.
-* Add the display of its works (e.g. DancePieces) in ``spectator/events/templates/events/event_detail.html``.
 
 
 *******

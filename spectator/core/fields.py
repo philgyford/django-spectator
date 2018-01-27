@@ -1,7 +1,10 @@
+import logging
 import re
 import six
 
 from django.db import models
+
+logger = logging.getLogger(__name__)
 
 
 class UniqueFieldMixin(object):
@@ -111,19 +114,27 @@ class NaturalSortField(models.CharField):
         return name, path, args, kwargs
 
     def pre_save(self, model_instance, add):
-        string = getattr(model_instance, self.for_field)
+        try:
+            string = getattr(model_instance, self.for_field)
+        except AttributeError as e:
+            # During migrations a model being saved does not have access
+            # to any of its methods. So we can't access, for example,
+            # the @property Event.title_to_sort()
+            logger.error("Error in NaturalSortField.pre_save(): {}: The value of the '{}' field will not be changed.".format(e, self.attname))
 
-        string = string.strip()
-
-        if hasattr(model_instance, 'sort_as') and model_instance.sort_as == 'person':
-            string = self.naturalize_person(string)
-            # The case of the name is important, so we lowercase afterwards:
-            string = string.lower()
+            return getattr(model_instance, self.attname)
         else:
-            string = string.lower()
-            string = self.naturalize_thing(string)
+            string = string.strip()
 
-        return string
+            if hasattr(model_instance, 'sort_as') and model_instance.sort_as == 'person':
+                string = self.naturalize_person(string)
+                # The case of the name is important, so we lowercase afterwards:
+                string = string.lower()
+            else:
+                string = string.lower()
+                string = self.naturalize_thing(string)
+
+                return string
 
     def naturalize_thing(self, string):
         """

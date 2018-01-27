@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from spectator.core.models import BaseRole, SluggedModelMixin,\
         TimeStampedModelMixin
 from spectator.core.fields import NaturalSortField
+from spectator.core.utils import truncate_string
 
 
 class EventRole(BaseRole):
@@ -33,6 +34,41 @@ class EventRole(BaseRole):
 class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     A thing that happened at a particular venue on a particular date.
+
+    You can get all the Event's Movies, Classical Works etc by doing:
+
+        event = Event.objects.get(pk=1)
+
+        event.classicalworks.all()
+        event.dancepieces.all()
+        event.movies.all()
+        event.plays.all()
+
+    But if there are more than one of a kind of Work, they won't necessarily
+    be returned in the correct order, as defined in their through model. To
+    return them in the correct order you need to use the selection. e.g.:
+
+        event.classical_work_selections.all()
+        event.dance_piece_selections.all()
+        event.movie_selections.all()
+        event.play_selections.all()
+
+    Each item returned will then have an object associated, and an order. e.g.:
+
+        selection = event.dance_piece_selections.first()
+        print(selection.dance_piece.title)
+        print(selection.order)
+
+    Similarly, to get Creators who worked directly on the Event (as
+    opposed to worked on one of its Works), in the correct order:
+
+        event.roles.all()
+
+    And access the Creators and the order like:
+
+        role = event.roles.first()
+        print(role.creator.name)
+        print(role.role_order)
     """
 
     # The keys are used as slugs, so should be appropriate:
@@ -105,7 +141,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         ordering = ['-date',]
 
     def __str__(self):
-        return self.get_title()
+        return self.make_title()
 
     def save(self, *args, **kwargs):
         self.kind_slug = self.KIND_SLUGS[self.kind]
@@ -114,10 +150,8 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     def get_absolute_url(self):
         return reverse('spectator:events:event_detail', kwargs={'slug':self.slug})
 
-    def get_title(self):
-        if self.title:
-            title = self.title
-        else:
+    def make_title(self):
+        if self.title == '':
             title_start = Event.get_kind_name_plural(self.kind)
             title = '{} #{}'.format(title_start, self.pk)
 
@@ -145,6 +179,10 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
                     # Join with commas but 'and' for the last one:
                     title = '{} and {}'.format(
                                             ', '.join(roles[:-1]), roles[-1])
+        else:
+            title = self.title
+
+        title = truncate_string(title, chars=255, at_word_boundary=True)
 
         return title
 
@@ -192,12 +230,32 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     def get_works(self):
         """
-        Returns a list of all the Event's Works (Movies, Dance Pieces, etc).
+        Returns a list of the Event's Works (Movies, Dance Pieces, etc),
+        in their correct orders.
+        Or an empty list for Events that have none.
+
+        NOTE: It only returns Works relevant to the Event's kind.
+        e.g. A 'movie' Event will only return a list of any Movies in the
+        Event, not any Plays. This reduces the number of database requests and
+        we're assuming it's Good Enough.
         """
-        works = [] + list(self.classicalworks.all()) \
-                    + list(self.dancepieces.all()) \
-                    + list(self.movies.all()) \
-                    + list(self.plays.all())
+        # Want to get lists of each of the types of Work. But in the correct
+        # order, so we need to get self.movie_selections.all() instead of
+        # just self.movies.all(). The latter wouldn't use the MovieSelection
+        # through model.
+
+        if self.kind == 'concert':
+            works = [
+                s.classical_work for s in self.classical_work_selections.all()]
+        elif self.kind == 'dance':
+            works = [s.dance_piece for s in self.dance_piece_selections.all()]
+        elif self.kind == 'movie':
+            works = [s.movie for s in self.movie_selections.all()]
+        elif self.kind == 'play':
+            works = [s.play for s in self.play_selections.all()]
+        else:
+            works = []
+
         return works
 
     @property
@@ -217,7 +275,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         We want to be able to sort by the event's Creators, if it doesn't
         have a title.
         """
-        return self.__str__()
+        return self.make_title()
 
 
 class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
