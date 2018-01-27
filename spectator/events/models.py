@@ -342,7 +342,7 @@ class ClassicalWork(Work):
 
     @property
     def kind(self):
-        return 'classical work'
+        return 'classicalwork'
 
 
 class ClassicalWorkRole(BaseRole):
@@ -407,7 +407,7 @@ class DancePiece(Work):
 
     @property
     def kind(self):
-        return 'dance piece'
+        return 'dancepiece'
 
 
 class DancePieceRole(BaseRole):

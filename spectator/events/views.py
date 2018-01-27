@@ -127,8 +127,10 @@ class EventYearArchiveView(YearArchiveView):
 
 class WorkListView(PaginatedListView):
     """
-    Parent class for all the "work" list views.
+    Parent class for all the Work list views.
     """
+    template_name = 'spectator_events/m2m_work_list.html'
+
     def get_queryset(self):
         qs = super().get_queryset()
         qs = qs.prefetch_related('roles__creator')
@@ -138,53 +140,53 @@ class WorkListView(PaginatedListView):
         context = super().get_context_data(**kwargs)
         context['kind'] = self.model().kind
         context['kind_plural'] = self.model().kind_plural
+        context['breadcrumb_list_title'] = 'hi'
+                                # self.model._meta.verbose_name_plural.title()
+        context['breadcrumb_list_url'] = reverse(
+                        'spectator:events:{}_list'.format(context['kind']))
         return context
+
+class WorkDetailView(DetailView):
+    """
+    Parent class for all the Work detail views.
+    """
+    template_name = 'spectator_events/m2m_work_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # e.g. 'Plays':
+        context['breadcrumb_list_title'] = \
+                                self.model._meta.verbose_name_plural.title()
+        work_kind = self.model().kind
+        context['breadcrumb_list_url'] = reverse(
+                                'spectator:events:{}_list'.format(work_kind))
+        return context
+
+class ClassicalWorkListView(WorkListView):
+    model = ClassicalWork
+
+class ClassicalWorkDetailView(WorkDetailView):
+    model = ClassicalWork
+
+class DancePieceListView(WorkListView):
+    model = DancePiece
+
+class DancePieceDetailView(WorkDetailView):
+    model = DancePiece
 
 class MovieListView(WorkListView):
     model = Movie
     template_name = 'spectator_events/m2m_work_list.html'
 
-class MovieDetailView(DetailView):
+class MovieDetailView(WorkDetailView):
     model = Movie
     template_name = 'spectator_events/movie_detail.html'
 
 class PlayListView(WorkListView):
     model = Play
-    template_name = 'spectator_events/m2m_work_list.html'
 
-class PlayDetailView(DetailView):
+class PlayDetailView(WorkDetailView):
     model = Play
-    template_name = 'spectator_events/m2m_work_detail.html'
-
-class ClassicalWorkListView(WorkListView):
-    model = ClassicalWork
-    template_name = 'spectator_events/m2m_work_list.html'
-
-class ClassicalWorkDetailView(DetailView):
-    model = ClassicalWork
-    template_name = 'spectator_events/m2m_work_detail.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['breadcrumb_list_title'] = 'Classical works'
-        context['breadcrumb_list_url'] = reverse(
-                'spectator:events:classicalwork_list')
-        return context
-
-class DancePieceListView(WorkListView):
-    model = DancePiece
-    template_name = 'spectator_events/m2m_work_list.html'
-
-class DancePieceDetailView(DetailView):
-    model = DancePiece
-    template_name = 'spectator_events/m2m_work_detail.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['breadcrumb_list_title'] = 'Dance pieces'
-        context['breadcrumb_list_url'] = reverse(
-                'spectator:events:dancepiece_list')
-        return context
 
 
 # VENUES

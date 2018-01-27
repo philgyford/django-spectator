@@ -18,7 +18,7 @@ Expects:
 			<li>
 				<a href="{{ role.creator.get_absolute_url }}">{{ role.creator.name }}</a>
 				{% if role.role_name and show_role_name|default_if_none:True %}
-					({{ role.role_name }})
+					<span class="text-muted">({{ role.role_name }})</span>
 				{% endif %}
 			</li>
 		{% endfor %}

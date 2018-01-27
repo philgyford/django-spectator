@@ -311,12 +311,7 @@ class DancePieceTestCase(TestCase):
 
 class MovieTestCase(TestCase):
 
-    def test_str_with_year(self):
-        movie = MovieFactory(title='Trust', year=1991)
-        self.assertEqual(str(movie), 'Trust (1991)')
-
-    def test_str_without_year(self):
-        movie = MovieFactory(title='Trust')
+    def test_str(self):
         self.assertEqual(str(movie), 'Trust')
 
     def test_ordering(self):

@@ -1,4 +1,4 @@
-{% extends 'spectator_events/base.html' %}
+{% extends 'spectator_events/m2m_work_detail.html' %}
 {% load l10n %}
 
 {% block head_page_title %}{{ movie.title }} {% if movie.year %}({{ movie.year|unlocalize }}){% endif %}{% endblock %}
@@ -7,12 +7,6 @@
     {% if movie.year %}
         <small class="text-muted">({{ movie.year|unlocalize }})</small>
     {% endif %}
-{% endblock %}
-
-{% block breadcrumbs %}
-    {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:events:movie_list' %}">Movies</a></li>
-    <li class="breadcrumb-item active">{{ movie.title }}</li>
 {% endblock %}
 
 {% block content %}
@@ -26,11 +20,3 @@
     {% include 'spectator_events/includes/visits_list.html' with events=movie.event_set.all heading_level='h2' only %}
 
 {% endblock content %}
-
-
-{% block sidebar %}
-    {% load spectator_core %}
-    {% change_object_link_card object perms %}
-
-    {{ block.super }}
-{% endblock %}

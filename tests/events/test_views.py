@@ -199,7 +199,7 @@ class MovieListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.MovieListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator_events/fk_work_list.html')
+                         'spectator_events/m2m_work_list.html')
 
     def test_context(self):
         response = views.MovieListView.as_view()(self.request)
@@ -217,7 +217,7 @@ class PlayListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.PlayListView.as_view()(self.request)
         self.assertEqual(response.template_name[0],
-                         'spectator_events/fk_work_list.html')
+                         'spectator_events/m2m_work_list.html')
 
     def test_context(self):
         response = views.PlayListView.as_view()(self.request)
