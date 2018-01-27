@@ -1,6 +1,11 @@
 Changelog (Django Spectator)
 ============================
 
+7.0.2
+-----
+
+- Fix the setting of Events' ``title_sort`` field when saving them in Admin.
+
 7.0.1
 -----
 
