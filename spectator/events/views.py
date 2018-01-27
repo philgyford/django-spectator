@@ -138,12 +138,10 @@ class WorkListView(PaginatedListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['kind'] = self.model().kind
-        context['kind_plural'] = self.model().kind_plural
-        context['breadcrumb_list_title'] = 'hi'
-                                # self.model._meta.verbose_name_plural.title()
-        context['breadcrumb_list_url'] = reverse(
-                        'spectator:events:{}_list'.format(context['kind']))
+        title = self.model._meta.verbose_name_plural.title()
+        context['page_title'] = title
+        context['breadcrumb_list_title'] = title
+        context['breadcrumb_list_url'] = self.model().get_list_url()
         return context
 
 class WorkDetailView(DetailView):
@@ -157,9 +155,7 @@ class WorkDetailView(DetailView):
         # e.g. 'Plays':
         context['breadcrumb_list_title'] = \
                                 self.model._meta.verbose_name_plural.title()
-        work_kind = self.model().kind
-        context['breadcrumb_list_url'] = reverse(
-                                'spectator:events:{}_list'.format(work_kind))
+        context['breadcrumb_list_url'] = self.model().get_list_url()
         return context
 
 class ClassicalWorkListView(WorkListView):

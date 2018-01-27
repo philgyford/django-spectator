@@ -314,15 +314,10 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         abstract = True
         ordering = ('title_sort',)
 
-    @property
-    def kind(self):
-        "Handy in templates. Override in child classes."
-        return 'work'
-
-    @property
-    def kind_plural(self):
-        "Handy in templates"
-        return '{}s'.format(self.kind)
+    def get_list_url(self):
+        "Handy in views. Override in child classes."
+        raise NotImplementedError(
+            "Child classes should return the list URL for this kind of Work.")
 
 
 class ClassicalWork(Work):
@@ -332,17 +327,16 @@ class ClassicalWork(Work):
     creators = models.ManyToManyField('spectator_core.Creator',
                 through='ClassicalWorkRole', related_name='classicalworks')
 
-    def get_absolute_url(self):
-        return reverse('spectator:events:classicalwork_detail',
-                                                    kwargs={'slug': self.slug})
-
     class Meta:
         ordering = ('title_sort',)
         verbose_name = 'classical work'
 
-    @property
-    def kind(self):
-        return 'classicalwork'
+    def get_absolute_url(self):
+        return reverse('spectator:events:classicalwork_detail',
+                                                    kwargs={'slug': self.slug})
+
+    def get_list_url(self):
+        return reverse('spectator:events:classicalwork_list')
 
 
 class ClassicalWorkRole(BaseRole):
@@ -397,18 +391,16 @@ class DancePiece(Work):
     creators = models.ManyToManyField('spectator_core.Creator',
                         through='DancePieceRole', related_name='dancepieces')
 
-    def get_absolute_url(self):
-        return reverse('spectator:events:dancepiece_detail',
-                                                    kwargs={'slug': self.slug})
-
     class Meta:
         ordering = ('title_sort',)
         verbose_name = 'dance piece'
 
-    @property
-    def kind(self):
-        return 'dancepiece'
+    def get_absolute_url(self):
+        return reverse('spectator:events:dancepiece_detail',
+                                                    kwargs={'slug': self.slug})
 
+    def get_list_url(self):
+        return reverse('spectator:events:dancepiece_list')
 
 class DancePieceRole(BaseRole):
     """
@@ -482,9 +474,8 @@ class Movie(Work):
     def get_absolute_url(self):
         return reverse('spectator:events:movie_detail', kwargs={'slug':self.slug})
 
-    @property
-    def kind(self):
-        return 'movie'
+    def get_list_url(self):
+        return reverse('spectator:events:movie_list')
 
 
 class MovieRole(BaseRole):
@@ -538,11 +529,11 @@ class Play(Work):
                                     through='PlayRole', related_name='plays')
 
     def get_absolute_url(self):
-        return reverse('spectator:events:play_detail', kwargs={'slug':self.slug})
+        return reverse('spectator:events:play_detail',
+                                                kwargs={'slug':self.slug})
 
-    @property
-    def kind(self):
-        return 'play'
+    def get_list_url(self):
+        return reverse('spectator:events:play_list')
 
 
 class PlayRole(BaseRole):
