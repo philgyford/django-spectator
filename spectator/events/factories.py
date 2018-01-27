@@ -78,28 +78,6 @@ class EventFactory(factory.DjangoModelFactory):
     title = factory.Sequence(lambda n: 'Event %s' % n)
     venue = factory.SubFactory(VenueFactory)
 
-    @factory.post_generation
-    def classicalworks(self, create, extracted, **kwargs):
-        if not create:
-            # Simple build, do nothing.
-            return
-
-        if extracted:
-            # A list of works was passed in, use them
-            for work in extracted:
-                self.classicalworks.add(work)
-
-    @factory.post_generation
-    def dancepieces(self, create, extracted, **kwargs):
-        if not create:
-            # Simple build, do nothing.
-            return
-
-        if extracted:
-            # A list of pieces was passed in, use them
-            for piece in extracted:
-                self.dancepieces.add(piece)
-
 
 class ComedyEventFactory(EventFactory):
     kind = 'comedy'
@@ -133,3 +111,32 @@ class EventRoleFactory(factory.DjangoModelFactory):
     role_name = factory.Sequence(lambda n: 'Role %s' % n)
     creator = factory.SubFactory(IndividualCreatorFactory)
     event = factory.SubFactory(EventFactory)
+
+
+class ClassicalWorkSelectionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ClassicalWorkSelection
+
+    event = factory.SubFactory(EventFactory)
+    classical_work = factory.SubFactory(ClassicalWorkFactory)
+
+class DancePieceSelectionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.DancePieceSelection
+
+    event = factory.SubFactory(EventFactory)
+    dance_piece = factory.SubFactory(DancePieceFactory)
+
+class MovieSelectionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.MovieSelection
+
+    event = factory.SubFactory(EventFactory)
+    movie = factory.SubFactory(MovieFactory)
+
+class PlaySelectionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.PlaySelection
+
+    event = factory.SubFactory(EventFactory)
+    play = factory.SubFactory(PlayFactory)

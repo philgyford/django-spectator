@@ -55,23 +55,25 @@ class EventStrTestCase(TestCase):
 
     def test_str_concert_with_no_title_one_work(self):
         "With no title and one work, it uses the work's title."
-        event = ConcertEventFactory(
-                        title='',
-                        classicalworks=[ClassicalWorkFactory(title='Work A')])
+        event = ConcertEventFactory(title='')
+        ClassicalWorkSelectionFactory(event=event,
+                        classical_work=ClassicalWorkFactory(title='Work A'))
         self.assertEqual(str(event), 'Work A')
 
     def test_str_concert_with_no_title_many_works(self):
         "With no title it uses the titles of the classical works."
-        event = ConcertEventFactory(
-                        title='',
-                        classicalworks=[ClassicalWorkFactory(title='Work A'),
-                                        ClassicalWorkFactory(title='Work B'),
-                                        ClassicalWorkFactory(title='Work C')])
+        event = ConcertEventFactory(title='')
+        ClassicalWorkSelectionFactory(event=event,
+                        classical_work=ClassicalWorkFactory(title='Work A'))
+        ClassicalWorkSelectionFactory(event=event,
+                        classical_work=ClassicalWorkFactory(title='Work B'))
+        ClassicalWorkSelectionFactory(event=event,
+                        classical_work=ClassicalWorkFactory(title='Work C'))
         self.assertEqual(str(event), 'Work A, Work B and Work C')
 
     def test_str_concert_with_no_title_and_no_works(self):
         "With no title or works it uses the default."
-        event = ConcertEventFactory(title='', pk=5, classicalworks=[])
+        event = ConcertEventFactory(title='', pk=5)
         self.assertEqual(str(event), 'Event #5')
 
     # Dance
@@ -80,40 +82,62 @@ class EventStrTestCase(TestCase):
         event = DanceEventFactory(title='Amazing Dance!')
         self.assertEqual(str(event), 'Amazing Dance!')
 
-    def test_str_dance_with_no_title_and_one_pieces(self):
+    def test_str_dance_with_no_title_and_one_piece(self):
         "With no title and one piece it uses the piece's title."
-        event = DanceEventFactory(
-                        title='',
-                        dancepieces=[DancePieceFactory(title='Piece A')])
+        event = DanceEventFactory(title='')
+        piece = DancePieceFactory(title='Piece A')
+        selection = DancePieceSelectionFactory(event=event, dance_piece=piece)
         self.assertEqual(str(event), 'Piece A')
 
     def test_str_dance_with_no_title_and_many_pieces(self):
         "With no title it uses the titles of the pieces."
-        event = DanceEventFactory(
-                        title='',
-                        dancepieces=[DancePieceFactory(title='Piece A'),
-                                     DancePieceFactory(title='Piece B'),
-                                     DancePieceFactory(title='Piece C')])
+        event = DanceEventFactory(title='')
+        DancePieceSelectionFactory(event=event,
+                                dance_piece=DancePieceFactory(title='Piece A'))
+        DancePieceSelectionFactory(event=event,
+                                dance_piece=DancePieceFactory(title='Piece B'))
+        DancePieceSelectionFactory(event=event,
+                                dance_piece=DancePieceFactory(title='Piece C'))
         self.assertEqual(str(event), 'Piece A, Piece B and Piece C')
 
     def test_str_dance_with_no_title_and_no_pieces(self):
         "With no title or pieces it uses the default."
-        event = DanceEventFactory(title='', pk=5, dancepieces=[])
+        event = DanceEventFactory(title='', pk=5)
         self.assertEqual(str(event), 'Event #5')
 
     # Movie
 
-    def test_movie_with_no_title(self):
-        event = MovieEventFactory(title='',
-                                  movie=MovieFactory(title='My Great Movie'))
+    def test_movie_with_no_title_and_one_movie(self):
+        "With no title and one piece it uses the movie's title."
+        event = MovieEventFactory(title='')
+        MovieSelectionFactory(event=event,
+                                    movie=MovieFactory(title='My Great Movie'))
         self.assertEqual(str(event), 'My Great Movie')
+
+    def test_movie_with_no_title_and_many_movies(self):
+        "With no title it uses the titles of the movies."
+        event = MovieEventFactory(title='')
+        MovieSelectionFactory(event=event, movie=MovieFactory(title='Movie A'))
+        MovieSelectionFactory(event=event, movie=MovieFactory(title='Movie B'))
+        MovieSelectionFactory(event=event, movie=MovieFactory(title='Movie C'))
+        self.assertEqual(str(event), 'Movie A, Movie B and Movie C')
 
     # Play
 
-    def test_play_with_no_title(self):
-        event = PlayEventFactory(title='',
+    def test_play_with_no_title_and_one_play(self):
+        "With no title and one piece it uses the play's title."
+        event = PlayEventFactory(title='')
+        PlaySelectionFactory(event=event,
                                  play=PlayFactory(title='My Great Play'))
         self.assertEqual(str(event), 'My Great Play')
+
+    def test_play_with_no_title_and_many_plays(self):
+        "With no title it uses the titles of the plays."
+        event = PlayEventFactory(title='')
+        PlaySelectionFactory(event=event, play=PlayFactory(title='Play A'))
+        PlaySelectionFactory(event=event, play=PlayFactory(title='Play B'))
+        PlaySelectionFactory(event=event, play=PlayFactory(title='Play C'))
+        self.assertEqual(str(event), 'Play A, Play B and Play C')
 
 
 class EventTestCase(TestCase):
@@ -272,9 +296,10 @@ class EventTestCase(TestCase):
 
 class WorkTestCase(TestCase):
 
-    def test_kind(self):
-        work = Work()
-        self.assertEqual(work.kind, 'work')
+    def test_get_list_url(self):
+        with self.assertRaises(NotImplementedError):
+            work = Work()
+            work.get_list_url()
 
 
 class ClassicalWorkTestCase(TestCase):
@@ -287,10 +312,9 @@ class ClassicalWorkTestCase(TestCase):
         work = ClassicalWorkFactory(pk=123)
         self.assertEqual(work.get_absolute_url(), '/events/classical-works/9g5o8/')
 
-    def test_kind(self):
+    def test_get_list_url(self):
         work = ClassicalWorkFactory()
-        self.assertEqual(work.kind, 'classical work')
-        self.assertEqual(work.kind_plural, 'classical works')
+        self.assertEqual(work.get_list_url(), '/events/classical-works/')
 
 
 class DancePieceTestCase(TestCase):
@@ -303,16 +327,12 @@ class DancePieceTestCase(TestCase):
         piece = DancePieceFactory(pk=123)
         self.assertEqual(piece.get_absolute_url(), '/events/dance-pieces/9g5o8/')
 
-    def test_kind(self):
-        work = DancePieceFactory()
-        self.assertEqual(work.kind, 'dance piece')
-        self.assertEqual(work.kind_plural, 'dance pieces')
+    def test_get_list_url(self):
+        piece = DancePieceFactory()
+        self.assertEqual(piece.get_list_url(), '/events/dance-pieces/')
 
 
 class MovieTestCase(TestCase):
-
-    def test_str(self):
-        self.assertEqual(str(movie), 'Trust')
 
     def test_ordering(self):
         m3 = MovieFactory(title='Movie C')
@@ -347,10 +367,9 @@ class MovieTestCase(TestCase):
         movie = MovieFactory(pk=123)
         self.assertEqual(movie.get_absolute_url(), '/events/movies/9g5o8/')
 
-    def test_kind(self):
-        work = MovieFactory()
-        self.assertEqual(work.kind, 'movie')
-        self.assertEqual(work.kind_plural, 'movies')
+    def test_get_list_url(self):
+        movie = MovieFactory()
+        self.assertEqual(movie.get_list_url(), '/events/movies/')
 
 
 class PlayTestCase(TestCase):
@@ -392,10 +411,9 @@ class PlayTestCase(TestCase):
         play = PlayFactory(pk=123)
         self.assertEqual(play.get_absolute_url(), '/events/plays/9g5o8/')
 
-    def test_kind(self):
-        work = PlayFactory()
-        self.assertEqual(work.kind, 'play')
-        self.assertEqual(work.kind_plural, 'plays')
+    def test_list_url(self):
+        play = PlayFactory()
+        self.assertEqual(play.get_list_url(), '/events/plays/')
 
 
 class VenueTestCase(TestCase):

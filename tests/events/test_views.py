@@ -189,42 +189,6 @@ class EventYearArchiveViewTestCase(ViewTestCase):
         self.assertIsNone(response.context_data['previous_year'])
 
 
-class MovieListViewTestCase(ViewTestCase):
-
-    def test_response_200(self):
-        "It should respond with 200."
-        response = views.MovieListView.as_view()(self.request)
-        self.assertEqual(response.status_code, 200)
-
-    def test_templates(self):
-        response = views.MovieListView.as_view()(self.request)
-        self.assertEqual(response.template_name[0],
-                         'spectator_events/m2m_work_list.html')
-
-    def test_context(self):
-        response = views.MovieListView.as_view()(self.request)
-        self.assertEqual(response.context_data['kind'], 'movie')
-        self.assertEqual(response.context_data['kind_plural'], 'movies')
-
-
-class PlayListViewTestCase(ViewTestCase):
-
-    def test_response_200(self):
-        "It should respond with 200."
-        response = views.PlayListView.as_view()(self.request)
-        self.assertEqual(response.status_code, 200)
-
-    def test_templates(self):
-        response = views.PlayListView.as_view()(self.request)
-        self.assertEqual(response.template_name[0],
-                         'spectator_events/m2m_work_list.html')
-
-    def test_context(self):
-        response = views.PlayListView.as_view()(self.request)
-        self.assertEqual(response.context_data['kind'], 'play')
-        self.assertEqual(response.context_data['kind_plural'], 'plays')
-
-
 class ClassicalWorkListViewTestCase(ViewTestCase):
 
     def test_response_200(self):
@@ -239,8 +203,10 @@ class ClassicalWorkListViewTestCase(ViewTestCase):
 
     def test_context(self):
         response = views.ClassicalWorkListView.as_view()(self.request)
-        self.assertEqual(response.context_data['kind'], 'classical work')
-        self.assertEqual(response.context_data['kind_plural'], 'classical works')
+        context = response.context_data
+        self.assertEqual(context['page_title'], 'Classical Works')
+        self.assertEqual(context['breadcrumb_list_title'], 'Classical Works')
+        self.assertEqual(context['breadcrumb_list_url'], '/events/classical-works/')
 
 
 class ClassicalWorkDetailViewTestCase(ViewTestCase):
@@ -292,8 +258,10 @@ class DancePieceListViewTestCase(ViewTestCase):
 
     def test_context(self):
         response = views.DancePieceListView.as_view()(self.request)
-        self.assertEqual(response.context_data['kind'], 'dance piece')
-        self.assertEqual(response.context_data['kind_plural'], 'dance pieces')
+        context = response.context_data
+        self.assertEqual(context['page_title'], 'Dance Pieces')
+        self.assertEqual(context['breadcrumb_list_title'], 'Dance Pieces')
+        self.assertEqual(context['breadcrumb_list_url'], '/events/dance-pieces/')
 
 
 class DancePieceDetailViewTestCase(ViewTestCase):
@@ -326,6 +294,47 @@ class DancePieceDetailViewTestCase(ViewTestCase):
         self.assertIn('breadcrumb_list_url', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_url'],
                          '/events/dance-pieces/')
+
+class MovieListViewTestCase(ViewTestCase):
+
+    def test_response_200(self):
+        "It should respond with 200."
+        response = views.MovieListView.as_view()(self.request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_templates(self):
+        response = views.MovieListView.as_view()(self.request)
+        self.assertEqual(response.template_name[0],
+                         'spectator_events/m2m_work_list.html')
+
+    def test_context(self):
+        response = views.MovieListView.as_view()(self.request)
+        context = response.context_data
+        self.assertEqual(context['page_title'], 'Movies')
+        self.assertEqual(context['breadcrumb_list_title'], 'Movies')
+        self.assertEqual(context['breadcrumb_list_url'], '/events/movies/')
+
+
+class PlayListViewTestCase(ViewTestCase):
+
+    def test_response_200(self):
+        "It should respond with 200."
+        response = views.PlayListView.as_view()(self.request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_templates(self):
+        response = views.PlayListView.as_view()(self.request)
+        self.assertEqual(response.template_name[0],
+                         'spectator_events/m2m_work_list.html')
+
+    def test_context(self):
+        response = views.PlayListView.as_view()(self.request)
+        context = response.context_data
+        self.assertEqual(context['page_title'], 'Plays')
+        self.assertEqual(context['breadcrumb_list_title'], 'Plays')
+        self.assertEqual(context['breadcrumb_list_url'], '/events/plays/')
+
+
 
 
 class VenueListViewTestCase(ViewTestCase):
