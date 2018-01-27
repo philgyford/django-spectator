@@ -2,13 +2,8 @@ from urllib.parse import urlparse
 
 from django import template
 from django.http import QueryDict
+from django.urls import reverse
 from django.utils.html import format_html
-try:
-    # Django >= 1.10
-    from django.urls import reverse
-except ImportError:
-    # Django < 1.10
-    from django.core.urlresolvers import reverse
 
 from ..apps import spectator_apps
 
@@ -116,5 +111,3 @@ def query_string(context, key, value):
         args = QueryDict('').copy()
     args[key] = value
     return args.urlencode()
-
-

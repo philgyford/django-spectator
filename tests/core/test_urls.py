@@ -1,10 +1,5 @@
 from django.test import TestCase
-try:
-    # Django >= 1.10
-    from django.urls import resolve, reverse
-except ImportError:
-    # Django < 1.10
-    from django.core.urlresolvers import resolve, reverse
+from django.urls import resolve, reverse
 
 from spectator.core import views
 from spectator.core.factories import IndividualCreatorFactory
@@ -54,4 +49,3 @@ class CoreUrlsTestCase(TestCase):
         IndividualCreatorFactory(pk=123)
         self.assertEqual(resolve('/creators/9g5o8/').func.__name__,
                          views.CreatorDetailView.__name__)
-

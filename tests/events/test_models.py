@@ -76,6 +76,12 @@ class EventStrTestCase(TestCase):
         event = ConcertEventFactory(title='', pk=5)
         self.assertEqual(str(event), 'Event #5')
 
+    def test_movie_selection_str(self):
+        event = ConcertEventFactory(title='My Event')
+        selection = ClassicalWorkSelectionFactory(event=event,
+                        classical_work=ClassicalWorkFactory(title='My Work'))
+        self.assertEqual(str(selection), 'My Event: My Work')
+
     # Dance
 
     def test_str_dance_with_title(self):
@@ -105,6 +111,12 @@ class EventStrTestCase(TestCase):
         event = DanceEventFactory(title='', pk=5)
         self.assertEqual(str(event), 'Event #5')
 
+    def test_dance_selection_str(self):
+        event = DanceEventFactory(title='My Event')
+        selection = DancePieceSelectionFactory(event=event,
+                                dance_piece=DancePieceFactory(title='My Work'))
+        self.assertEqual(str(selection), 'My Event: My Work')
+
     # Movie
 
     def test_movie_with_no_title_and_one_movie(self):
@@ -122,6 +134,12 @@ class EventStrTestCase(TestCase):
         MovieSelectionFactory(event=event, movie=MovieFactory(title='Movie C'))
         self.assertEqual(str(event), 'Movie A, Movie B and Movie C')
 
+    def test_movie_selection_str(self):
+        event = MovieEventFactory(title='My Event')
+        selection = MovieSelectionFactory(event=event,
+                                            movie=MovieFactory(title='My Work'))
+        self.assertEqual(str(selection), 'My Event: My Work')
+
     # Play
 
     def test_play_with_no_title_and_one_play(self):
@@ -138,6 +156,12 @@ class EventStrTestCase(TestCase):
         PlaySelectionFactory(event=event, play=PlayFactory(title='Play B'))
         PlaySelectionFactory(event=event, play=PlayFactory(title='Play C'))
         self.assertEqual(str(event), 'Play A, Play B and Play C')
+
+    def test_play_selection_str(self):
+        event = PlayEventFactory(title='My Event')
+        selection = PlaySelectionFactory(event=event,
+                                            play=PlayFactory(title='My Work'))
+        self.assertEqual(str(selection), 'My Event: My Work')
 
 
 class EventTestCase(TestCase):

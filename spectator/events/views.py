@@ -3,14 +3,9 @@ from django.http import Http404
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 from django.conf import settings
+from django.urls import reverse
 from django.views.generic import DetailView, ListView, YearArchiveView
 from django.views.generic.detail import SingleObjectMixin
-try:
-    # Django >= 1.10
-    from django.urls import reverse
-except ImportError:
-    # Django < 1.10
-    from django.core.urlresolvers import reverse
 
 from spectator.core.views import PaginatedListView
 from .models import ClassicalWork, DancePiece, Event, Movie, Play, Venue

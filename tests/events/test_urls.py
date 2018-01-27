@@ -1,10 +1,5 @@
 from django.test import TestCase
-try:
-    # Django >= 1.10
-    from django.urls import resolve, reverse
-except ImportError:
-    # Django < 1.10
-    from django.core.urlresolvers import resolve, reverse
+from django.urls import resolve, reverse
 
 from .. import make_date
 from spectator.events import views
