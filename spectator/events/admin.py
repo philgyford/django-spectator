@@ -85,6 +85,19 @@ class EventAdmin(admin.ModelAdmin):
                 MovieSelectionInline, PlaySelectionInline,
                 EventRoleInline, ]
 
+    def save_related(self, request, form, formsets, change):
+        """
+        When the Admin saves the Event, the related M2M things, like Movies,
+        haven't yet been saved. So when the Event's title_sort field has
+        nothing to go on.
+
+        So, cheekily, after the parent's save_related() method has saved
+        all the M2M fields, we save the Event again. This time its
+        title_sort will be set correctly.
+        """
+        super().save_related(request, form, formsets, change)
+        form.instance.save()
+
 
 class ProductionAdmin(admin.ModelAdmin):
     """
