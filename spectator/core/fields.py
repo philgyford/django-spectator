@@ -122,7 +122,7 @@ class NaturalSortField(models.CharField):
             # the @property Event.title_to_sort()
             logger.error("Error in NaturalSortField.pre_save(): {}: The value of the '{}' field will not be changed.".format(e, self.attname))
 
-            return getattr(model_instance, self.attname)
+            string = getattr(model_instance, self.attname)
         else:
             string = string.strip()
 
@@ -134,7 +134,7 @@ class NaturalSortField(models.CharField):
                 string = string.lower()
                 string = self.naturalize_thing(string)
 
-                return string
+        return string
 
     def naturalize_thing(self, string):
         """

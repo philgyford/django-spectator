@@ -19,5 +19,3 @@ class GroupCreatorFactory(factory.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: 'Group %s' % n)
     kind = 'group'
-
-
