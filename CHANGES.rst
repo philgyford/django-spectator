@@ -1,6 +1,21 @@
 Changelog (Django Spectator)
 ============================
 
+7.0.0
+-----
+
+- An Event can have more than one Movie or Play.
+
+- An Event can have multiple Classical Works, Dance Pieces, Movies or Plays,
+  no matter what 'kind' it is.
+
+- Each type of work (Movie, Classical Work, etc.) can be put in a specific order
+  within an Event.
+
+- Removed old imports for Django 1.10 and below.
+
+- Various other internal tweaks.
+
 6.0.0
 -----
 
