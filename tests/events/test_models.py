@@ -72,7 +72,7 @@ class EventStrTestCase(TestCase):
     def test_str_concert_with_no_title_and_no_works(self):
         "With no title or works it uses the default."
         event = ConcertEventFactory(title='', pk=5, classicalworks=[])
-        self.assertEqual(str(event), 'Concert #5')
+        self.assertEqual(str(event), 'Event #5')
 
     # Dance
 
@@ -99,7 +99,7 @@ class EventStrTestCase(TestCase):
     def test_str_dance_with_no_title_and_no_pieces(self):
         "With no title or pieces it uses the default."
         event = DanceEventFactory(title='', pk=5, dancepieces=[])
-        self.assertEqual(str(event), 'Dance #5')
+        self.assertEqual(str(event), 'Event #5')
 
     # Movie
 

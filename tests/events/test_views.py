@@ -272,7 +272,7 @@ class ClassicalWorkDetailViewTestCase(ViewTestCase):
                                                 self.request, slug='9g5o8')
         self.assertIn('breadcrumb_list_title', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_title'],
-                         'Classical works')
+                         'Classical Works')
         self.assertIn('breadcrumb_list_url', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_url'],
                          '/events/classical-works/')
@@ -322,7 +322,7 @@ class DancePieceDetailViewTestCase(ViewTestCase):
         response = views.DancePieceDetailView.as_view()(self.request, slug='9g5o8')
         self.assertIn('breadcrumb_list_title', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_title'],
-                         'Dance pieces')
+                         'Dance Pieces')
         self.assertIn('breadcrumb_list_url', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_url'],
                          '/events/dance-pieces/')
