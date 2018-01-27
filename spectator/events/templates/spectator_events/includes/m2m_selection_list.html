@@ -1,0 +1,21 @@
+{% comment %}
+For displaying a list of Selections that are attached to an Event. e.g., ClassicalWorkSelections or MovieSelections.
+
+Used on the Event Detail page.
+
+Expects:
+* selection_list - A list/QuerySet of ClassicalWorkSelections, MovieSelections, etc.
+* heading - Optional text to use for the heading. If none, no heading is shown.
+{% endcomment %}
+
+{% if selection_list|length > 0 %}
+	{% if heading %}
+		<h2>{{ heading }}</h2>
+	{% endif %}
+
+	<ul>
+		{% for selection in selection_list %}
+			{% include 'spectator_events/includes/work.html' with work=selection.work only %}
+		{% endfor %}
+	</ul>
+{% endif %}

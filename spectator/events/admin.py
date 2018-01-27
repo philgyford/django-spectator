@@ -40,29 +40,23 @@ class PlayRoleInline(RoleInline):
 
 # WORK SELECTION INLINES.
 
-class ClassicalWorkSelectionInline(admin.TabularInline):
+class SelectionInline(admin.TabularInline):
+    "Parent class for the other *SelectionInlines."
+    fields = ('work', 'order',)
+    raw_id_fields = ('work',)
+    extra = 0
+
+class ClassicalWorkSelectionInline(SelectionInline):
     model = ClassicalWorkSelection
-    fields = ('classical_work', 'order',)
-    raw_id_fields = ('classical_work',)
-    extra = 0
 
-class DancePieceSelectionInline(admin.TabularInline):
+class DancePieceSelectionInline(SelectionInline):
     model = DancePieceSelection
-    fields = ('dance_piece', 'order',)
-    raw_id_fields = ('dance_piece',)
-    extra = 0
 
-class MovieSelectionInline(admin.TabularInline):
+class MovieSelectionInline(SelectionInline):
     model = MovieSelection
-    fields = ('movie', 'order',)
-    raw_id_fields = ('movie',)
-    extra = 0
 
-class PlaySelectionInline(admin.TabularInline):
+class PlaySelectionInline(SelectionInline):
     model = PlaySelection
-    fields = ('play', 'order',)
-    raw_id_fields = ('play',)
-    extra = 0
 
 
 # MODEL ADMINS.

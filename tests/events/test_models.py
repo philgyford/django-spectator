@@ -57,18 +57,18 @@ class EventStrTestCase(TestCase):
         "With no title and one work, it uses the work's title."
         event = ConcertEventFactory(title='')
         ClassicalWorkSelectionFactory(event=event,
-                        classical_work=ClassicalWorkFactory(title='Work A'))
+                                work=ClassicalWorkFactory(title='Work A'))
         self.assertEqual(str(event), 'Work A')
 
     def test_str_concert_with_no_title_many_works(self):
         "With no title it uses the titles of the classical works."
         event = ConcertEventFactory(title='')
         ClassicalWorkSelectionFactory(event=event,
-                        classical_work=ClassicalWorkFactory(title='Work A'))
+                                    work=ClassicalWorkFactory(title='Work A'))
         ClassicalWorkSelectionFactory(event=event,
-                        classical_work=ClassicalWorkFactory(title='Work B'))
+                                    work=ClassicalWorkFactory(title='Work B'))
         ClassicalWorkSelectionFactory(event=event,
-                        classical_work=ClassicalWorkFactory(title='Work C'))
+                                    work=ClassicalWorkFactory(title='Work C'))
         self.assertEqual(str(event), 'Work A, Work B and Work C')
 
     def test_str_concert_with_no_title_and_no_works(self):
@@ -79,7 +79,7 @@ class EventStrTestCase(TestCase):
     def test_movie_selection_str(self):
         event = ConcertEventFactory(title='My Event')
         selection = ClassicalWorkSelectionFactory(event=event,
-                        classical_work=ClassicalWorkFactory(title='My Work'))
+                                    work=ClassicalWorkFactory(title='My Work'))
         self.assertEqual(str(selection), 'My Event: My Work')
 
     # Dance
@@ -92,18 +92,18 @@ class EventStrTestCase(TestCase):
         "With no title and one piece it uses the piece's title."
         event = DanceEventFactory(title='')
         piece = DancePieceFactory(title='Piece A')
-        selection = DancePieceSelectionFactory(event=event, dance_piece=piece)
+        selection = DancePieceSelectionFactory(event=event, work=piece)
         self.assertEqual(str(event), 'Piece A')
 
     def test_str_dance_with_no_title_and_many_pieces(self):
         "With no title it uses the titles of the pieces."
         event = DanceEventFactory(title='')
         DancePieceSelectionFactory(event=event,
-                                dance_piece=DancePieceFactory(title='Piece A'))
+                                    work=DancePieceFactory(title='Piece A'))
         DancePieceSelectionFactory(event=event,
-                                dance_piece=DancePieceFactory(title='Piece B'))
+                                    work=DancePieceFactory(title='Piece B'))
         DancePieceSelectionFactory(event=event,
-                                dance_piece=DancePieceFactory(title='Piece C'))
+                                    work=DancePieceFactory(title='Piece C'))
         self.assertEqual(str(event), 'Piece A, Piece B and Piece C')
 
     def test_str_dance_with_no_title_and_no_pieces(self):
@@ -114,7 +114,7 @@ class EventStrTestCase(TestCase):
     def test_dance_selection_str(self):
         event = DanceEventFactory(title='My Event')
         selection = DancePieceSelectionFactory(event=event,
-                                dance_piece=DancePieceFactory(title='My Work'))
+                                    work=DancePieceFactory(title='My Work'))
         self.assertEqual(str(selection), 'My Event: My Work')
 
     # Movie
@@ -123,21 +123,21 @@ class EventStrTestCase(TestCase):
         "With no title and one piece it uses the movie's title."
         event = MovieEventFactory(title='')
         MovieSelectionFactory(event=event,
-                                    movie=MovieFactory(title='My Great Movie'))
+                                    work=MovieFactory(title='My Great Movie'))
         self.assertEqual(str(event), 'My Great Movie')
 
     def test_movie_with_no_title_and_many_movies(self):
         "With no title it uses the titles of the movies."
         event = MovieEventFactory(title='')
-        MovieSelectionFactory(event=event, movie=MovieFactory(title='Movie A'))
-        MovieSelectionFactory(event=event, movie=MovieFactory(title='Movie B'))
-        MovieSelectionFactory(event=event, movie=MovieFactory(title='Movie C'))
+        MovieSelectionFactory(event=event, work=MovieFactory(title='Movie A'))
+        MovieSelectionFactory(event=event, work=MovieFactory(title='Movie B'))
+        MovieSelectionFactory(event=event, work=MovieFactory(title='Movie C'))
         self.assertEqual(str(event), 'Movie A, Movie B and Movie C')
 
     def test_movie_selection_str(self):
         event = MovieEventFactory(title='My Event')
         selection = MovieSelectionFactory(event=event,
-                                            movie=MovieFactory(title='My Work'))
+                                            work=MovieFactory(title='My Work'))
         self.assertEqual(str(selection), 'My Event: My Work')
 
     # Play
@@ -146,21 +146,21 @@ class EventStrTestCase(TestCase):
         "With no title and one piece it uses the play's title."
         event = PlayEventFactory(title='')
         PlaySelectionFactory(event=event,
-                                 play=PlayFactory(title='My Great Play'))
+                                 work=PlayFactory(title='My Great Play'))
         self.assertEqual(str(event), 'My Great Play')
 
     def test_play_with_no_title_and_many_plays(self):
         "With no title it uses the titles of the plays."
         event = PlayEventFactory(title='')
-        PlaySelectionFactory(event=event, play=PlayFactory(title='Play A'))
-        PlaySelectionFactory(event=event, play=PlayFactory(title='Play B'))
-        PlaySelectionFactory(event=event, play=PlayFactory(title='Play C'))
+        PlaySelectionFactory(event=event, work=PlayFactory(title='Play A'))
+        PlaySelectionFactory(event=event, work=PlayFactory(title='Play B'))
+        PlaySelectionFactory(event=event, work=PlayFactory(title='Play C'))
         self.assertEqual(str(event), 'Play A, Play B and Play C')
 
     def test_play_selection_str(self):
         event = PlayEventFactory(title='My Event')
         selection = PlaySelectionFactory(event=event,
-                                            play=PlayFactory(title='My Work'))
+                                            work=PlayFactory(title='My Work'))
         self.assertEqual(str(selection), 'My Event: My Work')
 
 

@@ -2,7 +2,7 @@
 For displaying a paginated list of works that are attached to an Event by a ManyToManyField. e.g., Classical Works or Dance Pieces.
 
 Expects:
-* work_list - A list/QuerySet of ClassicalWorks or DancePieces.
+* selection_list - A list/QuerySet of ClassicalWorkSelections, MovieSelections, etc.
 * page_obj - A DiggPaginator instance.
 {% endcomment %}
 
@@ -18,4 +18,3 @@ Expects:
 {% else %}
     <p>There are no works to show.</p>
 {% endif %}
-

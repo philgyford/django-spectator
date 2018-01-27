@@ -245,14 +245,13 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         # through model.
 
         if self.kind == 'concert':
-            works = [
-                s.classical_work for s in self.classical_work_selections.all()]
+            works = [s.work for s in self.classical_work_selections.all()]
         elif self.kind == 'dance':
-            works = [s.dance_piece for s in self.dance_piece_selections.all()]
+            works = [s.work for s in self.dance_piece_selections.all()]
         elif self.kind == 'movie':
-            works = [s.movie for s in self.movie_selections.all()]
+            works = [s.work for s in self.movie_selections.all()]
         elif self.kind == 'play':
-            works = [s.play for s in self.play_selections.all()]
+            works = [s.work for s in self.play_selections.all()]
         else:
             works = []
 
@@ -366,7 +365,7 @@ class ClassicalWorkSelection(models.Model):
                 on_delete=models.CASCADE,
                 related_name='classical_work_selections')
 
-    classical_work = models.ForeignKey('spectator_events.ClassicalWork',
+    work = models.ForeignKey('spectator_events.ClassicalWork',
                 blank=False,
                 on_delete=models.CASCADE,
                 related_name='events')
@@ -381,7 +380,7 @@ class ClassicalWorkSelection(models.Model):
         verbose_name = 'classical work selection'
 
     def __str__(self):
-        return '{}: {}'.format(self.event, self.classical_work)
+        return '{}: {}'.format(self.event, self.work)
 
 
 class DancePiece(Work):
@@ -427,7 +426,7 @@ class DancePieceSelection(models.Model):
                 on_delete=models.CASCADE,
                 related_name='dance_piece_selections')
 
-    dance_piece = models.ForeignKey('spectator_events.DancePiece',
+    work = models.ForeignKey('spectator_events.DancePiece',
                 blank=False,
                 on_delete=models.CASCADE,
                 related_name='events')
@@ -442,7 +441,7 @@ class DancePieceSelection(models.Model):
         verbose_name = 'dance piece selection'
 
     def __str__(self):
-        return '{}: {}'.format(self.event, self.dance_piece)
+        return '{}: {}'.format(self.event, self.work)
 
 
 class Movie(Work):
@@ -503,7 +502,7 @@ class MovieSelection(models.Model):
                 on_delete=models.CASCADE,
                 related_name='movie_selections')
 
-    movie = models.ForeignKey('spectator_events.Movie',
+    work = models.ForeignKey('spectator_events.Movie',
                 blank=False,
                 on_delete=models.CASCADE,
                 related_name='events')
@@ -518,7 +517,7 @@ class MovieSelection(models.Model):
         verbose_name = 'movie selection'
 
     def __str__(self):
-        return '{}: {}'.format(self.event, self.movie)
+        return '{}: {}'.format(self.event, self.work)
 
 
 class Play(Work):
@@ -561,7 +560,7 @@ class PlaySelection(models.Model):
                 on_delete=models.CASCADE,
                 related_name='play_selections')
 
-    play = models.ForeignKey('spectator_events.Play',
+    work = models.ForeignKey('spectator_events.Play',
                 blank=False,
                 on_delete=models.CASCADE,
                 related_name='events')
@@ -576,7 +575,7 @@ class PlaySelection(models.Model):
         verbose_name = 'play selection'
 
     def __str__(self):
-        return '{}: {}'.format(self.event, self.play)
+        return '{}: {}'.format(self.event, self.work)
 
 
 class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):

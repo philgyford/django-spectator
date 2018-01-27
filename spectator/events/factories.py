@@ -118,25 +118,25 @@ class ClassicalWorkSelectionFactory(factory.DjangoModelFactory):
         model = models.ClassicalWorkSelection
 
     event = factory.SubFactory(EventFactory)
-    classical_work = factory.SubFactory(ClassicalWorkFactory)
+    work = factory.SubFactory(ClassicalWorkFactory)
 
 class DancePieceSelectionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.DancePieceSelection
 
     event = factory.SubFactory(EventFactory)
-    dance_piece = factory.SubFactory(DancePieceFactory)
+    work = factory.SubFactory(DancePieceFactory)
 
 class MovieSelectionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.MovieSelection
 
     event = factory.SubFactory(EventFactory)
-    movie = factory.SubFactory(MovieFactory)
+    work = factory.SubFactory(MovieFactory)
 
 class PlaySelectionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.PlaySelection
 
     event = factory.SubFactory(EventFactory)
-    play = factory.SubFactory(PlayFactory)
+    work = factory.SubFactory(PlayFactory)

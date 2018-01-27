@@ -1,0 +1,16 @@
+{% comment %}
+For displaying a single Movie, Concert Work, etc in a list.
+
+Expects:
+* work - A Movie, ConcertWork, DancePiece or Play.
+{% endcomment %}
+
+{% load l10n %}
+
+<li>
+	<a href="{{ work.get_absolute_url }}"><strong>{{ work.title }}</strong></a>
+ 	{% if work.year %}
+		<small class="text-muted">({{ work.year|unlocalize }})</small>
+	{% endif %}
+	{% include 'spectator_core/includes/roles.html' with roles=work.roles.all intro='<br>' %}
+</li>
