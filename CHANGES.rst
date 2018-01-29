@@ -1,6 +1,11 @@
 Changelog (Django Spectator)
 ============================
 
+7.1.1
+-----
+
+- Fix bug with adding an Event with no Venue.
+
 7.1.0
 -----
 
