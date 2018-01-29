@@ -1,6 +1,11 @@
 Changelog (Django Spectator)
 ============================
 
+7.1.2
+-----
+
+- Fix templates for Events with no Venue.
+
 7.1.1
 -----
 
