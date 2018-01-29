@@ -1,6 +1,15 @@
 Changelog (Django Spectator)
 ============================
 
+7.1.0
+-----
+
+- Upgrade Bootstrap, for the included templates, to v4.0.0.
+
+- Allow Events to not specify a Venue.
+
+- Add a ``note`` field to the Venue model.
+
 7.0.2
 -----
 

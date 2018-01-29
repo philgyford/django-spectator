@@ -1,5 +1,5 @@
 __title__ = 'Django Spectator'
-__version__ = '7.0.2'
+__version__ = '7.1.0'
 __author__ = 'Phil Gyford'
 __author_email__ = 'phil@gyford.com'
 __license__ = 'MIT'
