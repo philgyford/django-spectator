@@ -18,7 +18,9 @@ Expects:
                 {% if event.title %}
                   <strong>{{ event.title }}</strong><br>
                 {% endif %}
-                {{ event.venue }},
+                {% if event.venue %}
+                  {{ event.venue }},
+                {% endif %}
                 {{ event.date|date:"j M Y" }}</a>
                 {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all %}
             </li>
