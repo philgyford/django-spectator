@@ -843,6 +843,9 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     name_sort = NaturalSortField('name', max_length=255, default='',
             help_text="e.g. 'venue, a' or 'biggest venue, the'.")
 
+    note = models.TextField(null=False, blank=True,
+        help_text="Optional. Paragraphs will be surrounded with &lt;p&gt;&lt;/p&gt; tags. HTML allowed.")
+
     latitude = models.DecimalField(max_digits=9, decimal_places=6,
                                                         null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6,

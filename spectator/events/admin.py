@@ -254,7 +254,7 @@ class VenueAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ( 'name', 'name_sort', 'latitude', 'longitude',
+            'fields': ( 'name', 'name_sort', 'note', 'latitude', 'longitude',
                         'address', 'country',)
         }),
         ('Times', {

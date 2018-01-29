@@ -29,6 +29,10 @@
         {{ venue.address }}{% if venue.address and venue.country_name %}, {% endif %}{% if venue.country_name %}{{ venue.country_name }}{% endif %}
     </p>
 
+    {% if venue.note %}
+      {{ venue.note|safe|linebreaks }}
+    {% endif %}
+
     {% if SPECTATOR_GOOGLE_MAPS_API_KEY %}
         <div class="js-venue-map-container"></div>
     {% endif %}
