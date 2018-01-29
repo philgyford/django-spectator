@@ -99,7 +99,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     date = models.DateField(null=True, blank=False)
 
-    venue = models.ForeignKey('spectator_events.Venue', null=False, blank=True,
+    venue = models.ForeignKey('spectator_events.Venue', null=True, blank=True,
                                                     on_delete=models.CASCADE)
 
     title = models.CharField(null=False, blank=True, max_length=255,
