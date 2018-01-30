@@ -1,6 +1,11 @@
 Changelog (Django Spectator)
 ============================
 
+7.1.3
+-----
+
+- Fix the Event Year Archive view for Events with no Venue.
+
 7.1.2
 -----
 
