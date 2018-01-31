@@ -24,7 +24,7 @@
             <li class="mb-2">
                 <a href="{{ event.get_absolute_url }}"><strong>{{ event }}</strong><br>
                 {% if event.venue %}
-                  {{ event.venue.name }},
+                  {{ event.venue_name }},
                 {% endif %}
                 {{ event.date|date:"j M Y" }}</a>
             </li>

@@ -70,7 +70,8 @@ class EventAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ( 'kind', 'date', 'venue', 'title', 'title_sort', 'slug', 'note',)
+            'fields': ( 'kind', 'date', 'venue', 'venue_name',
+                        'title', 'title_sort', 'slug', 'note',)
         }),
         ('Times', {
             'classes': ('collapse',),
