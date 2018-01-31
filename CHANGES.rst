@@ -1,6 +1,12 @@
 Changelog (Django Spectator)
 ============================
 
+7.2.0
+-----
+
+- Add an optional ``cinema_treasures_id`` field, and ``cinema_treasures_url``
+  property, to the Venue model.
+
 7.1.3
 -----
 
