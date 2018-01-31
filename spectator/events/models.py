@@ -846,6 +846,10 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     note = models.TextField(null=False, blank=True,
         help_text="Optional. Paragraphs will be surrounded with &lt;p&gt;&lt;/p&gt; tags. HTML allowed.")
 
+    cinema_treasures_id = models.PositiveSmallIntegerField(
+        null=True, blank=True,
+        help_text='Optional. ID of a cinema at <a href="http://cinematreasures.org/">Cinema Treasures</a>.')
+
     latitude = models.DecimalField(max_digits=9, decimal_places=6,
                                                         null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6,
@@ -872,3 +876,11 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             return self.COUNTRIES[self.country]
         else:
             return None
+
+    @property
+    def cinema_treasures_url(self):
+        if self.cinema_treasures_id is not None:
+            return 'http://cinematreasures.org/theaters/{}'.format(
+                                                    self.cinema_treasures_id)
+        else:
+            return ''

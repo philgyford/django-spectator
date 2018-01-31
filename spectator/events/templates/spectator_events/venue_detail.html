@@ -33,6 +33,10 @@
       {{ venue.note|safe|linebreaks }}
     {% endif %}
 
+    {% if venue.cinema_treasures_url %}
+      <p><a href="{{ venue.cinema_treasures_url }}">See at Cinema Treasures.</a></p>
+    {% endif %}
+
     {% if SPECTATOR_GOOGLE_MAPS_API_KEY %}
         <div class="js-venue-map-container"></div>
     {% endif %}
