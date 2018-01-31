@@ -11,7 +11,7 @@
 {% block content %}
 
     <p>
-        {% if event.venue %}At <a href="{{ event.venue.get_absolute_url }}">{{ event.venue }}</a>
+        {% if event.venue %}At <a href="{{ event.venue.get_absolute_url }}">{{ event.venue_name }}</a>
         on{% else %}On{% endif %} {{ event.date|date:"j M Y" }}.
     </p>
 
