@@ -102,6 +102,9 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     venue = models.ForeignKey('spectator_events.Venue', null=True, blank=True,
                                                     on_delete=models.CASCADE)
 
+    venue_name = models.CharField(max_length=255, null=False, blank=True,
+            help_text="The name of the Venue when this event occurred. If left blank, will be set automatically.")
+
     title = models.CharField(null=False, blank=True, max_length=255,
             help_text="Optional. e.g., 'Indietracks 2017', 'Radio 1 Roadshow'.")
 
@@ -145,6 +148,14 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     def save(self, *args, **kwargs):
         self.kind_slug = self.KIND_SLUGS[self.kind]
+
+        if self.venue_name == '' and self.venue is not None:
+            # Set the venue_name, if it's not already set and there's a Venue.
+            self.venue_name = self.venue.name
+        elif self.venue is None:
+            # Looks like we've removed the Venue, so unset the venue_name.
+            self.venue_name = ''
+
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

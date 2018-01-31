@@ -218,6 +218,37 @@ class EventTestCase(TestCase):
         self.assertEqual(MovieEventFactory().kind_slug, 'movies')
         self.assertEqual(PlayEventFactory().kind_slug, 'plays')
 
+    def test_venue_name_set_a_venue(self):
+        "If there's a venue, venue_name should be set."
+        event = MovieEventFactory(venue=VenueFactory(name='My Venue'))
+        self.assertEqual(event.venue_name, 'My Venue')
+
+    def test_venue_name_set_no_venue(self):
+        "If there's no venue, venue_name should be empty."
+        event = MovieEventFactory(venue=None)
+        self.assertEqual(event.venue_name, '')
+
+    def test_venue_name_manually_set(self):
+        "If a venue_name is specified it shouldn't be changed by the venue."
+        event = MovieEventFactory(
+                    venue=VenueFactory(name='My Venue'),
+                    venue_name='My Custom Name')
+        self.assertEqual(event.venue_name, 'My Custom Name')
+
+    def test_venue_name_remove_venue(self):
+        "If the venue is removed, venue_name should be unset."
+        event = MovieEventFactory(venue=VenueFactory(name='My Venue'))
+        event.venue = None
+        event.save()
+        self.assertEqual(event.venue_name, '')
+
+    def test_venue_name_change_venue(self):
+        "If the venue is changed, venue_name should remain as it was."
+        event = MovieEventFactory(venue=VenueFactory(name='Venue 1'))
+        event.venue = VenueFactory(name='Venue 2')
+        event.save()
+        self.assertEqual(event.venue_name, 'Venue 1')
+
     def test_kind_name(self):
         self.assertEqual(ComedyEventFactory().kind_name, 'Comedy')
         self.assertEqual(ConcertEventFactory().kind_name, 'Classical concert')
