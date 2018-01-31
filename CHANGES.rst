@@ -1,6 +1,13 @@
 Changelog (Django Spectator)
 ============================
 
+7.3.0
+-----
+
+- Add a ``venue_name`` field to Events. This remains the same even if the
+  attaached Venue object changes its name in the future. The new ``venue_name``
+  is used in templates related to the Event.
+
 7.2.0
 -----
 
