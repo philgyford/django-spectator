@@ -1,6 +1,12 @@
 Changelog (Django Spectator)
 ============================
 
+7.3.1
+-----
+
+- Make ``cinema_treasures_id`` a ``PositiveIntegerField`` instead of a
+  ``PositiveSmallIntegerField``.
+
 7.3.0
 -----
 

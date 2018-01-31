@@ -857,7 +857,7 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     note = models.TextField(null=False, blank=True,
         help_text="Optional. Paragraphs will be surrounded with &lt;p&gt;&lt;/p&gt; tags. HTML allowed.")
 
-    cinema_treasures_id = models.PositiveSmallIntegerField(
+    cinema_treasures_id = models.PositiveIntegerField(
         null=True, blank=True,
         help_text='Optional. ID of a cinema at <a href="http://cinematreasures.org/">Cinema Treasures</a>.')
 
