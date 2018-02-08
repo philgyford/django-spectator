@@ -14,6 +14,6 @@ Displays a paginated list of Movies, Plays, ClassicalWorks or DancePieces.
 
 {% block content %}
 
-    {% include 'spectator_events/includes/m2m_work_list_paginated.html' with work_list=object_list page_obj=page_obj only %}
+    {% include 'spectator_events/includes/works_paginated.html' with work_list=object_list page_obj=page_obj only %}
 
 {% endblock content %}

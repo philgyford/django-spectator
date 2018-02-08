@@ -35,12 +35,9 @@ class SluggedModelMixin(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        print("SAVE")
 
         if not self.slug:
-            print("OK")
             self.slug = self._generate_slug(self.pk)
-            print(self.slug)
             # Don't want to insert again, if that's what was forced:
             kwargs['force_insert'] = False
             self.save(*args, **kwargs)
@@ -49,7 +46,6 @@ class SluggedModelMixin(models.Model):
         """
         Generates a slug using a Hashid of `value`.
         """
-        print("GEN")
         # Defaults:
         alphabet = 'abcdefghijkmnopqrstuvwxyz23456789'
         salt = 'Django Spectator'
@@ -120,13 +116,9 @@ class Creator(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         for role in creator.event_roles.all():
             print(role.event, role.creator, role.role_name)
 
-        # And for Movie roles:
-        for role in creator.movie_roles.all():
-            print(role.movie, role.creator, role.role_name)
-
-        # And for Play roles:
-        for role in creator.play_roles.all():
-            print(role.play, role.creator, role.role_name)
+        # And for Work roles:
+        for role in creator.work_roles.all():
+            print(role.work, role.creator, role.role_name)
     """
 
     KIND_CHOICES = (
@@ -162,38 +154,18 @@ class Creator(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         else:
             return 'thing'
 
+    def get_works(self):
+        "All kinds of Work."
+        return self.works.distinct()
+
+    def get_classical_works(self):
+        return self.works.filter(kind='classicalwork').distinct()
+
+    def get_dance_pieces(self):
+        return self.works.filter(kind='dancepiece').distinct()
+
     def get_movies(self):
-        """
-        A list of all the Movies the Creator worked on.
-        Each one also has these properties:
-        * `creator_roles` - QuerySet of MovieRole objects for this Creator.
-        * `creator_role_names` - List of the role_names (if any this Creator
-            had. Note, this could be empty if none of the roles have names.
-        """
-        movies = []
-        for movie in self.movies.distinct():
-            movie.creator_roles = movie.roles.filter(creator=self)
-            movie.creator_role_names = []
-            for role in movie.creator_roles:
-                if role.role_name:
-                    movie.creator_role_names.append(role.role_name)
-            movies.append(movie)
-        return movies
+        return self.works.filter(kind='movie').distinct()
 
     def get_plays(self):
-        """
-        A list of all the Plays the Creator worked on.
-        Each one also has these properties:
-        * `creator_roles` - QuerySet of PlayRole objects for this Creator.
-        * `creator_role_names` - List of the role_names (if any this Creator
-            had. Note, this could be empty if none of the roles have names.
-        """
-        plays = []
-        for play in self.plays.distinct():
-            play.creator_roles = play.roles.filter(creator=self)
-            play.creator_role_names = []
-            for role in play.creator_roles:
-                if role.role_name:
-                    play.creator_role_names.append(role.role_name)
-            plays.append(play)
-        return plays
+        return self.works.filter(kind='play').distinct()

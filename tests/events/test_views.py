@@ -199,7 +199,7 @@ class WorkListViewTestCase(ViewTestCase):
     def test_templates(self):
         response = views.WorkListView.as_view()(self.request, kind_slug='movies')
         self.assertEqual(response.template_name[0],
-                         'spectator_events/m2m_work_list.html')
+                         'spectator_events/work_list.html')
 
     def test_context(self):
         response = views.WorkListView.as_view()(self.request, kind_slug='movies')
@@ -237,7 +237,7 @@ class WorkDetailViewTestCase(ViewTestCase):
         response = views.WorkDetailView.as_view()(self.request,
                                             kind_slug='movies', slug='9g5o8')
         self.assertEqual(response.template_name[0],
-                         'spectator_events/m2m_work_detail.html')
+                         'spectator_events/work_detail.html')
 
     def test_context(self):
         response = views.WorkDetailView.as_view()(self.request,

@@ -43,7 +43,7 @@ As well as `object`, expects:
 
     {% include 'spectator_core/includes/roles_list.html' with roles=work.roles.all heading='By' only %}
 
-    {% include 'spectator_events/includes/visits_list.html' with events=work.event_set.all heading_level='h2' only %}
+    {% include 'spectator_events/includes/visits.html' with events=work.event_set.all heading_level='h2' only %}
 
 {% endblock content %}
 
