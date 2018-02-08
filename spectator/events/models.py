@@ -99,7 +99,8 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         'play':         'plays'
     }
 
-    kind = models.CharField(max_length=20, choices=KIND_CHOICES, blank=False)
+    kind = models.CharField(max_length=20, choices=KIND_CHOICES, blank=False,
+        help_text="Used to categorise event. But any kind of Work can be added to any kind of Event.")
 
     date = models.DateField(null=True, blank=False)
 
