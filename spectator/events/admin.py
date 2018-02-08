@@ -99,6 +99,7 @@ class WorkAdmin(admin.ModelAdmin):
             return unlocalize(obj.year)
         else:
             return '-'
+    tidy_year.short_description = 'Year'
 
 
 
