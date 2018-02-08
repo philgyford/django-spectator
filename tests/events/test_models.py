@@ -262,6 +262,68 @@ class EventTestCase(TestCase):
         event = PlayEventFactory(pk=123)
         self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
+    def test_get_works(self):
+        event = MovieEventFactory()
+        m = MovieFactory()
+        p = PlayFactory()
+        cw = ClassicalWorkFactory()
+        dp = DancePieceFactory()
+        WorkSelectionFactory(work=m, event=event, order=4)
+        WorkSelectionFactory(work=p, event=event, order=1)
+        WorkSelectionFactory(work=cw, event=event, order=3)
+        WorkSelectionFactory(work=dp, event=event, order=2)
+
+        works = event.get_works()
+        self.assertEqual(len(works), 4)
+        self.assertEqual(works[0].work, p)
+        self.assertEqual(works[1].work, dp)
+        self.assertEqual(works[2].work, cw)
+        self.assertEqual(works[3].work, m)
+
+    def test_get_classical_works(self):
+        event = MovieEventFactory()
+        m = MovieFactory()
+        cw = ClassicalWorkFactory()
+        WorkSelectionFactory(work=m, event=event)
+        WorkSelectionFactory(work=cw, event=event)
+
+        works = event.get_classical_works()
+        self.assertEqual(len(works), 1)
+        self.assertEqual(works[0].work, cw)
+
+    def test_get_dance_pieces(self):
+        event = MovieEventFactory()
+        m = MovieFactory()
+        dp = DancePieceFactory()
+        WorkSelectionFactory(work=m, event=event)
+        WorkSelectionFactory(work=dp, event=event)
+
+        works = event.get_dance_pieces()
+        self.assertEqual(len(works), 1)
+        self.assertEqual(works[0].work, dp)
+
+    def test_get_movies(self):
+        event = MovieEventFactory()
+        m = MovieFactory()
+        p = PlayFactory()
+        WorkSelectionFactory(work=m, event=event)
+        WorkSelectionFactory(work=p, event=event)
+
+        works = event.get_movies()
+        self.assertEqual(len(works), 1)
+        self.assertEqual(works[0].work, m)
+
+    def test_get_plays(self):
+        event = MovieEventFactory()
+        m = MovieFactory()
+        p = PlayFactory()
+        WorkSelectionFactory(work=m, event=event)
+        WorkSelectionFactory(work=p, event=event)
+
+        works = event.get_plays()
+        self.assertEqual(len(works), 1)
+        self.assertEqual(works[0].work, p)
+
 
 class WorkTestCase(TestCase):
 
@@ -330,7 +392,7 @@ class WorkTestCase(TestCase):
         work = MovieFactory(imdb_id='tt0056687')
         self.assertEqual(work.imdb_url, 'http://www.imdb.com/title/tt0056687/')
 
-    def test_imdb_url_with_id(self):
+    def test_imdb_url_with_no_id(self):
         work = MovieFactory(imdb_id='')
         self.assertEqual(work.imdb_url, '')
 
