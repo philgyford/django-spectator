@@ -35,28 +35,33 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     A thing that happened at a particular venue on a particular date.
 
-    You can get all the Event's Movies, Classical Works etc by doing:
+    You can get all the Event's Works by doing:
 
         event = Event.objects.get(pk=1)
 
-        event.classicalworks.all()
-        event.dancepieces.all()
-        event.movies.all()
-        event.plays.all()
+        event.works.all()
 
     But if there are more than one of a kind of Work, they won't necessarily
     be returned in the correct order, as defined in their through model. To
     return them in the correct order you need to use the selection. e.g.:
 
-        event.classical_work_selections.all()
-        event.dance_piece_selections.all()
-        event.movie_selections.all()
-        event.play_selections.all()
+        event.work_selections.all()
 
-    Each item returned will then have an object associated, and an order. e.g.:
+    Or use the shortcut:
 
-        selection = event.dance_piece_selections.first()
-        print(selection.dance_piece.title)
+        event.get_works()
+
+    Similarly there are shortcuts for specific kinds of work:
+
+        event.get_classical_works()
+        event.get_dance_pieces()
+        event.get_movies()
+        event.get_plays()
+
+    Each item returned will then have a Work object associated, and an order. e.g.:
+
+        selection = event.work_selections.first()
+        print(selection.work.title)
         print(selection.order)
 
     Similarly, to get Creators who worked directly on the Event (as
@@ -116,25 +121,9 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     creators = models.ManyToManyField('spectator_core.Creator',
                                 through='EventRole', related_name='events')
 
-    movies = models.ManyToManyField('spectator_events.Movie',
-            through='spectator_events.MovieSelection',
-            blank=True,
-            help_text="Only used if event is of 'Movie' kind.")
-
-    plays = models.ManyToManyField('spectator_events.Play',
-            through='spectator_events.PlaySelection',
-            blank=True,
-            help_text="Only used if event is of 'Play' kind.")
-
-    classicalworks = models.ManyToManyField('spectator_events.ClassicalWork',
-            through='spectator_events.ClassicalWorkSelection',
-            blank=True,
-            help_text="Only used if event is of 'Classical Concert' kind.")
-
-    dancepieces = models.ManyToManyField('spectator_events.DancePiece',
-            through='spectator_events.DancePieceSelection',
-            blank=True,
-            help_text="Only used if event is of 'Dance' kind.")
+    works = models.ManyToManyField('spectator_events.Work',
+            through='spectator_events.WorkSelection',
+            blank=True)
 
     kind_slug = models.SlugField(null=False, blank=True,
             help_text="Set when the event is saved.")
@@ -240,6 +229,18 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     def get_works(self):
         return self.work_selections.all()
 
+    def get_classical_works(self):
+        return self.work_selections.filter(work__kind='classicalwork')
+
+    def get_dance_pieces(self):
+        return self.work_selections.filter(work__kind='dancepiece')
+
+    def get_movies(self):
+        return self.work_selections.filter(work__kind='movie')
+
+    def get_plays(self):
+        return self.work_selections.filter(work__kind='play')
+
     @property
     def kind_name(self):
         "e.g. 'Gig' or 'Movie'."
@@ -260,9 +261,27 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         return self.make_title()
 
 
-
-
 class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
+    """
+    A Classical Work, Dance Piece, Movie or Play.
+    Not the occasion on which they were watched (that's an Event).
+
+    Example of getting a Works's creators:
+
+        work = Work.objects.get(pk=1)
+
+        # Just the creators:
+        for creator in work.creators.all():
+            print(creator.name)
+
+        # Include their roles:
+        for role in work.roles.all():
+            print(role.work, role.creator, role.role_name)
+
+        # When it's been seen:
+        for ev in work.event_set.all():
+            print(ev.venue, ev.date)
+    """
 
     KIND_CHOICES = (
         ('classicalwork',  'Classical work'),

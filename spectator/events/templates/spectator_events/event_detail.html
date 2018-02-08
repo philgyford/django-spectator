@@ -21,13 +21,13 @@
 
     {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all heading='Featuring' only %}
 
-    {% include 'spectator_events/includes/m2m_selection_list.html' with selection_list=event.movie_selections.all heading="Movies" only %}
+    {% include 'spectator_events/includes/m2m_selection_list.html' with selection_list=event.get_movies heading="Movies" only %}
 
-    {% include 'spectator_events/includes/m2m_selection_list.html' with selection_list=event.play_selections.all heading="Plays" only %}
+    {% include 'spectator_events/includes/m2m_selection_list.html' with selection_list=event.get_plays heading="Plays" only %}
 
-    {% include 'spectator_events/includes/m2m_selection_list.html' with selection_list=event.classical_work_selections.all heading="Works" only %}
+    {% include 'spectator_events/includes/m2m_selection_list.html' with selection_list=event.get_classical_works heading="Works" only %}
 
-    {% include 'spectator_events/includes/m2m_selection_list.html' with selection_list=event.dance_piece_selections.all heading="Pieces" only %}
+    {% include 'spectator_events/includes/m2m_selection_list.html' with selection_list=event.get_dance_pieces heading="Pieces" only %}
 
 {% endblock content %}
 

@@ -35,9 +35,12 @@ class SluggedModelMixin(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        print("SAVE")
 
         if not self.slug:
+            print("OK")
             self.slug = self._generate_slug(self.pk)
+            print(self.slug)
             # Don't want to insert again, if that's what was forced:
             kwargs['force_insert'] = False
             self.save(*args, **kwargs)
@@ -46,6 +49,7 @@ class SluggedModelMixin(models.Model):
         """
         Generates a slug using a Hashid of `value`.
         """
+        print("GEN")
         # Defaults:
         alphabet = 'abcdefghijkmnopqrstuvwxyz23456789'
         salt = 'Django Spectator'
@@ -193,4 +197,3 @@ class Creator(TimeStampedModelMixin, SluggedModelMixin, models.Model):
                     play.creator_role_names.append(role.role_name)
             plays.append(play)
         return plays
-
