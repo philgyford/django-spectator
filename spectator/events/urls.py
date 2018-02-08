@@ -1,13 +1,16 @@
 from django.conf.urls import url
 
 from . import views
-from .models import Event
+from .models import Event, Work
 
 
 app_name = 'events'
 
 # Will be like 'movies|plays|concerts' etc:
-kind_slugs = '|'.join(Event.get_valid_kind_slugs())
+event_kind_slugs = '|'.join(Event.get_valid_kind_slugs())
+
+# Will be like 'classical-works|dance-pieces' etc:
+work_kind_slugs = '|'.join(Work.get_valid_kind_slugs())
 
 urlpatterns = [
     url(
@@ -16,7 +19,7 @@ urlpatterns = [
         name='home'
     ),
     url(
-        regex=r"^types/(?P<kind_slug>{})/$".format(kind_slugs),
+        regex=r"^types/(?P<kind_slug>{})/$".format(event_kind_slugs),
         view=views.EventListView.as_view(),
         name='event_list'
     ),
@@ -39,47 +42,14 @@ urlpatterns = [
     ),
 
     url(
-        regex=r"^movies/$",
-        view=views.MovieListView.as_view(),
-        name='movie_list'
+        regex=r"^(?P<kind_slug>{})/$".format(work_kind_slugs),
+        view=views.WorkListView.as_view(),
+        name='work_list'
     ),
     url(
-        regex=r"^movies/(?P<slug>[\w-]+)/$",
-        view=views.MovieDetailView.as_view(),
-        name='movie_detail'
-    ),
-
-    url(
-        regex=r"^plays/$",
-        view=views.PlayListView.as_view(),
-        name='play_list'
-    ),
-    url(
-        regex=r"^plays/(?P<slug>[\w-]+)/$",
-        view=views.PlayDetailView.as_view(),
-        name='play_detail'
-    ),
-
-    url(
-        regex=r"^classical-works/$",
-        view=views.ClassicalWorkListView.as_view(),
-        name='classicalwork_list'
-    ),
-    url(
-        regex=r"^classical-works/(?P<slug>[\w-]+)/$",
-        view=views.ClassicalWorkDetailView.as_view(),
-        name='classicalwork_detail'
-    ),
-
-    url(
-        regex=r"^dance-pieces/$",
-        view=views.DancePieceListView.as_view(),
-        name='dancepiece_list'
-    ),
-    url(
-        regex=r"^dance-pieces/(?P<slug>[\w-]+)/$",
-        view=views.DancePieceDetailView.as_view(),
-        name='dancepiece_detail'
+        regex=r"^(?P<kind_slug>{})/(?P<slug>[\w-]+)/$".format(work_kind_slugs),
+        view=views.WorkDetailView.as_view(),
+        name='work_detail'
     ),
 
     url(

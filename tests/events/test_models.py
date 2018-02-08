@@ -4,7 +4,7 @@ from django.test import TestCase
 from .. import make_date
 from spectator.core.factories import *
 from spectator.events.factories import *
-from spectator.events.models import Event, Movie, Play, Venue, Work
+from spectator.events.models import Event, Venue, Work
 
 
 class EventStrTestCase(TestCase):
@@ -47,121 +47,35 @@ class EventStrTestCase(TestCase):
                 role_name='Support', role_order=2)
         self.assertEqual(str(event), 'Milky Wimpshake, Martha and The Tuts')
 
-    # Concert
-
-    def test_str_concert_with_title(self):
+    def test_str_with_title(self):
         event = ConcertEventFactory(title='Amazing Concert!')
         self.assertEqual(str(event), 'Amazing Concert!')
 
-    def test_str_concert_with_no_title_one_work(self):
+    def test_str_with_no_title_one_work(self):
         "With no title and one work, it uses the work's title."
         event = ConcertEventFactory(title='')
-        ClassicalWorkSelectionFactory(event=event,
+        WorkSelectionFactory(event=event,
                                 work=ClassicalWorkFactory(title='Work A'))
         self.assertEqual(str(event), 'Work A')
 
-    def test_str_concert_with_no_title_many_works(self):
+    def test_str_with_no_title_many_works(self):
         "With no title it uses the titles of the classical works."
         event = ConcertEventFactory(title='')
-        ClassicalWorkSelectionFactory(event=event,
-                                    work=ClassicalWorkFactory(title='Work A'))
-        ClassicalWorkSelectionFactory(event=event,
-                                    work=ClassicalWorkFactory(title='Work B'))
-        ClassicalWorkSelectionFactory(event=event,
-                                    work=ClassicalWorkFactory(title='Work C'))
+        WorkSelectionFactory(event=event, work=ClassicalWorkFactory(title='Work A'))
+        WorkSelectionFactory(event=event, work=ClassicalWorkFactory(title='Work B'))
+        WorkSelectionFactory(event=event, work=ClassicalWorkFactory(title='Work C'))
         self.assertEqual(str(event), 'Work A, Work B and Work C')
 
-    def test_str_concert_with_no_title_and_no_works(self):
+    def test_str_with_no_title_and_no_works(self):
         "With no title or works it uses the default."
         event = ConcertEventFactory(title='', pk=5)
         self.assertEqual(str(event), 'Event #5')
 
-    def test_movie_selection_str(self):
+    def test_selection_str(self):
         event = ConcertEventFactory(title='My Event')
-        selection = ClassicalWorkSelectionFactory(event=event,
+        selection = WorkSelectionFactory(event=event,
                                     work=ClassicalWorkFactory(title='My Work'))
-        self.assertEqual(str(selection), 'My Event: My Work')
-
-    # Dance
-
-    def test_str_dance_with_title(self):
-        event = DanceEventFactory(title='Amazing Dance!')
-        self.assertEqual(str(event), 'Amazing Dance!')
-
-    def test_str_dance_with_no_title_and_one_piece(self):
-        "With no title and one piece it uses the piece's title."
-        event = DanceEventFactory(title='')
-        piece = DancePieceFactory(title='Piece A')
-        selection = DancePieceSelectionFactory(event=event, work=piece)
-        self.assertEqual(str(event), 'Piece A')
-
-    def test_str_dance_with_no_title_and_many_pieces(self):
-        "With no title it uses the titles of the pieces."
-        event = DanceEventFactory(title='')
-        DancePieceSelectionFactory(event=event,
-                                    work=DancePieceFactory(title='Piece A'))
-        DancePieceSelectionFactory(event=event,
-                                    work=DancePieceFactory(title='Piece B'))
-        DancePieceSelectionFactory(event=event,
-                                    work=DancePieceFactory(title='Piece C'))
-        self.assertEqual(str(event), 'Piece A, Piece B and Piece C')
-
-    def test_str_dance_with_no_title_and_no_pieces(self):
-        "With no title or pieces it uses the default."
-        event = DanceEventFactory(title='', pk=5)
-        self.assertEqual(str(event), 'Event #5')
-
-    def test_dance_selection_str(self):
-        event = DanceEventFactory(title='My Event')
-        selection = DancePieceSelectionFactory(event=event,
-                                    work=DancePieceFactory(title='My Work'))
-        self.assertEqual(str(selection), 'My Event: My Work')
-
-    # Movie
-
-    def test_movie_with_no_title_and_one_movie(self):
-        "With no title and one piece it uses the movie's title."
-        event = MovieEventFactory(title='')
-        MovieSelectionFactory(event=event,
-                                    work=MovieFactory(title='My Great Movie'))
-        self.assertEqual(str(event), 'My Great Movie')
-
-    def test_movie_with_no_title_and_many_movies(self):
-        "With no title it uses the titles of the movies."
-        event = MovieEventFactory(title='')
-        MovieSelectionFactory(event=event, work=MovieFactory(title='Movie A'))
-        MovieSelectionFactory(event=event, work=MovieFactory(title='Movie B'))
-        MovieSelectionFactory(event=event, work=MovieFactory(title='Movie C'))
-        self.assertEqual(str(event), 'Movie A, Movie B and Movie C')
-
-    def test_movie_selection_str(self):
-        event = MovieEventFactory(title='My Event')
-        selection = MovieSelectionFactory(event=event,
-                                            work=MovieFactory(title='My Work'))
-        self.assertEqual(str(selection), 'My Event: My Work')
-
-    # Play
-
-    def test_play_with_no_title_and_one_play(self):
-        "With no title and one piece it uses the play's title."
-        event = PlayEventFactory(title='')
-        PlaySelectionFactory(event=event,
-                                 work=PlayFactory(title='My Great Play'))
-        self.assertEqual(str(event), 'My Great Play')
-
-    def test_play_with_no_title_and_many_plays(self):
-        "With no title it uses the titles of the plays."
-        event = PlayEventFactory(title='')
-        PlaySelectionFactory(event=event, work=PlayFactory(title='Play A'))
-        PlaySelectionFactory(event=event, work=PlayFactory(title='Play B'))
-        PlaySelectionFactory(event=event, work=PlayFactory(title='Play C'))
-        self.assertEqual(str(event), 'Play A, Play B and Play C')
-
-    def test_play_selection_str(self):
-        event = PlayEventFactory(title='My Event')
-        selection = PlaySelectionFactory(event=event,
-                                            work=PlayFactory(title='My Work'))
-        self.assertEqual(str(selection), 'My Event: My Work')
+        self.assertEqual(str(selection), 'Event #{}: My Work'.format(event.pk))
 
 
 class EventTestCase(TestCase):
@@ -251,25 +165,24 @@ class EventTestCase(TestCase):
 
     def test_kind_name(self):
         self.assertEqual(ComedyEventFactory().kind_name, 'Comedy')
-        self.assertEqual(ConcertEventFactory().kind_name, 'Classical concert')
+        self.assertEqual(ConcertEventFactory().kind_name, 'Classical')
         self.assertEqual(DanceEventFactory().kind_name, 'Dance')
         self.assertEqual(ExhibitionEventFactory().kind_name, 'Exhibition')
         self.assertEqual(GigEventFactory().kind_name, 'Gig')
         self.assertEqual(MiscEventFactory().kind_name, 'Other')
         self.assertEqual(MovieEventFactory().kind_name, 'Movie')
-        self.assertEqual(PlayEventFactory().kind_name, 'Play')
+        self.assertEqual(PlayEventFactory().kind_name, 'Theatre')
 
     def test_kind_name_plural(self):
         self.assertEqual(ComedyEventFactory().kind_name_plural, 'Comedy')
-        self.assertEqual(ConcertEventFactory().kind_name_plural,
-                                                        'Classical concerts')
+        self.assertEqual(ConcertEventFactory().kind_name_plural, 'Classical')
         self.assertEqual(DanceEventFactory().kind_name_plural, 'Dance')
         self.assertEqual(ExhibitionEventFactory().kind_name_plural,
                                                                 'Exhibitions')
         self.assertEqual(GigEventFactory().kind_name_plural, 'Gigs')
         self.assertEqual(MiscEventFactory().kind_name_plural, 'Others')
         self.assertEqual(MovieEventFactory().kind_name_plural, 'Movies')
-        self.assertEqual(PlayEventFactory().kind_name_plural, 'Plays')
+        self.assertEqual(PlayEventFactory().kind_name_plural, 'Theatre')
 
     def test_get_kinds_data(self):
         # Not exhaustively testing every part of the data returned...
@@ -348,127 +261,139 @@ class EventTestCase(TestCase):
         event = PlayEventFactory(pk=123)
         self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
+    def test_get_works(self):
+        event = MovieEventFactory()
+        m = MovieFactory()
+        p = PlayFactory()
+        cw = ClassicalWorkFactory()
+        dp = DancePieceFactory()
+        WorkSelectionFactory(work=m, event=event, order=4)
+        WorkSelectionFactory(work=p, event=event, order=1)
+        WorkSelectionFactory(work=cw, event=event, order=3)
+        WorkSelectionFactory(work=dp, event=event, order=2)
+
+        works = event.get_works()
+        self.assertEqual(len(works), 4)
+        self.assertEqual(works[0].work, p)
+        self.assertEqual(works[1].work, dp)
+        self.assertEqual(works[2].work, cw)
+        self.assertEqual(works[3].work, m)
+
+    def test_get_classical_works(self):
+        event = MovieEventFactory()
+        m = MovieFactory()
+        cw = ClassicalWorkFactory()
+        WorkSelectionFactory(work=m, event=event)
+        WorkSelectionFactory(work=cw, event=event)
+
+        works = event.get_classical_works()
+        self.assertEqual(len(works), 1)
+        self.assertEqual(works[0].work, cw)
+
+    def test_get_dance_pieces(self):
+        event = MovieEventFactory()
+        m = MovieFactory()
+        dp = DancePieceFactory()
+        WorkSelectionFactory(work=m, event=event)
+        WorkSelectionFactory(work=dp, event=event)
+
+        works = event.get_dance_pieces()
+        self.assertEqual(len(works), 1)
+        self.assertEqual(works[0].work, dp)
+
+    def test_get_movies(self):
+        event = MovieEventFactory()
+        m = MovieFactory()
+        p = PlayFactory()
+        WorkSelectionFactory(work=m, event=event)
+        WorkSelectionFactory(work=p, event=event)
+
+        works = event.get_movies()
+        self.assertEqual(len(works), 1)
+        self.assertEqual(works[0].work, m)
+
+    def test_get_plays(self):
+        event = MovieEventFactory()
+        m = MovieFactory()
+        p = PlayFactory()
+        WorkSelectionFactory(work=m, event=event)
+        WorkSelectionFactory(work=p, event=event)
+
+        works = event.get_plays()
+        self.assertEqual(len(works), 1)
+        self.assertEqual(works[0].work, p)
+
 
 class WorkTestCase(TestCase):
 
-    def test_get_list_url(self):
-        with self.assertRaises(NotImplementedError):
-            work = Work()
-            work.get_list_url()
-
-
-class ClassicalWorkTestCase(TestCase):
+    def test_ordering(self):
+        w3 = MovieFactory(title='C')
+        w1 = PlayFactory(title='A')
+        w2 = DancePieceFactory(title='B')
+        works = Work.objects.all()
+        self.assertEqual(works[0], w1)
+        self.assertEqual(works[1], w2)
+        self.assertEqual(works[2], w3)
 
     def test_slug(self):
-        work = ClassicalWorkFactory(pk=123)
+        work = MovieFactory(pk=123)
         self.assertEqual(work.slug, '9g5o8')
 
-    def test_get_absolute_url(self):
-        work = ClassicalWorkFactory(pk=123)
-        self.assertEqual(work.get_absolute_url(), '/events/classical-works/9g5o8/')
-
-    def test_get_list_url(self):
-        work = ClassicalWorkFactory()
-        self.assertEqual(work.get_list_url(), '/events/classical-works/')
-
-
-class DancePieceTestCase(TestCase):
-
-    def test_slug(self):
-        piece = DancePieceFactory(pk=123)
-        self.assertEqual(piece.slug, '9g5o8')
-
-    def test_get_absolute_url(self):
-        piece = DancePieceFactory(pk=123)
-        self.assertEqual(piece.get_absolute_url(), '/events/dance-pieces/9g5o8/')
-
-    def test_get_list_url(self):
-        piece = DancePieceFactory()
-        self.assertEqual(piece.get_list_url(), '/events/dance-pieces/')
-
-
-class MovieTestCase(TestCase):
-
-    def test_ordering(self):
-        m3 = MovieFactory(title='Movie C')
-        m1 = MovieFactory(title='Movie A')
-        m2 = MovieFactory(title='Movie B')
-        movies = Movie.objects.all()
-        self.assertEqual(movies[0], m1)
-        self.assertEqual(movies[1], m2)
-        self.assertEqual(movies[2], m3)
-
-    def test_slug(self):
-        movie = MovieFactory(pk=123)
-        self.assertEqual(movie.slug, '9g5o8')
-
     def test_roles(self):
-        "It can have multiple MovieRoles."
+        "It can have multiple WorkRoles."
         bob = IndividualCreatorFactory(name='Bob')
         terry = IndividualCreatorFactory(name='Terry')
-        movie = MovieFactory()
-        bobs_role = MovieRoleFactory(movie=movie, creator=bob,
+        work = MovieFactory()
+        bobs_role = WorkRoleFactory(work=work, creator=bob,
                                         role_name='Actor', role_order=2)
-        terrys_role = MovieRoleFactory(movie=movie, creator=terry,
+        terrys_role = WorkRoleFactory(work=work, creator=terry,
                                         role_name='Director', role_order=1)
-        roles = movie.roles.all()
+        roles = work.roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], terrys_role)
         self.assertEqual(roles[1], bobs_role)
         self.assertEqual(roles[0].role_name, 'Director')
         self.assertEqual(roles[1].role_name, 'Actor')
 
-    def test_absolute_url(self):
-        movie = MovieFactory(pk=123)
-        self.assertEqual(movie.get_absolute_url(), '/events/movies/9g5o8/')
+    def test_absolute_url_classicalwork(self):
+        work = ClassicalWorkFactory(pk=123)
+        self.assertEqual(work.get_absolute_url(), '/events/classical-works/9g5o8/')
 
-    def test_get_list_url(self):
-        movie = MovieFactory()
-        self.assertEqual(movie.get_list_url(), '/events/movies/')
+    def test_get_list_url_classicalwork(self):
+        work = ClassicalWorkFactory()
+        self.assertEqual(work.get_list_url(), '/events/classical-works/')
 
+    def test_absolute_url_dancepiece(self):
+        work = DancePieceFactory(pk=123)
+        self.assertEqual(work.get_absolute_url(), '/events/dance-pieces/9g5o8/')
 
-class PlayTestCase(TestCase):
+    def test_get_list_url_dancepiece(self):
+        work = DancePieceFactory()
+        self.assertEqual(work.get_list_url(), '/events/dance-pieces/')
 
-    def test_str(self):
-        play = PlayFactory(title='Twelfth Night')
-        self.assertEqual(str(play), 'Twelfth Night')
+    def test_absolute_url_movie(self):
+        work = MovieFactory(pk=123)
+        self.assertEqual(work.get_absolute_url(), '/events/movies/9g5o8/')
 
-    def test_ordering(self):
-        p3 = PlayFactory(title='Play C')
-        p1 = PlayFactory(title='Play A')
-        p2 = PlayFactory(title='Play B')
-        plays = Play.objects.all()
-        self.assertEqual(plays[0], p1)
-        self.assertEqual(plays[1], p2)
-        self.assertEqual(plays[2], p3)
+    def test_get_list_url_movie(self):
+        work = MovieFactory()
+        self.assertEqual(work.get_list_url(), '/events/movies/')
 
-    def test_slug(self):
-        play = PlayFactory(pk=123)
-        self.assertEqual(play.slug, '9g5o8')
+    def test_absolute_url_play(self):
+        work = PlayFactory(pk=123)
+        self.assertEqual(work.get_absolute_url(), '/events/plays/9g5o8/')
 
-    def test_roles(self):
-        "It can have multiple PlayRoles."
-        bob = IndividualCreatorFactory(name='Bob')
-        terry = IndividualCreatorFactory(name='Terry')
-        play = PlayFactory()
-        bobs_role = PlayRoleFactory(play=play, creator=bob,
-                                        role_name='Author', role_order=2)
-        terrys_role = PlayRoleFactory(play=play, creator=terry,
-                                        role_name='Author', role_order=1)
-        roles = play.roles.all()
-        self.assertEqual(len(roles), 2)
-        self.assertEqual(roles[0], terrys_role)
-        self.assertEqual(roles[1], bobs_role)
-        self.assertEqual(roles[0].role_name, 'Author')
-        self.assertEqual(roles[1].role_name, 'Author')
+    def test_get_list_url_plays(self):
+        work = PlayFactory()
+        self.assertEqual(work.get_list_url(), '/events/plays/')
 
-    def test_absolute_url(self):
-        play = PlayFactory(pk=123)
-        self.assertEqual(play.get_absolute_url(), '/events/plays/9g5o8/')
+    def test_imdb_url_with_id(self):
+        work = MovieFactory(imdb_id='tt0056687')
+        self.assertEqual(work.imdb_url, 'http://www.imdb.com/title/tt0056687/')
 
-    def test_list_url(self):
-        play = PlayFactory()
-        self.assertEqual(play.get_list_url(), '/events/plays/')
+    def test_imdb_url_with_no_id(self):
+        work = MovieFactory(imdb_id='')
+        self.assertEqual(work.imdb_url, '')
 
 
 class VenueTestCase(TestCase):

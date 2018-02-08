@@ -1,0 +1,56 @@
+{% extends 'spectator_events/base.html' %}
+{% comment %}
+Displays a single Movie, Play, ClassicalWork or DancePiece.
+
+As well as `object`, expects:
+* breadcrumb_list_title - Text for linking to the parent list view.
+* breadcrumb_list_url - URL for linking to the parent list view.
+{% endcomment %}
+
+{% load l10n %}
+
+{% block head_page_title %}
+    {% if work.kind == 'movie' and work.year %}
+      {{ work.title }} ({{ work.year|unlocalize }})
+    {% else %}
+      {{ work.title }}
+    {% endif %}
+{% endblock %}
+
+{% block content_title %}
+    {% if work.kind == 'movie' and work.year %}
+        {{ work.title }} <small class="text-muted">({{ work.year|unlocalize }})</small>
+    {% else %}
+      {{ work.title }}
+    {% endif %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{{ breadcrumb_list_url }}">{{ breadcrumb_list_title }}</a></li>
+    <li class="breadcrumb-item active">{{ work.title }}</li>
+{% endblock %}
+
+{% block content %}
+
+    {% if work.kind != 'movie' and work.year %}
+      <p>Year: {{ work.year|unlocalize }}</p>
+    {% endif %}
+
+    {% if work.imdb_id %}
+        <p><a href="{{ work.imdb_url }}">View at IMDb</a></p>
+    {% endif %}
+
+    {% include 'spectator_core/includes/roles_list.html' with roles=work.roles.all heading='By' only %}
+
+    {% include 'spectator_events/includes/visits.html' with events=work.event_set.all heading_level='h2' only %}
+
+{% endblock content %}
+
+
+{% block sidebar %}
+    {% load spectator_core %}
+    {% change_object_link_card work perms %}
+
+    {{ block.super }}
+{% endblock %}

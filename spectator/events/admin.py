@@ -7,56 +7,31 @@ from django.templatetags.l10n import unlocalize
 
 from .models import (
     Event, EventRole,
-    ClassicalWork, ClassicalWorkRole, ClassicalWorkSelection,
-    DancePiece, DancePieceRole, DancePieceSelection,
-    Movie, MovieRole, MovieSelection,
-    Play, PlayRole, PlaySelection,
+    Work, WorkRole, WorkSelection,
     Venue
 )
 
 
-# ROLE INLINES.
+# INLINES
 
-class RoleInline(admin.TabularInline):
-    "Parent class for the other *RoleInlines."
+class EventRoleInline(admin.TabularInline):
+    model = EventRole
     fields = ( 'creator', 'role_name', 'role_order',)
     raw_id_fields = ('creator',)
     extra = 0
 
-class EventRoleInline(RoleInline):
-    model = EventRole
+class WorkRoleInline(admin.TabularInline):
+    model = WorkRole
+    fields = ( 'creator', 'role_name', 'role_order',)
+    raw_id_fields = ('creator',)
+    extra = 0
 
-class ClassicalWorkRoleInline(RoleInline):
-    model = ClassicalWorkRole
-
-class DancePieceRoleInline(RoleInline):
-    model = DancePieceRole
-
-class MovieRoleInline(RoleInline):
-    model = MovieRole
-
-class PlayRoleInline(RoleInline):
-    model = PlayRole
-
-# WORK SELECTION INLINES.
-
-class SelectionInline(admin.TabularInline):
-    "Parent class for the other *SelectionInlines."
+class WorkSelectionInline(admin.TabularInline):
+    model = WorkSelection
     fields = ('work', 'order',)
     raw_id_fields = ('work',)
     extra = 0
 
-class ClassicalWorkSelectionInline(SelectionInline):
-    model = ClassicalWorkSelection
-
-class DancePieceSelectionInline(SelectionInline):
-    model = DancePieceSelection
-
-class MovieSelectionInline(SelectionInline):
-    model = MovieSelection
-
-class PlaySelectionInline(SelectionInline):
-    model = PlaySelection
 
 
 # MODEL ADMINS.
@@ -82,9 +57,7 @@ class EventAdmin(admin.ModelAdmin):
     raw_id_fields = ('venue',)
     readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
 
-    inlines = [ClassicalWorkSelectionInline, DancePieceSelectionInline,
-                MovieSelectionInline, PlaySelectionInline,
-                EventRoleInline, ]
+    inlines = [WorkSelectionInline, EventRoleInline, ]
 
     def save_related(self, request, form, formsets, change):
         """
@@ -100,32 +73,16 @@ class EventAdmin(admin.ModelAdmin):
         form.instance.save()
 
 
-class ProductionAdmin(admin.ModelAdmin):
-    """
-    A parent class for MovieAdmin and PlayAdmin.
-    """
-    list_display = ('title', 'show_creators')
+@admin.register(Work)
+class WorkAdmin(admin.ModelAdmin):
+    list_display = ('title', 'kind', 'tidy_year',)
     search_fields = ('title',)
+    list_filter = ('kind', 'year',)
 
-    readonly_fields = ('title_sort', 'time_created', 'time_modified',)
-
-    def show_creators(self, instance):
-        names = [ str(r.creator) for r in instance.roles.all() ]
-        if len(names) == 0:
-            return '-'
-        elif len(names) <= 3:
-            return ', '.join(names)
-        else:
-            # Too many to list them all.
-            return '{} et al.'.format(names[0])
-    show_creators.short_description = 'Creators'
-
-
-@admin.register(ClassicalWork)
-class ClassicalWorkAdmin(ProductionAdmin):
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'title_sort', 'slug',)
+            'fields': ( 'kind', 'title', 'title_sort', 'slug',
+                        'year', 'imdb_id',)
         }),
         ('Times', {
             'classes': ('collapse',),
@@ -134,63 +91,17 @@ class ClassicalWorkAdmin(ProductionAdmin):
     )
 
     readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
-    inlines = [ ClassicalWorkRoleInline, ]
-
-
-@admin.register(DancePiece)
-class DancePieceAdmin(ProductionAdmin):
-    fieldsets = (
-        (None, {
-            'fields': ( 'title', 'title_sort',  'slug',)
-        }),
-        ('Times', {
-            'classes': ('collapse',),
-            'fields': ('time_created', 'time_modified',)
-        }),
-    )
-
-    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
-    inlines = [ DancePieceRoleInline, ]
-
-
-@admin.register(Movie)
-class MovieAdmin(ProductionAdmin):
-    list_display = ('title', 'tidy_year', 'show_creators',)
-    list_filter = ('year',)
-
-    fieldsets = (
-        (None, {
-            'fields': ( 'title', 'title_sort', 'slug', 'year', 'imdb_id',)
-        }),
-        ('Times', {
-            'classes': ('collapse',),
-            'fields': ('time_created', 'time_modified',)
-        }),
-    )
-
-    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
-    inlines = [ MovieRoleInline, ]
+    inlines = [ WorkRoleInline, ]
 
     def tidy_year(self, obj):
         "Stop the year appearing like '2,018' when USE_THOUSAND_SEPARATOR=True"
-        return unlocalize(obj.year)
+        if obj.year:
+            return unlocalize(obj.year)
+        else:
+            return '-'
+    tidy_year.short_description = 'Year'
 
 
-
-@admin.register(Play)
-class PlayAdmin(ProductionAdmin):
-    fieldsets = (
-        (None, {
-            'fields': ( 'title', 'title_sort', 'slug',)
-        }),
-        ('Times', {
-            'classes': ('collapse',),
-            'fields': ('time_created', 'time_modified',)
-        }),
-    )
-
-    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
-    inlines = [ PlayRoleInline, ]
 
 
 class CountryListFilter(admin.SimpleListFilter):

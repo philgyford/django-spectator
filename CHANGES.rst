@@ -1,6 +1,12 @@
 Changelog (Django Spectator)
 ============================
 
+8.0.0
+-----
+
+- Combined ClassicalWorks, DancePieces, Movies and Plays into a single Work
+  model, distinguished with a ``kind`` field. Makes things much simpler.
+
 7.3.1
 -----
 

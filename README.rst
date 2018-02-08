@@ -148,29 +148,14 @@ order, and each with an optional role. e.g:
     * Role: Support
     * Order: 2
 
-Events can be different kinds, e.g. "gig", "movie", "play".
+Events can be different kinds, e.g. "gig", "movie", "play". This is only used for cateegorising Events into different lists - it doesn't restrict the kinds of Works that can be associated with it. You could have a "movie" Event that has a movie, play and dance piece associated with it.
 
-Each Event can have zero or more works associated with it, of four different
-types. Each can have zero or more Creators, each with optional roles, associated
-directly with it. e.g. "Wolfgang Amadeus Mozart (Composer)", "William
-Shakespeare (Playwright)" or "Steven Spielberg (Director)":
-
-* Classical work
-* Dance piece
-* Movie (can also have a year of release and an IMDb ID associated with it)
-* Play
-
-Although Events are specified as being of a certain kind ("gig", "movie", etc)
-this does not affect the kinds of work that are associated with it. e.g. you
-could create a "play" Event and say that one or more movies were shown there.The
-Event kinds are used to produce different lists (e.g. all the movie events).
+Each Event can have zero or more Works associated with it: movies, plays, classical works or dance pieces. Each Work can have zero or more Creators, each with optional roles, associated directly with it. e.g. "Wolfgang Amadeus Mozart (Composer)",
+"William Shakespeare (Playwright)" or "Steven Spielberg (Director)":
 
 Events can be given an optional title (e.g. "Glastonbury Festival"). If a title
-isn't specified one is created automatically when needed, based on any works
-(movies, plays, etc) associated with it, or else any Creators associated with
-it. When a title is automatically created, it only includes works relevant to
-the Event's kind. e.g. A "play" Event that featured two plays and, for some
-reason, a movie, would have a title displayed that only listed the plays.
+isn't specified one is created automatically when needed, based on any Works
+associated with it, or else any Creators associated with it.
 
 
 *************
@@ -346,8 +331,7 @@ So I don't forget...
 Adding a new event type
 =======================
 
-If it's simple (like, Gigs, Comedy, etc.) and doesn't require extra models,
-then:
+If it's simple (like, Gigs, Comedy, etc.) and doesn't require any specific kind of Works, then:
 
 * In ``spectator.events.models.Event`` add it in ``KIND_CHOICES`` and ``KIND_SLUGS``.
 * Possibly add a special case for it in ``Event.get_kind_name_plural()``.
@@ -362,32 +346,16 @@ then:
         * ``test_get_kinds_data()``
     * Add a ``test_absolute_url_*()`` test for this kind.
 
-If it involves an extra model (like Movies and Concerts do) then also:
+To add a new kind of Work:
 
-* Create the new model in ``spectator.events.models`` that inherits from the
-  ``Work`` model (like ``Movie``).
-* Create a matching role model, (like ``MovieRole``).
-* Create a matching selection model, (like ``MovieSelection``).
-* Associate the new model by a ``ManyToManyField``, through the selection model,
-  to the ``Event`` model (like ``Event.movies``).
-* In ``spectator.events.admin`` add the Inlines for the role and selection
-  models, and include them in the ``EventAdmin``.
-* Add new URLs for the model's List and Detail views in
-  ``spectator.events.urls`` (and add tests).
-* Add the new List and Detail views in ``spectator.events.views``.
-* If necessary, add templates in ``spectator/events/templates/events/`` for its
-  List and Detail views. This is only necessary if your new work has special
-  requirements, like Movies do (with their years and IMDb IDs). Otherwise the
-  generic ``m2m_work_*.html`` templates can be used).
-* In ``spectator/events/templates/event_detail.html`` add an include to list the
+* In ``spectator.events.models.Work`` add it in ``KIND_CHOICES`` and ``KIND_SLUGS``.
+* On the ``Event`` model add a new method similar to ``get_classical_works()`` for this new kind of ``Work``.
+* On the ``spectator.core.models.Creator`` model add a new method similar to ``get_classical_works()`` for this new kind of ``Work``.
+* In ``spectator/events/templates/spectator_events/event_detail.html`` add an include to list the
   works.
-* In ``spectator/core/templates/core/creator_detail.html`` add a section to
-  list the new models for a Creator.
-
-If it involves several extra models (like Dance and Concert events do) then
-it's similar to above but absolute URLs are different; see the code for
-examples of those.
-
+* In ``spectator/core/templates/spectator_core/creator_detail.html`` add an include to
+  list the works.
+* Add tests.
 
 *******
 Contact

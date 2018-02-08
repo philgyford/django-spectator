@@ -80,74 +80,79 @@ class CreatorTestCase(TestCase):
         self.assertEqual(roles[0].role_name, 'Headliner')
         self.assertEqual(roles[1].role_name, 'Support')
 
-    def test_movie_roles(self):
-        bob = IndividualCreatorFactory(name='Bob')
-        movie1 = MovieFactory()
-        movie2 = MovieFactory()
-        role1 = MovieRoleFactory(
-                        movie=movie1, creator=bob,
+    def test_work_roles(self):
+        bob = IndividualCreatorFactory()
+        movie = MovieFactory()
+        play = PlayFactory()
+        role1 = WorkRoleFactory(
+                        work=movie, creator=bob,
                         role_name='Director', role_order=1)
-        role2 = MovieRoleFactory(
-                        movie=movie2, creator=bob,
+        role2 = WorkRoleFactory(
+                        work=play, creator=bob,
                         role_name='Actor', role_order=2)
-        roles = bob.movie_roles.all()
+        roles = bob.work_roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], role1)
         self.assertEqual(roles[1], role2)
         self.assertEqual(roles[0].role_name, 'Director')
         self.assertEqual(roles[1].role_name, 'Actor')
 
+    def test_get_works(self):
+        bob = IndividualCreatorFactory()
+        m = MovieFactory()
+        p = PlayFactory()
+        cw = ClassicalWorkFactory()
+        dp = DancePieceFactory()
+
+        WorkRoleFactory(work=m, creator=bob, role_name='Director')
+        WorkRoleFactory(work=m, creator=bob, role_name='Actor')
+        WorkRoleFactory(work=p, creator=bob)
+        WorkRoleFactory(work=cw, creator=bob)
+        WorkRoleFactory(work=dp, creator=bob)
+
+        works = bob.get_works()
+        self.assertEqual(len(works), 4)
+
+    def test_get_classical_works(self):
+        bob = IndividualCreatorFactory()
+        m = MovieFactory()
+        cw = ClassicalWorkFactory()
+        WorkRoleFactory(work=m, creator=bob)
+        WorkRoleFactory(work=cw, creator=bob)
+
+        works = bob.get_classical_works()
+        self.assertEqual(len(works), 1)
+        self.assertEqual(works[0], cw)
+
+    def test_get_dance_pieces(self):
+        bob = IndividualCreatorFactory()
+        m = MovieFactory()
+        dp = DancePieceFactory()
+        WorkRoleFactory(work=m, creator=bob)
+        WorkRoleFactory(work=dp, creator=bob)
+
+        pieces = bob.get_dance_pieces()
+        self.assertEqual(len(pieces), 1)
+        self.assertEqual(pieces[0], dp)
+
     def test_get_movies(self):
         bob = IndividualCreatorFactory()
-        # Two movies. 1 role in the first, 2 in the second.
-        m1 = MovieFactory(title='Movie 1')
-        mrole1 = MovieRoleFactory(movie=m1, creator=bob, role_name='Writer')
-        m2 = MovieFactory(title='Movie 2')
-        mrole2 = MovieRoleFactory(
-                    movie=m2, creator=bob, role_name='Director', role_order=1)
-        mrole3 = MovieRoleFactory(
-                    movie=m2, creator=bob, role_name='', role_order=2)
+        m = MovieFactory()
+        p = PlayFactory()
+        WorkRoleFactory(work=m, creator=bob)
+        WorkRoleFactory(work=p, creator=bob)
 
         movies = bob.get_movies()
-        self.assertEqual(len(movies), 2)
-
-        self.assertEqual(movies[0], m1)
-        self.assertEqual(len(movies[0].creator_roles), 1)
-        self.assertEqual(movies[0].creator_roles[0], mrole1)
-        self.assertEqual(len(movies[0].creator_role_names), 1)
-        self.assertEqual(movies[0].creator_role_names[0], 'Writer')
-
-        self.assertEqual(movies[1], m2)
-        self.assertEqual(len(movies[1].creator_roles), 2)
-        self.assertEqual(movies[1].creator_roles[0], mrole2)
-        self.assertEqual(movies[1].creator_roles[1], mrole3)
-        self.assertEqual(len(movies[1].creator_role_names), 1)
-        self.assertEqual(movies[1].creator_role_names[0], 'Director')
+        self.assertEqual(len(movies), 1)
+        self.assertEqual(movies[0], m)
 
     def test_get_plays(self):
         bob = IndividualCreatorFactory()
-        # Two plays. 1 role in the first, 2 in the second.
-        p1 = PlayFactory(title='Play 1')
-        prole1 = PlayRoleFactory(play=p1, creator=bob, role_name='Writer')
-        p2 = PlayFactory(title='Play 2')
-        prole2 = PlayRoleFactory(
-                        play=p2, creator=bob, role_name='Author', role_order=1)
-        prole3 = PlayRoleFactory(
-                        play=p2, creator=bob, role_name='', role_order=2)
+        m = MovieFactory()
+        p = PlayFactory()
+        WorkRoleFactory(work=m, creator=bob)
+        WorkRoleFactory(work=p, creator=bob)
 
         plays = bob.get_plays()
-        self.assertEqual(len(plays), 2)
-
-        self.assertEqual(plays[0], p1)
-        self.assertEqual(len(plays[0].creator_roles), 1)
-        self.assertEqual(plays[0].creator_roles[0], prole1)
-        self.assertEqual(len(plays[0].creator_role_names), 1)
-        self.assertEqual(plays[0].creator_role_names[0], 'Writer')
-
-        self.assertEqual(plays[1], p2)
-        self.assertEqual(len(plays[1].creator_roles), 2)
-        self.assertEqual(plays[1].creator_roles[0], prole2)
-        self.assertEqual(plays[1].creator_roles[1], prole3)
-        self.assertEqual(len(plays[1].creator_role_names), 1)
-        self.assertEqual(plays[1].creator_role_names[0], 'Author')
-
+        self.assertEqual(len(plays), 1)
+        self.assertEqual(plays[0], p)
