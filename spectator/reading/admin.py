@@ -35,10 +35,34 @@ class PublicationSeriesAdmin(admin.ModelAdmin):
     readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
 
 
+
+class ReadingsListFilter(admin.SimpleListFilter):
+    """
+    Add filters for publications to list 'Unread' and 'In-progress' publications.
+    """
+    title = ('reading')
+    parameter_name = 'readings'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('in-progress', ('In progress')),
+            ('unread', ('Unread')),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'in-progress':
+            return queryset.filter(reading__start_date__isnull=False,
+                                   reading__end_date__isnull=True)
+
+        if self.value() == 'unread':
+            return queryset.filter(reading__isnull=True)
+
+
+
 @admin.register(Publication)
 class PublicationAdmin(admin.ModelAdmin):
     list_display = ('title', 'kind', 'show_creators', 'series', )
-    list_filter = ('kind', 'series', )
+    list_filter = (ReadingsListFilter, 'kind', 'series', )
     search_fields = ('title',)
     list_select_related = ('series',)
 
@@ -66,5 +90,3 @@ class PublicationAdmin(admin.ModelAdmin):
         else:
             return '-'
     show_creators.short_description = 'Creators'
-
-
