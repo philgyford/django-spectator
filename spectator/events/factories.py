@@ -11,64 +11,36 @@ class VenueFactory(factory.DjangoModelFactory):
     name = factory.Sequence(lambda n: 'Venue %s' % n)
 
 
-class ClassicalWorkFactory(factory.DjangoModelFactory):
+class WorkFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.ClassicalWork
+        model = models.Work
 
+    title = factory.Sequence(lambda n: 'Work %s' % n)
+
+class ClassicalWorkFactory(WorkFactory):
+    kind = 'classicalwork'
     title = factory.Sequence(lambda n: 'Classical Work %s' % n)
 
-class ClassicalWorkRoleFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.ClassicalWorkRole
-
-    role_name = factory.Sequence(lambda n: 'Role %s' % n)
-    creator = factory.SubFactory(IndividualCreatorFactory)
-    classical_work = factory.SubFactory(ClassicalWorkFactory)
-
-
-class DancePieceFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.DancePiece
-
+class DancePieceFactory(WorkFactory):
+    kind = 'dancepiece'
     title = factory.Sequence(lambda n: 'Dance Piece %s' % n)
 
-class DancePieceRoleFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.DancePieceRole
-
-    role_name = factory.Sequence(lambda n: 'Role %s' % n)
-    creator = factory.SubFactory(IndividualCreatorFactory)
-    dance_piece = factory.SubFactory(DancePieceFactory)
-
-
-class MovieFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.Movie
-
+class MovieFactory(WorkFactory):
+    kind = 'movie'
     title = factory.Sequence(lambda n: 'Movie %s' % n)
 
-class MovieRoleFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.MovieRole
-
-    role_name = factory.Sequence(lambda n: 'Role %s' % n)
-    creator = factory.SubFactory(IndividualCreatorFactory)
-    movie = factory.SubFactory(MovieFactory)
-
-
-class PlayFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.Play
-
+class PlayFactory(WorkFactory):
+    kind = 'play'
     title = factory.Sequence(lambda n: 'Play %s' % n)
 
-class PlayRoleFactory(factory.DjangoModelFactory):
+
+class WorkRoleFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.PlayRole
+        model = models.WorkRole
 
     role_name = factory.Sequence(lambda n: 'Role %s' % n)
     creator = factory.SubFactory(IndividualCreatorFactory)
-    play = factory.SubFactory(PlayFactory)
+    work = factory.SubFactory(WorkFactory)
 
 
 class EventFactory(factory.DjangoModelFactory):
@@ -113,30 +85,9 @@ class EventRoleFactory(factory.DjangoModelFactory):
     event = factory.SubFactory(EventFactory)
 
 
-class ClassicalWorkSelectionFactory(factory.DjangoModelFactory):
+class WorkSelectionFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.ClassicalWorkSelection
+        model = models.WorkSelection
 
     event = factory.SubFactory(EventFactory)
-    work = factory.SubFactory(ClassicalWorkFactory)
-
-class DancePieceSelectionFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.DancePieceSelection
-
-    event = factory.SubFactory(EventFactory)
-    work = factory.SubFactory(DancePieceFactory)
-
-class MovieSelectionFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.MovieSelection
-
-    event = factory.SubFactory(EventFactory)
-    work = factory.SubFactory(MovieFactory)
-
-class PlaySelectionFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.PlaySelection
-
-    event = factory.SubFactory(EventFactory)
-    work = factory.SubFactory(PlayFactory)
+    work = factory.SubFactory(WorkFactory)

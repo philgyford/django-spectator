@@ -8,7 +8,7 @@ from django.views.generic import DetailView, ListView, YearArchiveView
 from django.views.generic.detail import SingleObjectMixin
 
 from spectator.core.views import PaginatedListView
-from .models import ClassicalWork, DancePiece, Event, Movie, Play, Venue
+from .models import Event, Venue, Work
 
 
 class EventListView(PaginatedListView):
@@ -118,13 +118,32 @@ class EventYearArchiveView(YearArchiveView):
         return items, qs, info
 
 
-# CLASSICAL WORK, DANCE PIECE, MOVIE AND PLAY LISTS/DETAILS.
+# WORKS
 
-class WorkListView(PaginatedListView):
-    """
-    Parent class for all the Work list views.
-    """
-    template_name = 'spectator_events/m2m_work_list.html'
+
+class WorkMixin():
+    kind_slug = None
+
+    def get(self, request, *args, **kwargs):
+        slug = self.kwargs.get('kind_slug', None)
+        if slug is not None and slug not in Work.get_valid_kind_slugs():
+            raise Http404("Invalid kind_slug: '%s'" % slug)
+        else:
+            self.kind_slug = slug
+
+        return super().get(request, *args, **kwargs)
+
+    def get_work_kind(self):
+        """
+        We'll have a kind_slug like 'movies'.
+        We need to translate that into a work `kind` like 'movie'.
+        """
+        slugs_to_kinds = {v:k for k,v in Work.KIND_SLUGS.items()}
+        return slugs_to_kinds.get(self.kind_slug, None)
+
+
+class WorkListView(WorkMixin, PaginatedListView):
+    model = Work
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -136,48 +155,20 @@ class WorkListView(PaginatedListView):
         title = self.model._meta.verbose_name_plural.title()
         context['page_title'] = title
         context['breadcrumb_list_title'] = title
-        context['breadcrumb_list_url'] = self.model().get_list_url()
+        context['breadcrumb_list_url'] = self.model().get_list_url(kind_slug=self.kind_slug)
         return context
 
-class WorkDetailView(DetailView):
-    """
-    Parent class for all the Work detail views.
-    """
-    template_name = 'spectator_events/m2m_work_detail.html'
+
+class WorkDetailView(WorkMixin, DetailView):
+    model = Work
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # e.g. 'Plays':
         context['breadcrumb_list_title'] = \
                                 self.model._meta.verbose_name_plural.title()
-        context['breadcrumb_list_url'] = self.model().get_list_url()
+        context['breadcrumb_list_url'] = self.model().get_list_url(kind_slug=self.kind_slug)
         return context
-
-class ClassicalWorkListView(WorkListView):
-    model = ClassicalWork
-
-class ClassicalWorkDetailView(WorkDetailView):
-    model = ClassicalWork
-
-class DancePieceListView(WorkListView):
-    model = DancePiece
-
-class DancePieceDetailView(WorkDetailView):
-    model = DancePiece
-
-class MovieListView(WorkListView):
-    model = Movie
-    template_name = 'spectator_events/m2m_work_list.html'
-
-class MovieDetailView(WorkDetailView):
-    model = Movie
-    template_name = 'spectator_events/movie_detail.html'
-
-class PlayListView(WorkListView):
-    model = Play
-
-class PlayDetailView(WorkDetailView):
-    model = Play
 
 
 # VENUES

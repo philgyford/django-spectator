@@ -165,18 +165,17 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             title_start = Event.get_kind_name_plural(self.kind)
             title = '{} #{}'.format(title_start, self.pk)
 
-            # works will be an array of Movies, Dance Pieces, etc.
-            works = self.get_works()
             # We only need their titles:
-            works = [str(w) for w in works]
-            if len(works) > 0:
+            work_titles = [str(sel.work.title) for sel in self.work_selections.all()]
+
+            if len(work_titles) > 0:
                 if self.pk:
                     # (If it hasn't been saved it has no works yet.)
-                    if len(works) == 1:
-                        title = works[0]
-                    elif len(works) > 1:
+                    if len(work_titles) == 1:
+                        title = work_titles[0]
+                    elif len(work_titles) > 1:
                         title = '{} and {}'.format(
-                                        ', '.join(works[:-1]), works[-1])
+                                ', '.join(work_titles[:-1]), work_titles[-1])
             else:
                 # It's like a Gig or Comedy; no works.
                 roles = list(self.roles.all())
@@ -239,33 +238,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         return kinds
 
     def get_works(self):
-        """
-        Returns a list of the Event's Works (Movies, Dance Pieces, etc),
-        in their correct orders.
-        Or an empty list for Events that have none.
-
-        NOTE: It only returns Works relevant to the Event's kind.
-        e.g. A 'movie' Event will only return a list of any Movies in the
-        Event, not any Plays. This reduces the number of database requests and
-        we're assuming it's Good Enough.
-        """
-        # Want to get lists of each of the types of Work. But in the correct
-        # order, so we need to get self.movie_selections.all() instead of
-        # just self.movies.all(). The latter wouldn't use the MovieSelection
-        # through model.
-
-        if self.kind == 'concert':
-            works = [s.work for s in self.classical_work_selections.all()]
-        elif self.kind == 'dance':
-            works = [s.work for s in self.dance_piece_selections.all()]
-        elif self.kind == 'movie':
-            works = [s.work for s in self.movie_selections.all()]
-        elif self.kind == 'play':
-            works = [s.work for s in self.play_selections.all()]
-        else:
-            works = []
-
-        return works
+        return self.work_selections.all()
 
     @property
     def kind_name(self):
@@ -297,6 +270,14 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         ('movie',          'Movie'),
         ('play',           'Play'),
     )
+
+    # Mapping keys from KIND_CHOICES to the slugs we'll use in URLs:
+    KIND_SLUGS = {
+        'classicalwork':    'classical-works',
+        'dancepiece':       'dance-pieces',
+        'movie':            'movies',
+        'play':             'plays',
+    }
 
     YEAR_CHOICES = [(r,r) for r in range(1888, datetime.date.today().year+1)]
     YEAR_CHOICES.insert(0, ('', 'Select…'))
@@ -335,11 +316,32 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         verbose_name = 'work'
 
     def get_absolute_url(self):
+        kind_slug = self.KIND_SLUGS[self.kind]
         return reverse('spectator:events:work_detail',
-                                                    kwargs={'slug': self.slug})
+                        kwargs={'kind_slug': kind_slug, 'slug': self.slug})
 
-    def get_list_url(self):
-        return reverse('spectator:events:work_list')
+    def get_list_url(self, kind_slug=None):
+        """
+        Get the list URL for this Work.
+        You can also pass a kind_slug in (e.g. 'movies') and it will use that
+        instead of the Work's kind_slug. (Why? Useful in views. Or tests of
+        views, at least.)
+        """
+        if kind_slug is None:
+            kind_slug = self.KIND_SLUGS[self.kind]
+        return reverse('spectator:events:work_list',
+                                            kwargs={'kind_slug': kind_slug})
+
+    def get_valid_kind_slugs():
+        "Returns a list of the slugs that different kinds of Works can have."
+        return list(Work.KIND_SLUGS.values())
+
+    @property
+    def imdb_url(self):
+        if self.imdb_id:
+            return 'http://www.imdb.com/title/{}/'.format(self.imdb_id)
+        else:
+            return ''
 
 
 class WorkRole(BaseRole):
@@ -384,7 +386,7 @@ class WorkSelection(models.Model):
         verbose_name = 'work selection'
 
     def __str__(self):
-        return '{}: {}'.format(self.event, self.work)
+        return 'Event #{}: {}'.format(self.event.pk, self.work)
 
 
 

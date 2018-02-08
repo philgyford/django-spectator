@@ -74,3 +74,27 @@ class EventsUrlsTestCase(TestCase):
         "Should use the correct view."
         self.assertEqual(resolve('/events/my-event/').func.__name__,
                          views.EventDetailView.__name__)
+
+
+    # WORKS
+
+    def test_work_list_url(self):
+        self.assertEqual(
+                reverse('spectator:events:work_list', kwargs={'kind_slug': 'movies'}),
+            '/events/movies/')
+
+    def test_work_list_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/movies/').func.__name__,
+                         views.WorkListView.__name__)
+
+    def test_work_detail_url(self):
+        self.assertEqual(
+                reverse('spectator:events:work_detail',
+                kwargs={'kind_slug':'movies', 'slug':'my-work',}),
+            '/events/movies/my-work/')
+
+    def test_work_detail_view(self):
+        "Should use the correct view."
+        self.assertEqual(resolve('/events/movies/my-work/').func.__name__,
+                         views.WorkDetailView.__name__)
