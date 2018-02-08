@@ -77,14 +77,14 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
 
     KIND_CHOICES = (
-        ('concert',     'Classical concert'),
+        ('concert',     'Classical'),
         ('comedy',      'Comedy'),
         ('dance',       'Dance'),
         ('exhibition',  'Exhibition'),
         ('gig',         'Gig'),
         ('misc',        'Other'),
         ('movie',       'Movie'),
-        ('play',        'Play'),
+        ('play',        'Theatre'),
     )
 
     # Mapping keys from KIND_CHOICES to the slugs we'll use in URLs:
@@ -201,6 +201,10 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             return 'Comedy'
         elif kind == 'dance':
             return 'Dance'
+        elif kind == 'concert':
+            return 'Classical'
+        elif kind == 'play':
+            return 'Theatre'
         else:
             return '{}s'.format(Event.get_kind_name(kind))
 

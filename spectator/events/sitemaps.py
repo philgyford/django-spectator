@@ -1,50 +1,6 @@
 from django.contrib.sitemaps import Sitemap
 
-from .models import ClassicalWork, DancePiece, Event, Movie, Play, Venue
-
-
-class ClassicalWorkSitemap(Sitemap):
-    changefreq = 'monthly'
-    priority = 0.5
-
-    def items(self):
-        return ClassicalWork.objects.all()
-
-    def lastmod(self, obj):
-        return obj.time_modified
-
-
-class DancePieceSitemap(Sitemap):
-    changefreq = 'monthly'
-    priority = 0.5
-
-    def items(self):
-        return DancePiece.objects.all()
-
-    def lastmod(self, obj):
-        return obj.time_modified
-
-
-class MovieSitemap(Sitemap):
-    changefreq = 'monthly'
-    priority = 0.5
-
-    def items(self):
-        return Movie.objects.all()
-
-    def lastmod(self, obj):
-        return obj.time_modified
-
-
-class PlaySitemap(Sitemap):
-    changefreq = 'monthly'
-    priority = 0.5
-
-    def items(self):
-        return Play.objects.all()
-
-    def lastmod(self, obj):
-        return obj.time_modified
+from .models import Event, Venue, Work
 
 
 class EventSitemap(Sitemap):
@@ -71,3 +27,13 @@ class VenueSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.time_modified
 
+
+class WorkSitemap(Sitemap):
+    changefreq = 'monthly'
+    priority = 0.5
+
+    def items(self):
+        return Work.objects.all()
+
+    def lastmod(self, obj):
+        return obj.time_modified

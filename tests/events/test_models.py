@@ -165,25 +165,24 @@ class EventTestCase(TestCase):
 
     def test_kind_name(self):
         self.assertEqual(ComedyEventFactory().kind_name, 'Comedy')
-        self.assertEqual(ConcertEventFactory().kind_name, 'Classical concert')
+        self.assertEqual(ConcertEventFactory().kind_name, 'Classical')
         self.assertEqual(DanceEventFactory().kind_name, 'Dance')
         self.assertEqual(ExhibitionEventFactory().kind_name, 'Exhibition')
         self.assertEqual(GigEventFactory().kind_name, 'Gig')
         self.assertEqual(MiscEventFactory().kind_name, 'Other')
         self.assertEqual(MovieEventFactory().kind_name, 'Movie')
-        self.assertEqual(PlayEventFactory().kind_name, 'Play')
+        self.assertEqual(PlayEventFactory().kind_name, 'Theatre')
 
     def test_kind_name_plural(self):
         self.assertEqual(ComedyEventFactory().kind_name_plural, 'Comedy')
-        self.assertEqual(ConcertEventFactory().kind_name_plural,
-                                                        'Classical concerts')
+        self.assertEqual(ConcertEventFactory().kind_name_plural, 'Classical')
         self.assertEqual(DanceEventFactory().kind_name_plural, 'Dance')
         self.assertEqual(ExhibitionEventFactory().kind_name_plural,
                                                                 'Exhibitions')
         self.assertEqual(GigEventFactory().kind_name_plural, 'Gigs')
         self.assertEqual(MiscEventFactory().kind_name_plural, 'Others')
         self.assertEqual(MovieEventFactory().kind_name_plural, 'Movies')
-        self.assertEqual(PlayEventFactory().kind_name_plural, 'Plays')
+        self.assertEqual(PlayEventFactory().kind_name_plural, 'Theatre')
 
     def test_get_kinds_data(self):
         # Not exhaustively testing every part of the data returned...
