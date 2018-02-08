@@ -289,6 +289,102 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
 
 
+class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
+
+    KIND_CHOICES = (
+        ('classicalwork',  'Classical work'),
+        ('dancepiece',     'Dance piece'),
+        ('movie',          'Movie'),
+        ('play',           'Play'),
+    )
+
+    YEAR_CHOICES = [(r,r) for r in range(1888, datetime.date.today().year+1)]
+    YEAR_CHOICES.insert(0, ('', 'Select…'))
+
+    kind = models.CharField(max_length=20, choices=KIND_CHOICES, blank=False)
+
+    title = models.CharField(null=False, blank=False, max_length=255)
+
+    title_sort = NaturalSortField('title', max_length=255, default='',
+            help_text="e.g. 'big piece, a' or 'biggest piece, the'.")
+
+    creators = models.ManyToManyField('spectator_core.Creator',
+                through='WorkRole', related_name='works')
+
+    imdb_id = models.CharField(null=False, blank=True, max_length=12,
+                    verbose_name='IMDb ID',
+                    help_text="Starts with 'tt', e.g. 'tt0100842'.",
+                    validators=[
+                        RegexValidator(
+                            regex='^tt\d{7,10}$',
+                            message='IMDb ID should be like "tt1234567"',
+                            code='invalid_imdb_id'
+                        )
+                    ]
+                )
+
+    year = models.PositiveSmallIntegerField(null=True, blank=True,
+                default=None,
+                help_text="Year of release, composition, publication, etc.")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ('title_sort',)
+        verbose_name = 'work'
+
+    def get_absolute_url(self):
+        return reverse('spectator:events:work_detail',
+                                                    kwargs={'slug': self.slug})
+
+    def get_list_url(self):
+        return reverse('spectator:events:work_list')
+
+
+class WorkRole(BaseRole):
+    """
+    Through model for linking a Creator to a Work, optionally via
+    their role (e.g. 'Composer', 'Director'.)
+    """
+    creator = models.ForeignKey('spectator_core.Creator',
+                blank=False,
+                on_delete=models.CASCADE, related_name='work_roles')
+
+    work = models.ForeignKey('spectator_events.Work',
+                on_delete=models.CASCADE,
+                related_name='roles')
+
+    class Meta:
+        ordering = ('role_order', 'role_name',)
+        verbose_name = 'work role'
+
+
+class WorkSelection(models.Model):
+    """
+    Through model for linking a Work to an Event with an order.
+    """
+    event = models.ForeignKey('spectator_events.Event',
+                blank=False,
+                on_delete=models.CASCADE,
+                related_name='work_selections')
+
+    work = models.ForeignKey('spectator_events.Work',
+                blank=False,
+                on_delete=models.CASCADE,
+                related_name='events')
+
+    order = models.PositiveSmallIntegerField(
+                default=1,
+                blank=False, null=False,
+                help_text="Position on the Event programme." )
+
+    class Meta:
+        ordering = ('order',)
+        verbose_name = 'work selection'
+
+    def __str__(self):
+        return '{}: {}'.format(self.event, self.work)
 
 
 
