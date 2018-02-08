@@ -4,7 +4,7 @@ from django.test import TestCase
 from .. import make_date
 from spectator.core.factories import *
 from spectator.events.factories import *
-from spectator.events.models import Event, Movie, Play, Venue, Work
+from spectator.events.models import Event, Movie, Play, Venue, WorkAbstract
 
 
 class EventStrTestCase(TestCase):
@@ -353,7 +353,7 @@ class WorkTestCase(TestCase):
 
     def test_get_list_url(self):
         with self.assertRaises(NotImplementedError):
-            work = Work()
+            work = WorkAbstract()
             work.get_list_url()
 
 

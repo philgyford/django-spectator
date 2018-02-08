@@ -71,7 +71,6 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         print(role.role_order)
     """
 
-    # The keys are used as slugs, so should be appropriate:
     KIND_CHOICES = (
         ('concert',     'Classical concert'),
         ('comedy',      'Comedy'),
@@ -288,7 +287,15 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         return self.make_title()
 
 
-class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
+
+
+
+
+
+
+
+
+class WorkAbstract(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     Abstract parent for things like DancePiece, Movie, Play, etc.
     Just so we stop duplicating common things.
@@ -330,7 +337,7 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             "Child classes should return the list URL for this kind of Work.")
 
 
-class ClassicalWork(Work):
+class ClassicalWork(WorkAbstract):
     """
     A classical work itself, not an occasion on which it was watched.
     """
@@ -394,7 +401,7 @@ class ClassicalWorkSelection(models.Model):
         return '{}: {}'.format(self.event, self.work)
 
 
-class DancePiece(Work):
+class DancePiece(WorkAbstract):
     """
     A dance piece itself, not an occasion on which it was watched.
     """
@@ -455,7 +462,7 @@ class DancePieceSelection(models.Model):
         return '{}: {}'.format(self.event, self.work)
 
 
-class Movie(Work):
+class Movie(WorkAbstract):
     """
     A movie itself, not an occasion on which it was watched.
     """
@@ -531,7 +538,7 @@ class MovieSelection(models.Model):
         return '{}: {}'.format(self.event, self.work)
 
 
-class Play(Work):
+class Play(WorkAbstract):
     """
     A play itself, not an occasion on which it was watched.
     """
