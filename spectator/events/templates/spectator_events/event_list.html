@@ -2,7 +2,7 @@
 
 {% load spectator_core %}
 
-{% block head_page_title %}{% if event_kind_name_plural %}{{ event_kind_name_plural }}{% else %}Events{% endif %}{% endblock %}
+{% block head_page_title %}{% if event_kind_name_plural %}{{ event_kind_name_plural }}{% else %}Events{% endif %}{% if page_obj.number > 1 %} page {{ page_obj.number }}{% endif %}{% endblock %}
 {% block content_title %}Events{% endblock %}
 
 {% load spectator_events %}
