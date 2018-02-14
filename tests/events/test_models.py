@@ -109,7 +109,7 @@ class EventTestCase(TestCase):
         self.assertEqual(
             Event.get_kinds(),
             ['movie', 'concert', 'comedy', 'dance', 'exhibition', 'gig',
-            'misc', 'play',]
+            'play', 'misc',]
         )
 
     def test_valid_kind_slugs(self):

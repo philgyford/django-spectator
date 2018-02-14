@@ -83,8 +83,8 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         ('dance',       'Dance'),
         ('exhibition',  'Exhibition'),
         ('gig',         'Gig'),
-        ('misc',        'Other'),
         ('play',        'Theatre'),
+        ('misc',        'Other'),
     )
 
     # Mapping keys from KIND_CHOICES to the slugs we'll use in URLs:
