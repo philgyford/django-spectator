@@ -13,9 +13,10 @@ class EventListTabsTestCase(TestCase):
 
     def test_result(self):
         counts = {'all': 30, 'gig': 12, 'movie': 18,}
-        result = event_list_tabs(counts, 'gig')
+        result = event_list_tabs(counts, 'gig', 2)
         self.assertEqual(result['counts'], counts)
         self.assertEqual(result['current_kind'], 'gig')
+        self.assertEqual(result['page_number'], 2)
         self.assertEqual(
             sorted(result['event_kinds']),
             sorted(Event.get_kinds())

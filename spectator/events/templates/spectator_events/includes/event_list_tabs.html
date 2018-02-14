@@ -9,7 +9,7 @@ Used by the event_list_tabs() template inclusion tag.
 
 	{% if counts.all > 0 %}
 		<li class="nav-item">
-			<a class="nav-link{% if not current_kind %} active{% endif %}" href="{% url 'spectator:events:home' %}">All <small>({{ counts.all }})</small></a>
+			<{% if not current_kind and page_number == 1 %}span{% else %}a href="{% url 'spectator:events:home' %}"{% endif %} class="nav-link{% if not current_kind %} active{% endif %}">All <small>({{ counts.all }})</small>{% if not current_kind and page_number == 1 %}</span>{% else %}</a>{% endif %}
 		</li>
 	{% endif %}
 
@@ -17,7 +17,7 @@ Used by the event_list_tabs() template inclusion tag.
 		{% if counts|get_item:kind > 0 %}
 			<li class="nav-item">
 				{% with event_kinds_data|get_item:kind as kind_data %}
-					<a class="nav-link{% if current_kind == kind %} active{% endif %}" href="{% url 'spectator:events:event_list' kind_slug=kind_data|get_item:'slug' %}">{{ kind_data|get_item:'name_plural' }} <small>({{ counts|get_item:kind }})</small></a>
+					<{% if current_kind == kind and page_number == 1 %}span{% else %}a href="{% url 'spectator:events:event_list' kind_slug=kind_data|get_item:'slug' %}"{% endif %} class="nav-link{% if current_kind == kind %} active{% endif %}">{{ kind_data|get_item:'name_plural' }} <small>({{ counts|get_item:kind }})</small>{% if current_kind == kind and page_number == 1 %}</span>{% else %}</a>{% endif %}
 				{% endwith %}
 			</li>
 		{% endif %}
