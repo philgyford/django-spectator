@@ -108,8 +108,8 @@ class EventTestCase(TestCase):
     def test_get_kinds(self):
         self.assertEqual(
             Event.get_kinds(),
-            ['movie', 'concert', 'comedy', 'dance', 'exhibition', 'gig',
-            'play', 'misc',]
+            ['cinema', 'concert', 'comedy', 'dance', 'exhibition', 'gig',
+            'theatre', 'misc',]
         )
 
     def test_valid_kind_slugs(self):
@@ -129,36 +129,36 @@ class EventTestCase(TestCase):
         self.assertEqual(ExhibitionEventFactory().kind_slug, 'exhibitions')
         self.assertEqual(GigEventFactory().kind_slug, 'gigs')
         self.assertEqual(MiscEventFactory().kind_slug, 'misc')
-        self.assertEqual(MovieEventFactory().kind_slug, 'cinema')
-        self.assertEqual(PlayEventFactory().kind_slug, 'theatre')
+        self.assertEqual(CinemaEventFactory().kind_slug, 'cinema')
+        self.assertEqual(TheatreEventFactory().kind_slug, 'theatre')
 
     def test_venue_name_set_a_venue(self):
         "If there's a venue, venue_name should be set."
-        event = MovieEventFactory(venue=VenueFactory(name='My Venue'))
+        event = CinemaEventFactory(venue=VenueFactory(name='My Venue'))
         self.assertEqual(event.venue_name, 'My Venue')
 
     def test_venue_name_set_no_venue(self):
         "If there's no venue, venue_name should be empty."
-        event = MovieEventFactory(venue=None)
+        event = CinemaEventFactory(venue=None)
         self.assertEqual(event.venue_name, '')
 
     def test_venue_name_manually_set(self):
         "If a venue_name is specified it shouldn't be changed by the venue."
-        event = MovieEventFactory(
+        event = CinemaEventFactory(
                     venue=VenueFactory(name='My Venue'),
                     venue_name='My Custom Name')
         self.assertEqual(event.venue_name, 'My Custom Name')
 
     def test_venue_name_remove_venue(self):
         "If the venue is removed, venue_name should be unset."
-        event = MovieEventFactory(venue=VenueFactory(name='My Venue'))
+        event = CinemaEventFactory(venue=VenueFactory(name='My Venue'))
         event.venue = None
         event.save()
         self.assertEqual(event.venue_name, '')
 
     def test_venue_name_change_venue(self):
         "If the venue is changed, venue_name should remain as it was."
-        event = MovieEventFactory(venue=VenueFactory(name='Venue 1'))
+        event = CinemaEventFactory(venue=VenueFactory(name='Venue 1'))
         event.venue = VenueFactory(name='Venue 2')
         event.save()
         self.assertEqual(event.venue_name, 'Venue 1')
@@ -170,8 +170,8 @@ class EventTestCase(TestCase):
         self.assertEqual(ExhibitionEventFactory().kind_name, 'Exhibition')
         self.assertEqual(GigEventFactory().kind_name, 'Gig')
         self.assertEqual(MiscEventFactory().kind_name, 'Other')
-        self.assertEqual(MovieEventFactory().kind_name, 'Cinema')
-        self.assertEqual(PlayEventFactory().kind_name, 'Theatre')
+        self.assertEqual(CinemaEventFactory().kind_name, 'Cinema')
+        self.assertEqual(TheatreEventFactory().kind_name, 'Theatre')
 
     def test_kind_name_plural(self):
         self.assertEqual(ComedyEventFactory().kind_name_plural, 'Comedy')
@@ -181,8 +181,8 @@ class EventTestCase(TestCase):
                                                                 'Exhibitions')
         self.assertEqual(GigEventFactory().kind_name_plural, 'Gigs')
         self.assertEqual(MiscEventFactory().kind_name_plural, 'Others')
-        self.assertEqual(MovieEventFactory().kind_name_plural, 'Cinema')
-        self.assertEqual(PlayEventFactory().kind_name_plural, 'Theatre')
+        self.assertEqual(CinemaEventFactory().kind_name_plural, 'Cinema')
+        self.assertEqual(TheatreEventFactory().kind_name_plural, 'Theatre')
 
     def test_get_kinds_data(self):
         # Not exhaustively testing every part of the data returned...
@@ -253,16 +253,16 @@ class EventTestCase(TestCase):
         event = MiscEventFactory(pk=123)
         self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
-    def test_absolute_url_movie(self):
-        event = MovieEventFactory(pk=123)
+    def test_absolute_url_cinema(self):
+        event = CinemaEventFactory(pk=123)
         self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
-    def test_absolute_url_play(self):
-        event = PlayEventFactory(pk=123)
+    def test_absolute_url_theatre(self):
+        event = TheatreEventFactory(pk=123)
         self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
     def test_get_works(self):
-        event = MovieEventFactory()
+        event = CinemaEventFactory()
         m = MovieFactory()
         p = PlayFactory()
         cw = ClassicalWorkFactory()
@@ -280,7 +280,7 @@ class EventTestCase(TestCase):
         self.assertEqual(works[3].work, m)
 
     def test_get_classical_works(self):
-        event = MovieEventFactory()
+        event = CinemaEventFactory()
         m = MovieFactory()
         cw = ClassicalWorkFactory()
         WorkSelectionFactory(work=m, event=event)
@@ -291,7 +291,7 @@ class EventTestCase(TestCase):
         self.assertEqual(works[0].work, cw)
 
     def test_get_dance_pieces(self):
-        event = MovieEventFactory()
+        event = CinemaEventFactory()
         m = MovieFactory()
         dp = DancePieceFactory()
         WorkSelectionFactory(work=m, event=event)
@@ -302,7 +302,7 @@ class EventTestCase(TestCase):
         self.assertEqual(works[0].work, dp)
 
     def test_get_movies(self):
-        event = MovieEventFactory()
+        event = CinemaEventFactory()
         m = MovieFactory()
         p = PlayFactory()
         WorkSelectionFactory(work=m, event=event)
@@ -313,7 +313,7 @@ class EventTestCase(TestCase):
         self.assertEqual(works[0].work, m)
 
     def test_get_plays(self):
-        event = MovieEventFactory()
+        event = CinemaEventFactory()
         m = MovieFactory()
         p = PlayFactory()
         WorkSelectionFactory(work=m, event=event)

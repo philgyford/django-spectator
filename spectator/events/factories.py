@@ -69,11 +69,11 @@ class GigEventFactory(EventFactory):
 class MiscEventFactory(EventFactory):
     kind = 'misc'
 
-class MovieEventFactory(EventFactory):
-    kind = 'movie'
+class CinemaEventFactory(EventFactory):
+    kind = 'cinema'
 
-class PlayEventFactory(EventFactory):
-    kind = 'play'
+class TheatreEventFactory(EventFactory):
+    kind = 'theatre'
 
 
 class EventRoleFactory(factory.DjangoModelFactory):

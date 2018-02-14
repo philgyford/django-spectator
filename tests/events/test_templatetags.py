@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from .. import make_date
-from spectator.events.factories import GigEventFactory, MovieEventFactory
+from spectator.events.factories import GigEventFactory, CinemaEventFactory
 from spectator.events.models import Event
 from spectator.events.templatetags.spectator_events import\
         day_events, day_events_card, event_list_tabs,\
@@ -31,12 +31,12 @@ class RecentEventsTestCase(TestCase):
 
     def test_queryset(self):
         "It should return 10 recent events by default."
-        MovieEventFactory.create_batch(6, date=make_date('2017-02-10'))
+        CinemaEventFactory.create_batch(6, date=make_date('2017-02-10'))
         GigEventFactory.create_batch(6,    date=make_date('2017-02-12'))
         qs = recent_events()
         self.assertEqual(len(qs), 10)
         self.assertEqual(qs[5].kind, 'gig')
-        self.assertEqual(qs[6].kind, 'movie')
+        self.assertEqual(qs[6].kind, 'cinema')
 
     def test_queryset_num(self):
         "It should return the number of events requested."
@@ -58,9 +58,9 @@ class DayEventsTestCase(TestCase):
 
     def test_queryset(self):
         GigEventFactory(  date=make_date('2017-02-09'))
-        MovieEventFactory(date=make_date('2017-02-10'))
+        CinemaEventFactory(date=make_date('2017-02-10'))
         GigEventFactory(  date=make_date('2017-02-10'))
-        MovieEventFactory(date=make_date('2017-02-11'))
+        CinemaEventFactory(date=make_date('2017-02-11'))
         qs = day_events(make_date('2017-02-10'))
         self.assertEqual(len(qs), 2)
 
@@ -69,9 +69,9 @@ class DayEventsCardTestCase(TestCase):
 
     def test_result(self):
         GigEventFactory(  date=make_date('2017-02-09'))
-        MovieEventFactory(date=make_date('2017-02-10'))
+        CinemaEventFactory(date=make_date('2017-02-10'))
         GigEventFactory(  date=make_date('2017-02-10'))
-        MovieEventFactory(date=make_date('2017-02-11'))
+        CinemaEventFactory(date=make_date('2017-02-11'))
         result = day_events_card(make_date('2017-02-10'))
         self.assertEqual(result['card_title'], 'Events on 10 Feb 2017')
         self.assertEqual(len(result['event_list']), 2)
@@ -81,7 +81,7 @@ class EventsYearsTestCase(TestCase):
 
     def test_result(self):
         GigEventFactory(  date=make_date('2017-02-09'))
-        MovieEventFactory(date=make_date('2017-02-10'))
+        CinemaEventFactory(date=make_date('2017-02-10'))
         GigEventFactory(  date=make_date('2015-02-09'))
         result = events_years()
         self.assertEqual(len(result), 2)
@@ -93,7 +93,7 @@ class EventsYearsCardTestCase(TestCase):
 
     def test_result(self):
         GigEventFactory(  date=make_date('2017-02-09'))
-        MovieEventFactory(date=make_date('2017-02-10'))
+        CinemaEventFactory(date=make_date('2017-02-10'))
         GigEventFactory(  date=make_date('2015-02-09'))
         result = events_years_card(make_date('2017-01-01'))
         self.assertEqual(result['current_year'], make_date('2017-01-01'))

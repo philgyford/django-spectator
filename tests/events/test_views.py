@@ -37,8 +37,8 @@ class EventListViewTestCase(ViewTestCase):
         DanceEventFactory.create_batch(5)
         GigEventFactory.create_batch(4)
         MiscEventFactory.create_batch(3)
-        MovieEventFactory.create_batch(2)
-        PlayEventFactory.create_batch(1)
+        CinemaEventFactory.create_batch(2)
+        TheatreEventFactory.create_batch(1)
         response = views.EventListView.as_view()(self.request)
         context = response.context_data
         self.assertIn('counts', context)
@@ -53,10 +53,10 @@ class EventListViewTestCase(ViewTestCase):
         self.assertEqual(counts['gig'], 4)
         self.assertIn('misc', counts)
         self.assertEqual(counts['misc'], 3)
-        self.assertIn('movie', counts)
-        self.assertEqual(counts['movie'], 2)
-        self.assertIn('play', counts)
-        self.assertEqual(counts['play'], 1)
+        self.assertIn('cinema', counts)
+        self.assertEqual(counts['cinema'], 2)
+        self.assertIn('theatre', counts)
+        self.assertEqual(counts['theatre'], 1)
 
     def test_context_event_kind(self):
         response = views.EventListView.as_view()(self.request, kind_slug='gigs')
@@ -73,8 +73,8 @@ class EventListViewTestCase(ViewTestCase):
 
     def test_context_event_list(self):
         "It should have the latest events, of all kinds, in the context."
-        movie = MovieEventFactory(    date=make_date('2017-02-10'))
-        play = PlayEventFactory(      date=make_date('2017-02-09'))
+        movie = CinemaEventFactory(    date=make_date('2017-02-10'))
+        play = TheatreEventFactory(      date=make_date('2017-02-09'))
         gig = GigEventFactory(        date=make_date('2017-02-12'))
         misc = MiscEventFactory(      date=make_date('2017-02-05'))
         concert = ConcertEventFactory(date=make_date('2017-02-14'))
@@ -310,8 +310,8 @@ class VenueDetailViewTestCase(ViewTestCase):
 
     def test_context_event_list(self):
         "It should have the venue's events in the context."
-        MovieEventFactory.create_batch(3, venue=self.venue)
-        MovieEventFactory()
+        CinemaEventFactory.create_batch(3, venue=self.venue)
+        CinemaEventFactory()
         response = views.VenueDetailView.as_view()(self.request, slug='9g5o8')
         context = response.context_data
         self.assertIn('event_list', context)

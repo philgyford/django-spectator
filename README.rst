@@ -138,7 +138,7 @@ An Event specifies a date on which you saw a thing at a particular Venue.
 A Venue has a name and, optionally, location details.
 
 Each Event can have zero or more Creators associated directly with it. e.g. the
-performers at a gig, the comedians at a comedy event. These can be in a spectific
+performers at a gig, the comedians at a comedy event. These can be in a specific
 order, and each with an optional role. e.g:
 
 * The Wedding Present
@@ -148,7 +148,7 @@ order, and each with an optional role. e.g:
     * Role: Support
     * Order: 2
 
-Events can be different kinds, e.g. "gig", "movie", "play". This is only used for cateegorising Events into different lists - it doesn't restrict the kinds of Works that can be associated with it. You could have a "movie" Event that has a movie, play and dance piece associated with it.
+Events can be different kinds, e.g. "gig", "cinema", "theatre". This is only used for categorising Events into different lists - it doesn't restrict the kinds of Works that can be associated with it. You could have a "cinema" Event that has a movie, play and dance piece associated with it.
 
 Each Event can have zero or more Works associated with it: movies, plays, classical works or dance pieces. Each Work can have zero or more Creators, each with optional roles, associated directly with it. e.g. "Wolfgang Amadeus Mozart (Composer)",
 "William Shakespeare (Playwright)" or "Steven Spielberg (Director)":
