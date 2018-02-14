@@ -34,8 +34,18 @@ class EventListView(PaginatedListView):
 
         context.update( self.get_event_counts() )
 
-        context['event_kind'] = self.get_event_kind()
+        # e.g. 'concert'
+        kind = self.get_event_kind()
+        context['event_kind'] = kind
+
+        if kind:
+            # e.g. 'Concert':
+            context['event_kind_name'] = Event.get_kind_name(kind)
+            # e.g. 'Concerts':
+            context['event_kind_name_plural'] = Event.get_kind_name_plural(kind)
+
         context['event_list'] = context['object_list']
+
         return context
 
     def get_event_counts(self):

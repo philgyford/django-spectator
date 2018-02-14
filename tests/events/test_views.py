@@ -63,6 +63,8 @@ class EventListViewTestCase(ViewTestCase):
         context = response.context_data
         self.assertIn('event_kind', context)
         self.assertEqual(context['event_kind'], 'gig')
+        self.assertEqual(context['event_kind_name'], 'Gig')
+        self.assertEqual(context['event_kind_name_plural'], 'Gigs')
 
     def test_context_event_kind_none(self):
         "When viewing all events, event_kind should be None"
@@ -70,6 +72,8 @@ class EventListViewTestCase(ViewTestCase):
         context = response.context_data
         self.assertIn('event_kind', context)
         self.assertEqual(context['event_kind'], None)
+        self.assertNotIn('event_kind_name', context)
+        self.assertNotIn('event_kind_name_plural', context)
 
     def test_context_event_list(self):
         "It should have the latest events, of all kinds, in the context."

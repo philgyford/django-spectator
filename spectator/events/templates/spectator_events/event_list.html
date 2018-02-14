@@ -1,6 +1,8 @@
 {% extends 'spectator_events/base.html' %}
 
-{% block head_page_title %}Events{% endblock %}
+{% load spectator_core %}
+
+{% block head_page_title %}{% if event_kind_name_plural %}{{ event_kind_name_plural }}{% else %}Events{% endif %}{% endblock %}
 {% block content_title %}Events{% endblock %}
 
 {% load spectator_events %}
