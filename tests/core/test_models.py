@@ -33,6 +33,23 @@ class CreatorTestCase(TestCase):
         creator = IndividualCreatorFactory(name='Bill Brown')
         self.assertEqual(str(creator), 'Bill Brown')
 
+    def test_sort_field_length(self):
+        """
+        The sort field should be truncated to 255 characters.
+        We test it by using lots of numbers which will be expanded by
+        NaturalSortField, so it should get truncated.
+        """
+        old_maxDiff = self.maxDiff
+        self.maxDiff = 1000
+
+        creator = GroupCreatorFactory(
+            name='1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3')
+        creator.refresh_from_db()
+
+        self.assertEqual(creator.name_sort, '00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001…')
+
+        self.maxDiff = old_maxDiff
+
     def test_ordering(self):
         # Will have a name_sort of 'peaness':
         b = IndividualCreatorFactory(name='Peaness')

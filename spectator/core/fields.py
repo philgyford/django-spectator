@@ -4,6 +4,8 @@ import six
 
 from django.db import models
 
+from .utils import truncate_string
+
 logger = logging.getLogger(__name__)
 
 
@@ -106,6 +108,10 @@ class NaturalSortField(models.CharField):
         kwargs.setdefault('db_index', True)
         kwargs.setdefault('editable', False)
         kwargs.setdefault('max_length', 255)
+
+        # For use in pre_save()
+        self.max_length = kwargs['max_length']
+
         super(NaturalSortField, self).__init__(**kwargs)
 
     def deconstruct(self):
@@ -133,6 +139,9 @@ class NaturalSortField(models.CharField):
             else:
                 string = string.lower()
                 string = self.naturalize_thing(string)
+
+        # Ensure the string isn't over long:
+        string = truncate_string(string, chars=self.max_length, truncate='…', at_word_boundary=True)
 
         return string
 
