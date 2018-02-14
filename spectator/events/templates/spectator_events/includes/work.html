@@ -9,7 +9,7 @@ Expects:
 
 <li>
 	<a href="{{ work.get_absolute_url }}"><strong>{{ work.title }}</strong></a>
- 	{% if work.year %}
+ 	{% if work.kind == 'movie' and work.year %}
 		<small class="text-muted">({{ work.year|unlocalize }})</small>
 	{% endif %}
 	{% include 'spectator_core/includes/roles.html' with roles=work.roles.all intro='<br>' %}
