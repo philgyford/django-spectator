@@ -77,13 +77,13 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
 
     KIND_CHOICES = (
-        ('concert',     'Classical'),
+        ('movie',       'Cinema'),
+        ('concert',     'Concert'),
         ('comedy',      'Comedy'),
         ('dance',       'Dance'),
         ('exhibition',  'Exhibition'),
         ('gig',         'Gig'),
         ('misc',        'Other'),
-        ('movie',       'Movie'),
         ('play',        'Theatre'),
     )
 
@@ -95,8 +95,8 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         'exhibition':   'exhibitions',
         'gig':          'gigs',
         'misc':         'misc',
-        'movie':        'movies',
-        'play':         'plays'
+        'movie':        'cinema',
+        'play':         'theatre'
     }
 
     kind = models.CharField(max_length=20, choices=KIND_CHOICES, blank=False,
@@ -202,10 +202,10 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             return 'Comedy'
         elif kind == 'dance':
             return 'Dance'
-        elif kind == 'concert':
-            return 'Classical'
         elif kind == 'play':
             return 'Theatre'
+        elif kind == 'movie':
+            return 'Cinema'
         else:
             return '{}s'.format(Event.get_kind_name(kind))
 
