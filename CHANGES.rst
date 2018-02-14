@@ -1,6 +1,18 @@
 Changelog (Django Spectator)
 ============================
 
+8.1.0
+-----
+
+- Change theatre and cinema Events' 'kind' fields from 'movie' and 'play' to
+  'cinema' and 'theatre'.
+
+- Ensure 'sort' fields on models are trimmed to the correct length if greater
+  than their ``max_length``.
+
+- Some template tweaks, including to Event list/detail templates' title
+  tags.
+
 8.0.0
 -----
 
