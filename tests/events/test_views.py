@@ -208,8 +208,8 @@ class WorkListViewTestCase(ViewTestCase):
     def test_context(self):
         response = views.WorkListView.as_view()(self.request, kind_slug='movies')
         context = response.context_data
-        self.assertEqual(context['page_title'], 'Works')
-        self.assertEqual(context['breadcrumb_list_title'], 'Works')
+        self.assertEqual(context['page_title'], 'Movies')
+        self.assertEqual(context['breadcrumb_list_title'], 'Movies')
         self.assertEqual(context['breadcrumb_list_url'], '/events/movies/')
 
 
@@ -248,7 +248,7 @@ class WorkDetailViewTestCase(ViewTestCase):
                                                 kind_slug='movies', slug='9g5o8')
         self.assertIn('breadcrumb_list_title', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_title'],
-                         'Works')
+                         'Movies')
         self.assertIn('breadcrumb_list_url', response.context_data)
         self.assertEqual(response.context_data['breadcrumb_list_url'],
                          '/events/movies/')
