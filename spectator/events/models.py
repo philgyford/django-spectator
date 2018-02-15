@@ -383,6 +383,12 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         "Returns a list of the slugs that different kinds of Works can have."
         return list(Work.KIND_SLUGS.values())
 
+    def get_kind_name(kind):
+        return {k:v for (k,v) in Work.KIND_CHOICES}[kind]
+
+    def get_kind_name_plural(kind):
+        return '{}s'.format(Work.get_kind_name(kind))
+
     @property
     def imdb_url(self):
         if self.imdb_id:

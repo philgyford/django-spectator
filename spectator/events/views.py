@@ -156,16 +156,25 @@ class WorkListView(WorkMixin, PaginatedListView):
     model = Work
 
     def get_queryset(self):
+        kind = self.get_work_kind()
         qs = super().get_queryset()
+        qs = qs.filter(kind=kind)
         qs = qs.prefetch_related('roles__creator')
         return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        title = self.model._meta.verbose_name_plural.title()
+
+        kind = self.get_work_kind()
+
+        title = Work.get_kind_name_plural(kind)
+
         context['page_title'] = title
         context['breadcrumb_list_title'] = title
-        context['breadcrumb_list_url'] = self.model().get_list_url(kind_slug=self.kind_slug)
+
+        context['breadcrumb_list_url'] = \
+                        self.model().get_list_url(kind_slug=self.kind_slug)
+
         return context
 
 
@@ -174,10 +183,14 @@ class WorkDetailView(WorkMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # e.g. 'Plays':
-        context['breadcrumb_list_title'] = \
-                                self.model._meta.verbose_name_plural.title()
-        context['breadcrumb_list_url'] = self.model().get_list_url(kind_slug=self.kind_slug)
+
+        kind = self.get_work_kind()
+
+        context['breadcrumb_list_title'] = Work.get_kind_name_plural(kind)
+
+        context['breadcrumb_list_url'] =  \
+                        self.model().get_list_url(kind_slug=self.kind_slug)
+
         return context
 
 
