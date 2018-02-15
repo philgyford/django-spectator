@@ -26,12 +26,3 @@
     {% include 'spectator_events/includes/events_paginated.html' with event_list=event_list page_obj=page_obj only %}
 
 {% endblock content %}
-
-
-{% block sidebar %}
-
-    {% include 'spectator_core/includes/card_nav.html' %}
-    {% include 'spectator_events/includes/card_nav.html' with counts=counts only %}
-
-    {{ block.super }}
-{% endblock sidebar %}

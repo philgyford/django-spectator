@@ -11,9 +11,12 @@
 
 {% block sidebar %}
 
+    {% include 'spectator_events/includes/card_nav.html' %}
+    {% include 'spectator_core/includes/card_nav.html' %}
+
     {% current_url_name as url_name %}
 
-    {% if url_name != 'spectator:events_home' %}
+    {% if url_name != 'spectator:events:home' and url_name != 'spectator:events:event_year_archive'%}
         {% recent_events_card 5 %}
     {% endif %}
 
