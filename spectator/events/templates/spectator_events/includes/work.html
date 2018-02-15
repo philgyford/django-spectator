@@ -8,7 +8,7 @@ Expects:
 {% load l10n %}
 
 <li>
-	<a href="{{ work.get_absolute_url }}"><strong>{{ work.title }}</strong></a>
+	<a href="{{ work.get_absolute_url }}"><strong><cite>{{ work.title }}</cite></strong></a>
  	{% if work.kind == 'movie' and work.year %}
 		<small class="text-muted">({{ work.year|unlocalize }})</small>
 	{% endif %}
