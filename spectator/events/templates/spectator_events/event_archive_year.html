@@ -1,5 +1,7 @@
 {% extends 'spectator_events/base.html' %}
 
+{% load spectator_events %}
+
 {% block head_page_title %}{{ year|date:"Y" }} events{% endblock %}
 {% block content_title %}{{ year|date:"Y" }} events{% endblock %}
 
@@ -38,3 +40,9 @@
     {% endif %}
 
 {% endblock content %}
+
+{% block sidebar %}
+
+  {% events_years_card current_year=year %}
+
+{% endblock sidebar %}
