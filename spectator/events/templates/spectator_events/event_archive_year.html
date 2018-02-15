@@ -22,7 +22,7 @@
                 <ul>
             {% endifchanged %}
             <li class="mb-2">
-                <a href="{{ event.get_absolute_url }}"><strong>{{ event }}</strong><br>
+                <a href="{{ event.get_absolute_url }}"><strong>{{ event.title_html }}</strong><br>
                 {% if event.venue %}
                   {{ event.venue_name }},
                 {% endif %}

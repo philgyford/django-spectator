@@ -1,11 +1,11 @@
 {% extends 'spectator_events/base.html' %}
 
 {% block head_page_title %}{{ event }}{% if event.venue %} at {{ event.venue_name }}{% endif %} on {{ event.date|date:"j M Y" }}{% endblock %}
-{% block content_title %}{{ event }}{% endblock %}
+{% block content_title %}{{ event.title_html }}{% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li class="breadcrumb-item active">{{ event }}</li>
+    <li class="breadcrumb-item active">{{ event.title_html }}</li>
 {% endblock %}
 
 {% block content %}

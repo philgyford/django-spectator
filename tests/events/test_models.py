@@ -10,19 +10,19 @@ from spectator.events.models import Event, Venue, Work
 class EventStrTestCase(TestCase):
     "Only testing the Event.__str__() method."
 
-    def test_str_with_title(self):
+    def test_with_title(self):
         "If event has a title, that should be used."
         band = GroupCreatorFactory(name='Martha')
         event = GigEventFactory(title='Indietracks 2017')
         EventRoleFactory(event=event, creator=band)
         self.assertEqual(str(event), 'Indietracks 2017')
 
-    def test_str_with_no_title_or_creators(self):
+    def test_with_no_title_or_creators(self):
         "With no title or creator names, it still has a __str__"
         event = GigEventFactory(title='')
         self.assertEqual(str(event), 'Event #{}'.format(event.pk))
 
-    def test_str_with_no_title_one_creator(self):
+    def test_with_no_title_one_creator(self):
         event = GigEventFactory(title='')
         EventRoleFactory(
                 event=event,
@@ -30,7 +30,7 @@ class EventStrTestCase(TestCase):
                 role_name='Headliner')
         self.assertEqual(str(event), 'Martha')
 
-    def test_str_with_no_title_several_creators(self):
+    def test_with_no_title_several_creators(self):
         "If event has no title, creator names should be used."
         event = GigEventFactory(title='')
         EventRoleFactory(
@@ -47,18 +47,18 @@ class EventStrTestCase(TestCase):
                 role_name='Support', role_order=2)
         self.assertEqual(str(event), 'Milky Wimpshake, Martha and The Tuts')
 
-    def test_str_with_title(self):
+    def test_with_title(self):
         event = ConcertEventFactory(title='Amazing Concert!')
         self.assertEqual(str(event), 'Amazing Concert!')
 
-    def test_str_with_no_title_one_work(self):
+    def test_with_no_title_one_work(self):
         "With no title and one work, it uses the work's title."
         event = ConcertEventFactory(title='')
         WorkSelectionFactory(event=event,
                                 work=ClassicalWorkFactory(title='Work A'))
         self.assertEqual(str(event), 'Work A')
 
-    def test_str_with_no_title_many_works(self):
+    def test_with_no_title_many_works(self):
         "With no title it uses the titles of the classical works."
         event = ConcertEventFactory(title='')
         WorkSelectionFactory(event=event, work=ClassicalWorkFactory(title='Work A'))
@@ -66,7 +66,7 @@ class EventStrTestCase(TestCase):
         WorkSelectionFactory(event=event, work=ClassicalWorkFactory(title='Work C'))
         self.assertEqual(str(event), 'Work A, Work B and Work C')
 
-    def test_str_with_no_title_and_no_works(self):
+    def test_with_no_title_and_no_works(self):
         "With no title or works it uses the default."
         event = ConcertEventFactory(title='', pk=5)
         self.assertEqual(str(event), 'Event #5')
@@ -76,6 +76,72 @@ class EventStrTestCase(TestCase):
         selection = WorkSelectionFactory(event=event,
                                     work=ClassicalWorkFactory(title='My Work'))
         self.assertEqual(str(selection), 'Event #{}: My Work'.format(event.pk))
+
+
+class EventTitleHtmlTestCase(TestCase):
+    "Only testing the Event.title_html property."
+
+    def test_with_title(self):
+        "If event has a title, that should be used."
+        band = GroupCreatorFactory(name='Martha')
+        event = GigEventFactory(title='Indietracks 2017')
+        EventRoleFactory(event=event, creator=band)
+        self.assertEqual(event.title_html, 'Indietracks 2017')
+
+    def test_with_no_title_or_creators(self):
+        "With no title or creator names, it still has a title"
+        event = GigEventFactory(title='')
+        self.assertEqual(event.title_html, 'Event #{}'.format(event.pk))
+
+    def test_with_no_title_one_creator(self):
+        event = GigEventFactory(title='')
+        EventRoleFactory(
+                event=event,
+                creator=GroupCreatorFactory(name='Martha'),
+                role_name='Headliner')
+        self.assertEqual(event.title_html, 'Martha')
+
+    def test_with_no_title_several_creators(self):
+        "If event has no title, creator names should be used."
+        event = GigEventFactory(title='')
+        EventRoleFactory(
+                event=event,
+                creator=GroupCreatorFactory(name='Milky Wimpshake'),
+                role_name='Headliner', role_order=1)
+        EventRoleFactory(
+                event=event,
+                creator=GroupCreatorFactory(name='The Tuts'),
+                role_name='Support', role_order=3)
+        EventRoleFactory(
+                event=event,
+                creator=GroupCreatorFactory(name='Martha'),
+                role_name='Support', role_order=2)
+        self.assertEqual(event.title_html, 'Milky Wimpshake, Martha and The Tuts')
+
+    def test_with_title(self):
+        event = ConcertEventFactory(title='Amazing Concert!')
+        self.assertEqual(event.title_html, 'Amazing Concert!')
+
+    def test_with_no_title_one_work(self):
+        "With no title and one work, it uses the work's title."
+        event = ConcertEventFactory(title='')
+        WorkSelectionFactory(event=event,
+                                work=ClassicalWorkFactory(title='Work A'))
+        self.assertEqual(event.title_html, '<cite>Work A</cite>')
+
+    def test_with_no_title_many_works(self):
+        "With no title it uses the titles of the classical works."
+        event = ConcertEventFactory(title='')
+        WorkSelectionFactory(event=event, work=ClassicalWorkFactory(title='Work A'))
+        WorkSelectionFactory(event=event, work=ClassicalWorkFactory(title='Work B'))
+        WorkSelectionFactory(event=event, work=ClassicalWorkFactory(title='Work C'))
+        self.assertEqual(event.title_html,
+            '<cite>Work A</cite>, <cite>Work B</cite> and <cite>Work C</cite>')
+
+    def test_with_no_title_and_no_works(self):
+        "With no title or works it uses the default."
+        event = ConcertEventFactory(title='', pk=5)
+        self.assertEqual(event.title_html, 'Event #5')
 
 
 class EventTestCase(TestCase):

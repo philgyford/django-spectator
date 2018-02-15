@@ -4,6 +4,8 @@ import datetime
 from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from spectator.core.models import BaseRole, SluggedModelMixin,\
@@ -150,7 +152,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     def get_absolute_url(self):
         return reverse('spectator:events:event_detail', kwargs={'slug':self.slug})
 
-    def make_title(self):
+    def make_title(self, html=False):
         if self.title == '':
             title_start = Event.get_kind_name_plural(self.kind)
             title = '{} #{}'.format(title_start, self.pk)
@@ -163,8 +165,20 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
                     # (If it hasn't been saved it has no works yet.)
                     if len(work_titles) == 1:
                         title = work_titles[0]
+                        if html is True:
+                            title = format_html('<cite>{}</cite>', title)
+
                     elif len(work_titles) > 1:
-                        title = '{} and {}'.format(
+                        if html is True:
+                            title = format_html(
+                                        '<cite>{}</cite> and <cite>{}</cite>',
+                                        mark_safe(
+                                            '</cite>, <cite>'.join(work_titles[:-1])
+                                        ),
+                                        work_titles[-1]
+                                    )
+                        else:
+                            title = '{} and {}'.format(
                                 ', '.join(work_titles[:-1]), work_titles[-1])
             else:
                 # It's like a Gig or Comedy; no works.
@@ -181,7 +195,8 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         else:
             title = self.title
 
-        title = truncate_string(title, chars=255, at_word_boundary=True)
+        if html is False:
+            title = truncate_string(title, chars=255, at_word_boundary=True)
 
         return title
 
@@ -245,6 +260,14 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     def get_plays(self):
         return self.work_selections.filter(work__kind='play')
+
+    @property
+    def title_html(self):
+        """
+        Returns the title of the Event, the same as using __str__(), except
+        it will add <cite></cite> tags around the names of all Works.
+        """
+        return self.make_title(html=True)
 
     @property
     def kind_name(self):
