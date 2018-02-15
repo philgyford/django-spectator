@@ -1,6 +1,19 @@
 Changelog (Django Spectator)
 ============================
 
+8.3.0
+-----
+
+- Rationalise the usage of 'nav' cards in sidebars.
+
+- Fix the titles and breadcrumbs of the Work List templates.
+
+8.2.0
+-----
+
+- Added ``title_html`` property to ``Event`` model, which wraps the names of any
+  Works in the title in ``<cite></cite>`` tags.
+
 8.1.0
 -----
 
