@@ -220,15 +220,109 @@ class CreatorManagerByEventsTestCase(TestCase):
         "If supplied with a `kind` argument."
         c = IndividualCreatorFactory()
 
-        gig = GigEventFactory()
-        comedy = ComedyEventFactory()
-        cinema = CinemaEventFactory()
-
-        EventRoleFactory(creator=c, event=gig)
-        EventRoleFactory(creator=c, event=comedy)
-        EventRoleFactory(creator=c, event=cinema)
+        EventRoleFactory(creator=c, event=GigEventFactory())
+        EventRoleFactory(creator=c, event=ComedyEventFactory())
+        EventRoleFactory(creator=c, event=CinemaEventFactory())
 
         creators = Creator.objects.by_events(kind='gig')
 
         # Should only count the 'gig' event:
         self.assertEqual(creators[0].num_events, 1)
+
+
+class CreatorManagerByWorksTestCase(TestCase):
+
+    def test_has_count_field(self):
+        movie = MovieFactory()
+        WorkRoleFactory(work=movie)
+
+        creators = Creator.objects.by_works()
+
+        self.assertTrue(hasattr(creators[0], 'num_works'))
+        self.assertEqual(creators[0].num_works, 1)
+
+    def test_counts_works(self):
+        c = IndividualCreatorFactory()
+        movie = MovieFactory()
+        play = PlayFactory()
+        WorkRoleFactory(creator=c, work=movie)
+        WorkRoleFactory(creator=c, work=play)
+
+        creators = Creator.objects.by_works()
+
+        self.assertEqual(creators[0].num_works, 2)
+
+    def test_sorts_by_num_works(self):
+        bob = IndividualCreatorFactory()
+        terry = IndividualCreatorFactory()
+
+        movie = MovieFactory()
+        play = PlayFactory()
+
+        # Both are involved in the movie:
+        WorkRoleFactory(creator=terry, work=movie)
+        WorkRoleFactory(creator=bob, work=movie)
+
+        # Only bob is involved in the play:
+        WorkRoleFactory(creator=bob, work=play)
+
+        creators = Creator.objects.by_works()
+
+        self.assertEqual(len(creators), 2)
+        self.assertEqual(creators[0], bob)
+        self.assertEqual(creators[0].num_works, 2)
+        self.assertEqual(creators[1], terry)
+        self.assertEqual(creators[1].num_works, 1)
+
+    def test_sorts_by_name(self):
+        "If counts are equal"
+        terry = IndividualCreatorFactory(name='terry')
+        bob = IndividualCreatorFactory(name='bob')
+        movie = MovieFactory()
+        play = PlayFactory()
+
+        WorkRoleFactory(creator=terry, work=movie)
+        WorkRoleFactory(creator=bob, work=play)
+
+        creators = Creator.objects.by_works()
+
+        self.assertEqual(len(creators), 2)
+        self.assertEqual(creators[0], bob)
+        self.assertEqual(creators[1], terry)
+
+    def filters_by_kind(self):
+        c = IndividualCreatorFactory()
+
+        WorkRoleFactory(creator=c, work=MovieFactory())
+        WorkRoleFactory(creator=c, work=PlayFactory())
+        WorkRoleFactory(creator=c, work=DancePieceFactory())
+
+        creators = Creator.objects.by_works(kind='movie')
+
+        # Should only count the Movie work:
+        self.assertEqual(creators[0].num_works, 1)
+
+    def filters_by_role_name(self):
+        c = IndividualCreatorFactory()
+
+        WorkRoleFactory(creator=c, work=MovieFactory(), role_name='Director')
+        WorkRoleFactory(creator=c, work=MovieFactory(), role_name='Actor')
+        WorkRoleFactory(creator=c, work=MovieFactory(), role_name='')
+
+        creators = Creator.objects.by_works(role_name='Director')
+
+        # Should only count the 'Director' role:
+        self.assertEqual(creators[0].num_works, 1)
+
+    def filters_by_kind_and_role_name(self):
+        "Can filter by both at once."
+        c = IndividualCreatorFactory()
+
+        WorkRoleFactory(creator=c, work=MovieFactory(), role_name='Director')
+        WorkRoleFactory(creator=c, work=PlayFactory(), role_name='Director')
+        WorkRoleFactory(creator=c, work=MovieFactory(), role_name='Actor')
+
+        creators = Creator.objects.by_works(kind='movie', role_name='Director')
+
+        # Should only count the 'Director' role on a movie Work:
+        self.assertEqual(creators[0].num_works, 1)
