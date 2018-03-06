@@ -215,3 +215,20 @@ class CreatorManagerByEventsTestCase(TestCase):
         self.assertEqual(len(creators), 2)
         self.assertEqual(creators[0], bob)
         self.assertEqual(creators[1], terry)
+
+    def filters_by_kind(self):
+        "If supplied with a `kind` argument."
+        c = IndividualCreatorFactory()
+
+        gig = GigEventFactory()
+        comedy = ComedyEventFactory()
+        cinema = CinemaEventFactory()
+
+        EventRoleFactory(creator=c, event=gig)
+        EventRoleFactory(creator=c, event=comedy)
+        EventRoleFactory(creator=c, event=cinema)
+
+        creators = Creator.objects.by_events(kind='gig')
+
+        # Should only count the 'gig' event:
+        self.assertEqual(creators[0].num_events, 1)
