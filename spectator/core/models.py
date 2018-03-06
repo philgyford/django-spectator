@@ -5,6 +5,7 @@ from django.urls import reverse
 from hashids import Hashids
 
 from .fields import NaturalSortField
+from .managers import CreatorManager
 
 
 class TimeStampedModelMixin(models.Model):
@@ -135,6 +136,8 @@ class Creator(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     kind = models.CharField(max_length=20, choices=KIND_CHOICES,
                                                         default='individual')
+
+    objects = CreatorManager()
 
     class Meta:
         ordering = ('name_sort',)
