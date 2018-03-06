@@ -3,6 +3,7 @@ from django.test import override_settings, TestCase
 
 from .. import make_date
 from spectator.core.factories import *
+from spectator.events.factories import *
 from spectator.reading.factories import *
 from spectator.core.models import Creator
 
@@ -150,6 +151,66 @@ class CreatorManagerByReadingsTestCase(TestCase):
         ReadingFactory(publication=pub1, start_date=d, end_date=d)
 
         creators = Creator.objects.by_readings()
+
+        self.assertEqual(len(creators), 2)
+        self.assertEqual(creators[0], bob)
+        self.assertEqual(creators[1], terry)
+
+
+class CreatorManagerByEventsTestCase(TestCase):
+
+    def test_has_count_field(self):
+        ev = ComedyEventFactory()
+        EventRoleFactory(event=ev)
+
+        creators = Creator.objects.by_events()
+
+        self.assertTrue(hasattr(creators[0], 'num_events'))
+        self.assertEqual(creators[0].num_events, 1)
+
+    def test_counts_events(self):
+        c = IndividualCreatorFactory()
+        ev1 = ComedyEventFactory()
+        ev2 = GigEventFactory()
+        EventRoleFactory(creator=c, event=ev1)
+        EventRoleFactory(creator=c, event=ev2)
+
+        creators = Creator.objects.by_events()
+
+        self.assertEqual(creators[0].num_events, 2)
+
+    def test_sorts_by_num_events(self):
+        bob = IndividualCreatorFactory()
+        terry = IndividualCreatorFactory()
+        ev1 = ComedyEventFactory()
+        ev2 = GigEventFactory()
+
+        # Both are involved in event 1:
+        EventRoleFactory(creator=terry, event=ev1)
+        EventRoleFactory(creator=bob, event=ev1)
+
+        # Only bob is involved in event 2:
+        EventRoleFactory(creator=bob, event=ev2)
+
+        creators = Creator.objects.by_events()
+
+        self.assertEqual(len(creators), 2)
+        self.assertEqual(creators[0], bob)
+        self.assertEqual(creators[0].num_events, 2)
+        self.assertEqual(creators[1], terry)
+        self.assertEqual(creators[1].num_events, 1)
+
+    def test_sorts_by_name(self):
+        "If counts are equal"
+        terry = IndividualCreatorFactory(name='terry')
+        bob = IndividualCreatorFactory(name='bob')
+        ev2 = GigEventFactory()
+        ev1 = ComedyEventFactory()
+
+        EventRoleFactory(creator=terry, event=ev1)
+        EventRoleFactory(creator=bob, event=ev2)
+
+        creators = Creator.objects.by_events()
 
         self.assertEqual(len(creators), 2)
         self.assertEqual(creators[0], bob)

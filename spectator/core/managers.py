@@ -42,3 +42,22 @@ class CreatorManager(models.Manager):
                     .order_by('-num_readings', 'name_sort')
 
         return qs
+
+    def by_events(self):
+        """
+        Get the Creators involved in the most Events.
+
+        This only counts Creators directly involved in an Event.
+        i.e. if a Creator is the director of a movie Work, and an Event was
+        a viewing of that movie, that Event wouldn't count. Unless they were
+        also directly involved in the Event (e.g. speaking after the movie).
+        """
+        if not spectator_apps.is_enabled('events'):
+            raise ImproperlyConfigured("To use the CreatorManager.by_readings() method, 'spectator.events' must by in INSTALLED_APPS.")
+
+        qs = self.get_queryset()
+
+        qs = qs.annotate(num_events=Count('events')) \
+                .order_by('-num_events', 'name_sort')
+
+        return qs
