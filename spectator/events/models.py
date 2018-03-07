@@ -8,6 +8,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
+from .managers import VenueManager
 from spectator.core.models import BaseRole, SluggedModelMixin,\
         TimeStampedModelMixin
 from spectator.core.fields import NaturalSortField
@@ -724,6 +725,8 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     country = models.CharField(null=False, blank=True, max_length=2,
                     choices=COUNTRY_CHOICES,
                     help_text="The ISO 3166-1 alpha-2 code, e.g. 'GB' or 'FR'")
+
+    objects = VenueManager()
 
     class Meta:
         ordering = ['name_sort',]
