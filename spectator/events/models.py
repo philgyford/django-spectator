@@ -8,7 +8,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from .managers import VenueManager
+from .managers import VenueManager, WorkManager
 from spectator.core.models import BaseRole, SluggedModelMixin,\
         TimeStampedModelMixin
 from spectator.core.fields import NaturalSortField
@@ -355,6 +355,8 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     year = models.PositiveSmallIntegerField(null=True, blank=True,
                 default=None,
                 help_text="Year of release, composition, publication, etc.")
+
+    objects = WorkManager()
 
     def __str__(self):
         return self.title
