@@ -238,6 +238,12 @@ Restrict to one kind of Event::
 
     {% annual_event_counts kind='cinema' as years %}
 
+Or to display as a Bootstrap card, with each year linking to ``EventYearArchiveView``::
+
+    {% annual_event_counts_card current_year=year kind='all' %}
+
+Here, ``year`` is a date object indicating a year which shouldn't be linked.
+
 
 Reading template tags
 =====================

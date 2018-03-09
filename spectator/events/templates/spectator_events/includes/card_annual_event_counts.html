@@ -1,0 +1,35 @@
+{% comment %}
+Used by the annual_event_counts_card template tag.
+
+Expects:
+
+* current_year: A date object representing the current year, if any.
+* years: A QuerySet of dicts.
+* kind: An Event kind (like 'cinema', 'gig', etc.) or 'all'.
+* card_title: Text for the card's title.
+{% endcomment %}
+
+{% if years|length > 0 %}
+    {% load spectator_core  %}
+    {% current_url_name as url_name %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h2 class="h6 card-title">{{ card_title }}</h2>
+
+            <ul class="mb-0">
+                {% for year_data in years %}
+                    <li>
+                        {% if url_name == 'spectator:events:event_year_archive' and current_year == year_data.year %}
+                            {{ year_data.year|date:"Y" }}
+                        {% else %}
+                            <a href="{% url 'spectator:events:event_year_archive' year=year_data.year|date:"Y" %}">{{ year_data.year|date:"Y" }}</a>
+                        {% endif %}
+                        <small class="text-muted">
+                            ({{ year_data.total }})
+                        </small>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}

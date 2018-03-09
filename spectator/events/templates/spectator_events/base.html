@@ -20,6 +20,15 @@
         {% recent_events_card 5 %}
     {% endif %}
 
-    {% events_years_card current_year=year %}
+    {% comment %}
+        Just links to year pages: #}
+      {% events_years_card current_year=year %}
+    {% endcomment %}
+
+    {% if event_kind %}
+      {% annual_event_counts_card current_year=year kind=event_kind %}
+    {% else %}
+      {% annual_event_counts_card current_year=year %}
+    {% endif %}
 
 {% endblock sidebar %}
