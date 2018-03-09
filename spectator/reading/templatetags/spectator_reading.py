@@ -10,13 +10,14 @@ from ..models import Publication, Reading
 register = template.Library()
 
 
+
 @register.simple_tag
 def annual_reading_counts():
     """
     Returns a list of dicts, one per year of reading. In year order.
     Each dict is like:
 
-        {'year':        2003,
+        {'year':        '2003',
          'book':        12,
          'periodical':  18,
          'total':       30,
@@ -53,7 +54,7 @@ def annual_reading_counts():
 
     for year, data in counts.items():
         year_data = {
-            'year': int(year),
+            'year': year,
             'total': 0,
         }
         for kind in kinds:
@@ -66,6 +67,30 @@ def annual_reading_counts():
         counts_list.append(year_data)
 
     return counts_list
+
+
+@register.inclusion_tag('spectator_reading/includes/card_annual_reading_counts.html')
+def annual_reading_counts_card(kind='all', current_year=None):
+    """
+    Displays years and the number of books/periodicals read per year.
+
+    kind is one of 'book', 'periodical', 'all' (default).
+    current_year is an optional date object representing the year we're already
+        showing information about.
+    """
+    if kind == 'book':
+        card_title = 'Books per year'
+    elif kind == 'periodical':
+        card_title = 'Periodicals per year'
+    else:
+        card_title = 'Reading per year'
+
+    return {
+            'card_title': card_title,
+            'kind': kind,
+            'years': annual_reading_counts(),
+            'current_year': current_year
+            }
 
 
 @register.simple_tag

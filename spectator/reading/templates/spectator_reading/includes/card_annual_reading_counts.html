@@ -1,0 +1,72 @@
+{% comment %}
+Used by the reading_years_card template tag.
+
+Expects:
+
+* current_year: A date object representing the current year, if any.
+* years: A list of dicts.
+* kind: One of 'book', 'publication', 'all'
+* card_title: Text for the card's title.
+{% endcomment %}
+
+{% if years|length > 0 %}
+    {% load spectator_core  %}
+    {% current_url_name as url_name %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h2 class="h6 card-title">{{ card_title }}</h2>
+
+
+            {% if kind == 'all' %}
+                <p><small>Books, periodicals and total</small></p>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="sr-only">
+                            <tr>
+                                <th>Year</th>
+                                <th>Books</th>
+                                <th>Periodicals</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for year_data in years %}
+                                <tr>
+                                    <td>
+                                        {% if url_name == 'spectator:reading:reading_year_archive' and current_year|date:"Y" == year_data.year %}
+                                            {{ year_data.year }}
+                                        {% else %}
+                                            <a href="{% url 'spectator:reading:reading_year_archive' year=year_data.year %}">{{ year_data.year }}</a>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right">{{ year_data.book }}</td>
+                                    <td class="text-right">{{ year_data.periodical }}</td>
+                                    <td class="text-right">{{ year_data.total }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div> <!-- .table-responsive -->
+            {% else %}
+                <ul class="mb-0">
+                    {% for year_data in years %}
+                        <li>
+                            {% if url_name == 'spectator:reading:reading_year_archive' and current_year|date:"Y" == year_data.year %}
+                                {{ year_data.year }}
+                            {% else %}
+                                <a href="{% url 'spectator:reading:reading_year_archive' year=year_data.year %}">{{ year_data.year }}</a>
+                            {% endif %}
+                            <small class="text-muted">
+                                {% if kind == 'periodical' %}
+                                    ({{ year_data.periodical }})
+                                {% else %}
+                                    ({{ year_data.book }})
+                                {% endif %}
+                            </small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

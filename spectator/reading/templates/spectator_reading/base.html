@@ -21,6 +21,11 @@
         {% in_progress_publications_card %}
     {% endif %}
 
-    {% reading_years_card current_year=year %}
+    {% comment %}
+        Just links to year pages: #}
+        {% reading_years_card current_year=year %}
+    {% endcomment %}
+
+    {% annual_reading_counts_card current_year=year kind='all' %}
 
 {% endblock sidebar %}
