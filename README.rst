@@ -284,6 +284,32 @@ Or to display as a Bootstrap card, with each year linking to the
 
 Here, ``year`` is a date object indicating a year which shouldn't be linked.
 
+Annual reading counts
+---------------------
+
+For more detail than the ``reading_years`` tag, use this to get the number of
+Books, and Periodicals (and the total) finished per year::
+
+    {% annual_reading_counts as years %}
+
+    {% for year_data in years %}
+        {{ year_data.year }}:
+        {{ year_data.book }} book(s),
+        {{ year_data.periodical }} periodical(s),
+        {{ year_data.total }} total.<br>
+    {% endfor %}
+
+Or to display as a Bootstrap card, with each year linking to ``ReadingYearArchiveView``::
+
+    {% annual_reading_counts_card current_year=year kind='all' %}
+
+Here, ``year`` is a date object indicating a year which shouldn't be linked.
+
+And ``kind`` can be one of "all" (default), "book" or "periodical". If it's "all",
+then the result is rendered as a table, with a column each for year, book count,
+periodical count and total count. Otherwise it's a list of years with the
+book/periodical counts in parentheses.
+
 
 *****************
 Local development
