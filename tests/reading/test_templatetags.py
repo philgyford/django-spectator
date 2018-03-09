@@ -35,11 +35,14 @@ class AnnualReadingCountsTestCase(TestCase):
 
         self.assertEqual(len(qs), 3)
         self.assertEqual(qs[0],
-                    {'year': '2015', 'book': 2, 'periodical': 0 ,'total': 2})
+                    {'year': make_date('2015-01-01'),
+                     'book': 2, 'periodical': 0 ,'total': 2})
         self.assertEqual(qs[1],
-                    {'year': '2017', 'book': 3, 'periodical': 2 ,'total': 5})
+                    {'year': make_date('2017-01-01'),
+                    'book': 3, 'periodical': 2 ,'total': 5})
         self.assertEqual(qs[2],
-                    {'year': '2018', 'book': 0, 'periodical': 2 ,'total': 2})
+                    {'year': make_date('2018-01-01'),
+                    'book': 0, 'periodical': 2 ,'total': 2})
 
 
 class InProgressPublicationsTestCase(TestCase):

@@ -17,7 +17,7 @@ def annual_reading_counts():
     Returns a list of dicts, one per year of reading. In year order.
     Each dict is like:
 
-        {'year':        '2003',
+        {'year':        datetime.date(2003, 1, 1),
          'book':        12,
          'periodical':  18,
          'total':       30,
@@ -42,19 +42,21 @@ def annual_reading_counts():
                             .order_by('year')
 
         for year_data in qs:
-            year = year_data['year'].strftime('%Y')
-            if not year in counts:
-                counts[year] = {}
+            year_str = year_data['year'].strftime('%Y')
+            if not year_str in counts:
+                counts[year_str] = {
+                    'year': year_data['year'],
+                }
 
-            counts[year][kind] = year_data['count']
+            counts[year_str][kind] = year_data['count']
 
     # Now translate counts into our final list, with totals, and 0s for kinds
     # when they have no Readings for that year.
     counts_list = []
 
-    for year, data in counts.items():
+    for year_str, data in counts.items():
         year_data = {
-            'year': year,
+            'year': data['year'],
             'total': 0,
         }
         for kind in kinds:

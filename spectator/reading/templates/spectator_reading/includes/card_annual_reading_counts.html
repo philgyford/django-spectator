@@ -33,10 +33,10 @@ Expects:
                             {% for year_data in years %}
                                 <tr>
                                     <td>
-                                        {% if url_name == 'spectator:reading:reading_year_archive' and current_year|date:"Y" == year_data.year %}
-                                            {{ year_data.year }}
+                                        {% if url_name == 'spectator:reading:reading_year_archive' and current_year == year_data.year %}
+                                            {{ year_data.year|date:"Y" }}
                                         {% else %}
-                                            <a href="{% url 'spectator:reading:reading_year_archive' year=year_data.year %}">{{ year_data.year }}</a>
+                                            <a href="{% url 'spectator:reading:reading_year_archive' year=year_data.year|date:"Y" %}">{{ year_data.year|date:"Y" }}</a>
                                         {% endif %}
                                     </td>
                                     <td class="text-right">{{ year_data.book }}</td>
@@ -51,10 +51,10 @@ Expects:
                 <ul class="mb-0">
                     {% for year_data in years %}
                         <li>
-                            {% if url_name == 'spectator:reading:reading_year_archive' and current_year|date:"Y" == year_data.year %}
-                                {{ year_data.year }}
+                            {% if url_name == 'spectator:reading:reading_year_archive' and current_year == year_data.year %}
+                                {{ year_data.year|date:"Y" }}
                             {% else %}
-                                <a href="{% url 'spectator:reading:reading_year_archive' year=year_data.year %}">{{ year_data.year }}</a>
+                                <a href="{% url 'spectator:reading:reading_year_archive' year=year_data.year|date:"Y" %}">{{ year_data.year|date:"Y" }}</a>
                             {% endif %}
                             <small class="text-muted">
                                 {% if kind == 'periodical' %}
