@@ -1,10 +1,71 @@
+from collections import OrderedDict
+
 from django import template
-from django.db.models import Q
+from django.db.models import Count, Q
+from django.db.models.functions import TruncYear
 from django.utils.html import format_html
 
 from ..models import Publication, Reading
 
 register = template.Library()
+
+
+@register.simple_tag
+def annual_reading_counts():
+    """
+    Returns a list of dicts, one per year of reading. In year order.
+    Each dict is like:
+
+        {'year':        2003,
+         'book':        12,
+         'periodical':  18,
+         'total':       30,
+         }
+
+    We use the end_date of a Reading to count when that thing was read.
+    """
+    kinds = ['book', 'periodical']
+
+    # This will have keys of years (strings) and dicts of data:
+    # {
+    #   '2003': {'books': 12, 'periodicals': 18},
+    # }
+    counts = OrderedDict()
+
+    for kind in kinds:
+        qs = Reading.objects.exclude(end_date__isnull=True) \
+                            .filter(publication__kind=kind) \
+                            .annotate(year=TruncYear('end_date')) \
+                            .values('year') \
+                            .annotate(count=Count('id')) \
+                            .order_by('year')
+
+        for year_data in qs:
+            year = year_data['year'].strftime('%Y')
+            if not year in counts:
+                counts[year] = {}
+
+            counts[year][kind] = year_data['count']
+
+    # Now translate counts into our final list, with totals, and 0s for kinds
+    # when they have no Readings for that year.
+    counts_list = []
+
+    for year, data in counts.items():
+        year_data = {
+            'year': int(year),
+            'total': 0,
+        }
+        for kind in kinds:
+            if kind in data:
+                year_data[kind] = data[kind]
+                year_data['total'] += data[kind]
+            else:
+                year_data[kind] = 0
+
+        counts_list.append(year_data)
+
+    return counts_list
 
 
 @register.simple_tag

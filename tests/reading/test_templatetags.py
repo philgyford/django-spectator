@@ -2,8 +2,44 @@ from django.test import TestCase
 
 from .. import make_date
 from spectator.reading.factories import PublicationFactory, ReadingFactory
-from spectator.reading.templatetags.spectator_reading import day_publications,\
-        in_progress_publications, reading_dates, reading_years
+from spectator.reading.templatetags.spectator_reading import (
+    annual_reading_counts, day_publications, in_progress_publications,
+    reading_dates, reading_years
+)
+
+
+class AnnualReadingCountsTestCase(TestCase):
+
+    def test_queryset(self):
+        # Books only in 2015:
+        ReadingFactory.create_batch(2,
+                        publication=PublicationFactory(kind='book'),
+                        end_date=make_date('2015-01-01'))
+
+        # Nothing in 2016.
+
+        # Books and periodicals in 2017:
+        ReadingFactory.create_batch(3,
+                        publication=PublicationFactory(kind='book'),
+                        end_date=make_date('2017-09-01'))
+        ReadingFactory.create_batch(2,
+                        publication=PublicationFactory(kind='periodical'),
+                        end_date=make_date('2017-09-01'))
+
+        # Periodicals only in 2018:
+        ReadingFactory.create_batch(2,
+                        publication=PublicationFactory(kind='periodical'),
+                        end_date=make_date('2018-01-01'))
+
+        qs = annual_reading_counts()
+
+        self.assertEqual(len(qs), 3)
+        self.assertEqual(qs[0],
+                        {'year': 2015, 'book': 2, 'periodical': 0 ,'total': 2})
+        self.assertEqual(qs[1],
+                        {'year': 2017, 'book': 3, 'periodical': 2 ,'total': 5})
+        self.assertEqual(qs[2],
+                        {'year': 2018, 'book': 0, 'periodical': 2 ,'total': 2})
 
 
 class InProgressPublicationsTestCase(TestCase):
@@ -292,5 +328,3 @@ class ReadingDatesTestCase(TestCase):
                            start_granularity=6)
         self.assertEqual(reading_dates(r),
             'Started in <time datetime="2017">2017</time>')
-
-
