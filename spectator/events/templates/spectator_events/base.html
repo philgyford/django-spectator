@@ -14,6 +14,9 @@
     {% include 'spectator_events/includes/card_nav.html' %}
     {% include 'spectator_core/includes/card_nav.html' %}
 
+    {% block sidebar_after_nav %}
+    {% endblock %}
+
     {% current_url_name as url_name %}
 
     {% if url_name != 'spectator:events:home' and url_name != 'spectator:events:event_year_archive'%}

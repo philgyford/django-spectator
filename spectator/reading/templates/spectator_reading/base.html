@@ -15,6 +15,9 @@
     {% include 'spectator_reading/includes/card_nav.html' %}
     {% include 'spectator_core/includes/card_nav.html' %}
 
+    {% block sidebar_after_nav %}
+    {% endblock %}
+
     {% current_url_name as url_name %}
 
     {% if url_name != 'spectator:reading:home' and url_name != 'spectator:reading:reading_year_archive' %}

@@ -1,0 +1,24 @@
+{% comment %}
+For displaying a list of objects in a chart.
+
+Expects:
+* object_list - A list/QuerySet of objects, each with a num_publications property.
+
+* score_attr - The name of the attribute on each object that contains the score for the chart. e.g. 'num_visits'
+
+* name_attr - The name of the attribute on each object to be used for its display value. Default is 'name'.
+
+* in_card - Boolean, default is False. Is this displayed within a .card element?
+
+{% endcomment %}
+
+{% load spectator_core %}
+
+<ol{% if in_card|default_if_none:False %} class="mb-0"{% endif %}>
+    {% for obj in object_list %}
+        <li value="{{ obj.chart_position }}">
+            <a href="{{ obj.get_absolute_url }}">{% if name_attr %}{{ obj|get_attr:name_attr }}{% else %}{{ obj.name }}{% endif %}</a>
+            <small class="text-muted">({{ obj|get_attr:score_attr }})</small>
+        </li>
+    {% endfor %}
+</ol>

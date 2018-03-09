@@ -29,6 +29,16 @@ def get_item(dictionary, key):
     return dictionary.get(key)
 
 
+@register.filter
+def get_attr(obj, attr_name):
+    """
+    For getting a value from a property on an object.
+    Use like:
+        {{ myobj|get_attr:my_attr_name }}
+    """
+    return getattr(obj, attr_name, '')
+
+
 @register.inclusion_tag('spectator_core/includes/card_change_object_link.html')
 def change_object_link_card(obj, perms):
     """

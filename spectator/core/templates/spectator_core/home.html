@@ -24,3 +24,12 @@
 
 {% endblock content %}
 
+
+{% block sidebar %}
+    {{ block.super }}
+
+    {% include 'spectator_core/includes/card_chart.html' with card_title='Most read authors' object_list=creators_by_readings score_attr='num_readings' only %}
+
+    {% include 'spectator_core/includes/card_chart.html' with card_title='Most visited venues' object_list=venues_by_visits score_attr='num_visits' only %}
+
+{% endblock sidebar %}

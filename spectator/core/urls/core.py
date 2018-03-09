@@ -15,4 +15,3 @@ urlpatterns = [
         name='home'
     ),
 ]
-

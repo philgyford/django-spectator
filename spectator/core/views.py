@@ -4,12 +4,13 @@ from django.utils.translation import ugettext as _
 from django.views.generic import DetailView, ListView, YearArchiveView,\
         TemplateView
 
+from .apps import spectator_apps
 from .models import Creator
 from .paginator import DiggPaginator
-from .apps import spectator_apps
+from .utils import chartify
 
 if spectator_apps.is_enabled('events'):
-    from spectator.events.models import Event
+    from spectator.events.models import Event, Venue
 
 if spectator_apps.is_enabled('reading'):
     from spectator.reading.models import Publication
@@ -76,17 +77,53 @@ class PaginatedListView(ListView):
 class HomeView(TemplateView):
     template_name = 'spectator_core/home.html'
 
+    # How many Creators to show in the sidebar chart:
+    num_creators_by_readings = 5
+
+    # How many recent events to show:
+    num_recent_events = 10
+
+    # How many Venues to show in the sidebar chart:
+    num_venues_by_visits = 5
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         if spectator_apps.is_enabled('reading'):
-            context['in_progress_publication_list'] = \
-                                    Publication.in_progress_objects\
-                                    .select_related('series')\
-                                    .prefetch_related('roles__creator').all()
+            context.update( self.get_reading_context() )
+
         if spectator_apps.is_enabled('events'):
-            context['recent_event_list'] = Event.objects\
-                                            .select_related('venue')\
-                                            .order_by('-date')[:10]
+            context.update( self.get_events_context() )
+
+        return context
+
+    def get_events_context(self):
+        context = {}
+
+        context['recent_event_list'] = Event.objects\
+                                        .select_related('venue')\
+                                    .order_by('-date')[:self.num_recent_events]
+
+        context['venues_by_visits'] = chartify(
+                        Venue.objects.by_visits()[:self.num_venues_by_visits],
+                        'num_visits')
+
+        return context
+
+
+    def get_reading_context(self):
+        context = {}
+
+        context['in_progress_publication_list'] = \
+                                Publication.in_progress_objects\
+                                .select_related('series')\
+                                .prefetch_related('roles__creator').all()
+
+        context['creators_by_readings'] = chartify(
+                Creator.objects.by_readings()[:self.num_creators_by_readings],
+                'num_readings')
+
+
         return context
 
 
@@ -107,6 +144,7 @@ class CreatorListView(PaginatedListView):
                                                     kind='individual').count()
         context['group_count'] = Creator.objects.filter(
                                                     kind='group').count()
+
         return context
 
     def get_queryset(self):
@@ -117,5 +155,3 @@ class CreatorListView(PaginatedListView):
 
 class CreatorDetailView(DetailView):
     model = Creator
-
-

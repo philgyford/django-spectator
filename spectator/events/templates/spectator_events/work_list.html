@@ -17,3 +17,14 @@ Displays a paginated list of Movies, Plays, ClassicalWorks or DancePieces.
     {% include 'spectator_events/includes/works_paginated.html' with work_list=object_list page_obj=page_obj only %}
 
 {% endblock content %}
+
+
+{% block sidebar_after_nav %}
+
+    {% with work_kind_plural|lower as work_kind_plural_lower %}
+        {% with 'Most seen '|add:work_kind_plural_lower as card_title %}
+            {% include 'spectator_core/includes/card_chart.html' with card_title=card_title object_list=works_by_views score_attr='num_views' name_attr='title' only %}
+        {% endwith %}
+    {% endwith %}
+
+{% endblock %}

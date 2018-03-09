@@ -1,0 +1,29 @@
+{% comment %}
+For displaying a list of objects in a chart within a card.
+
+Expects:
+
+* card_title - The text for the card's heading.
+
+* object_list - A list/QuerySet of objects.
+
+* score_attr - The name of the attribute on each object that contains the score
+for the chart. e.g. 'num_visits'
+
+* name_attr - Optional. The name of the attribute on each object to be used for
+its display value. Default is 'name'.
+
+* in_card - Optional. Boolean, default is False. Is this displayed within a
+card element?
+
+{% endcomment %}
+
+{% if object_list %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h2 class="h6 card-title">{{ card_title }}</h2>
+
+            {% include 'spectator_core/includes/chart.html' with object_list=object_list score_attr=score_attr name_attr=name_attr|default:None in_card=True only %}
+        </div>
+    </div>
+{% endif %}
