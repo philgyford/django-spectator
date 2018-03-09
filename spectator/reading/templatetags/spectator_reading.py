@@ -7,8 +7,8 @@ from django.utils.html import format_html
 
 from ..models import Publication, Reading
 
-register = template.Library()
 
+register = template.Library()
 
 
 @register.simple_tag

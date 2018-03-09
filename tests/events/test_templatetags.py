@@ -1,12 +1,47 @@
 from django.test import TestCase
 
 from .. import make_date
-from spectator.events.factories import GigEventFactory, CinemaEventFactory
+from spectator.events.factories import (
+    GigEventFactory, CinemaEventFactory, TheatreEventFactory
+)
 from spectator.events.models import Event
-from spectator.events.templatetags.spectator_events import\
-        day_events, day_events_card, event_list_tabs,\
-        events_years, events_years_card,\
-        recent_events, recent_events_card
+from spectator.events.templatetags.spectator_events import (
+    annual_event_counts, day_events, day_events_card, event_list_tabs,
+    events_years, events_years_card, recent_events, recent_events_card
+)
+
+
+class AnnualEventCountsTestCase(TestCase):
+
+    def setUp(self):
+        super().setUp()
+        CinemaEventFactory.create_batch(1, date=make_date('2015-01-01'))
+        GigEventFactory.create_batch(2, date=make_date('2015-06-01'))
+
+        TheatreEventFactory.create_batch(1, date=make_date('2017-01-01'))
+
+        GigEventFactory.create_batch(1, date=make_date('2018-01-01'))
+        TheatreEventFactory.create_batch(1, date=make_date('2018-01-01'))
+
+    def test_all(self):
+        qs = annual_event_counts()
+
+        self.assertEqual(len(qs), 3)
+        self.assertEqual(qs[0],
+                    {'year': make_date('2015-01-01'), 'total': 3})
+        self.assertEqual(qs[1],
+                    {'year': make_date('2017-01-01'), 'total': 1})
+        self.assertEqual(qs[2],
+                    {'year': make_date('2018-01-01'), 'total': 2})
+
+    def test_kind(self):
+        qs = annual_event_counts(kind='gig')
+
+        self.assertEqual(len(qs), 2)
+        self.assertEqual(qs[0],
+                    {'year': make_date('2015-01-01'), 'total': 2})
+        self.assertEqual(qs[1],
+                    {'year': make_date('2018-01-01'), 'total': 1})
 
 
 class EventListTabsTestCase(TestCase):
