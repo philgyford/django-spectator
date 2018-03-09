@@ -9,6 +9,7 @@ from ..models import Event
 register = template.Library()
 
 
+@register.simple_tag
 def annual_event_counts(kind='all'):
     """
     Returns a QuerySet of dicts, each one with these keys:

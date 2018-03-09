@@ -223,6 +223,22 @@ Or to display as a Bootstrap card, with each year linking to the
 
 Here, ``year`` is a date object indicating a year which shouldn't be linked.
 
+Annual Event Counts
+-------------------
+
+To include counts of Events per year::
+
+    {% annual_event_counts as years %}
+
+    {% for year_data in years %}
+        {{ year_data.year|date:"Y" }}: {{ year_data.total }} event(s)<br>
+    {% endfor %}
+
+Restrict to one kind of Event::
+
+    {% annual_event_counts kind='cinema' as years %}
+
+
 Reading template tags
 =====================
 
