@@ -30,14 +30,6 @@
 
 {% block sidebar_after_nav %}
 
-		{% if creators_by_events %}
-				<div class="card mb-3">
-						<div class="card-body">
-								<h2 class="h6 card-title">Most-seen people/groups</h2>
-
-								{% include 'spectator_core/includes/chart.html' with object_list=creators_by_events score_attr='num_events' only %}
-						</div>
-				</div>
-		{% endif %}
+		{% include 'spectator_core/includes/card_chart.html' with  card_title='Most-seen people/groups' object_list=creators_by_events score_attr='num_events' only %}
 
 {% endblock %}
