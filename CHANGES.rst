@@ -1,6 +1,20 @@
 Changelog (Django Spectator)
 ============================
 
+8.4.0
+-----
+
+- Added several manager methods for getting Creators, Venues and Works ordered
+  by things such as most-read, most-visited, most-seen, etc.
+
+- Added template tags for displaying charts of the above (and used them in
+  templates).
+
+- Added ``annual_reading_counts_card`` template tag  for displaying a table of
+  how many books and/or periodicals were finished each year.
+
+- A few template fixes/tweaks.
+
 8.3.0
 -----
 
