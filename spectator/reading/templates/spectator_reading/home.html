@@ -1,4 +1,5 @@
 {% extends 'spectator_reading/base.html' %}
+{% load spectator_core %}
 
 {% block head_page_title %}Reading{% endblock %}
 {% block content_title %}Reading{% endblock %}
@@ -28,10 +29,7 @@
 
 {% block sidebar_content %}
 
-    {% if creators_by_readings %}
-        {% include 'spectator_core/includes/card_chart.html' with object_list=creators_by_readings score_attr='num_readings' card_title='Most read authors' only %}
-
-    {% endif %}
+    {% most_read_creators_card num=10 %}
 
     {{ block.super }}
 {% endblock sidebar_content %}

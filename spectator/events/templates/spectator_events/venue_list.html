@@ -1,4 +1,5 @@
 {% extends 'spectator_events/base.html' %}
+{% load spectator_core %}
 
 {% block head_page_title %}Venues{% endblock %}
 {% block content_title %}Venues{% endblock %}
@@ -35,7 +36,7 @@
 
 {% block sidebar_content %}
 
-    {% include 'spectator_core/includes/card_chart.html' with card_title='Most visited venues' object_list=venues_by_visits score_attr='num_visits' only %}
+    {% most_visited_venues_card num=10 %}
 
     {{ block.super }}
 {% endblock sidebar_content %}

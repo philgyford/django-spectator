@@ -8,7 +8,6 @@ from django.views.generic import DetailView, ListView, YearArchiveView
 from django.views.generic.detail import SingleObjectMixin
 
 from spectator.core.models import Creator
-from spectator.core.utils import chartify
 from spectator.core.views import PaginatedListView
 from .models import Event, Venue, Work
 
@@ -204,18 +203,6 @@ class VenueListView(PaginatedListView):
     model = Venue
     ordering = ['name_sort']
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['venues_by_visits'] = self.get_venues_by_visits()
-
-        return context
-
-    def get_venues_by_visits(self):
-        return chartify(
-            Venue.objects.by_visits()[:10], 'num_visits', cutoff=1
-        )
-
 
 class VenueDetailView(SingleObjectMixin, PaginatedListView):
     template_name = 'spectator_events/venue_detail.html'
@@ -235,14 +222,7 @@ class VenueDetailView(SingleObjectMixin, PaginatedListView):
             if self.object.latitude is not None and self.object.longitude is not None:
                 context['SPECTATOR_GOOGLE_MAPS_API_KEY'] = settings.SPECTATOR_GOOGLE_MAPS_API_KEY
 
-        context['venues_by_visits'] = self.get_venues_by_visits()
-
         return context
 
     def get_queryset(self):
         return self.object.event_set.order_by('-date')
-
-    def get_venues_by_visits(self):
-        return chartify(
-            Venue.objects.by_visits()[:10], 'num_visits', cutoff=1
-        )

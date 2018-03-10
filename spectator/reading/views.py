@@ -6,15 +6,8 @@ from django.views.generic import DetailView, ListView, YearArchiveView
 from django.views.generic.detail import SingleObjectMixin
 
 from spectator.core.models import Creator
-from spectator.core.utils import chartify
 from spectator.core.views import PaginatedListView
 from .models import Publication, PublicationSeries, Reading
-
-
-
-def get_creators_by_readings():
-    return chartify(Creator.objects.by_readings()[:10],
-                    'num_readings', cutoff=1)
 
 
 class ReadingHomeView(ListView):
@@ -32,8 +25,6 @@ class ReadingHomeView(ListView):
                                             .prefetch_related('roles')\
                                             .all()\
                                             .order_by('time_created')
-
-        context['creators_by_readings'] = get_creators_by_readings()
 
         return context
 
