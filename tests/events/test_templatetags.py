@@ -266,11 +266,13 @@ class MostSeenWorksCardTestCase(TestCase):
         self.assertIn('score_attr', data)
         self.assertIn('object_list', data)
         self.assertIn('name_attr', data)
+        self.assertIn('use_cite', data)
 
         self.assertEqual(data['card_title'], 'Most seen works')
         self.assertEqual(data['score_attr'], 'num_views')
         self.assertEqual(len(data['object_list']), 10)
         self.assertEqual(data['name_attr'], 'title')
+        self.assertEqual(data['use_cite'], True)
 
     def test_num(self):
         "It should return `num` items."

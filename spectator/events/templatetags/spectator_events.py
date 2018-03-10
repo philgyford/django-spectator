@@ -199,4 +199,5 @@ def most_seen_works_card(kind=None, num=10):
         'score_attr': 'num_views',
         'object_list': object_list,
         'name_attr': 'title',
+        'use_cite': True,
     }

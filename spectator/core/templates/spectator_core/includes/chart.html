@@ -10,6 +10,7 @@ Expects:
 
 * in_card - Boolean, default is False. Is this displayed within a .card element?
 
+* use_cite - If True, then wrap the name in <cite></cite> tags. Default: False.
 {% endcomment %}
 
 {% load spectator_core %}
@@ -17,8 +18,10 @@ Expects:
 <ol{% if in_card|default_if_none:False %} class="mb-0"{% endif %}>
     {% for obj in object_list %}
         <li value="{{ obj.chart_position }}">
-            <a href="{{ obj.get_absolute_url }}">{% if name_attr %}{{ obj|get_attr:name_attr }}{% else %}{{ obj.name }}{% endif %}</a>
-            <small class="text-muted">({{ obj|get_attr:score_attr }})</small>
+            {% with use_cite|default_if_none:False as use_cite %}
+                <a href="{{ obj.get_absolute_url }}">{% if use_cite %}<cite>{% endif %}{% if name_attr %}{{ obj|get_attr:name_attr }}{% else %}{{ obj.name }}{% endif %}{% if use_cite %}</cite>{% endif %}</a>
+                <small class="text-muted">({{ obj|get_attr:score_attr }})</small>
+            {% endwith %}
         </li>
     {% endfor %}
 </ol>

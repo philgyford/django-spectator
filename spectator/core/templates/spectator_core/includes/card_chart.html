@@ -16,6 +16,8 @@ its display value. Default is 'name'.
 * in_card - Optional. Boolean, default is False. Is this displayed within a
 card element?
 
+* use_cite - If True, then wrap the name of each object in <cite></cite> tags. Default: False.
+
 {% endcomment %}
 
 {% if object_list %}
@@ -23,7 +25,7 @@ card element?
         <div class="card-body">
             <h2 class="h6 card-title">{{ card_title }}</h2>
 
-            {% include 'spectator_core/includes/chart.html' with object_list=object_list score_attr=score_attr name_attr=name_attr|default:None in_card=True only %}
+            {% include 'spectator_core/includes/chart.html' with object_list=object_list score_attr=score_attr name_attr=name_attr|default:None in_card=True use_cite=use_cite|default_if_none:False only %}
         </div>
     </div>
 {% endif %}
