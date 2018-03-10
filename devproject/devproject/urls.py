@@ -2,10 +2,29 @@ from django.conf.urls import include, static, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 
+from spectator.core.apps import spectator_apps
 from spectator.core.sitemaps import CreatorSitemap
-from spectator.events.sitemaps import EventSitemap, VenueSitemap, WorkSitemap
-from spectator.reading.sitemaps import PublicationSitemap,\
-        PublicationSeriesSitemap
+
+if spectator_apps.is_enabled('events'):
+    from spectator.events.sitemaps import EventSitemap, VenueSitemap, WorkSitemap
+
+if spectator_apps.is_enabled('reading'):
+    from spectator.reading.sitemaps import PublicationSitemap,\
+            PublicationSeriesSitemap
+
+
+sitemaps = {
+    'creators': CreatorSitemap,
+}
+
+if spectator_apps.is_enabled('events'):
+    sitemaps['events'] = EventSitemap
+    sitemaps['works'] = WorkSitemap
+    sitemaps['venues'] = VenueSitemap
+
+if spectator_apps.is_enabled('reading'):
+    sitemaps['publications'] = PublicationSitemap
+    sitemaps['publicationseries'] = PublicationSeriesSitemap
 
 
 urlpatterns = [
@@ -16,14 +35,7 @@ urlpatterns = [
     url(r'^sitemap\.xml$',
         sitemap,
         {
-            'sitemaps': {
-                'publications': PublicationSitemap,
-                'publicationseries': PublicationSeriesSitemap,
-                'works': WorkSitemap,
-                'events': EventSitemap,
-                'venues': VenueSitemap,
-                'creators': CreatorSitemap,
-            },
+            'sitemaps': sitemaps,
         },
         name='django.contrib.sitemaps.views.sitemap'),
 ]
