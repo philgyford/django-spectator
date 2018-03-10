@@ -28,8 +28,10 @@
 {% endblock content %}
 
 
-{% block sidebar_after_nav %}
+{% block sidebar_content %}
 
 		{% include 'spectator_core/includes/card_chart.html' with  card_title='Most-seen people/groups' object_list=creators_by_events score_attr='num_events' only %}
 
-{% endblock %}
+		{{ block.super }}
+
+{% endblock sidebar_content %}

@@ -10,14 +10,14 @@
 {% endblock %}
 
 
-{% block sidebar %}
+{% block sidebar_nav %}
 
     {% include 'spectator_reading/includes/card_nav.html' %}
     {% include 'spectator_core/includes/card_nav.html' %}
 
-    {% block sidebar_after_nav %}
-    {% endblock %}
+{% endblock sidebar_nav %}
 
+{% block sidebar_content %}
     {% current_url_name as url_name %}
 
     {% if url_name != 'spectator:reading:home' and url_name != 'spectator:reading:reading_year_archive' %}
@@ -31,4 +31,4 @@
 
     {% annual_reading_counts_card current_year=year kind='all' %}
 
-{% endblock sidebar %}
+{% endblock sidebar_content %}

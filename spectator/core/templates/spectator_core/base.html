@@ -85,14 +85,19 @@
                     </div>
                     <div class="col-md-3">
                         {% block sidebar %}
-                            {% if 'reading' in enabled_apps %}
-                                {% include 'spectator_reading/includes/card_nav.html' %}
-                            {% endif %}
-                            {% if 'events' in enabled_apps %}
-                                {% include 'spectator_events/includes/card_nav.html' %}
-                            {% endif %}
-                            {% include 'spectator_core/includes/card_nav.html' %}
-                        {% endblock %}
+                            {% block sidebar_nav %}
+                                {% if 'reading' in enabled_apps %}
+                                    {% include 'spectator_reading/includes/card_nav.html' %}
+                                {% endif %}
+                                {% if 'events' in enabled_apps %}
+                                    {% include 'spectator_events/includes/card_nav.html' %}
+                                {% endif %}
+                                {% include 'spectator_core/includes/card_nav.html' %}
+                            {% endblock sidebar_nav %}
+
+                            {% block sidebar_content %}
+                            {% endblock sidebar_content %}
+                        {% endblock sidebar %}
                     </div>
                 </div>
             {% endblock content_main %}

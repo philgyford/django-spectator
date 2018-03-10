@@ -26,11 +26,12 @@
 
 
 
-{% block sidebar_after_nav %}
+{% block sidebar_content %}
 
     {% if creators_by_readings %}
         {% include 'spectator_core/includes/card_chart.html' with object_list=creators_by_readings score_attr='num_readings' card_title='Most read authors' only %}
 
     {% endif %}
 
-{% endblock %}
+    {{ block.super }}
+{% endblock sidebar_content %}

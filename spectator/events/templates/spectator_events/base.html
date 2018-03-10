@@ -9,14 +9,12 @@
     <li class="breadcrumb-item"><a href="{% url 'spectator:events:home' %}">Events</a></li>
 {% endblock %}
 
-{% block sidebar %}
-
+{% block sidebar_nav %}
     {% include 'spectator_events/includes/card_nav.html' %}
     {% include 'spectator_core/includes/card_nav.html' %}
+{% endblock sidebar_nav %}
 
-    {% block sidebar_after_nav %}
-    {% endblock %}
-
+{% block sidebar_content %}
     {% current_url_name as url_name %}
 
     {% if url_name != 'spectator:events:home' and url_name != 'spectator:events:event_year_archive'%}
@@ -33,5 +31,4 @@
     {% else %}
       {% annual_event_counts_card current_year=year %}
     {% endif %}
-
-{% endblock sidebar %}
+{% endblock sidebar_content %}

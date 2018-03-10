@@ -19,7 +19,7 @@ Displays a paginated list of Movies, Plays, ClassicalWorks or DancePieces.
 {% endblock content %}
 
 
-{% block sidebar_after_nav %}
+{% block sidebar_content %}
 
     {% with work_kind_plural|lower as work_kind_plural_lower %}
         {% with 'Most seen '|add:work_kind_plural_lower as card_title %}
@@ -27,4 +27,5 @@ Displays a paginated list of Movies, Plays, ClassicalWorks or DancePieces.
         {% endwith %}
     {% endwith %}
 
-{% endblock %}
+    {{ block.super }}
+{% endblock sidebar_content %}

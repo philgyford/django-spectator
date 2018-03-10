@@ -67,9 +67,9 @@
 {% endblock content %}
 
 
-{% block sidebar %}
+{% block sidebar_nav %}
     {% load spectator_core %}
     {% change_object_link_card object perms %}
 
     {{ block.super }}
-{% endblock %}
+{% endblock sidebar_nav %}

@@ -48,9 +48,9 @@ As well as `object`, expects:
 {% endblock content %}
 
 
-{% block sidebar %}
+{% block sidebar_nav %}
     {% load spectator_core %}
     {% change_object_link_card work perms %}
 
     {{ block.super }}
-{% endblock %}
+{% endblock sidebar_nav %}
