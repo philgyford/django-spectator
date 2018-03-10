@@ -1,4 +1,5 @@
 {% extends 'spectator_events/base.html' %}
+{% load spectator_events %}
 
 {% comment %}
 Displays a paginated list of Movies, Plays, ClassicalWorks or DancePieces.
@@ -21,11 +22,7 @@ Displays a paginated list of Movies, Plays, ClassicalWorks or DancePieces.
 
 {% block sidebar_content %}
 
-    {% with work_kind_plural|lower as work_kind_plural_lower %}
-        {% with 'Most seen '|add:work_kind_plural_lower as card_title %}
-            {% include 'spectator_core/includes/card_chart.html' with card_title=card_title object_list=works_by_views score_attr='num_views' name_attr='title' only %}
-        {% endwith %}
-    {% endwith %}
+    {% most_seen_works_card kind=work_kind num=10 %}
 
     {{ block.super }}
 {% endblock sidebar_content %}

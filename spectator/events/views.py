@@ -177,11 +177,7 @@ class WorkListView(WorkMixin, PaginatedListView):
         context['breadcrumb_list_url'] = \
                         self.model().get_list_url(kind_slug=self.kind_slug)
 
-        context['works_by_views'] = chartify(
-                        Work.objects.by_views(kind=kind)[:10],
-                        'num_views', cutoff=1)
-
-        context['work_kind_plural'] = Work.get_kind_name_plural(kind)
+        context['work_kind'] = kind
 
         return context
 

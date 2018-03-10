@@ -301,6 +301,23 @@ To display this as a chart in a Bootstrap card::
 
 This will exclude any Creators with only 1 Event.
 
+Most Seen Works
+---------------
+
+To get a QuerySet of Works involved with the most Events::
+
+    {% most_seen_works num=10 kind='movie' %}
+
+Each Work will have a ``num_views`` attribute.
+
+``kind`` can be omitted, or be ``None`` to include all kinds of Work.
+
+To display this as a chart in a Bootstrap card::
+
+    {% most_seen_works_card num=10 kind='movie' %}
+
+This will exclude any Works with only 1 Event.
+
 
 Reading template tags
 =====================

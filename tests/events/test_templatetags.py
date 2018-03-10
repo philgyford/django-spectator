@@ -3,13 +3,16 @@ from django.test import TestCase
 from .. import make_date
 from spectator.core.factories import IndividualCreatorFactory
 from spectator.events.factories import (
-    EventRoleFactory, GigEventFactory, CinemaEventFactory, TheatreEventFactory
+    EventRoleFactory, GigEventFactory, CinemaEventFactory, TheatreEventFactory,
+    MovieFactory, PlayFactory,
+    WorkSelectionFactory
 )
 from spectator.events.models import Event
 from spectator.events.templatetags.spectator_events import (
     annual_event_counts, day_events, day_events_card, event_list_tabs,
     events_years, events_years_card,
     most_seen_creators, most_seen_creators_card,
+    most_seen_works, most_seen_works_card,
     recent_events, recent_events_card
 )
 
@@ -217,3 +220,94 @@ class MostSeenCreatorsCardTestCase(TestCase):
         self.assertEqual(data['object_list'][0].num_events, 3)
         self.assertEqual(data['object_list'][1], c2)
         self.assertEqual(data['object_list'][1].num_events, 2)
+
+class MostSeenWorksTestCase(TestCase):
+
+    def test_returns_queryset(self):
+        "It should return 10 items by default."
+        for i in range(11):
+            WorkSelectionFactory()
+
+        works = most_seen_works()
+
+        self.assertEqual(len(works), 10)
+
+    def test_num(self):
+        "It should return `num` items."
+        for i in range(4):
+            WorkSelectionFactory()
+
+        works = most_seen_works(num=3)
+
+        self.assertEqual(len(works), 3)
+
+    def test_kind(self):
+        "It should filter by `kind`"
+        WorkSelectionFactory(work=MovieFactory())
+        WorkSelectionFactory(work=MovieFactory())
+        WorkSelectionFactory(work=PlayFactory())
+
+        works = most_seen_works(kind='movie')
+
+        self.assertEqual(len(works), 2)
+
+
+class MostSeenWorksCardTestCase(TestCase):
+
+    def test_returns_correct_data(self):
+        for i in range(2, 13):
+            movie = MovieFactory()
+            # It'll cut off any with only 1 reading, so:
+            WorkSelectionFactory.create_batch(i, work=movie)
+
+        data = most_seen_works_card()
+
+        self.assertIn('card_title', data)
+        self.assertIn('score_attr', data)
+        self.assertIn('object_list', data)
+        self.assertIn('name_attr', data)
+
+        self.assertEqual(data['card_title'], 'Most seen works')
+        self.assertEqual(data['score_attr'], 'num_views')
+        self.assertEqual(len(data['object_list']), 10)
+        self.assertEqual(data['name_attr'], 'title')
+
+    def test_num(self):
+        "It should return `num` items."
+        for i in range(2, 6):
+            movie = MovieFactory()
+            # It'll cut off any with only 1 reading, so:
+            WorkSelectionFactory.create_batch(i, work=movie)
+
+        data = most_seen_works_card(num=3)
+
+        self.assertIn('object_list', data)
+        self.assertEqual(len(data['object_list']), 3)
+
+    def test_filters_by_kind(self):
+        "It should only count works of the supplied kind."
+
+        # It should include c1 and c2 as both have > 1 GigEvent:
+
+        m1 = MovieFactory()
+        WorkSelectionFactory(work=m1)
+        WorkSelectionFactory(work=m1)
+        WorkSelectionFactory(work=m1)
+
+        m2 = MovieFactory()
+        WorkSelectionFactory(work=m2)
+        WorkSelectionFactory(work=m2)
+
+        p = PlayFactory()
+        WorkSelectionFactory(work=p)
+        WorkSelectionFactory(work=p)
+        WorkSelectionFactory(work=p)
+
+        data = most_seen_works_card(kind='movie')
+
+        self.assertIn('object_list', data)
+        self.assertEqual(len(data['object_list']), 2)
+        self.assertEqual(data['object_list'][0], m1)
+        self.assertEqual(data['object_list'][0].num_views, 3)
+        self.assertEqual(data['object_list'][1], m2)
+        self.assertEqual(data['object_list'][1].num_views, 2)
