@@ -13,7 +13,8 @@ from .models import Publication, PublicationSeries, Reading
 
 
 def get_creators_by_readings():
-    return chartify(Creator.objects.by_readings()[:10], 'num_readings')
+    return chartify(Creator.objects.by_readings()[:10],
+                    'num_readings', cutoff=1)
 
 
 class ReadingHomeView(ListView):

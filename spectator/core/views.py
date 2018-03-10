@@ -106,7 +106,7 @@ class HomeView(TemplateView):
 
         context['venues_by_visits'] = chartify(
                         Venue.objects.by_visits()[:self.num_venues_by_visits],
-                        'num_visits')
+                        'num_visits', cutoff=1)
 
         return context
 
@@ -121,7 +121,7 @@ class HomeView(TemplateView):
 
         context['creators_by_readings'] = chartify(
                 Creator.objects.by_readings()[:self.num_creators_by_readings],
-                'num_readings')
+                'num_readings', cutoff=1)
 
 
         return context

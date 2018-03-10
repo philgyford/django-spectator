@@ -49,7 +49,8 @@ class EventListView(PaginatedListView):
         context['event_list'] = context['object_list']
 
         context['creators_by_events'] = chartify(
-                    Creator.objects.by_events(kind=kind)[:10], 'num_events')
+                    Creator.objects.by_events(kind=kind)[:10],
+                    'num_events', cutoff=1)
 
         return context
 
@@ -181,7 +182,8 @@ class WorkListView(WorkMixin, PaginatedListView):
                         self.model().get_list_url(kind_slug=self.kind_slug)
 
         context['works_by_views'] = chartify(
-                        Work.objects.by_views(kind=kind)[:10], 'num_views')
+                        Work.objects.by_views(kind=kind)[:10],
+                        'num_views', cutoff=1)
 
         context['work_kind_plural'] = Work.get_kind_name_plural(kind)
 
@@ -219,7 +221,7 @@ class VenueListView(PaginatedListView):
 
     def get_venues_by_visits(self):
         return chartify(
-            Venue.objects.by_visits()[:10], 'num_visits'
+            Venue.objects.by_visits()[:10], 'num_visits', cutoff=1
         )
 
 
@@ -250,5 +252,5 @@ class VenueDetailView(SingleObjectMixin, PaginatedListView):
 
     def get_venues_by_visits(self):
         return chartify(
-            Venue.objects.by_visits()[:10], 'num_visits'
+            Venue.objects.by_visits()[:10], 'num_visits', cutoff=1
         )
