@@ -5,10 +5,17 @@ from django import get_version
 from django.http import QueryDict
 from django.test import TestCase
 
+from .. import make_date
+
 from spectator.core.apps import Apps
-from spectator.core.templatetags.spectator_core import domain_urlize,\
-        get_enabled_apps, get_item, change_object_link_card, query_string
+from spectator.core.templatetags.spectator_core import (
+    domain_urlize, get_enabled_apps, get_item, change_object_link_card,
+    most_read_creators, most_read_creators_card, query_string
+)
 from spectator.core.factories import IndividualCreatorFactory
+from spectator.reading.factories import (
+    PublicationFactory, PublicationRoleFactory, ReadingFactory
+)
 
 
 class GetEnabledAppsTestCase(TestCase):
@@ -97,3 +104,73 @@ class QueryStringTestCase(TestCase):
         )
 
 
+class MostReadCreatorsTestCase(TestCase):
+
+    def test_returns_queryset(self):
+        "It should return 10 items by default."
+        d = make_date('2017-02-15')
+
+        for i in range(11):
+            c = IndividualCreatorFactory()
+            pub = PublicationFactory()
+            PublicationRoleFactory(publication=pub, creator=c, role_name='')
+            ReadingFactory(publication=pub, start_date=d, end_date=d)
+
+        creators = most_read_creators()
+
+        self.assertEqual(len(creators), 10)
+
+    def test_num(self):
+        "It should return `num` items."
+        d = make_date('2017-02-15')
+
+        for i in range(4):
+            c = IndividualCreatorFactory()
+            pub = PublicationFactory()
+            PublicationRoleFactory(publication=pub, creator=c, role_name='')
+            ReadingFactory(publication=pub, start_date=d, end_date=d)
+
+        creators = most_read_creators(num=3)
+
+        self.assertEqual(len(creators), 3)
+
+
+class MostReadCreatorsCardTestCase(TestCase):
+
+    def test_returns_correct_data(self):
+        d = make_date('2017-02-15')
+
+        for i in range(2, 13):
+            c = IndividualCreatorFactory()
+            pub = PublicationFactory()
+            PublicationRoleFactory(publication=pub, creator=c, role_name='')
+            # It'll cut off any with only 1 reading, so:
+            ReadingFactory.create_batch(i,
+                                    publication=pub, start_date=d, end_date=d)
+
+        data = most_read_creators_card()
+
+        self.assertIn('card_title', data)
+        self.assertIn('score_attr', data)
+        self.assertIn('object_list', data)
+
+        self.assertEqual(data['card_title'], 'Most read authors')
+        self.assertEqual(data['score_attr'], 'num_readings')
+        self.assertEqual(len(data['object_list']), 10)
+
+    def test_num(self):
+        "It should return `num` items."
+        d = make_date('2017-02-15')
+
+        for i in range(2, 6):
+            c = IndividualCreatorFactory()
+            pub = PublicationFactory()
+            PublicationRoleFactory(publication=pub, creator=c, role_name='')
+            # It'll cut off any with only 1 reading, so:
+            ReadingFactory.create_batch(i,
+                                    publication=pub, start_date=d, end_date=d)
+
+        data = most_read_creators_card(num=3)
+
+        self.assertIn('object_list', data)
+        self.assertEqual(len(data['object_list']), 3)

@@ -6,6 +6,9 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from ..apps import spectator_apps
+from ..models import Creator
+from ..utils import chartify
+
 
 register = template.Library()
 
@@ -121,3 +124,37 @@ def query_string(context, key, value):
         args = QueryDict('').copy()
     args[key] = value
     return args.urlencode()
+
+
+@register.simple_tag
+def most_read_creators(num=10):
+    """
+    Returns a Queryset of the Creators who have the most Readings associated
+    with their Publications.
+
+    Because we're after "most read" we'll only include Creators whose role
+    was left empty or is 'Author'.
+    """
+    return Creator.objects.by_readings()[:num]
+
+
+@register.inclusion_tag('spectator_core/includes/card_chart.html')
+def most_read_creators_card(num=10):
+    """
+    Displays a card showing the Creators who have the most Readings
+    associated with their Publications.
+
+    In spectator_core tags, rather than spectator_reading so it can still be
+    used on core pages, even if spectator_reading isn't installed.
+    """
+    if spectator_apps.is_enabled('reading'):
+
+        creators = most_read_creators(num=num)
+
+        object_list = chartify(creators, 'num_readings', cutoff=1)
+
+        return {
+            'card_title': 'Most read authors',
+            'score_attr': 'num_readings',
+            'object_list': object_list,
+        }

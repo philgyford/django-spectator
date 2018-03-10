@@ -164,6 +164,31 @@ Template tags
 
 Each app, `core`, `events` and `reading`, has some template tags.
 
+Core template tags
+==================
+
+To use any of these in a template, first::
+
+    {% load spectator_core %}
+
+Most Read Creators
+------------------
+
+To get a QuerySet of Creators with the most Readings associated with them::
+
+    {% most_read_creators num=10 %}
+
+Each Creator will have a ``num_readings`` attribute. It will only include
+Creators whose role on a publication was "Author" or was left blank. i.e.
+Creators who were "Illustrator" or "Translator" would not be counted.
+
+To get this as a chart in a Bootstrap card:
+
+    {% most_read_creators_card num=10 %}
+
+This will exclude any Creators with only 1 Reading.
+
+
 Events template tags
 ====================
 

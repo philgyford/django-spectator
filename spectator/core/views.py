@@ -118,12 +118,6 @@ class HomeView(TemplateView):
                                 Publication.in_progress_objects\
                                 .select_related('series')\
                                 .prefetch_related('roles__creator').all()
-
-        context['creators_by_readings'] = chartify(
-                Creator.objects.by_readings()[:self.num_creators_by_readings],
-                'num_readings', cutoff=1)
-
-
         return context
 
 
