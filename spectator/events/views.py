@@ -48,10 +48,6 @@ class EventListView(PaginatedListView):
 
         context['event_list'] = context['object_list']
 
-        context['creators_by_events'] = chartify(
-                    Creator.objects.by_events(kind=kind)[:10],
-                    'num_events', cutoff=1)
-
         return context
 
     def get_event_counts(self):

@@ -1,13 +1,16 @@
 from django.test import TestCase
 
 from .. import make_date
+from spectator.core.factories import IndividualCreatorFactory
 from spectator.events.factories import (
-    GigEventFactory, CinemaEventFactory, TheatreEventFactory
+    EventRoleFactory, GigEventFactory, CinemaEventFactory, TheatreEventFactory
 )
 from spectator.events.models import Event
 from spectator.events.templatetags.spectator_events import (
     annual_event_counts, day_events, day_events_card, event_list_tabs,
-    events_years, events_years_card, recent_events, recent_events_card
+    events_years, events_years_card,
+    most_seen_creators, most_seen_creators_card,
+    recent_events, recent_events_card
 )
 
 
@@ -135,3 +138,82 @@ class EventsYearsCardTestCase(TestCase):
         self.assertEqual(len(result['years']), 2)
         self.assertEqual(result['years'][0], make_date('2015-01-01'))
         self.assertEqual(result['years'][1], make_date('2017-01-01'))
+
+
+class MostSeenCreatorsTestCase(TestCase):
+
+    def test_returns_queryset(self):
+        "It should return 10 items by default."
+        for i in range(11):
+            EventRoleFactory()
+
+        creators = most_seen_creators()
+
+        self.assertEqual(len(creators), 10)
+
+    def test_num(self):
+        "It should return `num` items."
+        for i in range(4):
+            EventRoleFactory()
+
+        creators = most_seen_creators(num=3)
+
+        self.assertEqual(len(creators), 3)
+
+
+class MostSeenCreatorsCardTestCase(TestCase):
+
+    def test_returns_correct_data(self):
+        for i in range(2, 13):
+            # It'll cut off any with only 1 reading, so:
+            EventRoleFactory.create_batch(i, creator=IndividualCreatorFactory())
+
+        data = most_seen_creators_card()
+
+        self.assertIn('card_title', data)
+        self.assertIn('score_attr', data)
+        self.assertIn('object_list', data)
+
+        self.assertEqual(data['card_title'], 'Most seen people/groups')
+        self.assertEqual(data['score_attr'], 'num_events')
+        self.assertEqual(len(data['object_list']), 10)
+
+
+    def test_num(self):
+        "It should return `num` items."
+        for i in range(2, 6):
+            # It'll cut off any with only 1 reading, so:
+            EventRoleFactory.create_batch(i, creator=IndividualCreatorFactory())
+
+        data = most_seen_creators_card(num=3)
+
+        self.assertIn('object_list', data)
+        self.assertEqual(len(data['object_list']), 3)
+
+    def test_filters_by_event_kind(self):
+        "It should only count events of the supplied event_kind."
+
+        # It should include c1 and c2 as both have > 1 GigEvent:
+
+        c1 = IndividualCreatorFactory()
+        EventRoleFactory(event=GigEventFactory(), creator=c1)
+        EventRoleFactory(event=GigEventFactory(), creator=c1)
+        EventRoleFactory(event=GigEventFactory(), creator=c1)
+        EventRoleFactory(event=CinemaEventFactory(), creator=c1)
+
+        c2 = IndividualCreatorFactory()
+        EventRoleFactory(event=GigEventFactory(), creator=c2)
+        EventRoleFactory(event=GigEventFactory(), creator=c2)
+
+        c3 = IndividualCreatorFactory()
+        EventRoleFactory(event=CinemaEventFactory(), creator=c3)
+        EventRoleFactory(event=CinemaEventFactory(), creator=c3)
+
+        data = most_seen_creators_card(event_kind='gig')
+
+        self.assertIn('object_list', data)
+        self.assertEqual(len(data['object_list']), 2)
+        self.assertEqual(data['object_list'][0], c1)
+        self.assertEqual(data['object_list'][0].num_events, 3)
+        self.assertEqual(data['object_list'][1], c2)
+        self.assertEqual(data['object_list'][1].num_events, 2)

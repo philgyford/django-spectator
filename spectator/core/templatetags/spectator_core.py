@@ -9,6 +9,9 @@ from ..apps import spectator_apps
 from ..models import Creator
 from ..utils import chartify
 
+if spectator_apps.is_enabled('events'):
+    from spectator.events.models import Venue
+
 
 register = template.Library()
 
@@ -129,7 +132,7 @@ def query_string(context, key, value):
 @register.simple_tag
 def most_read_creators(num=10):
     """
-    Returns a Queryset of the Creators who have the most Readings associated
+    Returns a QuerySet of the Creators who have the most Readings associated
     with their Publications.
 
     Because we're after "most read" we'll only include Creators whose role
@@ -149,12 +152,41 @@ def most_read_creators_card(num=10):
     """
     if spectator_apps.is_enabled('reading'):
 
-        creators = most_read_creators(num=num)
+        object_list = most_read_creators(num=num)
 
-        object_list = chartify(creators, 'num_readings', cutoff=1)
+        object_list = chartify(object_list, 'num_readings', cutoff=1)
 
         return {
             'card_title': 'Most read authors',
             'score_attr': 'num_readings',
+            'object_list': object_list,
+        }
+
+
+@register.simple_tag
+def most_visited_venues(num=10):
+    """
+    Returns a QuerySet of the Venues that have the most Events.
+    """
+    return Venue.objects.by_visits()[:num]
+
+
+@register.inclusion_tag('spectator_core/includes/card_chart.html')
+def most_visited_venues_card(num=10):
+    """
+    Displays a card showing the Venues that have the most Events.
+
+    In spectator_core tags, rather than spectator_events so it can still be
+    used on core pages, even if spectator_events isn't installed.
+    """
+    if spectator_apps.is_enabled('events'):
+
+        object_list = most_visited_venues(num=num)
+
+        object_list = chartify(object_list, 'num_visits', cutoff=1)
+
+        return {
+            'card_title': 'Most visited venues',
+            'score_attr': 'num_visits',
             'object_list': object_list,
         }

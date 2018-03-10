@@ -1,11 +1,9 @@
 {% extends 'spectator_events/base.html' %}
 
-{% load spectator_core %}
+{% load spectator_core spectator_events %}
 
 {% block head_page_title %}{% if event_kind_name_plural %}{{ event_kind_name_plural }}{% else %}Events{% endif %}{% if page_obj.number > 1 %} page {{ page_obj.number }}{% endif %}{% endblock %}
 {% block content_title %}Events{% endblock %}
-
-{% load spectator_events %}
 
 {% block breadcrumbs %}
 	{% if event_kind %}
@@ -14,7 +12,6 @@
 		<li class="breadcrumb-item"><a href="{% url 'spectator:core:home' %}">Home</a></li>
 		<li class="breadcrumb-item active">Events</li>
 	{% endif %}
-
 {% endblock %}
 
 {% block content %}
@@ -30,6 +27,8 @@
 
 {% block sidebar_content %}
 
+		{% most_seen_creators_card event_kind=event_kind num=10 %}
+		
 		{% include 'spectator_core/includes/card_chart.html' with  card_title='Most-seen people/groups' object_list=creators_by_events score_attr='num_events' only %}
 
 		{{ block.super }}

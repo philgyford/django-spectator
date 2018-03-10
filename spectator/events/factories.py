@@ -82,12 +82,12 @@ class EventRoleFactory(factory.DjangoModelFactory):
 
     role_name = factory.Sequence(lambda n: 'Role %s' % n)
     creator = factory.SubFactory(IndividualCreatorFactory)
-    event = factory.SubFactory(EventFactory)
+    event = factory.SubFactory(MiscEventFactory)
 
 
 class WorkSelectionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.WorkSelection
 
-    event = factory.SubFactory(EventFactory)
+    event = factory.SubFactory(MiscEventFactory)
     work = factory.SubFactory(WorkFactory)

@@ -10,9 +10,14 @@ from .. import make_date
 from spectator.core.apps import Apps
 from spectator.core.templatetags.spectator_core import (
     domain_urlize, get_enabled_apps, get_item, change_object_link_card,
-    most_read_creators, most_read_creators_card, query_string
+    most_read_creators, most_read_creators_card,
+    most_visited_venues, most_visited_venues_card,
+    query_string
 )
 from spectator.core.factories import IndividualCreatorFactory
+from spectator.events.factories import (
+    MiscEventFactory, VenueFactory
+)
 from spectator.reading.factories import (
     PublicationFactory, PublicationRoleFactory, ReadingFactory
 )
@@ -171,6 +176,57 @@ class MostReadCreatorsCardTestCase(TestCase):
                                     publication=pub, start_date=d, end_date=d)
 
         data = most_read_creators_card(num=3)
+
+        self.assertIn('object_list', data)
+        self.assertEqual(len(data['object_list']), 3)
+
+
+class MostVisitedVenuesTestCase(TestCase):
+
+    def test_returns_queryset(self):
+        "It should return 10 items by default."
+        for i in range(11):
+            MiscEventFactory(venue=VenueFactory())
+
+        venues = most_visited_venues()
+
+        self.assertEqual(len(venues), 10)
+
+    def test_num(self):
+        "It should return `num` items."
+        for i in range(4):
+            MiscEventFactory(venue=VenueFactory())
+
+        venues = most_visited_venues(num=3)
+
+        self.assertEqual(len(venues), 3)
+
+
+class MostVisitedVenuesCardTestCase(TestCase):
+
+    def test_returns_correct_data(self):
+        for i in range(2, 13):
+            # It'll cut off any with only 1 reading, so:
+            MiscEventFactory.create_batch(i, venue=VenueFactory())
+
+        data = most_visited_venues_card()
+
+        self.assertIn('card_title', data)
+        self.assertIn('score_attr', data)
+        self.assertIn('object_list', data)
+
+        self.assertEqual(data['card_title'], 'Most visited venues')
+        self.assertEqual(data['score_attr'], 'num_visits')
+        self.assertEqual(len(data['object_list']), 10)
+
+
+    def test_num(self):
+        "It should return `num` items."
+        for i in range(2, 6):
+            # It'll cut off any with only 1 reading, so:
+            MiscEventFactory.create_batch(i, venue=VenueFactory())
+
+        data = most_visited_venues_card(num=3)
 
         self.assertIn('object_list', data)
         self.assertEqual(len(data['object_list']), 3)

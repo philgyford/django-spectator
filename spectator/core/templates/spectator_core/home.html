@@ -31,6 +31,6 @@
 
     {% most_read_creators_card num=10 %}
 
-    {% include 'spectator_core/includes/card_chart.html' with card_title='Most visited venues' object_list=venues_by_visits score_attr='num_visits' only %}
+    {% most_visited_venues_card num=10 %}
 
 {% endblock sidebar_content %}

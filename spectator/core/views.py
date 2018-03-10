@@ -7,10 +7,9 @@ from django.views.generic import DetailView, ListView, YearArchiveView,\
 from .apps import spectator_apps
 from .models import Creator
 from .paginator import DiggPaginator
-from .utils import chartify
 
 if spectator_apps.is_enabled('events'):
-    from spectator.events.models import Event, Venue
+    from spectator.events.models import Event
 
 if spectator_apps.is_enabled('reading'):
     from spectator.reading.models import Publication
@@ -77,14 +76,8 @@ class PaginatedListView(ListView):
 class HomeView(TemplateView):
     template_name = 'spectator_core/home.html'
 
-    # How many Creators to show in the sidebar chart:
-    num_creators_by_readings = 5
-
     # How many recent events to show:
     num_recent_events = 10
-
-    # How many Venues to show in the sidebar chart:
-    num_venues_by_visits = 5
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -103,10 +96,6 @@ class HomeView(TemplateView):
         context['recent_event_list'] = Event.objects\
                                         .select_related('venue')\
                                     .order_by('-date')[:self.num_recent_events]
-
-        context['venues_by_visits'] = chartify(
-                        Venue.objects.by_visits()[:self.num_venues_by_visits],
-                        'num_visits', cutoff=1)
 
         return context
 

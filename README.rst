@@ -182,11 +182,26 @@ Each Creator will have a ``num_readings`` attribute. It will only include
 Creators whose role on a publication was "Author" or was left blank. i.e.
 Creators who were "Illustrator" or "Translator" would not be counted.
 
-To get this as a chart in a Bootstrap card:
+To display this as a chart in a Bootstrap card::
 
     {% most_read_creators_card num=10 %}
 
 This will exclude any Creators with only 1 Reading.
+
+Most Visited Venues
+-------------------
+
+To get a QuerySet of Venues with the most Events associated with them::
+
+    {% most_visited_venues num=10 %}
+
+Each Venue will have a ``num_visits`` attribute.
+
+To display this as a chart in a Bootstrap card::
+
+    {% most_visited_venues_card num=10 %}
+
+This will exclude any Venues with only 1 Event.
 
 
 Events template tags
@@ -268,6 +283,23 @@ Or to display as a Bootstrap card, with each year linking to ``EventYearArchiveV
     {% annual_event_counts_card current_year=year kind='all' %}
 
 Here, ``year`` is a date object indicating a year which shouldn't be linked.
+
+Most Seen Creators
+------------------
+
+To get a QuerySet of Creators involved with the most Events::
+
+    {% most_seen_creators num=10 event_kind='gig' %}
+
+Each Creator will have a ``num_events`` attribute.
+
+``event_kind`` can be omitted, or be ``None`` to include all kinds of Event.
+
+To display this as a chart in a Bootstrap card::
+
+    {% most_seen_creators_card num=10 event_kind='gig' %}
+
+This will exclude any Creators with only 1 Event.
 
 
 Reading template tags

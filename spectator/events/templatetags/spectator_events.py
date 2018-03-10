@@ -3,6 +3,8 @@ from django import template
 from django.db.models import Count
 from django.db.models.functions import TruncYear
 
+from spectator.core.models import Creator
+from spectator.core.utils import chartify
 from ..models import Event
 
 
@@ -143,3 +145,27 @@ def events_years_card(current_year=None):
             'current_year': current_year,
             'years': events_years(),
             }
+
+
+@register.simple_tag
+def most_seen_creators(event_kind=None, num=10):
+    """
+    Returns a QuerySet of the Creators that are associated with the most Events.
+    """
+    return Creator.objects.by_events(kind=event_kind)[:num]
+
+
+@register.inclusion_tag('spectator_core/includes/card_chart.html')
+def most_seen_creators_card(event_kind=None, num=10):
+    """
+    Displays a card showing the Creators that are associated with the most Events.
+    """
+    object_list = most_seen_creators(event_kind=event_kind, num=num)
+
+    object_list = chartify(object_list, 'num_events', cutoff=1)
+
+    return {
+        'card_title': 'Most seen people/groups',
+        'score_attr': 'num_events',
+        'object_list': object_list,
+    }
