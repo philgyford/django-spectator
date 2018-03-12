@@ -96,7 +96,7 @@ class CreatorManager(models.Manager):
             filter_kwargs['work_roles__role_name'] = role_name
 
         if filter_kwargs:
-            qs = qs.filter(**kwargs)
+            qs = qs.filter(**filter_kwargs)
 
         qs = qs.annotate(num_works=Count('works')) \
                 .order_by('-num_works', 'name_sort')

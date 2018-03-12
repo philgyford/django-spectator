@@ -254,7 +254,7 @@ class CreatorManagerByEventsTestCase(TestCase):
         self.assertEqual(creators[0], bob)
         self.assertEqual(creators[1], terry)
 
-    def filters_by_kind(self):
+    def test_filters_by_kind(self):
         "If supplied with a `kind` argument."
         c = IndividualCreatorFactory()
 
@@ -328,7 +328,7 @@ class CreatorManagerByWorksTestCase(TestCase):
         self.assertEqual(creators[0], bob)
         self.assertEqual(creators[1], terry)
 
-    def filters_by_kind(self):
+    def test_filters_by_kind(self):
         c = IndividualCreatorFactory()
 
         WorkRoleFactory(creator=c, work=MovieFactory())
@@ -340,7 +340,7 @@ class CreatorManagerByWorksTestCase(TestCase):
         # Should only count the Movie work:
         self.assertEqual(creators[0].num_works, 1)
 
-    def filters_by_role_name(self):
+    def test_filters_by_role_name(self):
         c = IndividualCreatorFactory()
 
         WorkRoleFactory(creator=c, work=MovieFactory(), role_name='Director')
@@ -352,7 +352,7 @@ class CreatorManagerByWorksTestCase(TestCase):
         # Should only count the 'Director' role:
         self.assertEqual(creators[0].num_works, 1)
 
-    def filters_by_kind_and_role_name(self):
+    def test_filters_by_kind_and_role_name(self):
         "Can filter by both at once."
         c = IndividualCreatorFactory()
 
