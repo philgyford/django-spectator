@@ -1,6 +1,11 @@
 Changelog (Django Spectator)
 ============================
 
+8.5.0
+-----
+
+- Added template tags for getting the Creators with the most Works.
+
 8.4.0
 -----
 
