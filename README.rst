@@ -301,6 +301,29 @@ To display this as a chart in a Bootstrap card::
 
 This will exclude any Creators with only 1 Event.
 
+Creators With Most Works
+------------------------
+
+To get a QuerySet of Creators that have the most Works (e.g, movies, plays, etc)::
+
+    {% most_seen_creators_by_works num=10 work_kind='movie', role_name='Director' %}
+
+Each Creator will have a ``num_works`` attribute.
+
+``work_kind`` can be omitted and all kinds of Work will be counted.
+
+``role_name`` can be omitted and all roles will be counted.
+
+The above example would, for each Creator, only count movie Works on which their
+role was 'Director'.
+
+To display this as a chart in a Bootstrap card::
+
+    {% most_seen_creators_by_works_card num=10 work_kind='movie', role_name='Director' %}
+
+This will exclude any Creators with only 1 Work.
+
+
 Most Seen Works
 ---------------
 

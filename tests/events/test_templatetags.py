@@ -3,15 +3,17 @@ from django.test import TestCase
 from .. import make_date
 from spectator.core.factories import IndividualCreatorFactory
 from spectator.events.factories import (
-    EventRoleFactory, GigEventFactory, CinemaEventFactory, TheatreEventFactory,
+    EventRoleFactory,
+    GigEventFactory, CinemaEventFactory, TheatreEventFactory,
     MovieFactory, PlayFactory,
-    WorkSelectionFactory
+    WorkRoleFactory, WorkSelectionFactory
 )
 from spectator.events.models import Event
 from spectator.events.templatetags.spectator_events import (
     annual_event_counts, day_events, day_events_card, event_list_tabs,
     events_years, events_years_card,
     most_seen_creators, most_seen_creators_card,
+    most_seen_creators_by_works, most_seen_creators_by_works_card,
     most_seen_works, most_seen_works_card,
     recent_events, recent_events_card
 )
@@ -168,7 +170,7 @@ class MostSeenCreatorsCardTestCase(TestCase):
 
     def test_returns_correct_data(self):
         for i in range(2, 13):
-            # It'll cut off any with only 1 reading, so:
+            # It'll cut off any with only 1 event, so:
             EventRoleFactory.create_batch(i, creator=IndividualCreatorFactory())
 
         data = most_seen_creators_card()
@@ -185,7 +187,7 @@ class MostSeenCreatorsCardTestCase(TestCase):
     def test_num(self):
         "It should return `num` items."
         for i in range(2, 6):
-            # It'll cut off any with only 1 reading, so:
+            # It'll cut off any with only 1 event, so:
             EventRoleFactory.create_batch(i, creator=IndividualCreatorFactory())
 
         data = most_seen_creators_card(num=3)
@@ -220,6 +222,217 @@ class MostSeenCreatorsCardTestCase(TestCase):
         self.assertEqual(data['object_list'][0].num_events, 3)
         self.assertEqual(data['object_list'][1], c2)
         self.assertEqual(data['object_list'][1].num_events, 2)
+
+
+class MostSeenCreatorsByWorksTestCase(TestCase):
+
+    def test_returns_queryset(self):
+        "It should return 10 items by default."
+        for i in range(11):
+            WorkRoleFactory()
+
+        creators = most_seen_creators_by_works()
+
+        self.assertEqual(len(creators), 10)
+
+    def test_num(self):
+        "It should return `num` items."
+        for i in range(4):
+            WorkRoleFactory()
+
+        creators = most_seen_creators_by_works(num=3)
+
+        self.assertEqual(len(creators), 3)
+
+    def test_filters_by_work_kind(self):
+        c1 = IndividualCreatorFactory()
+        WorkRoleFactory(work=MovieFactory(), creator=c1)
+        WorkRoleFactory(work=MovieFactory(), creator=c1)
+        WorkRoleFactory(work=MovieFactory(), creator=c1)
+        WorkRoleFactory(work=PlayFactory(), creator=c1)
+
+        c2 = IndividualCreatorFactory()
+        WorkRoleFactory(work=MovieFactory(), creator=c2)
+        WorkRoleFactory(work=MovieFactory(), creator=c2)
+
+        c3 = IndividualCreatorFactory()
+        WorkRoleFactory(work=PlayFactory(), creator=c3)
+        WorkRoleFactory(work=PlayFactory(), creator=c3)
+
+        data = most_seen_creators_by_works(work_kind='movie')
+
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0], c1)
+        self.assertEqual(data[0].num_works, 3)
+        self.assertEqual(data[1], c2)
+        self.assertEqual(data[1].num_works, 2)
+
+    def test_filters_by_role_name(self):
+        c1 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c1, role_name='Director')
+        WorkRoleFactory(creator=c1, role_name='Director')
+        WorkRoleFactory(creator=c1, role_name='Director')
+        WorkRoleFactory(creator=c1, role_name='')
+
+        c2 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c2, role_name='Director')
+        WorkRoleFactory(creator=c2, role_name='Director')
+
+        c3 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c3, role_name='Playwright')
+        WorkRoleFactory(creator=c3, role_name='Playwright')
+
+        data = most_seen_creators_by_works(role_name='Director')
+
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0], c1)
+        self.assertEqual(data[0].num_works, 3)
+        self.assertEqual(data[1], c2)
+        self.assertEqual(data[1].num_works, 2)
+
+    def test_filters_by_work_kind_and_role_name(self):
+        c1 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c1, work=MovieFactory(), role_name='Director')
+        WorkRoleFactory(creator=c1, work=MovieFactory(), role_name='Director')
+        WorkRoleFactory(creator=c1, work=MovieFactory(), role_name='Director')
+        WorkRoleFactory(creator=c1, work=MovieFactory(), role_name='')
+        WorkRoleFactory(creator=c1, work=PlayFactory(), role_name='Director')
+
+        c2 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c2, work=MovieFactory(), role_name='Director')
+        WorkRoleFactory(creator=c2, work=MovieFactory(), role_name='Director')
+
+        c3 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c3, work=MovieFactory(), role_name='Playwright')
+        WorkRoleFactory(creator=c3, work=PlayFactory(), role_name='Director')
+
+        data = most_seen_creators_by_works(
+                                    work_kind='movie', role_name='Director')
+
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0], c1)
+        self.assertEqual(data[0].num_works, 3)
+        self.assertEqual(data[1], c2)
+        self.assertEqual(data[1].num_works, 2)
+
+
+class MostSeenCreatorsByWorksCardTestCase(TestCase):
+
+    def test_returns_correct_data(self):
+        for i in range(2, 13):
+            # It'll cut off any with only 1 work, so:
+            WorkRoleFactory.create_batch(i, creator=IndividualCreatorFactory())
+
+        data = most_seen_creators_by_works_card()
+
+        self.assertIn('card_title', data)
+        self.assertIn('score_attr', data)
+        self.assertIn('object_list', data)
+
+        self.assertEqual(data['card_title'], 'People/groups with most works')
+        self.assertEqual(data['score_attr'], 'num_works')
+        self.assertEqual(len(data['object_list']), 10)
+
+
+    def test_num(self):
+        "It should return `num` items."
+        for i in range(2, 6):
+            # It'll cut off any with only 1 work, so:
+            WorkRoleFactory.create_batch(i, creator=IndividualCreatorFactory())
+
+        data = most_seen_creators_by_works_card(num=3)
+
+        self.assertIn('object_list', data)
+        self.assertEqual(len(data['object_list']), 3)
+
+    def test_filters_by_work_kind(self):
+        c1 = IndividualCreatorFactory()
+        WorkRoleFactory(work=MovieFactory(), creator=c1)
+        WorkRoleFactory(work=MovieFactory(), creator=c1)
+        WorkRoleFactory(work=MovieFactory(), creator=c1)
+        WorkRoleFactory(work=PlayFactory(), creator=c1)
+
+        c2 = IndividualCreatorFactory()
+        WorkRoleFactory(work=MovieFactory(), creator=c2)
+        WorkRoleFactory(work=MovieFactory(), creator=c2)
+
+        c3 = IndividualCreatorFactory()
+        WorkRoleFactory(work=PlayFactory(), creator=c3)
+        WorkRoleFactory(work=PlayFactory(), creator=c3)
+
+        data = most_seen_creators_by_works_card(work_kind='movie')
+
+        self.assertIn('object_list', data)
+        self.assertEqual(len(data['object_list']), 2)
+        self.assertEqual(data['object_list'][0], c1)
+        self.assertEqual(data['object_list'][0].num_works, 3)
+        self.assertEqual(data['object_list'][1], c2)
+        self.assertEqual(data['object_list'][1].num_works, 2)
+
+    def test_filters_by_role_name(self):
+        c1 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c1, role_name='Director')
+        WorkRoleFactory(creator=c1, role_name='Director')
+        WorkRoleFactory(creator=c1, role_name='Director')
+        WorkRoleFactory(creator=c1, role_name='')
+
+        c2 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c2, role_name='Director')
+        WorkRoleFactory(creator=c2, role_name='Director')
+
+        c3 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c3, role_name='Playwright')
+        WorkRoleFactory(creator=c3, role_name='Playwright')
+
+        data = most_seen_creators_by_works_card(role_name='Director')
+
+        self.assertEqual(len(data['object_list']), 2)
+        self.assertEqual(data['object_list'][0], c1)
+        self.assertEqual(data['object_list'][0].num_works, 3)
+        self.assertEqual(data['object_list'][1], c2)
+        self.assertEqual(data['object_list'][1].num_works, 2)
+
+    def test_filters_by_work_kind_and_role_name(self):
+        c1 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c1, work=MovieFactory(), role_name='Director')
+        WorkRoleFactory(creator=c1, work=MovieFactory(), role_name='Director')
+        WorkRoleFactory(creator=c1, work=MovieFactory(), role_name='Director')
+        WorkRoleFactory(creator=c1, work=MovieFactory(), role_name='')
+        WorkRoleFactory(creator=c1, work=PlayFactory(), role_name='Director')
+
+        c2 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c2, work=MovieFactory(), role_name='Director')
+        WorkRoleFactory(creator=c2, work=MovieFactory(), role_name='Director')
+
+        c3 = IndividualCreatorFactory()
+        WorkRoleFactory(creator=c3, work=MovieFactory(), role_name='Playwright')
+        WorkRoleFactory(creator=c3, work=PlayFactory(), role_name='Director')
+
+        data = most_seen_creators_by_works_card(
+                                    work_kind='movie', role_name='Director')
+
+        self.assertEqual(len(data['object_list']), 2)
+        self.assertEqual(data['object_list'][0], c1)
+        self.assertEqual(data['object_list'][0].num_works, 3)
+        self.assertEqual(data['object_list'][1], c2)
+        self.assertEqual(data['object_list'][1].num_works, 2)
+
+    def test_title_work_with_work_kind(self):
+        data = most_seen_creators_by_works_card(work_kind='movie')
+
+        self.assertEqual(data['card_title'], 'People/groups with most movies')
+
+    def test_title_work_with_role_name(self):
+        data = most_seen_creators_by_works_card(role_name='Director')
+
+        self.assertEqual(data['card_title'], 'Directors with most works')
+
+    def test_title_work_with_work_kind_and_role_name(self):
+        data = most_seen_creators_by_works_card(
+                                    work_kind='movie', role_name='Director')
+
+        self.assertEqual(data['card_title'], 'Directors with most movies')
+
 
 class MostSeenWorksTestCase(TestCase):
 
