@@ -2,7 +2,8 @@
 For displaying a list of objects in a chart.
 
 Expects:
-* object_list - A list/QuerySet of objects, each with a num_publications property.
+* object_list - A list/QuerySet of objects, each having a `chart_position` attribue.
+                OR, each item could be a list of objects, again with `chart_position` attributes (presumably each would have the same `chart_position` value).
 
 * score_attr - The name of the attribute on each object that contains the score for the chart. e.g. 'num_visits'
 
@@ -16,12 +17,23 @@ Expects:
 {% load spectator_core %}
 
 <ol{% if in_card|default_if_none:False %} class="mb-0"{% endif %}>
-    {% for obj in object_list %}
-        <li value="{{ obj.chart_position }}">
-            {% with use_cite|default_if_none:False as use_cite %}
-                <a href="{{ obj.get_absolute_url }}">{% if use_cite %}<cite>{% endif %}{% if name_attr %}{{ obj|get_attr:name_attr }}{% else %}{{ obj.name }}{% endif %}{% if use_cite %}</cite>{% endif %}</a>
-                <small class="text-muted">({{ obj|get_attr:score_attr }})</small>
-            {% endwith %}
-        </li>
-    {% endfor %}
+  {% for obj in object_list %}
+    <li value="{{ obj.chart_position }}">
+      {% spaceless %}
+        {% with use_cite|default_if_none:False as use_cite %}
+          {% if obj|length == 0 %}
+            {# A single object. #}
+            <a href="{{ obj.get_absolute_url }}">{% if use_cite %}<cite>{% endif %}{% if name_attr %}{{ obj|get_attr:name_attr }}{% else %}{{ obj.name }}{% endif %}{% if use_cite %}</cite>{% endif %}</a>
+          {% else %}
+            {# A list of objects. #}
+            {% for subobj in obj %}
+              {% if forloop.first %}{% else %}{% if forloop.last %} and {% else %}, {% endif %}{% endif %}
+              <a href="{{ subobj.get_absolute_url }}">{% if use_cite %}<cite>{% endif %}{% if name_attr %}{{ subobj|get_attr:name_attr }}{% else %}{{ subobj.name }}{% endif %}{% if use_cite %}</cite>{% endif %}</a>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      {% endspaceless %}
+      <small class="text-muted">({% if obj|length == 0 %}{{ obj|get_attr:score_attr }}{% else %}{{ obj.0|get_attr:score_attr }}{% endif %})</small>
+    </li>
+  {% endfor %}
 </ol>
