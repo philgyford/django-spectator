@@ -1,6 +1,12 @@
 Changelog (Django Spectator)
 ============================
 
+8.5.1
+-----
+
+- Tweaked ``spectator_core/includes/chart.html`` template to allow multiple
+  objects per chart position.
+
 8.5.0
 -----
 
