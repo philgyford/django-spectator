@@ -209,6 +209,9 @@ class WorkListViewTestCase(ViewTestCase):
         response = views.WorkListView.as_view()(self.request, kind_slug='movies')
         context = response.context_data
         self.assertEqual(context['page_title'], 'Movies')
+        self.assertEqual(context['work_kind'], 'movie')
+        self.assertEqual(context['work_kind_name'], 'Movie')
+        self.assertEqual(context['work_kind_name_plural'], 'Movies')
         self.assertEqual(context['breadcrumb_list_title'], 'Movies')
         self.assertEqual(context['breadcrumb_list_url'], '/events/movies/')
 

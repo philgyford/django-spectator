@@ -201,52 +201,6 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
         return title
 
-    def get_kinds():
-        """
-        Returns a list of the kind values ['gig', 'play', etc] in the order in
-        which they're listed in `KIND_CHOICES`.
-        """
-        return [k for k,v in Event.KIND_CHOICES]
-
-    def get_valid_kind_slugs():
-        "Returns a list of the slugs that different kinds of Events can have."
-        return list(Event.KIND_SLUGS.values())
-
-    def get_kind_name_plural(kind):
-        "e.g. 'Gigs' or 'Movies'."
-        if kind == 'comedy':
-            return 'Comedy'
-        elif kind == 'dance':
-            return 'Dance'
-        elif kind == 'theatre':
-            return 'Theatre'
-        elif kind == 'cinema':
-            return 'Cinema'
-        else:
-            return '{}s'.format(Event.get_kind_name(kind))
-
-    def get_kind_name(kind):
-        return {k:v for (k,v) in Event.KIND_CHOICES}[kind]
-
-    def get_kinds_data():
-        """
-        Returns a dict of all the data about the kinds, keyed to the kind
-        value. e.g:
-            {
-                'gig': {
-                    'name': 'Gig',
-                    'slug': 'gigs',
-                    'name_plural': 'Gigs',
-                },
-                # etc
-            }
-        """
-        kinds = {k:{'name':v} for k,v in Event.KIND_CHOICES}
-        for k,data in kinds.items():
-            kinds[k]['slug'] = Event.KIND_SLUGS[k]
-            kinds[k]['name_plural'] = Event.get_kind_name_plural(k)
-        return kinds
-
     def get_works(self):
         return self.work_selections.all()
 
@@ -288,6 +242,57 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         have a title.
         """
         return self.make_title()
+
+    @staticmethod
+    def get_kind_name_plural(kind):
+        "e.g. 'Gigs' or 'Movies'."
+        if kind == 'comedy':
+            return 'Comedy'
+        elif kind == 'dance':
+            return 'Dance'
+        elif kind == 'theatre':
+            return 'Theatre'
+        elif kind == 'cinema':
+            return 'Cinema'
+        else:
+            return '{}s'.format(Event.get_kind_name(kind))
+
+    @staticmethod
+    def get_kind_name(kind):
+        return {k:v for (k,v) in Event.KIND_CHOICES}[kind]
+
+    @staticmethod
+    def get_kinds():
+        """
+        Returns a list of the kind values ['gig', 'play', etc] in the order in
+        which they're listed in `KIND_CHOICES`.
+        """
+        return [k for k,v in Event.KIND_CHOICES]
+
+    @staticmethod
+    def get_valid_kind_slugs():
+        "Returns a list of the slugs that different kinds of Events can have."
+        return list(Event.KIND_SLUGS.values())
+
+    @staticmethod
+    def get_kinds_data():
+        """
+        Returns a dict of all the data about the kinds, keyed to the kind
+        value. e.g:
+            {
+                'gig': {
+                    'name': 'Gig',
+                    'slug': 'gigs',
+                    'name_plural': 'Gigs',
+                },
+                # etc
+            }
+        """
+        kinds = {k:{'name':v} for k,v in Event.KIND_CHOICES}
+        for k,data in kinds.items():
+            kinds[k]['slug'] = Event.KIND_SLUGS[k]
+            kinds[k]['name_plural'] = Event.get_kind_name_plural(k)
+        return kinds
 
 
 class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
@@ -382,22 +387,25 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         return reverse('spectator:events:work_list',
                                             kwargs={'kind_slug': kind_slug})
 
-    def get_valid_kind_slugs():
-        "Returns a list of the slugs that different kinds of Works can have."
-        return list(Work.KIND_SLUGS.values())
-
-    def get_kind_name(kind):
-        return {k:v for (k,v) in Work.KIND_CHOICES}[kind]
-
-    def get_kind_name_plural(kind):
-        return '{}s'.format(Work.get_kind_name(kind))
-
     @property
     def imdb_url(self):
         if self.imdb_id:
             return 'http://www.imdb.com/title/{}/'.format(self.imdb_id)
         else:
             return ''
+
+    @staticmethod
+    def get_valid_kind_slugs():
+        "Returns a list of the slugs that different kinds of Works can have."
+        return list(Work.KIND_SLUGS.values())
+
+    @staticmethod
+    def get_kind_name(kind):
+        return {k:v for (k,v) in Work.KIND_CHOICES}[kind]
+
+    @staticmethod
+    def get_kind_name_plural(kind):
+        return '{}s'.format(Work.get_kind_name(kind))
 
 
 class WorkRole(BaseRole):

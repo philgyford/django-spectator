@@ -166,17 +166,20 @@ class WorkListView(WorkMixin, PaginatedListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        # 'movie', 'Movie', and 'Movies' respectively:
         kind = self.get_work_kind()
+        kind_name = Work.get_kind_name(kind)
+        kind_name_plural = Work.get_kind_name_plural(kind)
 
-        title = Work.get_kind_name_plural(kind)
+        context['page_title'] = kind_name_plural
+        context['breadcrumb_list_title'] = kind_name_plural
 
-        context['page_title'] = title
-        context['breadcrumb_list_title'] = title
+        context['work_kind'] = kind
+        context['work_kind_name'] = kind_name
+        context['work_kind_name_plural'] = kind_name_plural
 
         context['breadcrumb_list_url'] = \
                         self.model().get_list_url(kind_slug=self.kind_slug)
-
-        context['work_kind'] = kind
 
         return context
 

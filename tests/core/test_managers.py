@@ -387,4 +387,6 @@ class CreatorManagerByWorksTestCase(TestCase):
 
         creators = Creator.objects.by_works()
 
+        print(creators)
+
         self.assertEqual(creators[0].num_works, 1)
