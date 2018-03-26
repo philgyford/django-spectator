@@ -1,6 +1,18 @@
 Changelog (Django Spectator)
 ============================
 
+-----
+8.5.2
+-----
+
+- Add `Creator.get_events()` method for more accurate counting.
+
+- Fix bug with counting Events or Works multiple times when counting a Creator's
+  Events/Works and they had more than one role on an Event/Work.
+
+- Add counts of Venues and Movies/Plays/etc on their list pages.
+
+-----
 8.5.1
 -----
 
