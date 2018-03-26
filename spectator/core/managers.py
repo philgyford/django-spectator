@@ -98,7 +98,7 @@ class CreatorManager(models.Manager):
         if filter_kwargs:
             qs = qs.filter(**filter_kwargs)
 
-        qs = qs.annotate(num_works=Count('works')) \
+        qs = qs.annotate(num_works=Count('works', distinct=True)) \
                 .order_by('-num_works', 'name_sort')
 
         return qs
