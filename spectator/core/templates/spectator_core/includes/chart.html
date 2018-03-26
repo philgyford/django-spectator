@@ -18,7 +18,7 @@ Expects:
 
 <ol{% if in_card|default_if_none:False %} class="mb-0"{% endif %}>
   {% for obj in object_list %}
-    <li value="{{ obj.chart_position }}">
+    <li value="{% if obj|length == 0 %}{{ obj.chart_position }}{% else %}{{ obj.0.chart_position }}{% endif %}">
       {% spaceless %}
         {% with use_cite|default_if_none:False as use_cite %}
           {% if obj|length == 0 %}
