@@ -753,3 +753,7 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
                                                     self.cinema_treasures_id)
         else:
             return ''
+
+    @staticmethod
+    def get_country_name(country_code):
+        return Venue.COUNTRIES.get(country_code, None)

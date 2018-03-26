@@ -12,6 +12,8 @@
 {% block content %}
 
     {% if venue_list|length > 0 %}
+        <p>{{ page_obj.paginator.count }} venue{{ page_obj.paginator.count|pluralize }}{% if country_list|length > 1 %} in {{ country_list|length }} countr{{ country_list|length|pluralize:'y,ies' }}{% endif %}.</p>
+
         {% if page_obj|default:False and page_obj.number > 1 %}
             {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
         {% endif %}

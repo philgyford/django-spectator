@@ -268,16 +268,32 @@ class VenueListViewTestCase(ViewTestCase):
 
     def test_context_events_list(self):
         "It should have Venues in the context, in title_sort order."
-        p1 = VenueFactory(name="Classic Venue")
-        p2 = VenueFactory(name="The Amazing Venue")
-        p3 = VenueFactory(name="A Brilliant Venue")
+        v1 = VenueFactory(name="Classic Venue")
+        v2 = VenueFactory(name="The Amazing Venue")
+        v3 = VenueFactory(name="A Brilliant Venue")
         response = views.VenueListView.as_view()(self.request)
         context = response.context_data
         self.assertIn('venue_list', context)
         self.assertEqual(len(context['venue_list']), 3)
-        self.assertEqual(context['venue_list'][0], p2)
-        self.assertEqual(context['venue_list'][1], p3)
-        self.assertEqual(context['venue_list'][2], p1)
+        self.assertEqual(context['venue_list'][0], v2)
+        self.assertEqual(context['venue_list'][1], v3)
+        self.assertEqual(context['venue_list'][2], v1)
+
+    def test_context_country_list(self):
+        VenueFactory(country='') # Should not be counted.
+        VenueFactory(country='UY')
+        VenueFactory.create_batch(4, country='CH')
+        VenueFactory.create_batch(2, country='GB')
+        response = views.VenueListView.as_view()(self.request)
+        context = response.context_data
+        self.assertIn('country_list', context)
+        self.assertEqual(len(context['country_list']), 3)
+        self.assertEqual(context['country_list'][0],
+                        {'code':'CH', 'name':'Switzerland'})
+        self.assertEqual(context['country_list'][1],
+                        {'code':'GB', 'name':'UK'})
+        self.assertEqual(context['country_list'][2],
+                        {'code':'UY', 'name':'Uruguay'})
 
 
 class VenueDetailViewTestCase(ViewTestCase):

@@ -502,3 +502,6 @@ class VenueTestCase(TestCase):
     def test_cinema_treasures_url_no_id(self):
         venue = VenueFactory(cinema_treasures_id=None)
         self.assertEqual(venue.cinema_treasures_url, '')
+
+    def test_get_country_name(self):
+        self.assertEqual(Venue.get_country_name('CH'), 'Switzerland')
