@@ -21,7 +21,7 @@
     {% if creator.events.count > 0 %}
         <h2>Events</h2>
 
-        {% include 'spectator_events/includes/events.html' with event_list=creator.events.all %}
+        {% include 'spectator_events/includes/events.html' with event_list=creator.get_events %}
     {% endif %}
 
     {% include 'spectator_events/includes/works.html' with work_list=creator.get_movies heading="Movies" only %}

@@ -157,6 +157,13 @@ class Creator(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         else:
             return 'thing'
 
+    def get_events(self):
+        """
+        All Events they're involved with, eliminating duplicates that occur
+        with self.events.all() if they have multiple roles on the Event.
+        """
+        return self.events.distinct()
+
     def get_works(self):
         "All kinds of Work."
         return self.works.distinct()

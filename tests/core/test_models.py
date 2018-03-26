@@ -114,6 +114,17 @@ class CreatorTestCase(TestCase):
         self.assertEqual(roles[0].role_name, 'Director')
         self.assertEqual(roles[1].role_name, 'Actor')
 
+    def test_get_events(self):
+        bob = IndividualCreatorFactory()
+        e1 = TheatreEventFactory()
+        e2 = TheatreEventFactory()
+        role1 = EventRoleFactory(event=e1, creator=bob, role_name='Director')
+        role2 = EventRoleFactory(event=e1, creator=bob, role_name='Playwright')
+        role3 = EventRoleFactory(event=e2, creator=bob, role_name='Director')
+
+        events = bob.get_events()
+        self.assertEqual(len(events), 2)
+
     def test_get_works(self):
         bob = IndividualCreatorFactory()
         m = MovieFactory()
