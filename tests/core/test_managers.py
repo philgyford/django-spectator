@@ -267,6 +267,18 @@ class CreatorManagerByEventsTestCase(TestCase):
         # Should only count the 'gig' event:
         self.assertEqual(creators[0].num_events, 1)
 
+    def test_counts_distinct_events(self):
+        "If a Creator has multiple roles on an Event, the Event should only be counted once."
+        c = IndividualCreatorFactory()
+        ev = TheatreEventFactory()
+
+        EventRoleFactory(creator=c, event=ev, role_name='Director')
+        EventRoleFactory(creator=c, event=ev, role_name='Playwright')
+
+        creators = Creator.objects.by_events()
+
+        self.assertEqual(creators[0].num_events, 1)
+
 
 class CreatorManagerByWorksTestCase(TestCase):
 
@@ -363,4 +375,16 @@ class CreatorManagerByWorksTestCase(TestCase):
         creators = Creator.objects.by_works(kind='movie', role_name='Director')
 
         # Should only count the 'Director' role on a movie Work:
+        self.assertEqual(creators[0].num_works, 1)
+
+    def test_counts_distinct_works(self):
+        "If a Creator has multiple roles on a Work, the Work should only be counted once."
+        c = IndividualCreatorFactory()
+        w = MovieFactory()
+
+        WorkRoleFactory(creator=c, work=w, role_name='Director')
+        WorkRoleFactory(creator=c, work=w, role_name='Writer')
+
+        creators = Creator.objects.by_works()
+
         self.assertEqual(creators[0].num_works, 1)

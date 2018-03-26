@@ -165,6 +165,19 @@ class MostSeenCreatorsTestCase(TestCase):
 
         self.assertEqual(len(creators), 3)
 
+    def test_multiple_roles(self):
+        "If a Creator has multiple roles on an Event, the Event should only be counted once."
+        bob = IndividualCreatorFactory()
+        ev = TheatreEventFactory()
+        # 1 Event, 2 roles. Should only result in 1 Event in chart:
+        EventRoleFactory(creator=bob, event=ev, role_name='Director')
+        EventRoleFactory(creator=bob, event=ev, role_name='Playwright')
+
+        creators = most_seen_creators()
+
+        self.assertEqual(len(creators), 1)
+        self.assertEqual(creators[0].num_events, 1)
+
 
 class MostSeenCreatorsCardTestCase(TestCase):
 

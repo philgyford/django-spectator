@@ -66,7 +66,7 @@ class CreatorManager(models.Manager):
         if kind is not None:
             qs = qs.filter(events__kind=kind)
 
-        qs = qs.annotate(num_events=Count('events')) \
+        qs = qs.annotate(num_events=Count('events', distinct=True)) \
                 .order_by('-num_events', 'name_sort')
 
         return qs
