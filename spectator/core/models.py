@@ -1,9 +1,9 @@
-from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
 from hashids import Hashids
 
+from . import app_settings
 from .fields import NaturalSortField
 from .managers import CreatorManager
 
@@ -47,15 +47,8 @@ class SluggedModelMixin(models.Model):
         """
         Generates a slug using a Hashid of `value`.
         """
-        # Defaults:
-        alphabet = 'abcdefghijkmnopqrstuvwxyz23456789'
-        salt = 'Django Spectator'
-
-        if hasattr(settings, 'SPECTATOR_SLUG_ALPHABET'):
-            alphabet = settings.SPECTATOR_SLUG_ALPHABET
-
-        if hasattr(settings, 'SPECTATOR_SLUG_SALT'):
-            salt = settings.SPECTATOR_SLUG_SALT
+        alphabet = app_settings.SLUG_ALPHABET
+        salt = app_settings.SLUG_SALT
 
         hashids = Hashids(alphabet=alphabet, salt=salt, min_length=5)
 

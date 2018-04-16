@@ -2,11 +2,11 @@ from django.db.models import Min
 from django.http import Http404
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
-from django.conf import settings
 from django.urls import reverse
 from django.views.generic import DetailView, ListView, YearArchiveView
 from django.views.generic.detail import SingleObjectMixin
 
+from spectator.core import app_settings
 from spectator.core.models import Creator
 from spectator.core.views import PaginatedListView
 from .models import Event, Venue, Work
@@ -251,9 +251,9 @@ class VenueDetailView(SingleObjectMixin, PaginatedListView):
 
         context['event_list'] = context['object_list']
 
-        if hasattr(settings, 'SPECTATOR_GOOGLE_MAPS_API_KEY') and settings.SPECTATOR_GOOGLE_MAPS_API_KEY:
+        if app_settings.GOOGLE_MAPS_API_KEY:
             if self.object.latitude is not None and self.object.longitude is not None:
-                context['SPECTATOR_GOOGLE_MAPS_API_KEY'] = settings.SPECTATOR_GOOGLE_MAPS_API_KEY
+                context['SPECTATOR_GOOGLE_MAPS_API_KEY'] = app_settings.GOOGLE_MAPS_API_KEY
 
         return context
 

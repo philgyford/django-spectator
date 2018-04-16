@@ -1,6 +1,7 @@
 # coding: utf-8
-from django.test import override_settings, TestCase
+from django.test import TestCase
 
+from .. import override_app_settings
 from spectator.core.factories import *
 from spectator.events.factories import *
 from spectator.reading.factories import *
@@ -16,12 +17,12 @@ class SluggedModelMixinTestCase(TestCase):
         creator = IndividualCreatorFactory(pk=123)
         self.assertEqual(creator.slug, '9g5o8')
 
-    @override_settings(SPECTATOR_SLUG_ALPHABET='ABCDEFG1234567890')
+    @override_app_settings(SLUG_ALPHABET='ABCDEFG1234567890')
     def test_custom_alphabet(self):
         creator = IndividualCreatorFactory(pk=123)
         self.assertEqual(creator.slug, '18G28')
 
-    @override_settings(SPECTATOR_SLUG_SALT='My new salt')
+    @override_app_settings(SLUG_SALT='My new salt')
     def test_custom_salt(self):
         creator = IndividualCreatorFactory(pk=123)
         self.assertEqual(creator.slug, 'y9xgy')

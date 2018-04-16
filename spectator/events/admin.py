@@ -1,10 +1,10 @@
 from django import forms
-from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.templatetags.l10n import unlocalize
 
+from ..core import app_settings
 from .models import (
     Event, EventRole,
     Work, WorkRole, WorkSelection,
@@ -179,11 +179,11 @@ class VenueAdmin(admin.ModelAdmin):
     readonly_fields = ('name_sort', 'time_created', 'time_modified',)
 
     class Media:
-        if hasattr(settings, 'SPECTATOR_GOOGLE_MAPS_API_KEY') and settings.SPECTATOR_GOOGLE_MAPS_API_KEY:
+        if app_settings.GOOGLE_MAPS_API_KEY:
             css = {
                 'all': ('css/admin/location_picker.css',),
             }
             js = (
-                'https://maps.googleapis.com/maps/api/js?key={}'.format(settings.SPECTATOR_GOOGLE_MAPS_API_KEY),
+                'https://maps.googleapis.com/maps/api/js?key={}'.format(app_settings.GOOGLE_MAPS_API_KEY),
                 'js/admin/location_picker.js',
             )

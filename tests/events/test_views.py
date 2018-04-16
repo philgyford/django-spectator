@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.http.response import Http404
-from django.test import override_settings
 
 from freezegun import freeze_time
 
-from .. import make_date
+
+from .. import make_date, override_app_settings
 from ..core.test_views import ViewTestCase
 from spectator.events import views
 from spectator.events.factories import *
@@ -340,7 +340,7 @@ class VenueDetailViewTestCase(ViewTestCase):
         self.assertIn('event_list', context)
         self.assertEqual(len(context['event_list']), 3)
 
-    @override_settings(SPECTATOR_GOOGLE_MAPS_API_KEY='123456')
+    @override_app_settings(GOOGLE_MAPS_API_KEY='123456')
     def test_context_map_on(self):
         "It should put the api key in context when it, and lat/lon, exist."
         venue = VenueFactory(pk=456, latitude=51, longitude=0)
@@ -349,17 +349,16 @@ class VenueDetailViewTestCase(ViewTestCase):
         self.assertEqual(response.context_data['SPECTATOR_GOOGLE_MAPS_API_KEY'],
                         '123456')
 
-    @override_settings(SPECTATOR_GOOGLE_MAPS_API_KEY='123456')
+    @override_app_settings(GOOGLE_MAPS_API_KEY='123456')
     def test_context_map_off_1(self):
         "It should NOT put the api key in context when it exists but lat/lon, don't."
         venue = VenueFactory(pk=456, latitude=None, longitude=None)
         response = views.VenueDetailView.as_view()(self.request, slug='8wozp')
         self.assertNotIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
 
-    @override_settings()
+    @override_app_settings(GOOGLE_MAPS_API_KEY='')
     def test_context_map_off_2(self):
         "It should NOT put the api key in context when it does not exist but lat/lon do."
-        del settings.SPECTATOR_GOOGLE_MAPS_API_KEY
         venue = VenueFactory(pk=456, latitude=51, longitude=0)
         response = views.VenueDetailView.as_view()(self.request, slug='8wozp')
         self.assertNotIn('SPECTATOR_GOOGLE_MAPS_API_KEY', response.context_data)
