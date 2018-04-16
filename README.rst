@@ -14,10 +14,10 @@ Two Django apps:
 * One to track events attended (movie, plays, gigs, exhibitions, comedy, dance,
   classical), including date, venue, and people/organisations involved.
 
-For Django 1.11 or Django 2.0 running on Python 3.5 or 3.6.
+For Django 1.11.x or Django 2.0.x running on Python 3.5 or 3.6.
 
 It has URLs, views and templates to create a site displaying all the data, and
-Django admin screens to add and edit them. The templates use `Bootstrap v4-beta <https://getbootstrap.com>`_.
+Django admin screens to add and edit them. The templates use `Bootstrap v4.1 <https://getbootstrap.com>`_.
 
 There are also template tags for displaying data in your own templates (see
 below).
