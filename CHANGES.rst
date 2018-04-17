@@ -1,24 +1,62 @@
 Changelog (Django Spectator)
 ============================
 
+8.6.0
 -----
+
+Core
+~~~~
+
+- Remove leading ``www.`` from visible display of domains when URLizing them.
+
+- Better handle default settings.
+
+Reading
+~~~~~~~
+
+- Add optional settings to customise the format of dates when displaying
+  Readings.
+
+- Stop possibility of a Publication appearing more than once when listing
+  Publications being read on a specific day.
+
+- Order in-progress Publications by when they were started to be read.
+
+Events
+~~~~~~
+
+- Turn Exhibitions into a new kind of Work:
+
+    * Renamed ``"exhibition"`` Events to be ``"museum"`` (Museum/Gallery) Events.
+
+    * Added ``"exhibition"`` as a new Work kind.
+
+    * Added a migration to add an Exhibition Work to every Museum/Gallery Event,
+      and move any Creator(s) over to that Work.
+
+- Add optional settings to customise the format of Event dates in templates.
+
+- Display the number of Events on a Venue detail page.
+
+
 8.5.2
 -----
 
-- Add `Creator.get_events()` method for more accurate counting.
+- Add ``Creator.get_events()`` method for more accurate counting.
 
 - Fix bug with counting Events or Works multiple times when counting a Creator's
   Events/Works and they had more than one role on an Event/Work.
 
 - Add counts of Venues and Movies/Plays/etc on their list pages.
 
------
+
 8.5.1
 -----
 
 - Tweaked ``spectator_core/includes/chart.html`` template to allow multiple
   objects per chart position.
 
+ 
 8.5.0
 -----
 
