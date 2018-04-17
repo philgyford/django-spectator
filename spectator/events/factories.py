@@ -60,8 +60,8 @@ class ConcertEventFactory(EventFactory):
 class DanceEventFactory(EventFactory):
     kind = 'dance'
 
-class ExhibitionEventFactory(EventFactory):
-    kind = 'exhibition'
+class MuseumEventFactory(EventFactory):
+    kind = 'museum'
 
 class GigEventFactory(EventFactory):
     kind = 'gig'

@@ -174,7 +174,7 @@ class EventTestCase(TestCase):
     def test_get_kinds(self):
         self.assertEqual(
             Event.get_kinds(),
-            ['cinema', 'concert', 'comedy', 'dance', 'exhibition', 'gig',
+            ['cinema', 'concert', 'comedy', 'dance', 'museum', 'gig',
             'theatre', 'misc',]
         )
 
@@ -182,8 +182,8 @@ class EventTestCase(TestCase):
         self.assertEqual(
             sorted(Event.get_valid_kind_slugs()),
             sorted(
-                ['comedy', 'concerts', 'dance', 'exhibitions', 'gigs', 'misc',
-                    'cinema', 'theatre',]
+                ['comedy', 'concerts', 'dance', 'gallery-museum', 'gigs',
+                    'misc', 'cinema', 'theatre',]
             )
         )
 
@@ -192,7 +192,7 @@ class EventTestCase(TestCase):
         self.assertEqual(ComedyEventFactory().kind_slug, 'comedy')
         self.assertEqual(ConcertEventFactory().kind_slug, 'concerts')
         self.assertEqual(DanceEventFactory().kind_slug, 'dance')
-        self.assertEqual(ExhibitionEventFactory().kind_slug, 'exhibitions')
+        self.assertEqual(MuseumEventFactory().kind_slug, 'gallery-museum')
         self.assertEqual(GigEventFactory().kind_slug, 'gigs')
         self.assertEqual(MiscEventFactory().kind_slug, 'misc')
         self.assertEqual(CinemaEventFactory().kind_slug, 'cinema')
@@ -233,7 +233,7 @@ class EventTestCase(TestCase):
         self.assertEqual(ComedyEventFactory().kind_name, 'Comedy')
         self.assertEqual(ConcertEventFactory().kind_name, 'Concert')
         self.assertEqual(DanceEventFactory().kind_name, 'Dance')
-        self.assertEqual(ExhibitionEventFactory().kind_name, 'Exhibition')
+        self.assertEqual(MuseumEventFactory().kind_name, 'Gallery/Museum')
         self.assertEqual(GigEventFactory().kind_name, 'Gig')
         self.assertEqual(MiscEventFactory().kind_name, 'Other')
         self.assertEqual(CinemaEventFactory().kind_name, 'Cinema')
@@ -243,8 +243,8 @@ class EventTestCase(TestCase):
         self.assertEqual(ComedyEventFactory().kind_name_plural, 'Comedy')
         self.assertEqual(ConcertEventFactory().kind_name_plural, 'Concerts')
         self.assertEqual(DanceEventFactory().kind_name_plural, 'Dance')
-        self.assertEqual(ExhibitionEventFactory().kind_name_plural,
-                                                                'Exhibitions')
+        self.assertEqual(MuseumEventFactory().kind_name_plural,
+                                                        'Galleries/Museums')
         self.assertEqual(GigEventFactory().kind_name_plural, 'Gigs')
         self.assertEqual(MiscEventFactory().kind_name_plural, 'Others')
         self.assertEqual(CinemaEventFactory().kind_name_plural, 'Cinema')
@@ -307,8 +307,8 @@ class EventTestCase(TestCase):
         event = DanceEventFactory(pk=123)
         self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
-    def test_absolute_url_exhibition(self):
-        event = ExhibitionEventFactory(pk=123)
+    def test_absolute_url_museum(self):
+        event = MuseumEventFactory(pk=123)
         self.assertEqual(event.get_absolute_url(), '/events/9g5o8/')
 
     def test_absolute_url_gig(self):

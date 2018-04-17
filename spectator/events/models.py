@@ -249,7 +249,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         if kind in ['comedy', 'cinema', 'dance', 'theatre']:
             return kind.title()
         elif kind == 'museum':
-            return 'Museums/Galleries'
+            return 'Galleries/Museums'
         else:
             return '{}s'.format(Event.get_kind_name(kind))
 
