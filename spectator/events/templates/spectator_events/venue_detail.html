@@ -15,7 +15,7 @@
     {{ block.super }}
 {% endblock %}
 
-{% block head_page_title %}{{ venue.name }}{% endblock %}
+{% block head_page_title %}{{ venue.name }}{% if page_obj.number > 1 %} (page {{ page_obj.number }}){% endif %}{% endblock %}
 {% block content_title %}{{ venue.name }}{% endblock %}
 
 {% block breadcrumbs %}
