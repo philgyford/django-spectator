@@ -167,6 +167,9 @@ class Creator(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     def get_dance_pieces(self):
         return self.works.filter(kind='dancepiece').distinct()
 
+    def get_exhibitions(self):
+        return self.works.filter(kind='exhibition').distinct()
+
     def get_movies(self):
         return self.works.filter(kind='movie').distinct()
 

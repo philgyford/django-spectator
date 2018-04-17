@@ -24,9 +24,11 @@
 
     {% include 'spectator_events/includes/selections.html' with selection_list=event.get_plays heading="Plays" only %}
 
-    {% include 'spectator_events/includes/selections.html' with selection_list=event.get_classical_works heading="Works" only %}
+    {% include 'spectator_events/includes/selections.html' with selection_list=event.get_classical_works heading="Classical works" only %}
 
-    {% include 'spectator_events/includes/selections.html' with selection_list=event.get_dance_pieces heading="Pieces" only %}
+    {% include 'spectator_events/includes/selections.html' with selection_list=event.get_dance_pieces heading="Dance pieces" only %}
+
+    {% include 'spectator_events/includes/selections.html' with selection_list=event.get_exhibitions heading="Exhibitions" only %}
 
     {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all heading='Featuring' only %}
 

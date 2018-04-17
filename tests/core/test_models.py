@@ -164,6 +164,17 @@ class CreatorTestCase(TestCase):
         self.assertEqual(len(pieces), 1)
         self.assertEqual(pieces[0], dp)
 
+    def test_get_exhibitions(self):
+        bob = IndividualCreatorFactory()
+        e = ExhibitionFactory()
+        p = PlayFactory()
+        WorkRoleFactory(work=e, creator=bob)
+        WorkRoleFactory(work=p, creator=bob)
+
+        exhibitions = bob.get_exhibitions()
+        self.assertEqual(len(exhibitions), 1)
+        self.assertEqual(exhibitions[0], e)
+
     def test_get_movies(self):
         bob = IndividualCreatorFactory()
         m = MovieFactory()

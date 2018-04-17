@@ -25,6 +25,10 @@ class DancePieceFactory(WorkFactory):
     kind = 'dancepiece'
     title = factory.Sequence(lambda n: 'Dance Piece %s' % n)
 
+class ExhibitionFactory(WorkFactory):
+    kind = 'exhibition'
+    title = factory.Sequence(lambda n: 'Exhibition %s' % n)
+
 class MovieFactory(WorkFactory):
     kind = 'movie'
     title = factory.Sequence(lambda n: 'Movie %s' % n)

@@ -367,6 +367,17 @@ class EventTestCase(TestCase):
         self.assertEqual(len(works), 1)
         self.assertEqual(works[0].work, dp)
 
+    def test_get_exhibitions(self):
+        event = MuseumEventFactory()
+        e = ExhibitionFactory()
+        p = PlayFactory()
+        WorkSelectionFactory(work=e, event=event)
+        WorkSelectionFactory(work=p, event=event)
+
+        works = event.get_exhibitions()
+        self.assertEqual(len(works), 1)
+        self.assertEqual(works[0].work, e)
+
     def test_get_movies(self):
         event = CinemaEventFactory()
         m = MovieFactory()
@@ -436,6 +447,14 @@ class WorkTestCase(TestCase):
     def test_get_list_url_dancepiece(self):
         work = DancePieceFactory()
         self.assertEqual(work.get_list_url(), '/events/dance-pieces/')
+
+    def test_absolute_url_exhibition(self):
+        work = ExhibitionFactory(pk=123)
+        self.assertEqual(work.get_absolute_url(), '/events/exhibitions/9g5o8/')
+
+    def test_get_list_url_exhibition(self):
+        work = ExhibitionFactory()
+        self.assertEqual(work.get_list_url(), '/events/exhibitions/')
 
     def test_absolute_url_movie(self):
         work = MovieFactory(pk=123)

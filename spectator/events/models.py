@@ -210,6 +210,9 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     def get_dance_pieces(self):
         return self.work_selections.filter(work__kind='dancepiece')
 
+    def get_exhibitions(self):
+        return self.work_selections.filter(work__kind='exhibtions')
+
     def get_movies(self):
         return self.work_selections.filter(work__kind='movie')
 
@@ -316,6 +319,7 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     KIND_CHOICES = (
         ('classicalwork',  'Classical work'),
         ('dancepiece',     'Dance piece'),
+        ('exhibition',     'Exhibition'),
         ('movie',          'Movie'),
         ('play',           'Play'),
     )
@@ -324,6 +328,7 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     KIND_SLUGS = {
         'classicalwork':    'classical-works',
         'dancepiece':       'dance-pieces',
+        'exhibition':       'exhibitions',
         'movie':            'movies',
         'play':             'plays',
     }
