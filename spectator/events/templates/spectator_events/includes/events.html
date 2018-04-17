@@ -7,12 +7,14 @@ Expects:
 
 {% endcomment %}
 
+{% load spectator_core %}
+
 {% if event_list|length > 0 %}
     <ul{% if style|default:'bullets' == 'unstyled' %} class="list-unstyled mb-0"{% endif %}>
         {% for event in event_list %}
             <li class="mb-2">
                 <a href="{{ event.get_absolute_url }}"><strong>{{ event.title_html }}</strong><br>
-                {% if event.venue %}{{ event.venue_name }}, {% endif %}{{ event.date|date:"j M Y" }}</a>
+                {% if event.venue %}{{ event.venue_name }}, {% endif %}{% display_date event.date %}</a>
             </li>
         {% endfor %}
     </ul>

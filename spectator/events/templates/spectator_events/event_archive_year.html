@@ -1,6 +1,6 @@
 {% extends 'spectator_events/base.html' %}
 
-{% load spectator_events %}
+{% load spectator_core spectator_events %}
 
 {% block head_page_title %}{{ year|date:"Y" }} events{% endblock %}
 {% block content_title %}{{ year|date:"Y" }} events{% endblock %}
@@ -28,7 +28,7 @@
                 {% if event.venue %}
                   {{ event.venue_name }},
                 {% endif %}
-                {{ event.date|date:"j M Y" }}</a>
+                {% display_date event.date %}</a>
             </li>
         {% endfor %}
         </ul>

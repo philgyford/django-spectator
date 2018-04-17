@@ -5,6 +5,7 @@ from django.http import QueryDict
 from django.urls import reverse
 from django.utils.html import format_html
 
+from .. import app_settings
 from ..apps import spectator_apps
 from ..models import Creator
 from ..utils import chartify
@@ -14,6 +15,17 @@ if spectator_apps.is_enabled('events'):
 
 
 register = template.Library()
+
+
+@register.simple_tag
+def display_date(d, link_to_day=False):
+    stamp = d.strftime('%Y-%m-%d')
+    visible_date = d.strftime(app_settings.CORE_DATE_FORMAT)
+
+    return format_html('<time datetime="%(stamp)s">%(visible)s</time>' % {
+                'stamp': stamp,
+                'visible': visible_date
+            })
 
 
 @register.simple_tag
