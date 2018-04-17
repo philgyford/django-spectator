@@ -85,6 +85,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         ('comedy',      'Comedy'),
         ('dance',       'Dance'),
         ('exhibition',  'Exhibition'),
+        ('museum',      'Gallery/Museum'),
         ('gig',         'Gig'),
         ('theatre',     'Theatre'),
         ('misc',        'Other'),
@@ -96,6 +97,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         'concert':      'concerts',
         'dance':        'dance',
         'exhibition':   'exhibitions',
+        'museum':       'gallery-museum',
         'gig':          'gigs',
         'misc':         'misc',
         'cinema':       'cinema',
@@ -246,14 +248,10 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     @staticmethod
     def get_kind_name_plural(kind):
         "e.g. 'Gigs' or 'Movies'."
-        if kind == 'comedy':
-            return 'Comedy'
-        elif kind == 'dance':
-            return 'Dance'
-        elif kind == 'theatre':
-            return 'Theatre'
-        elif kind == 'cinema':
-            return 'Cinema'
+        if kind in ['comedy', 'cinema', 'dance', 'theatre']:
+            return kind.title()
+        elif kind == 'museum':
+            return 'Museums/Galleries'
         else:
             return '{}s'.format(Event.get_kind_name(kind))
 
