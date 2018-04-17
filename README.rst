@@ -64,28 +64,102 @@ Then, go to Django Admin to add your data.
 Settings
 ========
 
-Optionally get a `Google Maps JavaScript API key <https://developers.google.com/maps/documentation/javascript/get-api-key>`_ and add it to your ``settings.py`` like this::
+There are a few optional settings that can be used in your project's
+``settings.py`` file. This is the full list, with their defaults. Descriptions
+of each are below::
+
+    SPECTATOR_GOOGLE_MAPS_API_KEY = ''
+
+    SPECTATOR_SLUG_ALPHABET = 'abcdefghijkmnopqrstuvwxyz23456789'
+
+    SPECTATOR_SLUG_SALT = 'Django Spectator'
+
+    SPECTATOR_READING_DATE_PERIOD_FORMAT_SHORT = '{}–{}'
+
+    SPECTATOR_READING_DATE_PERIOD_FORMAT_LONG = '{} to {}'
+
+    SPECTATOR_READING_DATE_FORMAT = '%-d %b %Y'
+
+    SPECTATOR_READING_DATE_YEAR_FORMAT = '%Y'
+
+    SPECTATOR_READING_DATE_MONTH_FORMAT = '%b'
+
+    SPECTATOR_READING_DATE_DAY_FORMAT = '%-d'
+
+    SPECTATOR_READING_DATE_YEAR_MONTH_FORMAT = '%b %Y'
+
+    SPECTATOR_READING_DATE_MONTH_DAY_FORMAT = '%-d %b'
+
+    SPECTATOR_EVENTS_DATE_FORMAT = '%-d %b %Y'
+
+General settings
+----------------
+
+If you get a `Google Maps JavaScript API key <https://developers.google.com/maps/documentation/javascript/get-api-key>`_ and
+add it to the settings, it will enable using a map in the Django Admin to set
+the location of Venues, and the displaying of Venues' maps in the public
+templates::
 
     SPECTATOR_GOOGLE_MAPS_API_KEY = 'YOUR-API-KEY'
 
-This will enable using a map in the Django Admin to set the location of Venues,
-and the displaying of Venues' maps in the public templates.
-
 URLs for all objects include automatically-generated slugs, which are based on
 [Hashids](http://hashids.org) of the object's ID. You can change which
-characters are used in these slugs with this setting::
+characters are used in these slugs with this setting. e.g.::
 
     SPECTATOR_SLUG_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
 
-The default is ``'abcdefghijkmnopqrstuvwxyz23456789'``.
-
 You can also change the salt value used to encode the slugs. While the slugs
 don't provide complete security (i.e. it's not impossible to determine the ID on
-which a slug is based), using your own salt value can't hurt::
+which a slug is based), using your own salt value can't hurt. e.g.::
 
     SPECTATOR_SLUG_SALT = 'My special salt value is here'
 
-The default is ``'Django Spectator'``.
+Reading settings
+----------------
+
+You can change the way the dates of publication readings are displayed. This is
+a bit fiddly because there are so many ways to represent such periods, e.g.:
+
+* 6 Feb 2017
+* 1–6 Feb 2017
+* 2017–2018
+* 1 Feb to 3 Mar 2017
+* Feb 2017 to Mar 2018
+
+First, you can set the formatting used to display periods between two dates, no
+matter how those dates are represented::
+
+    SPECTATOR_READING_DATE_PERIOD_FORMAT_SHORT = '{}–{}'
+
+    SPECTATOR_READING_DATE_PERIOD_FORMAT_LONG = '{} to {}'
+
+Then you can set the formatting (based on `strftime <http://strftime.org>`_) for
+the different kinds of dates represented::
+
+    # e.g. "8 Apr 2018"
+    SPECTATOR_READING_DATE_FORMAT = '%-d %b %Y'
+
+    # e.g. "2018"
+    SPECTATOR_READING_DATE_YEAR_FORMAT = '%Y'
+
+    # e.g. "Apr"
+    SPECTATOR_READING_DATE_MONTH_FORMAT = '%b'
+
+    # e.g. "8"
+    SPECTATOR_READING_DATE_DAY_FORMAT = '%-d'
+
+    # e.g. "Apr 2018"
+    SPECTATOR_READING_DATE_YEAR_MONTH_FORMAT = '%b %Y'
+
+Events settings
+---------------
+
+There is one optional setting to for the format of dates used when displaying
+an event, using `strftime <http://strftime.org>`_ format::
+
+
+    # e.g. "8 Apr 2018"
+    SPECTATOR_EVENTS_DATE_FORMAT = '%-d %b %Y'
 
 
 ********

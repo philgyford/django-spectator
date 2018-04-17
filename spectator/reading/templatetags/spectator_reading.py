@@ -5,6 +5,7 @@ from django.db.models import Count, Q
 from django.db.models.functions import TruncYear
 from django.utils.html import format_html
 
+from .. import app_settings
 from ..models import Publication, Reading
 
 
@@ -182,24 +183,36 @@ def reading_dates(reading):
         * '1–6 Feb 2017'
         * '1 Feb to 3 Mar 2017'
         * 'Feb 2017 to Mar 2018'
-        * '2017-2018'
+        * '2017–2018'
     etc.
 
     [1] https://www.flickr.com/services/api/misc.dates.html
     """
 
     # 3 Sep 2017
-    full_format = '<time datetime="%Y-%m-%d">%-d&nbsp;%b&nbsp;%Y</time>'
+    full_format = '<time datetime="%Y-%m-%d">{}</time>'.format(
+                                        app_settings.DATE_FORMAT)
     # Sep 2017
-    month_year_format = '<time datetime="%Y-%m">%b&nbsp;%Y</time>'
+    month_year_format = '<time datetime="%Y-%m">{}</time>'.format(
+                                        app_settings.DATE_YEAR_MONTH_FORMAT)
     # 2017
-    year_format = '<time datetime="%Y">%Y</time>'
+    year_format = '<time datetime="%Y">{}</time>'.format(
+                                        app_settings.DATE_YEAR_FORMAT)
     # 3
-    day_format = '<time datetime="%Y-%m-%d">%-d</time>'
+    day_format = '<time datetime="%Y-%m-%d">{}</time>'.format(
+                                        app_settings.DATE_DAY_FORMAT)
     # 3 Sep
-    day_month_format = '<time datetime="%Y-%m-%d">%-d&nbsp;%b</time>'
+    day_month_format = '<time datetime="%Y-%m-%d">{}</time>'.format(
+                                        app_settings.DATE_MONTH_DAY_FORMAT)
     # Sep
-    month_format = '<time datetime="%Y-%m">%b</time>'
+    month_format = '<time datetime="%Y-%m">{}</time>'.format(
+                                        app_settings.DATE_MONTH_FORMAT)
+
+    # {}–{}
+    period_format_short = app_settings.PERIOD_FORMAT_SHORT
+
+    # {} to {}
+    period_format_long = app_settings.PERIOD_FORMAT_LONG
 
     # For brevity:
     start_date = reading.start_date
@@ -256,7 +269,7 @@ def reading_dates(reading):
         # 2017 to 3 March 2018
         # 2017 to March 2018
         # 2017 to 2018
-        output = '{} to {}'.format(start_str, end_str)
+        output = period_format_long.format(start_str, end_str)
 
         if (start_gran == 4 or end_gran == 4) and same_month:
             # Only have enough to output 'February 2017'.
@@ -274,31 +287,31 @@ def reading_dates(reading):
 
                 elif same_month:
                     # 1–6 February 2017
-                    output = '{}–{}'.format(
-                                        start_date.strftime(day_format),
-                                        end_str)
+                    output = period_format_short.format(
+                                start_date.strftime(day_format),
+                                end_str)
                 elif same_year:
                     # 1 February to 3 March 2017
-                    output = '{} to {}'.format(
+                    output = period_format_long.format(
                                         start_date.strftime(day_month_format),
                                         end_str)
             elif end_gran == 4:
                 if same_year:
                     # 1 February to March 2017
-                    output = '{} to {}'.format(
+                    output = period_format_long.format(
                                         start_date.strftime(day_month_format),
                                         end_str)
         elif start_gran == 4:
             if end_gran == 3:
                 if same_year:
                     # February to 3 March 2017
-                    output = '{} to {}'.format(
+                    output = period_format_long.format(
                                             start_date.strftime(month_format),
                                             end_str)
             elif end_gran == 4:
                 if same_year:
                     # February to March 2017
-                    output = '{} to {}'.format(
+                    output = period_format_long.format(
                                             start_date.strftime(month_format),
                                             end_str)
     elif end_date:

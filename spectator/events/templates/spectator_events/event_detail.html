@@ -1,5 +1,5 @@
 {% extends 'spectator_events/base.html' %}
-{% load spectator_core %}
+{% load spectator_core spectator_events %}
 
 {% block head_page_title %}{{ event }}{% if event.venue %} at {{ event.venue_name }}{% endif %} on {% display_date event.date %}{% endblock %}
 {% block content_title %}{{ event.title_html }}{% endblock %}

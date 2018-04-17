@@ -14,7 +14,3 @@ SLUG_ALPHABET = getattr(
 
 # The salt value to use when generating URL slugs:
 SLUG_SALT = getattr(settings, 'SPECTATOR_SLUG_SALT', 'Django Spectator')
-
-
-# e.g. "8 Apr 2018"
-CORE_DATE_FORMAT = getattr(settings, 'SPECTATOR_CORE_DATE_FORMAT', '%-d %b %Y')

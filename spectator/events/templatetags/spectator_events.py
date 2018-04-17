@@ -2,9 +2,11 @@ from django import template
 
 from django.db.models import Count
 from django.db.models.functions import TruncYear
+from django.utils.html import format_html
 
 from spectator.core.models import Creator
 from spectator.core.utils import chartify
+from .. import app_settings
 from ..models import Event, Work
 
 
@@ -54,6 +56,23 @@ def annual_event_counts_card(kind='all', current_year=None):
             'years': annual_event_counts(kind=kind),
             'current_year': current_year
             }
+
+
+@register.simple_tag
+def display_date(d):
+    """
+    Render a date/datetime (d) as a date, using the SPECTATOR_DATE_FORMAT
+    setting. Wrap the output in a <time> tag.
+
+    Time tags: http://www.brucelawson.co.uk/2012/best-of-time/
+    """
+    stamp = d.strftime('%Y-%m-%d')
+    visible_date = d.strftime(app_settings.DATE_FORMAT)
+
+    return format_html('<time datetime="%(stamp)s">%(visible)s</time>' % {
+                'stamp': stamp,
+                'visible': visible_date
+            })
 
 
 @register.inclusion_tag('spectator_events/includes/event_list_tabs.html')
