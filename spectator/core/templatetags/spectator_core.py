@@ -18,7 +18,13 @@ register = template.Library()
 
 
 @register.simple_tag
-def display_date(d, link_to_day=False):
+def display_date(d):
+    """
+    Render a date/datetime (d) as a date, using the SPECTATOR_CORE_DATE_FORMAT
+    setting. Wrap the output in a <time> tag.
+
+    Time tags: http://www.brucelawson.co.uk/2012/best-of-time/
+    """
     stamp = d.strftime('%Y-%m-%d')
     visible_date = d.strftime(app_settings.CORE_DATE_FORMAT)
 
