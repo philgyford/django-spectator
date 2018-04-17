@@ -211,7 +211,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         return self.work_selections.filter(work__kind='dancepiece')
 
     def get_exhibitions(self):
-        return self.work_selections.filter(work__kind='exhibtions')
+        return self.work_selections.filter(work__kind='exhibition')
 
     def get_movies(self):
         return self.work_selections.filter(work__kind='movie')
