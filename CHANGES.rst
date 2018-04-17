@@ -1,6 +1,11 @@
 Changelog (Django Spectator)
 ============================
 
+8.6.2
+-----
+
+- Add missing migration.
+
 8.6.1
 -----
 
