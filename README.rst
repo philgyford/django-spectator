@@ -278,6 +278,94 @@ To display this as a chart in a Bootstrap card::
 This will exclude any Venues with only 1 Event.
 
 
+Reading template tags
+=====================
+
+To use any of these in a template, first::
+
+    {% load spectator_reading %}
+
+In-progress Publications
+------------------------
+
+To get a QuerySet of Publications currently being read use
+``in_progress_publications``::
+
+    {% in_progress_publications as publications %}
+
+    {% for pub in publications %}
+        <p>{{ pub }}<br>
+        {% for role in pub.roles.all %}
+            {{ role.creator.name }}
+            {% if role.role_name %}({{ role.role_name }}){% endif %}
+            <br>
+        {% endfor %}
+        </p>
+    {% endfor %}
+
+Or to display as a Bootstrap card::
+
+    {% in_progress_publications_card %}
+
+Publications being read on a day
+--------------------------------
+
+To get a QuerySet of Publications that were being read on a particular day use
+``day_publications``. If ``my_date`` is a python ``date`` object::
+
+    {% day_publications date=my_date as publications %}
+
+And display the results as in the above example.
+
+Or to display as a Bootstrap card::
+
+    {% day_publications_card date=my_date %}
+
+Years of reading
+----------------
+
+To get a QuerySet of the years in which Publications were being read::
+
+    {% reading_years as years %}
+
+    {% for year in years %}
+        {{ year|date:"Y" }}<br>
+    {% endfor %}
+
+Or to display as a Bootstrap card, with each year linking to the
+``ReadingYearArchiveView``::
+
+    {% reading_years_card current_year=year %}
+
+Here, ``year`` is a date object indicating a year which shouldn't be linked.
+
+Annual reading counts
+---------------------
+
+For more detail than the ``reading_years`` tag, use this to get the number of
+Books, and Periodicals (and the total) finished per year::
+
+    {% annual_reading_counts as years %}
+
+    {% for year_data in years %}
+        {{ year_data.year }}:
+        {{ year_data.book }} book(s),
+        {{ year_data.periodical }} periodical(s),
+        {{ year_data.total }} total.<br>
+    {% endfor %}
+
+Or to display as a Bootstrap card, with each year linking to ``ReadingYearArchiveView``::
+
+    {% annual_reading_counts_card current_year=year kind='all' %}
+
+Here, ``year`` is a date object indicating a year which shouldn't be linked.
+
+And ``kind`` can be one of "all" (default), "book" or "periodical". If it's "all",
+then the result is rendered as a table, with a column each for year, book count,
+periodical count and total count. Otherwise it's a list of years with the
+book/periodical counts in parentheses.
+
+
 Events template tags
 ====================
 
@@ -414,94 +502,6 @@ To display this as a chart in a Bootstrap card::
     {% most_seen_works_card num=10 kind='movie' %}
 
 This will exclude any Works with only 1 Event.
-
-
-Reading template tags
-=====================
-
-To use any of these in a template, first::
-
-    {% load spectator_reading %}
-
-In-progress Publications
-------------------------
-
-To get a QuerySet of Publications currently being read use
-``in_progress_publications``::
-
-    {% in_progress_publications as publications %}
-
-    {% for pub in publications %}
-        <p>{{ pub }}<br>
-        {% for role in pub.roles.all %}
-            {{ role.creator.name }}
-            {% if role.role_name %}({{ role.role_name }}){% endif %}
-            <br>
-        {% endfor %}
-        </p>
-    {% endfor %}
-
-Or to display as a Bootstrap card::
-
-    {% in_progress_publications_card %}
-
-Publications being read on a day
---------------------------------
-
-To get a QuerySet of Publications that were being read on a particular day use
-``day_publications``. If ``my_date`` is a python ``date`` object::
-
-    {% day_publications date=my_date as publications %}
-
-And display the results as in the above example.
-
-Or to display as a Bootstrap card::
-
-    {% day_publications_card date=my_date %}
-
-Years of reading
-----------------
-
-To get a QuerySet of the years in which Publications were being read::
-
-    {% reading_years as years %}
-
-    {% for year in years %}
-        {{ year|date:"Y" }}<br>
-    {% endfor %}
-
-Or to display as a Bootstrap card, with each year linking to the
-``ReadingYearArchiveView``::
-
-    {% reading_years_card current_year=year %}
-
-Here, ``year`` is a date object indicating a year which shouldn't be linked.
-
-Annual reading counts
----------------------
-
-For more detail than the ``reading_years`` tag, use this to get the number of
-Books, and Periodicals (and the total) finished per year::
-
-    {% annual_reading_counts as years %}
-
-    {% for year_data in years %}
-        {{ year_data.year }}:
-        {{ year_data.book }} book(s),
-        {{ year_data.periodical }} periodical(s),
-        {{ year_data.total }} total.<br>
-    {% endfor %}
-
-Or to display as a Bootstrap card, with each year linking to ``ReadingYearArchiveView``::
-
-    {% annual_reading_counts_card current_year=year kind='all' %}
-
-Here, ``year`` is a date object indicating a year which shouldn't be linked.
-
-And ``kind`` can be one of "all" (default), "book" or "periodical". If it's "all",
-then the result is rendered as a table, with a column each for year, book count,
-periodical count and total count. Otherwise it's a list of years with the
-book/periodical counts in parentheses.
 
 
 *****************
