@@ -74,26 +74,8 @@ of each are below::
 
     SPECTATOR_SLUG_SALT = 'Django Spectator'
 
-    SPECTATOR_READING_DATE_PERIOD_FORMAT_SHORT = '{}–{}'
+    SPECTATOR_DATE_FORMAT = '%-d %b %Y'
 
-    SPECTATOR_READING_DATE_PERIOD_FORMAT_LONG = '{} to {}'
-
-    SPECTATOR_READING_DATE_FORMAT = '%-d %b %Y'
-
-    SPECTATOR_READING_DATE_YEAR_FORMAT = '%Y'
-
-    SPECTATOR_READING_DATE_MONTH_FORMAT = '%b'
-
-    SPECTATOR_READING_DATE_DAY_FORMAT = '%-d'
-
-    SPECTATOR_READING_DATE_YEAR_MONTH_FORMAT = '%b %Y'
-
-    SPECTATOR_READING_DATE_MONTH_DAY_FORMAT = '%-d %b'
-
-    SPECTATOR_EVENTS_DATE_FORMAT = '%-d %b %Y'
-
-General settings
-----------------
 
 If you get a `Google Maps JavaScript API key <https://developers.google.com/maps/documentation/javascript/get-api-key>`_ and
 add it to the settings, it will enable using a map in the Django Admin to set
@@ -114,52 +96,10 @@ which a slug is based), using your own salt value can't hurt. e.g.::
 
     SPECTATOR_SLUG_SALT = 'My special salt value is here'
 
-Reading settings
-----------------
+You can change the format used for the dates of Events and for the titles of
+some sidebar cards in templates, using `strftime <http://strftime.org>`_ formatting::
 
-You can change the way the dates of publication readings are displayed. This is
-a bit fiddly because there are so many ways to represent such periods, e.g.:
-
-* 6 Feb 2017
-* 1–6 Feb 2017
-* 2017–2018
-* 1 Feb to 3 Mar 2017
-* Feb 2017 to Mar 2018
-
-First, you can set the formatting used to display periods between two dates, no
-matter how those dates are represented::
-
-    SPECTATOR_READING_DATE_PERIOD_FORMAT_SHORT = '{}–{}'
-
-    SPECTATOR_READING_DATE_PERIOD_FORMAT_LONG = '{} to {}'
-
-Then you can set the formatting (based on `strftime <http://strftime.org>`_) for
-the different kinds of dates represented::
-
-    # e.g. "8 Apr 2018"
-    SPECTATOR_READING_DATE_FORMAT = '%-d %b %Y'
-
-    # e.g. "2018"
-    SPECTATOR_READING_DATE_YEAR_FORMAT = '%Y'
-
-    # e.g. "Apr"
-    SPECTATOR_READING_DATE_MONTH_FORMAT = '%b'
-
-    # e.g. "8"
-    SPECTATOR_READING_DATE_DAY_FORMAT = '%-d'
-
-    # e.g. "Apr 2018"
-    SPECTATOR_READING_DATE_YEAR_MONTH_FORMAT = '%b %Y'
-
-Events settings
----------------
-
-There is one optional setting to for the format of dates used when displaying
-an event, using `strftime <http://strftime.org>`_ format::
-
-
-    # e.g. "8 Apr 2018"
-    SPECTATOR_EVENTS_DATE_FORMAT = '%-d %b %Y'
+    SPECTATOR_DATE_FORMAT = '%Y-%m-%d'
 
 
 ********

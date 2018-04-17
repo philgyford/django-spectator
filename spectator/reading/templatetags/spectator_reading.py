@@ -5,7 +5,7 @@ from django.db.models import Count, Q
 from django.db.models.functions import TruncYear
 from django.utils.html import format_html
 
-from .. import app_settings
+from spectator.core import app_settings
 from ..models import Publication, Reading
 
 
@@ -145,7 +145,8 @@ def day_publications_card(date):
     Displays Publications that were being read on `date`.
     `date` is a date tobject.
     """
-    card_title = 'Reading on {}'.format(date.strftime('%-d %b %Y'))
+    d = date.strftime(app_settings.DATE_FORMAT)
+    card_title = 'Reading on {}'.format(d)
     return {
             'card_title': card_title,
             'publication_list': day_publications(date=date),
@@ -189,30 +190,22 @@ def reading_dates(reading):
     [1] https://www.flickr.com/services/api/misc.dates.html
     """
 
-    # 3 Sep 2017
-    full_format = '<time datetime="%Y-%m-%d">{}</time>'.format(
-                                        app_settings.DATE_FORMAT)
-    # Sep 2017
-    month_year_format = '<time datetime="%Y-%m">{}</time>'.format(
-                                        app_settings.DATE_YEAR_MONTH_FORMAT)
+    # 3 September 2017
+    full_format = '<time datetime="%Y-%m-%d">{}</time>'.format('%-d %B %Y')
+    # September 2017
+    month_year_format = '<time datetime="%Y-%m">{}</time>'.format('%B %Y')
     # 2017
-    year_format = '<time datetime="%Y">{}</time>'.format(
-                                        app_settings.DATE_YEAR_FORMAT)
+    year_format = '<time datetime="%Y">{}</time>'.format('%Y')
     # 3
-    day_format = '<time datetime="%Y-%m-%d">{}</time>'.format(
-                                        app_settings.DATE_DAY_FORMAT)
-    # 3 Sep
-    day_month_format = '<time datetime="%Y-%m-%d">{}</time>'.format(
-                                        app_settings.DATE_MONTH_DAY_FORMAT)
-    # Sep
-    month_format = '<time datetime="%Y-%m">{}</time>'.format(
-                                        app_settings.DATE_MONTH_FORMAT)
+    day_format = '<time datetime="%Y-%m-%d">{}</time>'.format('%-d')
+    # 3 September
+    day_month_format = '<time datetime="%Y-%m-%d">{}</time>'.format('%-d %B')
+    # September
+    month_format = '<time datetime="%Y-%m">{}</time>'.format('%B')
 
-    # {}–{}
-    period_format_short = app_settings.PERIOD_FORMAT_SHORT
+    period_format_short = '{}–{}'
 
-    # {} to {}
-    period_format_long = app_settings.PERIOD_FORMAT_LONG
+    period_format_long = '{} to {}'
 
     # For brevity:
     start_date = reading.start_date

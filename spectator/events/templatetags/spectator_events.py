@@ -6,7 +6,7 @@ from django.utils.html import format_html
 
 from spectator.core.models import Creator
 from spectator.core.utils import chartify
-from .. import app_settings
+from spectator.core import app_settings
 from ..models import Event, Work
 
 
@@ -136,7 +136,8 @@ def day_events_card(date):
     Displays Events that happened on the supplied date.
     `date` is a date object.
     """
-    card_title = 'Events on {}'.format(date.strftime('%-d %b %Y'))
+    d = date.strftime(app_settings.DATE_FORMAT)
+    card_title = 'Events on {}'.format(d)
     return {
             'card_title': card_title,
             'event_list': day_events(date=date),

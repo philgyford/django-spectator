@@ -1,6 +1,11 @@
 Changelog (Django Spectator)
 ============================
 
+8.6.1
+-----
+
+- Undid/simplified some of the previous date-related settings; needs more thought.
+
 8.6.0
 -----
 
@@ -56,7 +61,7 @@ Events
 - Tweaked ``spectator_core/includes/chart.html`` template to allow multiple
   objects per chart position.
 
- 
+
 8.5.0
 -----
 
