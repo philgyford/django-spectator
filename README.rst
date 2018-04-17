@@ -547,7 +547,7 @@ So I don't forget...
 5. Do ``python setup.py publish``.
 
 
-Adding a new event type
+Adding a new Event kind
 =======================
 
 If it's simple (like, Gigs, Comedy, etc.) and doesn't require any specific kind of Works, then:
@@ -565,16 +565,24 @@ If it's simple (like, Gigs, Comedy, etc.) and doesn't require any specific kind 
         * ``test_get_kinds_data()``
     * Add a ``test_absolute_url_*()`` test for this kind.
 
-To add a new kind of Work:
+
+Adding a new Work kind
+======================
 
 * In ``spectator.events.models.Work`` add it in ``KIND_CHOICES`` and ``KIND_SLUGS``.
 * On the ``Event`` model add a new method similar to ``get_classical_works()`` for this new kind of ``Work``.
 * On the ``spectator.core.models.Creator`` model add a new method similar to ``get_classical_works()`` for this new kind of ``Work``.
+* Add a simple factory for it in ``spectator.events.factories``.
 * In ``spectator/events/templates/spectator_events/event_detail.html`` add an include to list the
   works.
 * In ``spectator/core/templates/spectator_core/creator_detail.html`` add an include to
   list the works.
-* Add tests.
+* In ``tests/`` add equivalents of:
+    * ``core.test_models.CreatorTestCase.test.get_classical_works()``
+    * ``events.test_models.EventTestCase.test_get_classical_works()``
+    * ``events.test_models.WorkTestCase.test_absolute_url_classicalwork()``
+    * ``events.test_models.WorkTestCase.test_get_list_url_classicalwork()``
+
 
 *******
 Contact
