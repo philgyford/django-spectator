@@ -103,8 +103,7 @@ def in_progress_publications():
     """
     return Publication.in_progress_objects\
                         .select_related('series')\
-                        .prefetch_related('roles__creator')\
-                        .order_by('time_created')
+                        .prefetch_related('roles__creator')
 
 
 @register.inclusion_tag('spectator_reading/includes/card_publications.html')

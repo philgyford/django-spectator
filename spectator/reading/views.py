@@ -22,10 +22,8 @@ class ReadingHomeView(ListView):
         context['in_progress_publication_list'] = \
                                             Publication.in_progress_objects\
                                             .select_related('series')\
-                                            .prefetch_related('roles')\
-                                            .all()\
-                                            .order_by('time_created')
-
+                                            .prefetch_related('roles__creator')\
+                                            .all()
         return context
 
 
