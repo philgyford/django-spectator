@@ -111,6 +111,18 @@ class DayPublicationsTestCase(TestCase):
         qs = day_publications(make_date('2017-02-15'))
         self.assertEqual(len(qs), 0)
 
+    def test_unique_publications(self):
+        "Should only list each publication once."
+        pub = PublicationFactory()
+        r1 = ReadingFactory(publication=pub,
+                            start_date=make_date('2017-01-01'),
+                            end_date=make_date('2017-01-31'))
+        r2 = ReadingFactory(publication=pub,
+                            start_date=make_date('2017-01-31'),
+                            end_date=make_date('2017-02-15'))
+        qs = day_publications(make_date('2017-01-31'))
+        self.assertEqual(len(qs), 1)
+
 
 class ReadingYearsTestCase(TestCase):
 

@@ -133,7 +133,8 @@ def day_publications(date):
     if readings:
         return Publication.objects.filter(reading__in=readings) \
                         .select_related('series') \
-                        .prefetch_related('roles__creator')
+                        .prefetch_related('roles__creator') \
+                        .distinct()
     else:
         return Publication.objects.none()
 
