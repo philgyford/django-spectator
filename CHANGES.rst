@@ -1,6 +1,14 @@
 Changelog (Django Spectator)
 ============================
 
+8.6.3
+-----
+
+- Upgrade Django used in devproject to 2.0.5.
+
+- Upgrade Bootstrap from v4.1.0 to v4.1.1.
+
+
 8.6.2
 -----
 
