@@ -22,6 +22,8 @@ Django admin screens to add and edit them. The templates use `Bootstrap v4.1.1 <
 There are also template tags for displaying data in your own templates (see
 below).
 
+This is used on my personal website (with custom templates): `reading <https://www.gyford.com/phil/reading/>`_ and `events <https://www.gyford.com/phil/events/>`_.
+
 
 ************
 Installation
