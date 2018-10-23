@@ -1,6 +1,5 @@
 import logging
 import re
-import six
 
 from django.db import models
 
@@ -45,10 +44,10 @@ class UniqueFieldMixin(object):
                 for param in params:
                     kwargs[param] = getattr(model_instance, param, None)
 
-        new = six.next(iterator)
+        new = next(iterator)
         kwargs[self.attname] = new
         while not new or queryset.filter(**kwargs):
-            new = six.next(iterator)
+            new = next(iterator)
             kwargs[self.attname] = new
         setattr(model_instance, self.attname, new)
         return new
