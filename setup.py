@@ -57,7 +57,6 @@ setup(
     packages=['spectator'],
     install_requires=[
         'hashids>=1.2.0,<1.3',
-        'pytz',
     ],
     dependency_links=[
     ],
