@@ -450,14 +450,14 @@ This will exclude any Works with only 1 Event.
 Local development
 *****************
 
-``devproject/`` is a basic Django project to use the app locally. Use it like::
+``devproject/`` is a basic Django project to use the app locally. Use it like this, installing requirements with pipenv::
 
-$ pip install -r devproject/requirements.txt
-$ python setup.py develop
-$ ./devproject/manage.py migrate
-$ ./devproject/manage.py runserver
+$ cd devproject
+$ pipenv install
+$ pipenv run ./manage.py migrate
+$ pipenv run ./manage.py runserver
 
-Run tests with tox. Install it with::
+Run tests with tox, from the top-level directory (containing setup.py). Install it with::
 
 $ pip install tox
 
