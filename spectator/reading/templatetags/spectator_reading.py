@@ -48,7 +48,7 @@ def annual_reading_counts_card(kind='all', current_year=None):
     return {
             'card_title': card_title,
             'kind': kind,
-            'years': annual_reading_counts(),
+            'years': utils.annual_reading_counts(kind),
             'current_year': current_year
             }
 
