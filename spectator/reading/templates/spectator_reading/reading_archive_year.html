@@ -1,7 +1,7 @@
 {% extends 'spectator_reading/base.html' %}
 
-{% block head_page_title %}Publications finished in {{ year|date:"Y" }}{% endblock %}
-{% block content_title %}Publications finished in {{ year|date:"Y" }}{% endblock %}
+{% block head_page_title %}{% if publication_kind %}{{ publication_kind|title }}s{% else %}Publications{% endif %} finished in {{ year|date:"Y" }}{% endblock %}
+{% block content_title %}{% if publication_kind %}{{ publication_kind|title }}s{% else %}Publications{% endif %} finished in {{ year|date:"Y" }}{% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -10,6 +10,30 @@
 
 {% block content %}
     {% include 'spectator_core/includes/pager.html' with url_name='spectator:reading:reading_year_archive' previous=previous_year next=next_year only %}
+
+    {% if book_count > 0 or periodical_count > 0 %}
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link{% if publication_kind == None %} active{% endif %}" href="{% url 'spectator:reading:reading_year_archive' year=year|date:"Y" %}">
+                    All ({{ publication_count }})
+                </a>
+            </li>
+            {% if book_count > 0 %}
+                <li class="nav-item">
+                    <a class="nav-link{% if publication_kind == 'book' %} active{% endif %}" href="{% url 'spectator:reading:reading_year_archive' year=year|date:"Y" kind='books' %}">
+                        Books ({{ book_count }})
+                    </a>
+                </li>
+            {% endif %}
+            {% if periodical_count > 0 %}
+                <li class="nav-item">
+                    <a class="nav-link{% if publication_kind == 'periodical' %} active{% endif %}" href="{% url 'spectator:reading:reading_year_archive' year=year|date:"Y" kind='periodicals' %}">
+                        Periodicals ({{ periodical_count }})
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
 
     {% if reading_list|length > 0 %}
 

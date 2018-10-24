@@ -91,12 +91,41 @@ class ReadingYearArchiveView(YearArchiveView):
     make_object_list = True
     model = Reading
     ordering = 'end_date'
+    # Could be set to 'periodical' or 'book' in get():
+    publication_kind = None
+    # Will be a QS of all publications finished this year:
+    all_publications_queryset = None
+
+    def get(self, request, *args, **kwargs):
+        # Are we should 'book's (default) or 'periodical's?
+        kind = self.kwargs.get('kind', None)
+        if kind == 'periodicals':
+            self.publication_kind = 'periodical'
+        elif kind == 'books':
+            self.publication_kind = 'book'
+        elif kind is not None:
+            raise Http404("'{}' is not a valid publication kind".format(kind))
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['publication_kind'] = self.publication_kind
+
+        context['publication_count'] = self.all_publications_queryset.count()
+        context['book_count'] = self.all_publications_queryset \
+                                .filter(publication__kind='book').count()
+        context['periodical_count'] = self.all_publications_queryset \
+                                .filter(publication__kind='periodical').count()
+        return context
 
     def get_queryset(self):
         "Reduce the number of queries and speed things up."
         qs = super().get_queryset()
-        qs = qs.select_related('publication__series')\
+
+        qs = qs.select_related('publication__series') \
                 .prefetch_related('publication__roles__creator')
+
         return qs
 
     def get_dated_items(self):
@@ -117,5 +146,12 @@ class ReadingYearArchiveView(YearArchiveView):
                 # This is the earliest year we have readings for, so
                 # there is no previous year.
                 info['previous_year'] = None
+
+        # Save the QuerySet for ALL kinds for use in get_context_data():
+        self.all_publications_queryset = qs
+
+        # Now filter the results if necessary:
+        if self.publication_kind is not None:
+            qs = qs.filter(publication__kind=self.publication_kind)
 
         return items, qs, info
