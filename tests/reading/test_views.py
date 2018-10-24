@@ -219,7 +219,7 @@ class ReadingYearArchiveViewTestCase(ViewTestCase):
     def setUp(self):
         super().setUp()
         ReadingFactory(
-                publication=PublicationFactory(title='2017 Pub 1'),
+                publication=PublicationFactory(title='2017 Pub 1', kind='book'),
                 start_date=make_date('2016-12-15'),
                 end_date=make_date('2017-01-31'))
 
@@ -229,11 +229,23 @@ class ReadingYearArchiveViewTestCase(ViewTestCase):
                                                     self.request, year='2017')
         self.assertEqual(response.status_code, 200)
 
-    def test_response_404(self):
+    def test_response_200_with_kind(self):
+        "It should respond with 200 if there's a Reading ending in that year of the correct kind."
+        response = views.ReadingYearArchiveView.as_view()(
+                                    self.request, year='2017', kind='books')
+        self.assertEqual(response.status_code, 200)
+
+    def test_response_404_too_early(self):
         "It should raise 404 if it's a date before our first year."
         with self.assertRaises(Http404):
             response = views.ReadingYearArchiveView.as_view()(
                                                     self.request, year='2016')
+
+    def test_response_404_wrong_kind(self):
+        "It should raise 404 if the kind is invalid."
+        with self.assertRaises(Http404):
+            response = views.ReadingYearArchiveView.as_view()(
+                                    self.request, year='2017', kind='invalid')
 
     def test_templates(self):
         response = views.ReadingYearArchiveView.as_view()(
@@ -295,3 +307,35 @@ class ReadingYearArchiveViewTestCase(ViewTestCase):
                                                     self.request, year='2017')
         self.assertIn('previous_year', response.context_data)
         self.assertIsNone(response.context_data['previous_year'])
+
+    def test_context_kind_and_counts(self):
+        "The kind and counts for publications, books and periodicals should be correct."
+        ReadingFactory(
+                publication=PublicationFactory(title='Old Book', kind='book'),
+                start_date=make_date('2016-06-15'),
+                end_date=make_date('2016-07-15'))
+        ReadingFactory(
+                publication=PublicationFactory(title='2017 Book 2', kind='book'),
+                start_date=make_date('2017-01-01'),
+                end_date=make_date('2017-01-20'))
+        ReadingFactory(
+                publication=PublicationFactory(
+                                    title='2017 Periodical', kind='periodical'),
+                start_date=make_date('2017-02-01'),
+                end_date=make_date('2017-02-20'))
+
+        response = views.ReadingYearArchiveView.as_view()(
+                                        self.request, year='2017', kind='books')
+
+        data = response.context_data
+        self.assertIn('publication_kind', data)
+        self.assertEqual(data['publication_kind'], 'book')
+
+        self.assertIn('publication_count', data)
+        self.assertEqual(data['publication_count'], 3)
+
+        self.assertIn('periodical_count', data)
+        self.assertEqual(data['periodical_count'], 1)
+
+        self.assertIn('book_count', data)
+        self.assertEqual(data['book_count'], 2)

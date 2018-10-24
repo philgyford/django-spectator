@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 
 from .. import make_date
@@ -6,43 +8,33 @@ from spectator.reading.templatetags.spectator_reading import (
     annual_reading_counts, day_publications, in_progress_publications,
     reading_dates, reading_years
 )
+# from spectator.reading import utils
 
 
 class AnnualReadingCountsTestCase(TestCase):
+    """
+    Ensure the template tag calls the util method with correct arguments.
+    """
 
-    def test_queryset(self):
-        # Books only in 2015:
-        ReadingFactory.create_batch(2,
-                        publication=PublicationFactory(kind='book'),
-                        end_date=make_date('2015-01-01'))
+    def test_default(self):
+        with patch('spectator.reading.utils.annual_reading_counts') as mocked_counts:
+            result = annual_reading_counts()
+            mocked_counts.assert_called_once_with(kind='all')
 
-        # Nothing in 2016.
+    def test_all(self):
+        with patch('spectator.reading.utils.annual_reading_counts') as mocked_counts:
+            result = annual_reading_counts(kind='all')
+            mocked_counts.assert_called_once_with(kind='all')
 
-        # Books and periodicals in 2017:
-        ReadingFactory.create_batch(3,
-                        publication=PublicationFactory(kind='book'),
-                        end_date=make_date('2017-09-01'))
-        ReadingFactory.create_batch(2,
-                        publication=PublicationFactory(kind='periodical'),
-                        end_date=make_date('2017-09-01'))
+    def test_book(self):
+        with patch('spectator.reading.utils.annual_reading_counts') as mocked_counts:
+            result = annual_reading_counts(kind='book')
+            mocked_counts.assert_called_once_with(kind='book')
 
-        # Periodicals only in 2018:
-        ReadingFactory.create_batch(2,
-                        publication=PublicationFactory(kind='periodical'),
-                        end_date=make_date('2018-01-01'))
-
-        qs = annual_reading_counts()
-
-        self.assertEqual(len(qs), 3)
-        self.assertEqual(qs[0],
-                    {'year': make_date('2015-01-01'),
-                     'book': 2, 'periodical': 0 ,'total': 2})
-        self.assertEqual(qs[1],
-                    {'year': make_date('2017-01-01'),
-                    'book': 3, 'periodical': 2 ,'total': 5})
-        self.assertEqual(qs[2],
-                    {'year': make_date('2018-01-01'),
-                    'book': 0, 'periodical': 2 ,'total': 2})
+    def test_periodical(self):
+        with patch('spectator.reading.utils.annual_reading_counts') as mocked_counts:
+            result = annual_reading_counts(kind='periodical')
+            mocked_counts.assert_called_once_with(kind='periodical')
 
 
 class InProgressPublicationsTestCase(TestCase):

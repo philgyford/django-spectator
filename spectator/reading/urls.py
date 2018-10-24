@@ -42,5 +42,9 @@ urlpatterns = [
         view=views.ReadingYearArchiveView.as_view(),
         name='reading_year_archive'
     ),
+    url(
+        regex=r"^(?P<year>[0-9]{4})/(?P<kind>[\w-]+)/$",
+        view=views.ReadingYearArchiveView.as_view(),
+        name='reading_year_archive'
+    ),
 ]
-

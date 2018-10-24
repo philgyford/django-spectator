@@ -57,13 +57,12 @@ setup(
     packages=['spectator'],
     install_requires=[
         'hashids>=1.2.0,<1.3',
-        'pytz',
     ],
     dependency_links=[
     ],
     tests_require=[
-        'factory-boy>=2.9.2,<3.0',
-        'freezegun>=0.3.8,<0.4',
+        'factory-boy>=2.11.1,<3.0',
+        'freezegun>=0.3.11,<0.4',
         'coverage'
     ],
     include_package_data=True,
@@ -79,6 +78,7 @@ setup(
         'Framework :: Django',
         'Framework :: Django :: 1.11',
         'Framework :: Django :: 2.0',
+        'Framework :: Django :: 2.1',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',

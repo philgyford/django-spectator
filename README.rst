@@ -14,7 +14,7 @@ Two Django apps:
 * One to track events attended (movie, plays, gigs, exhibitions, comedy, dance,
   classical), including date, venue, and people/organisations involved.
 
-For Django 1.11.x or Django 2.0.x running on Python 3.5 or 3.6.
+For Django 1.11, Django 2.0 or Django 2.1 running on Python 3.5 or 3.6.
 
 It has URLs, views and templates to create a site displaying all the data, and
 Django admin screens to add and edit them. The templates use `Bootstrap v4.1.1 <https://getbootstrap.com>`_.
@@ -450,14 +450,14 @@ This will exclude any Works with only 1 Event.
 Local development
 *****************
 
-``devproject/`` is a basic Django project to use the app locally. Use it like::
+``devproject/`` is a basic Django project to use the app locally. Use it like this, installing requirements with pipenv::
 
-$ pip install -r devproject/requirements.txt
-$ python setup.py develop
-$ ./devproject/manage.py migrate
-$ ./devproject/manage.py runserver
+$ cd devproject
+$ pipenv install
+$ pipenv run ./manage.py migrate
+$ pipenv run ./manage.py runserver
 
-Run tests with tox. Install it with::
+Run tests with tox, from the top-level directory (containing setup.py). Install it with::
 
 $ pip install tox
 

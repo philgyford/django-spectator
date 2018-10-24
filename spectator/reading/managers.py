@@ -49,5 +49,3 @@ class EndDateDescendingReadingsManager(models.Manager):
         qs = super().get_queryset()
         qs = qs.extra(select={'end_date_null': 'end_date is null'})
         return qs.extra(order_by=['-end_date_null', '-end_date'])
-
-
