@@ -1,6 +1,18 @@
 Changelog (Django Spectator)
 ============================
 
+8.7.0
+-----
+
+- Ensure works with Django 2.1.
+
+- Change to use pipenv for managing devproject dependencies.
+
+- Add `spectator.reading.utils.annual_reading_counts()` method.
+
+- Add 'Books' and 'Periodicals' tabs to Reading Year Archive pages.
+
+
 8.6.3
 -----
 
