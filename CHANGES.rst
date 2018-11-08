@@ -1,6 +1,12 @@
 Changelog (Django Spectator)
 ============================
 
+8.7.1
+-----
+
+- Stopped HTML tag appearing in the ``title`` tag of Event Detail template.
+
+
 8.7.0
 -----
 
@@ -8,7 +14,7 @@ Changelog (Django Spectator)
 
 - Change to use pipenv for managing devproject dependencies.
 
-- Add `spectator.reading.utils.annual_reading_counts()` method.
+- Add ``spectator.reading.utils.annual_reading_counts()`` method.
 
 - Add 'Books' and 'Periodicals' tabs to Reading Year Archive pages.
 
