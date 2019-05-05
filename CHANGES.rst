@@ -1,6 +1,12 @@
 Changelog (Django Spectator)
 ============================
 
+8.8.0
+-----
+
+- Update included Bootstrap CSS from 4.1 to 4.3.
+
+
 8.7.2
 -----
 
