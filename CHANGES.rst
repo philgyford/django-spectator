@@ -1,6 +1,14 @@
 Changelog (Django Spectator)
 ============================
 
+8.7.2
+-----
+
+- Ensure works with Django 2.2.
+
+- Stop testing in Python 3.4 and/or Django 2.0.
+
+
 8.7.1
 -----
 
