@@ -17,7 +17,7 @@ Two Django apps:
 For Django 1.11 to Django 2.2, running on Python 3.5 to 3.7.
 
 It has URLs, views and templates to create a site displaying all the data, and
-Django admin screens to add and edit them. The templates use `Bootstrap v4.1.1 <https://getbootstrap.com>`_.
+Django admin screens to add and edit them. The templates use `Bootstrap v4.3 <https://getbootstrap.com>`_.
 
 There are also template tags for displaying data in your own templates (see
 below).
