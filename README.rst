@@ -14,7 +14,7 @@ Two Django apps:
 * One to track events attended (movie, plays, gigs, exhibitions, comedy, dance,
   classical), including date, venue, and people/organisations involved.
 
-For Django 1.11, Django 2.0 or Django 2.1 running on Python 3.5 or 3.6.
+For Django 1.11 to Django 2.2, running on Python 3.5 to 3.7.
 
 It has URLs, views and templates to create a site displaying all the data, and
 Django admin screens to add and edit them. The templates use `Bootstrap v4.1.1 <https://getbootstrap.com>`_.
