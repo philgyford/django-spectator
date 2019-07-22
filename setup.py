@@ -63,9 +63,17 @@ setup(
     name="django-spectator",
     version=get_version(),
     packages=["spectator"],
-    install_requires=["hashids>=1.2.0,<1.3"],
+    install_requires=[
+        "django-imagekit>=4.0,<4.1",
+        "hashids>=1.2.0,<1.3",
+        "pillow>=6.1.0,<6.2",
+    ],
     dependency_links=[],
-    tests_require=["factory-boy>=2.11.1,<3.0", "freezegun>=0.3.11,<0.4", "coverage"],
+    tests_require=[
+        "factory-boy>=2.11.1,<3.0",
+        "freezegun>=0.3.11,<0.4",
+        "coverage"
+    ],
     include_package_data=True,
     license=get_license(),
     description="A Django app to track book reading, movie viewing, "

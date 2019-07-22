@@ -1,11 +1,23 @@
+import os
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFit
+
 from spectator.core.models import BaseRole, SluggedModelMixin, TimeStampedModelMixin
-from . import managers
+from . import app_settings, managers
 from spectator.core.fields import NaturalSortField
+
+
+def publication_upload_path(instance, filename):
+    """For ImageFields' upload_to attribute.
+    e.g. '[MEDIA_ROOT]reading/pok2d/my_cover_image.jpg'
+    """
+    return os.path.join(app_settings.READING_DIR_BASE, instance.slug, filename)
 
 
 class PublicationSeries(TimeStampedModelMixin, SluggedModelMixin, models.Model):
@@ -156,9 +168,23 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         "spectator_core.Creator", through="PublicationRole", related_name="publications"
     )
 
+    cover = models.ImageField(
+        upload_to=publication_upload_path, null=False, blank=True, default=""
+    )
+    cover_thumbnail = ImageSpecField(
+        source="cover",
+        processors=[ResizeToFit(240, 240)],
+        format="JPEG",
+        options={"quality": 80},
+    )
+
+    # Managers
+
     objects = models.Manager()
+
     # Publications that are currently being read:
     in_progress_objects = managers.InProgressPublicationsManager()
+
     # Publications that haven't been started (have no Readings):
     unread_objects = managers.UnreadPublicationsManager()
 
