@@ -3,8 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 
-from spectator.core.models import BaseRole, Creator, SluggedModelMixin,\
-        TimeStampedModelMixin
+from spectator.core.models import BaseRole, SluggedModelMixin, TimeStampedModelMixin
 from . import managers
 from spectator.core.fields import NaturalSortField
 
@@ -17,26 +16,41 @@ class PublicationSeries(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
         series.publication_set.all()
     """
-    title = models.CharField(null=False, blank=False, max_length=255,
-            help_text="e.g. 'The London Review of Books'.")
 
-    title_sort = NaturalSortField('title', max_length=255, default='',
-            help_text="e.g. 'london review of books, the'.")
+    title = models.CharField(
+        null=False,
+        blank=False,
+        max_length=255,
+        help_text="e.g. 'The London Review of Books'.",
+    )
 
-    url = models.URLField(null=False, blank=True, max_length=255,
-            verbose_name='URL', help_text="e.g. 'https://www.lrb.co.uk/'.")
+    title_sort = NaturalSortField(
+        "title",
+        max_length=255,
+        default="",
+        help_text="e.g. 'london review of books, the'.",
+    )
+
+    url = models.URLField(
+        null=False,
+        blank=True,
+        max_length=255,
+        verbose_name="URL",
+        help_text="e.g. 'https://www.lrb.co.uk/'.",
+    )
 
     class Meta:
-        ordering = ('title_sort',)
-        verbose_name = 'Publication series'
-        verbose_name_plural = 'Publication series'
+        ordering = ("title_sort",)
+        verbose_name = "Publication series"
+        verbose_name_plural = "Publication series"
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('spectator:reading:publicationseries_detail',
-                                                        kwargs={'slug':self.slug})
+        return reverse(
+            "spectator:reading:publicationseries_detail", kwargs={"slug": self.slug}
+        )
 
 
 class PublicationRole(BaseRole):
@@ -44,15 +58,21 @@ class PublicationRole(BaseRole):
     Linking a creator to a Publication, optionally via their role (e.g.
     'Author', 'Editor', etc.)
     """
-    creator = models.ForeignKey('spectator_core.Creator', blank=False,
-                    on_delete=models.CASCADE, related_name='publication_roles')
 
-    publication = models.ForeignKey('spectator_reading.Publication',
-            on_delete=models.CASCADE, related_name='roles')
+    creator = models.ForeignKey(
+        "spectator_core.Creator",
+        blank=False,
+        on_delete=models.CASCADE,
+        related_name="publication_roles",
+    )
+
+    publication = models.ForeignKey(
+        "spectator_reading.Publication", on_delete=models.CASCADE, related_name="roles"
+    )
 
     class Meta:
-        ordering = ('role_order', 'role_name',)
-        verbose_name = 'Publication role'
+        ordering = ("role_order", "role_name")
+        verbose_name = "Publication role"
 
 
 class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
@@ -75,38 +95,66 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             print(reading.start_date, reading.end_date)
     """
 
-    KIND_CHOICES = (
-        ('book', 'Book'),
-        ('periodical', 'Periodical'),
+    KIND_CHOICES = (("book", "Book"), ("periodical", "Periodical"))
+
+    title = models.CharField(
+        null=False,
+        blank=False,
+        max_length=255,
+        help_text="e.g. 'Aurora' or 'Vol. 39 No. 4, 16 February 2017'.",
     )
 
-    title = models.CharField(null=False, blank=False, max_length=255,
-            help_text="e.g. 'Aurora' or 'Vol. 39 No. 4, 16 February 2017'.")
+    title_sort = NaturalSortField(
+        "title",
+        max_length=255,
+        default="",
+        help_text="e.g. 'clockwork orange, a' or 'world cities, the'.",
+    )
 
-    title_sort = NaturalSortField('title', max_length=255, default='',
-            help_text="e.g. 'clockwork orange, a' or 'world cities, the'.")
+    series = models.ForeignKey(
+        "spectator_reading.PublicationSeries",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
 
-    series = models.ForeignKey('spectator_reading.PublicationSeries',
-            blank=True, null=True, on_delete=models.SET_NULL)
+    kind = models.CharField(max_length=20, choices=KIND_CHOICES, default="book")
 
-    kind = models.CharField(max_length=20, choices=KIND_CHOICES,
-                                                        default='book')
+    official_url = models.URLField(
+        null=False,
+        blank=True,
+        max_length=255,
+        verbose_name="Official URL",
+        help_text="Official URL for this book/issue.",
+    )
 
-    official_url = models.URLField(null=False, blank=True, max_length=255,
-            verbose_name='Official URL',
-            help_text="Official URL for this book/issue.")
+    isbn_uk = models.CharField(
+        null=False,
+        blank=True,
+        max_length=20,
+        verbose_name="UK ISBN",
+        help_text="e.g. '0356500489'.",
+    )
 
-    isbn_uk = models.CharField(null=False, blank=True, max_length=20,
-            verbose_name='UK ISBN', help_text="e.g. '0356500489'.")
+    isbn_us = models.CharField(
+        null=False,
+        blank=True,
+        max_length=20,
+        verbose_name="US ISBN",
+        help_text="e.g. '0316098094'.",
+    )
 
-    isbn_us = models.CharField(null=False, blank=True, max_length=20,
-            verbose_name='US ISBN', help_text="e.g. '0316098094'.")
+    notes_url = models.URLField(
+        null=False,
+        blank=True,
+        max_length=255,
+        verbose_name="Notes URL",
+        help_text="URL of your notes/review.",
+    )
 
-    notes_url = models.URLField(null=False, blank=True, max_length=255,
-            verbose_name='Notes URL', help_text="URL of your notes/review.")
-
-    creators = models.ManyToManyField('spectator_core.Creator',
-                    through='PublicationRole', related_name='publications')
+    creators = models.ManyToManyField(
+        "spectator_core.Creator", through="PublicationRole", related_name="publications"
+    )
 
     objects = models.Manager()
     # Publications that are currently being read:
@@ -115,14 +163,15 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     unread_objects = managers.UnreadPublicationsManager()
 
     class Meta:
-        ordering = ('title_sort',)
+        ordering = ("title_sort",)
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('spectator:reading:publication_detail',
-                                                        kwargs={'slug':self.slug})
+        return reverse(
+            "spectator:reading:publication_detail", kwargs={"slug": self.slug}
+        )
 
     def get_current_reading(self):
         try:
@@ -132,37 +181,39 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     @property
     def amazon_uk_url(self):
-        url = ''
+        url = ""
         if self.isbn_uk:
-            url = 'https://www.amazon.co.uk/gp/product/{}/'.format(self.isbn_uk)
-            if hasattr(settings, 'SPECTATOR_AMAZON') and 'uk' in settings.SPECTATOR_AMAZON:
-                url = '{}?tag={}'.format(url, settings.SPECTATOR_AMAZON['uk'])
+            url = "https://www.amazon.co.uk/gp/product/{}/".format(self.isbn_uk)
+            if (
+                hasattr(settings, "SPECTATOR_AMAZON")
+                and "uk" in settings.SPECTATOR_AMAZON
+            ):
+                url = "{}?tag={}".format(url, settings.SPECTATOR_AMAZON["uk"])
         return url
 
     @property
     def amazon_us_url(self):
-        url = ''
+        url = ""
         if self.isbn_us:
-            url = 'https://www.amazon.com/dp/{}/'.format(self.isbn_us)
-            if hasattr(settings, 'SPECTATOR_AMAZON') and 'us' in settings.SPECTATOR_AMAZON:
-                url = '{}?tag={}'.format(url, settings.SPECTATOR_AMAZON['us'])
+            url = "https://www.amazon.com/dp/{}/".format(self.isbn_us)
+            if (
+                hasattr(settings, "SPECTATOR_AMAZON")
+                and "us" in settings.SPECTATOR_AMAZON
+            ):
+                url = "{}?tag={}".format(url, settings.SPECTATOR_AMAZON["us"])
         return url
 
     @property
     def amazon_urls(self):
         urls = []
         if self.isbn_uk:
-            urls.append({
-                'url': self.amazon_uk_url,
-                'name': 'Amazon.co.uk',
-                'country': 'UK',
-            })
+            urls.append(
+                {"url": self.amazon_uk_url, "name": "Amazon.co.uk", "country": "UK"}
+            )
         if self.isbn_us:
-            urls.append({
-                'url': self.amazon_us_url,
-                'name': 'Amazon.com',
-                'country': 'USA',
-            })
+            urls.append(
+                {"url": self.amazon_us_url, "name": "Amazon.com", "country": "USA"}
+            )
         return urls
 
     @property
@@ -178,35 +229,43 @@ class Reading(TimeStampedModelMixin, models.Model):
     """
     A period when a Publication was read.
     """
+
     # Via https://www.flickr.com/services/api/misc.dates.html
     DATE_GRANULARITIES = (
         # (0, 'Y-m-d H:i:s'),
-        (3, 'Y-m-d'),
-        (4, 'Y-m'),
-        (6, 'Y'),
+        (3, "Y-m-d"),
+        (4, "Y-m"),
+        (6, "Y"),
         # (8, 'Circa...'),
     )
 
-    publication = models.ForeignKey('spectator_reading.Publication',
-            null=False, blank=False, on_delete=models.CASCADE)
+    publication = models.ForeignKey(
+        "spectator_reading.Publication",
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+    )
 
     start_date = models.DateField(null=True, blank=True)
-    start_granularity = models.PositiveSmallIntegerField(null=False,
-            blank=False, default=3, choices=DATE_GRANULARITIES)
+    start_granularity = models.PositiveSmallIntegerField(
+        null=False, blank=False, default=3, choices=DATE_GRANULARITIES
+    )
     end_date = models.DateField(null=True, blank=True)
-    end_granularity = models.PositiveSmallIntegerField(null=False,
-            blank=False, default=3, choices=DATE_GRANULARITIES)
-    is_finished = models.BooleanField(default=False,
-            help_text="Did you finish the publication?")
+    end_granularity = models.PositiveSmallIntegerField(
+        null=False, blank=False, default=3, choices=DATE_GRANULARITIES
+    )
+    is_finished = models.BooleanField(
+        default=False, help_text="Did you finish the publication?"
+    )
 
     objects = managers.EndDateAscendingReadingsManager()
     objects_desc = managers.EndDateDescendingReadingsManager()
 
     def __str__(self):
-        return '{} ({} to {})'.format(
-                            self.publication, self.start_date, self.end_date)
+        return "{} ({} to {})".format(self.publication, self.start_date, self.end_date)
 
     def clean(self):
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValidationError(
-                    "A Reading's end date can't be before its start date.")
+                "A Reading's end date can't be before its start date."
+            )
