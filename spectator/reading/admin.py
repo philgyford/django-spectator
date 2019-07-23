@@ -63,8 +63,7 @@ class ReadingsListFilter(admin.SimpleListFilter):
 
 @admin.register(Publication)
 class PublicationAdmin(admin.ModelAdmin):
-    list_display = ("show_thumb", "title", "kind", "show_creators", "series")
-    list_display_links = ("show_thumb", "title")
+    list_display = ("title", "show_thumb", "kind", "show_creators", "series")
     list_filter = (ReadingsListFilter, "kind", "series")
     search_fields = ("title",)
     list_select_related = ("series",)
@@ -76,6 +75,7 @@ class PublicationAdmin(admin.ModelAdmin):
                 "fields": (
                     "title",
                     "title_sort",
+                    "show_thumb",
                     "cover",
                     "slug",
                     "kind",
@@ -94,7 +94,13 @@ class PublicationAdmin(admin.ModelAdmin):
     )
 
     radio_fields = {"kind": admin.HORIZONTAL}
-    readonly_fields = ("title_sort", "slug", "time_created", "time_modified")
+    readonly_fields = (
+        "title_sort",
+        "show_thumb",
+        "slug",
+        "time_created",
+        "time_modified",
+    )
 
     inlines = [PublicationRoleInline, ReadingInline]
 
@@ -110,14 +116,14 @@ class PublicationAdmin(admin.ModelAdmin):
     def show_thumb(self, instance):
         if instance.cover_thumbnail:
             return mark_safe(
-                '<img src="%s" width="%s" height="%s" alt="">'
+                '<img src="%s" width="%s" height="%s" alt="Cover thumbnail">'
                 % (
                     instance.cover_thumbnail.url,
-                    (instance.cover_thumbnail.width / 2),
-                    (instance.cover_thumbnail.height / 2),
+                    round(instance.cover_thumbnail.width / 2),
+                    round(instance.cover_thumbnail.height / 2),
                 )
             )
         else:
             return None
 
-    show_thumb.short_description = "Cover"
+    show_thumb.short_description = "Thumbnail"

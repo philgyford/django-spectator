@@ -8,9 +8,10 @@ from django.urls import reverse
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFit
 
-from spectator.core.models import BaseRole, SluggedModelMixin, TimeStampedModelMixin
 from . import app_settings, managers
+from spectator.core import app_settings as core_app_settings
 from spectator.core.fields import NaturalSortField
+from spectator.core.models import BaseRole, SluggedModelMixin, TimeStampedModelMixin
 
 
 def publication_upload_path(instance, filename):
@@ -173,7 +174,12 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     )
     cover_thumbnail = ImageSpecField(
         source="cover",
-        processors=[ResizeToFit(240, 240)],
+        processors=[
+            ResizeToFit(
+                core_app_settings.THUMBNAIL_MAX_SIZE,
+                core_app_settings.THUMBNAIL_MAX_SIZE,
+            )
+        ],
         format="JPEG",
         options={"quality": 80},
     )
@@ -204,6 +210,13 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             return self.reading_set.filter(end_date__isnull=True)[0]
         except IndexError:
             pass
+
+    @property
+    def thumbnail(self):
+        """In case we have other thumbnails in future and want a
+        consistent way to return the main one.
+        """
+        return self.cover_thumbnail
 
     @property
     def amazon_uk_url(self):
