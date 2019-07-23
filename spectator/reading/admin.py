@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
+from imagekit.admin import AdminThumbnail
+
+from spectator.core.imagegenerators import ListThumbnail
 from .models import Publication, PublicationRole, PublicationSeries, Reading
 
 
@@ -63,7 +66,7 @@ class ReadingsListFilter(admin.SimpleListFilter):
 
 @admin.register(Publication)
 class PublicationAdmin(admin.ModelAdmin):
-    list_display = ("title", "show_thumb", "kind", "show_creators", "series")
+    list_display = ("title", "list_thumbnail", "kind", "show_creators", "series")
     list_filter = (ReadingsListFilter, "kind", "series")
     search_fields = ("title",)
     list_select_related = ("series",)
@@ -75,7 +78,7 @@ class PublicationAdmin(admin.ModelAdmin):
                 "fields": (
                     "title",
                     "title_sort",
-                    "show_thumb",
+                    "detail_thumbnail",
                     "cover",
                     "slug",
                     "kind",
@@ -96,7 +99,7 @@ class PublicationAdmin(admin.ModelAdmin):
     radio_fields = {"kind": admin.HORIZONTAL}
     readonly_fields = (
         "title_sort",
-        "show_thumb",
+        "detail_thumbnail",
         "slug",
         "time_created",
         "time_modified",
@@ -113,17 +116,10 @@ class PublicationAdmin(admin.ModelAdmin):
 
     show_creators.short_description = "Creators"
 
-    def show_thumb(self, instance):
-        if instance.cover_thumbnail:
-            return mark_safe(
-                '<img src="%s" width="%s" height="%s" alt="Cover thumbnail">'
-                % (
-                    instance.cover_thumbnail.url,
-                    round(instance.cover_thumbnail.width / 2),
-                    round(instance.cover_thumbnail.height / 2),
-                )
-            )
-        else:
-            return None
+    detail_thumbnail = AdminThumbnail(
+        image_field="cover", template="spectator_core/admin/detail_thumbnail.html"
+    )
 
-    show_thumb.short_description = "Thumbnail"
+    list_thumbnail = AdminThumbnail(
+        image_field="cover", template="spectator_core/admin/list_thumbnail.html"
+    )

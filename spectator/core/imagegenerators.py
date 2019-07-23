@@ -1,0 +1,44 @@
+from imagekit import ImageSpec, register
+from imagekit.processors import ResizeToFit
+
+from spectator.core import app_settings
+
+
+class Thumbnail(ImageSpec):
+    "Base class"
+    format = "JPEG"
+    options = {"quality": 60}
+
+
+class ListThumbnail(Thumbnail):
+    "For displaying in lists of Publications, Events, etc."
+    processors = [ResizeToFit(*app_settings.LIST_THUMBNAIL_SIZE)]
+
+
+register.generator("spectator:list_thumbnail", ListThumbnail)
+
+
+class ListThumbnail2x(ListThumbnail):
+    "Retina version of ListThumbnail"
+    dimensions = [x * 2 for x in app_settings.LIST_THUMBNAIL_SIZE]
+    processors = [ResizeToFit(*dimensions)]
+
+
+register.generator("spectator:list_thumbnail2x", ListThumbnail2x)
+
+
+class DetailThumbnail(Thumbnail):
+    "For displaying on the detail pages of Publication, Event, etc"
+    processors = [ResizeToFit(*app_settings.DETAIL_THUMBNAIL_SIZE)]
+
+
+register.generator("spectator:detail_thumbnail", DetailThumbnail)
+
+
+class DetailThumbnail2x(DetailThumbnail):
+    "Retina version of DetailThumbnail"
+    dimensions = [x * 2 for x in app_settings.DETAIL_THUMBNAIL_SIZE]
+    processors = [ResizeToFit(*dimensions)]
+
+
+register.generator("spectator:detail_thumbnail2x", DetailThumbnail2x)

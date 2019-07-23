@@ -5,11 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 
-from imagekit.models import ImageSpecField
-from imagekit.processors import ResizeToFit
-
 from . import app_settings, managers
-from spectator.core import app_settings as core_app_settings
 from spectator.core.fields import NaturalSortField
 from spectator.core.models import BaseRole, SluggedModelMixin, TimeStampedModelMixin
 
@@ -172,17 +168,6 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     cover = models.ImageField(
         upload_to=publication_upload_path, null=False, blank=True, default=""
     )
-    cover_thumbnail = ImageSpecField(
-        source="cover",
-        processors=[
-            ResizeToFit(
-                core_app_settings.THUMBNAIL_MAX_SIZE,
-                core_app_settings.THUMBNAIL_MAX_SIZE,
-            )
-        ],
-        format="JPEG",
-        options={"quality": 80},
-    )
 
     # Managers
 
@@ -217,6 +202,12 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         consistent way to return the main one.
         """
         return self.cover_thumbnail
+
+    @property
+    def thumbnail_original(self):
+        """Full-size image that the thumbnail is derived from.
+        """
+        return self.cover
 
     @property
     def amazon_uk_url(self):

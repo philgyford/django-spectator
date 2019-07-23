@@ -27,6 +27,16 @@
     {% include 'spectator_core/includes/roles.html' with roles=publication.roles.all intro='By' %}
   </p>
 
+  {% if publication.cover %}
+    {% load imagekit %}
+    {% generateimage 'spectator:detail_thumbnail' source=publication.cover as cover %}
+    {% generateimage 'spectator:detail_thumbnail2x' source=publication.cover as cover2x %}
+
+    <a href="{{ publication.cover.url }}" title="See larger version">
+      <img src="{{ cover.url }}" srcset="{{ cover.url }} 1x, {{ cover2x.url }} 2x" width="{{ cover.width }}" height="{{ cover.height }}" alt="Cover" class="float-sm-left border mr-5 mb-4">
+    </a>
+  {% endif %}
+
   {% if publication.has_urls %}
     {% load spectator_core %}
     <ul>
