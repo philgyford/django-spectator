@@ -8,22 +8,22 @@ Expects:
 {% endcomment %}
 
 {% if years|length > 0 %}
-    {% load spectator_core  %}
-    {% current_url_name as url_name %}
-    <div class="card mb-3">
-        <div class="card-body">
-            <h2 class="h6 card-title">Reading by year</h2>
-            <ul class="list-inline mb-0">
-                {% for reading_year in years %}
-                    <li class="list-inline-item">
-                        {% if url_name == 'spectator:reading:reading_year_archive' and current_year|date:"Y" == reading_year|date:"Y" %}
-                            {{ reading_year|date:"Y" }}
-                        {% else %}
-                            <a href="{% url 'spectator:reading:reading_year_archive' year=reading_year|date:"Y" %}">{{ reading_year|date:"Y" }}</a>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+  {% load spectator_core  %}
+  {% current_url_name as url_name %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 card-title">Reading by year</h2>
+      <ul class="list-inline mb-0">
+        {% for reading_year in years %}
+          <li class="list-inline-item">
+            {% if url_name == 'spectator:reading:reading_year_archive' and current_year|date:"Y" == reading_year|date:"Y" %}
+              {{ reading_year|date:"Y" }}
+            {% else %}
+              <a href="{% url 'spectator:reading:reading_year_archive' year=reading_year|date:"Y" %}">{{ reading_year|date:"Y" }}</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
     </div>
+  </div>
 {% endif %}

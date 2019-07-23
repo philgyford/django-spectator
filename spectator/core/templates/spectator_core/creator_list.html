@@ -4,53 +4,53 @@
 {% block content_title %}Creators{% endblock %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    <li class="breadcrumb-item active">Creators</li>
+  {{ block.super }}
+  <li class="breadcrumb-item active">Creators</li>
 {% endblock %}
 
 {% block content %}
 
-    {% if individual_count > 0 or group_count > 0 %}
-        <ul class="nav nav-tabs mb-4">
-            {% if individual_count > 0 %}
-                <li class="nav-item">
-                    <a class="nav-link{% if creator_kind == 'individual' %} active{% endif %}" href="{% url 'spectator:creators:creator_list' %}">
-                        People ({{ individual_count }})
-                    </a>
-                </li>
-            {% endif %}
-            {% if group_count > 0 %}
-                <li class="nav-item">
-                    <a class="nav-link{% if creator_kind == 'group' %} active{% endif %}" href="{% url 'spectator:creators:creator_list_group' %}">
-                        Groups ({{ group_count }})
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
+  {% if individual_count > 0 or group_count > 0 %}
+    <ul class="nav nav-tabs mb-4">
+      {% if individual_count > 0 %}
+        <li class="nav-item">
+          <a class="nav-link{% if creator_kind == 'individual' %} active{% endif %}" href="{% url 'spectator:creators:creator_list' %}">
+            People ({{ individual_count }})
+          </a>
+        </li>
+      {% endif %}
+      {% if group_count > 0 %}
+        <li class="nav-item">
+          <a class="nav-link{% if creator_kind == 'group' %} active{% endif %}" href="{% url 'spectator:creators:creator_list_group' %}">
+            Groups ({{ group_count }})
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  {% endif %}
+
+  {% if creator_list|length > 0 %}
+
+    {% if page_obj|default:False and page_obj.number > 1 %}
+      {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
     {% endif %}
 
-    {% if creator_list|length > 0 %}
+    <ul>
+      {% for creator in creator_list %}
+        <li>
+          <a href="{{ creator.get_absolute_url }}">
+            {{ creator.name }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
 
-        {% if page_obj|default:False and page_obj.number > 1 %}
-            {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
-        {% endif %}
+    {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
 
-        <ul>
-            {% for creator in creator_list %}
-                <li>
-                    <a href="{{ creator.get_absolute_url }}">
-                        {{ creator.name }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
+  {% else %}
 
-        {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+    <p>There are no {% if creator_kind == 'group' %}groups{% else %}people{% endif %} to display.</p>
 
-    {% else %}
-
-        <p>There are no {% if creator_kind == 'group' %}groups{% else %}people{% endif %} to display.</p>
-
-    {% endif %}
+  {% endif %}
 
 {% endblock content %}

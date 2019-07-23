@@ -21,11 +21,11 @@ card element?
 {% endcomment %}
 
 {% if object_list %}
-    <div class="card mb-3">
-        <div class="card-body">
-            <h2 class="h6 card-title">{{ card_title }}</h2>
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 card-title">{{ card_title }}</h2>
 
-            {% include 'spectator_core/includes/chart.html' with object_list=object_list score_attr=score_attr name_attr=name_attr|default:None in_card=True use_cite=use_cite|default_if_none:False only %}
-        </div>
+      {% include 'spectator_core/includes/chart.html' with object_list=object_list score_attr=score_attr name_attr=name_attr|default:None in_card=True use_cite=use_cite|default_if_none:False only %}
     </div>
+  </div>
 {% endif %}

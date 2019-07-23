@@ -5,40 +5,40 @@
 {% block content_title %}Venues{% endblock %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    <li class="breadcrumb-item active">Venues</li>
+  {{ block.super }}
+  <li class="breadcrumb-item active">Venues</li>
 {% endblock %}
 
 {% block content %}
 
-    {% if venue_list|length > 0 %}
-        <p>{{ page_obj.paginator.count }} venue{{ page_obj.paginator.count|pluralize }}{% if country_list|length > 1 %} in {{ country_list|length }} countr{{ country_list|length|pluralize:'y,ies' }}{% endif %}.</p>
+  {% if venue_list|length > 0 %}
+    <p>{{ page_obj.paginator.count }} venue{{ page_obj.paginator.count|pluralize }}{% if country_list|length > 1 %} in {{ country_list|length }} countr{{ country_list|length|pluralize:'y,ies' }}{% endif %}.</p>
 
-        {% if page_obj|default:False and page_obj.number > 1 %}
-            {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
-        {% endif %}
-
-        <ul>
-            {% for venue in venue_list %}
-                <li class="mb-2">
-                    <a href="{{ venue.get_absolute_url }}"><strong>{{ venue.name }}</strong></a><br>
-                    {{ venue.address }}{% if venue.address and venue.country_name %}, {% endif %}{% if venue.country_name %}{{ venue.country_name }}{% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-
-        {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
-
-    {% else %}
-        <p>There are no venues to show.</p>
+    {% if page_obj|default:False and page_obj.number > 1 %}
+      {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
     {% endif %}
+
+    <ul>
+      {% for venue in venue_list %}
+        <li class="mb-2">
+          <a href="{{ venue.get_absolute_url }}"><strong>{{ venue.name }}</strong></a><br>
+          {{ venue.address }}{% if venue.address and venue.country_name %}, {% endif %}{% if venue.country_name %}{{ venue.country_name }}{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+
+    {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+
+  {% else %}
+    <p>There are no venues to show.</p>
+  {% endif %}
 
 {% endblock content %}
 
 
 {% block sidebar_content %}
 
-    {% most_visited_venues_card num=10 %}
+  {% most_visited_venues_card num=10 %}
 
-    {{ block.super }}
+  {{ block.super }}
 {% endblock sidebar_content %}

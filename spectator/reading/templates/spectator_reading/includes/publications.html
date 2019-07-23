@@ -8,10 +8,10 @@ Expects:
 {% endcomment %}
 
 <ul{% if style|default:'bullets' == 'unstyled' %} class="list-unstyled mb-0"{% endif %}>
-    {% for publication in publication_list %}
-        <li class="mb-2">
-            {% include 'spectator_reading/includes/publication.html' with publication=publication show_readings=show_readings|default:'none' only %}
-        </li>
-    {% endfor %}
+  {% for publication in publication_list %}
+    <li class="mb-2">
+      {% include 'spectator_reading/includes/publication.html' with publication=publication show_readings=show_readings|default:'none' only %}
+    </li>
+  {% endfor %}
 </ul>
 

@@ -5,41 +5,41 @@
 {% block content_title %}{{ creator.name }}{% endblock %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:creators:creator_list' %}">Creators</a></li>
-    <li class="breadcrumb-item active">{{ creator.name }}</li>
+  {{ block.super }}
+  <li class="breadcrumb-item"><a href="{% url 'spectator:creators:creator_list' %}">Creators</a></li>
+  <li class="breadcrumb-item active">{{ creator.name }}</li>
 {% endblock %}
 
 {% block content %}
 
-    {% if creator.publications.count > 0 %}
-        <h2>Publications</h2>
+  {% if creator.publications.count > 0 %}
+    <h2>Publications</h2>
 
-        {% include 'spectator_reading/includes/publications.html' with publication_list=creator.publications.all show_readings='none' only %}
-    {% endif %}
+    {% include 'spectator_reading/includes/publications.html' with publication_list=creator.publications.all show_readings='none' only %}
+  {% endif %}
 
-    {% if creator.events.count > 0 %}
-        <h2>Events</h2>
+  {% if creator.events.count > 0 %}
+    <h2>Events</h2>
 
-        {% include 'spectator_events/includes/events.html' with event_list=creator.get_events %}
-    {% endif %}
+    {% include 'spectator_events/includes/events.html' with event_list=creator.get_events %}
+  {% endif %}
 
-    {% include 'spectator_events/includes/works.html' with work_list=creator.get_movies heading="Movies" only %}
+  {% include 'spectator_events/includes/works.html' with work_list=creator.get_movies heading="Movies" only %}
 
-    {% include 'spectator_events/includes/works.html' with work_list=creator.get_plays heading="Plays" only %}
+  {% include 'spectator_events/includes/works.html' with work_list=creator.get_plays heading="Plays" only %}
 
-    {% include 'spectator_events/includes/works.html' with work_list=creator.get_classical_works heading="Classical works" only %}
+  {% include 'spectator_events/includes/works.html' with work_list=creator.get_classical_works heading="Classical works" only %}
 
-    {% include 'spectator_events/includes/works.html' with work_list=creator.get_dance_pieces heading="Dance pieces" only %}
+  {% include 'spectator_events/includes/works.html' with work_list=creator.get_dance_pieces heading="Dance pieces" only %}
 
-    {% include 'spectator_events/includes/works.html' with work_list=creator.get_exhibitions heading="Exhibitions" only %}
+  {% include 'spectator_events/includes/works.html' with work_list=creator.get_exhibitions heading="Exhibitions" only %}
 
 {% endblock content %}
 
 
 {% block sidebar_nav %}
-    {% load spectator_core %}
-    {% change_object_link_card object perms %}
+  {% load spectator_core %}
+  {% change_object_link_card object perms %}
 
-    {{ block.super }}
+  {{ block.super }}
 {% endblock sidebar_nav %}

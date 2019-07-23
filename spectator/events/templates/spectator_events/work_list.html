@@ -9,22 +9,22 @@ Displays a paginated list of Movies, Plays, ClassicalWorks or DancePieces.
 {% block content_title %}{{ page_title }}{% endblock %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    <li class="breadcrumb-item active">{{ breadcrumb_list_title }}</li>
+  {{ block.super }}
+  <li class="breadcrumb-item active">{{ breadcrumb_list_title }}</li>
 {% endblock %}
 
 {% block content %}
 
-    <p>{{ page_obj.paginator.count }} {% if page_obj.paginator.count == 1 %}{{ work_kind_name|lower }}{% else %}{{ work_kind_name_plural|lower }}{% endif %}.</p>
+  <p>{{ page_obj.paginator.count }} {% if page_obj.paginator.count == 1 %}{{ work_kind_name|lower }}{% else %}{{ work_kind_name_plural|lower }}{% endif %}.</p>
 
-    {% include 'spectator_events/includes/works_paginated.html' with work_list=object_list page_obj=page_obj only %}
+  {% include 'spectator_events/includes/works_paginated.html' with work_list=object_list page_obj=page_obj only %}
 
 {% endblock content %}
 
 
 {% block sidebar_content %}
 
-    {% most_seen_works_card kind=work_kind num=10 %}
+  {% most_seen_works_card kind=work_kind num=10 %}
 
-    {{ block.super }}
+  {{ block.super }}
 {% endblock sidebar_content %}

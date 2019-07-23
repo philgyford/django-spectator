@@ -7,14 +7,14 @@ Expects:
 {% endcomment %}
 
 {% if work_list|length > 0 %}
-    {% if page_obj|default:False and page_obj.number > 1 %}
-        {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
-    {% endif %}
-
-    {% include 'spectator_events/includes/works.html' with work_list=work_list heading=heading|default:None only %}
-
+  {% if page_obj|default:False and page_obj.number > 1 %}
     {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
+  {% endif %}
+
+  {% include 'spectator_events/includes/works.html' with work_list=work_list heading=heading|default:None only %}
+
+  {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
 
 {% else %}
-    <p>There are no works to show.</p>
+  <p>There are no works to show.</p>
 {% endif %}

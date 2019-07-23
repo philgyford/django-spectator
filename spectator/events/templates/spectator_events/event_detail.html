@@ -5,38 +5,38 @@
 {% block content_title %}{{ event.title_html }}{% endblock %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    <li class="breadcrumb-item active">{{ event.title_html }}</li>
+  {{ block.super }}
+  <li class="breadcrumb-item active">{{ event.title_html }}</li>
 {% endblock %}
 
 {% block content %}
 
-    <p>
-        {% if event.venue %}At <a href="{{ event.venue.get_absolute_url }}">{{ event.venue_name }}</a>
-        on{% else %}On{% endif %} {% display_date event.date %}.
-    </p>
+  <p>
+    {% if event.venue %}At <a href="{{ event.venue.get_absolute_url }}">{{ event.venue_name }}</a>
+    on{% else %}On{% endif %} {% display_date event.date %}.
+  </p>
 
-    {% if event.note %}
-      {{ event.note|safe|linebreaks }}
-    {% endif %}
+  {% if event.note %}
+    {{ event.note|safe|linebreaks }}
+  {% endif %}
 
-    {% include 'spectator_events/includes/selections.html' with selection_list=event.get_movies heading="Movies" only %}
+  {% include 'spectator_events/includes/selections.html' with selection_list=event.get_movies heading="Movies" only %}
 
-    {% include 'spectator_events/includes/selections.html' with selection_list=event.get_plays heading="Plays" only %}
+  {% include 'spectator_events/includes/selections.html' with selection_list=event.get_plays heading="Plays" only %}
 
-    {% include 'spectator_events/includes/selections.html' with selection_list=event.get_classical_works heading="Classical works" only %}
+  {% include 'spectator_events/includes/selections.html' with selection_list=event.get_classical_works heading="Classical works" only %}
 
-    {% include 'spectator_events/includes/selections.html' with selection_list=event.get_dance_pieces heading="Dance pieces" only %}
+  {% include 'spectator_events/includes/selections.html' with selection_list=event.get_dance_pieces heading="Dance pieces" only %}
 
-    {% include 'spectator_events/includes/selections.html' with selection_list=event.get_exhibitions heading="Exhibitions" only %}
+  {% include 'spectator_events/includes/selections.html' with selection_list=event.get_exhibitions heading="Exhibitions" only %}
 
-    {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all heading='Featuring' only %}
+  {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all heading='Featuring' only %}
 
 {% endblock content %}
 
 
 {% block sidebar_nav %}
-    {% change_object_link_card object perms %}
+  {% change_object_link_card object perms %}
 
-    {{ block.super }}
+  {{ block.super }}
 {% endblock sidebar_nav %}
