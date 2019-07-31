@@ -1,5 +1,6 @@
 # coding: utf-8
 import datetime
+import os
 
 from django.core.validators import RegexValidator
 from django.db import models
@@ -8,11 +9,17 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from .managers import VenueManager, WorkManager
-from spectator.core.models import BaseRole, SluggedModelMixin,\
-        TimeStampedModelMixin
+from . import app_settings, managers
+from spectator.core.models import BaseRole, SluggedModelMixin, TimeStampedModelMixin
 from spectator.core.fields import NaturalSortField
 from spectator.core.utils import truncate_string
+
+
+def event_upload_path(instance, filename):
+    """For ImageFields' upload_to attribute.
+    e.g. '[MEDIA_ROOT]events/event/pok2d/my_cover_image.jpg'
+    """
+    return os.path.join(app_settings.EVENTS_DIR_BASE, "event", instance.slug, filename)
 
 
 class EventRole(BaseRole):
@@ -23,15 +30,21 @@ class EventRole(BaseRole):
     Every time one of these is saved/deleted a signal re-saves the Event
     in case its `title_sort` needs to change.
     """
-    creator = models.ForeignKey('spectator_core.Creator', blank=False,
-                        on_delete=models.CASCADE, related_name='event_roles')
 
-    event = models.ForeignKey('spectator_events.Event', on_delete=models.CASCADE,
-                                                        related_name='roles')
+    creator = models.ForeignKey(
+        "spectator_core.Creator",
+        blank=False,
+        on_delete=models.CASCADE,
+        related_name="event_roles",
+    )
+
+    event = models.ForeignKey(
+        "spectator_events.Event", on_delete=models.CASCADE, related_name="roles"
+    )
 
     class Meta:
-        verbose_name = 'event role'
-        ordering = ('role_order', 'role_name',)
+        verbose_name = "event role"
+        ordering = ("role_order", "role_name")
 
 
 class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
@@ -80,60 +93,89 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
 
     KIND_CHOICES = (
-        ('cinema',      'Cinema'),
-        ('concert',     'Concert'),
-        ('comedy',      'Comedy'),
-        ('dance',       'Dance'),
-        ('museum',      'Gallery/Museum'),
-        ('gig',         'Gig'),
-        ('theatre',     'Theatre'),
-        ('misc',        'Other'),
+        ("cinema", "Cinema"),
+        ("concert", "Concert"),
+        ("comedy", "Comedy"),
+        ("dance", "Dance"),
+        ("museum", "Gallery/Museum"),
+        ("gig", "Gig"),
+        ("theatre", "Theatre"),
+        ("misc", "Other"),
     )
 
     # Mapping keys from KIND_CHOICES to the slugs we'll use in URLs:
     KIND_SLUGS = {
-        'comedy':       'comedy',
-        'concert':      'concerts',
-        'dance':        'dance',
-        'museum':       'gallery-museum',
-        'gig':          'gigs',
-        'misc':         'misc',
-        'cinema':       'cinema',
-        'theatre':      'theatre'
+        "comedy": "comedy",
+        "concert": "concerts",
+        "dance": "dance",
+        "museum": "gallery-museum",
+        "gig": "gigs",
+        "misc": "misc",
+        "cinema": "cinema",
+        "theatre": "theatre",
     }
 
-    kind = models.CharField(max_length=20, choices=KIND_CHOICES, blank=False,
-        help_text="Used to categorise event. But any kind of Work can be added to any kind of Event.")
+    kind = models.CharField(
+        max_length=20,
+        choices=KIND_CHOICES,
+        blank=False,
+        help_text="Used to categorise event. But any kind of Work can "
+        "be added to any kind of Event.",
+    )
 
     date = models.DateField(null=True, blank=False)
 
-    venue = models.ForeignKey('spectator_events.Venue', null=True, blank=True,
-                                                    on_delete=models.CASCADE)
+    venue = models.ForeignKey(
+        "spectator_events.Venue", null=True, blank=True, on_delete=models.CASCADE
+    )
 
-    venue_name = models.CharField(max_length=255, null=False, blank=True,
-            help_text="The name of the Venue when this event occurred. If left blank, will be set automatically.")
+    venue_name = models.CharField(
+        max_length=255,
+        null=False,
+        blank=True,
+        help_text="The name of the Venue when this event occurred. If "
+        "left blank, will be set automatically.",
+    )
 
-    title = models.CharField(null=False, blank=True, max_length=255,
-            help_text="Optional. e.g., 'Indietracks 2017', 'Radio 1 Roadshow'.")
+    title = models.CharField(
+        null=False,
+        blank=True,
+        max_length=255,
+        help_text="Optional. e.g., 'Indietracks 2017', 'Radio 1 Roadshow'.",
+    )
 
-    title_sort = NaturalSortField('title_to_sort', max_length=255, default='',
-            help_text="e.g. 'reading festival, the' or 'drifters, the'.")
+    title_sort = NaturalSortField(
+        "title_to_sort",
+        max_length=255,
+        default="",
+        help_text="e.g. 'reading festival, the' or 'drifters, the'.",
+    )
 
-    note = models.TextField(null=False, blank=True,
-        help_text="Optional. Paragraphs will be surrounded with &lt;p&gt;&lt;/p&gt; tags. HTML allowed.")
+    note = models.TextField(
+        null=False,
+        blank=True,
+        help_text="Optional. Paragraphs will be surrounded with "
+        "&lt;p&gt;&lt;/p&gt; tags. HTML allowed.",
+    )
 
-    creators = models.ManyToManyField('spectator_core.Creator',
-                                through='EventRole', related_name='events')
+    creators = models.ManyToManyField(
+        "spectator_core.Creator", through="EventRole", related_name="events"
+    )
 
-    works = models.ManyToManyField('spectator_events.Work',
-            through='spectator_events.WorkSelection',
-            blank=True)
+    works = models.ManyToManyField(
+        "spectator_events.Work", through="spectator_events.WorkSelection", blank=True
+    )
 
-    kind_slug = models.SlugField(null=False, blank=True,
-            help_text="Set when the event is saved.")
+    kind_slug = models.SlugField(
+        null=False, blank=True, help_text="Set when the event is saved."
+    )
+
+    ticket = models.ImageField(
+        upload_to=event_upload_path, null=False, blank=True, default=""
+    )
 
     class Meta:
-        ordering = ['-date',]
+        ordering = ["-date"]
 
     def __str__(self):
         return self.make_title()
@@ -141,22 +183,29 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     def save(self, *args, **kwargs):
         self.kind_slug = self.KIND_SLUGS[self.kind]
 
-        if self.venue_name == '' and self.venue is not None:
+        if self.venue_name == "" and self.venue is not None:
             # Set the venue_name, if it's not already set and there's a Venue.
             self.venue_name = self.venue.name
         elif self.venue is None:
             # Looks like we've removed the Venue, so unset the venue_name.
-            self.venue_name = ''
+            self.venue_name = ""
 
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('spectator:events:event_detail', kwargs={'slug':self.slug})
+        return reverse("spectator:events:event_detail", kwargs={"slug": self.slug})
+
+    @property
+    def thumbnail(self):
+        """In case we have other thumbnails in future and want a
+        consistent way to return the main one.
+        """
+        return self.ticket
 
     def make_title(self, html=False):
-        if self.title == '':
+        if self.title == "":
             title_start = Event.get_kind_name_plural(self.kind)
-            title = '{} #{}'.format(title_start, self.pk)
+            title = "{} #{}".format(title_start, self.pk)
 
             # We only need their titles:
             work_titles = [str(sel.work.title) for sel in self.work_selections.all()]
@@ -167,32 +216,30 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
                     if len(work_titles) == 1:
                         title = work_titles[0]
                         if html is True:
-                            title = format_html('<cite>{}</cite>', title)
+                            title = format_html("<cite>{}</cite>", title)
 
                     elif len(work_titles) > 1:
                         if html is True:
                             title = format_html(
-                                        '<cite>{}</cite> and <cite>{}</cite>',
-                                        mark_safe(
-                                            '</cite>, <cite>'.join(work_titles[:-1])
-                                        ),
-                                        work_titles[-1]
-                                    )
+                                "<cite>{}</cite> and <cite>{}</cite>",
+                                mark_safe("</cite>, <cite>".join(work_titles[:-1])),
+                                work_titles[-1],
+                            )
                         else:
-                            title = '{} and {}'.format(
-                                ', '.join(work_titles[:-1]), work_titles[-1])
+                            title = "{} and {}".format(
+                                ", ".join(work_titles[:-1]), work_titles[-1]
+                            )
             else:
                 # It's like a Gig or Comedy; no works.
                 roles = list(self.roles.all())
                 if len(roles) == 1:
                     title = str(roles[0].creator.name)
                 elif len(roles) == 0:
-                    title = 'Event #{}'.format(self.pk)
+                    title = "Event #{}".format(self.pk)
                 else:
                     roles = [r.creator.name for r in roles]
                     # Join with commas but 'and' for the last one:
-                    title = '{} and {}'.format(
-                                            ', '.join(roles[:-1]), roles[-1])
+                    title = "{} and {}".format(", ".join(roles[:-1]), roles[-1])
         else:
             title = self.title
 
@@ -205,19 +252,19 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         return self.work_selections.all()
 
     def get_classical_works(self):
-        return self.work_selections.filter(work__kind='classicalwork')
+        return self.work_selections.filter(work__kind="classicalwork")
 
     def get_dance_pieces(self):
-        return self.work_selections.filter(work__kind='dancepiece')
+        return self.work_selections.filter(work__kind="dancepiece")
 
     def get_exhibitions(self):
-        return self.work_selections.filter(work__kind='exhibition')
+        return self.work_selections.filter(work__kind="exhibition")
 
     def get_movies(self):
-        return self.work_selections.filter(work__kind='movie')
+        return self.work_selections.filter(work__kind="movie")
 
     def get_plays(self):
-        return self.work_selections.filter(work__kind='play')
+        return self.work_selections.filter(work__kind="play")
 
     @property
     def title_html(self):
@@ -230,7 +277,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     @property
     def kind_name(self):
         "e.g. 'Gig' or 'Movie'."
-        return {k:v for (k,v) in self.KIND_CHOICES}[self.kind]
+        return {k: v for (k, v) in self.KIND_CHOICES}[self.kind]
 
     @property
     def kind_name_plural(self):
@@ -249,16 +296,16 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     @staticmethod
     def get_kind_name_plural(kind):
         "e.g. 'Gigs' or 'Movies'."
-        if kind in ['comedy', 'cinema', 'dance', 'theatre']:
+        if kind in ["comedy", "cinema", "dance", "theatre"]:
             return kind.title()
-        elif kind == 'museum':
-            return 'Galleries/Museums'
+        elif kind == "museum":
+            return "Galleries/Museums"
         else:
-            return '{}s'.format(Event.get_kind_name(kind))
+            return "{}s".format(Event.get_kind_name(kind))
 
     @staticmethod
     def get_kind_name(kind):
-        return {k:v for (k,v) in Event.KIND_CHOICES}[kind]
+        return {k: v for (k, v) in Event.KIND_CHOICES}[kind]
 
     @staticmethod
     def get_kinds():
@@ -266,7 +313,7 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         Returns a list of the kind values ['gig', 'play', etc] in the order in
         which they're listed in `KIND_CHOICES`.
         """
-        return [k for k,v in Event.KIND_CHOICES]
+        return [k for k, v in Event.KIND_CHOICES]
 
     @staticmethod
     def get_valid_kind_slugs():
@@ -287,10 +334,10 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
                 # etc
             }
         """
-        kinds = {k:{'name':v} for k,v in Event.KIND_CHOICES}
-        for k,data in kinds.items():
-            kinds[k]['slug'] = Event.KIND_SLUGS[k]
-            kinds[k]['name_plural'] = Event.get_kind_name_plural(k)
+        kinds = {k: {"name": v} for k, v in Event.KIND_CHOICES}
+        for k, data in kinds.items():
+            kinds[k]["slug"] = Event.KIND_SLUGS[k]
+            kinds[k]["name_plural"] = Event.get_kind_name_plural(k)
         return kinds
 
 
@@ -317,64 +364,78 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
 
     KIND_CHOICES = (
-        ('classicalwork',  'Classical work'),
-        ('dancepiece',     'Dance piece'),
-        ('exhibition',     'Exhibition'),
-        ('movie',          'Movie'),
-        ('play',           'Play'),
+        ("classicalwork", "Classical work"),
+        ("dancepiece", "Dance piece"),
+        ("exhibition", "Exhibition"),
+        ("movie", "Movie"),
+        ("play", "Play"),
     )
 
     # Mapping keys from KIND_CHOICES to the slugs we'll use in URLs:
     KIND_SLUGS = {
-        'classicalwork':    'classical-works',
-        'dancepiece':       'dance-pieces',
-        'exhibition':       'exhibitions',
-        'movie':            'movies',
-        'play':             'plays',
+        "classicalwork": "classical-works",
+        "dancepiece": "dance-pieces",
+        "exhibition": "exhibitions",
+        "movie": "movies",
+        "play": "plays",
     }
 
-    YEAR_CHOICES = [(r,r) for r in range(1888, datetime.date.today().year+1)]
-    YEAR_CHOICES.insert(0, ('', 'Select…'))
+    YEAR_CHOICES = [(r, r) for r in range(1888, datetime.date.today().year + 1)]
+    YEAR_CHOICES.insert(0, ("", "Select…"))
 
     kind = models.CharField(max_length=20, choices=KIND_CHOICES, blank=False)
 
     title = models.CharField(null=False, blank=False, max_length=255)
 
-    title_sort = NaturalSortField('title', max_length=255, default='',
-            help_text="e.g. 'big piece, a' or 'biggest piece, the'.")
+    title_sort = NaturalSortField(
+        "title",
+        max_length=255,
+        default="",
+        help_text="e.g. 'big piece, a' or 'biggest piece, the'.",
+    )
 
-    creators = models.ManyToManyField('spectator_core.Creator',
-                through='WorkRole', related_name='works')
+    creators = models.ManyToManyField(
+        "spectator_core.Creator", through="WorkRole", related_name="works"
+    )
 
-    imdb_id = models.CharField(null=False, blank=True, max_length=12,
-                    verbose_name='IMDb ID',
-                    help_text="Starts with 'tt', e.g. 'tt0100842'.",
-                    validators=[
-                        RegexValidator(
-                            regex='^tt\d{7,10}$',
-                            message='IMDb ID should be like "tt1234567"',
-                            code='invalid_imdb_id'
-                        )
-                    ]
-                )
+    imdb_id = models.CharField(
+        null=False,
+        blank=True,
+        max_length=12,
+        verbose_name="IMDb ID",
+        help_text="""Starts with 'tt', e.g. 'tt0100842'.
+            From <a href="https://www.imdb.com">IMDb</a>.""",
+        validators=[
+            RegexValidator(
+                regex=r"^tt\d{7,10}$",
+                message='IMDb ID should be like "tt1234567"',
+                code="invalid_imdb_id",
+            )
+        ],
+    )
 
-    year = models.PositiveSmallIntegerField(null=True, blank=True,
-                default=None,
-                help_text="Year of release, composition, publication, etc.")
+    year = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        default=None,
+        help_text="Year of release, composition, publication, etc.",
+    )
 
-    objects = WorkManager()
+    objects = managers.WorkManager()
 
     def __str__(self):
         return self.title
 
     class Meta:
-        ordering = ('title_sort',)
-        verbose_name = 'work'
+        ordering = ("title_sort",)
+        verbose_name = "work"
 
     def get_absolute_url(self):
         kind_slug = self.KIND_SLUGS[self.kind]
-        return reverse('spectator:events:work_detail',
-                        kwargs={'kind_slug': kind_slug, 'slug': self.slug})
+        return reverse(
+            "spectator:events:work_detail",
+            kwargs={"kind_slug": kind_slug, "slug": self.slug},
+        )
 
     def get_list_url(self, kind_slug=None):
         """
@@ -385,15 +446,14 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         """
         if kind_slug is None:
             kind_slug = self.KIND_SLUGS[self.kind]
-        return reverse('spectator:events:work_list',
-                                            kwargs={'kind_slug': kind_slug})
+        return reverse("spectator:events:work_list", kwargs={"kind_slug": kind_slug})
 
     @property
     def imdb_url(self):
         if self.imdb_id:
-            return 'http://www.imdb.com/title/{}/'.format(self.imdb_id)
+            return "http://www.imdb.com/title/{}/".format(self.imdb_id)
         else:
-            return ''
+            return ""
 
     @staticmethod
     def get_valid_kind_slugs():
@@ -402,11 +462,11 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     @staticmethod
     def get_kind_name(kind):
-        return {k:v for (k,v) in Work.KIND_CHOICES}[kind]
+        return {k: v for (k, v) in Work.KIND_CHOICES}[kind]
 
     @staticmethod
     def get_kind_name_plural(kind):
-        return '{}s'.format(Work.get_kind_name(kind))
+        return "{}s".format(Work.get_kind_name(kind))
 
 
 class WorkRole(BaseRole):
@@ -414,51 +474,61 @@ class WorkRole(BaseRole):
     Through model for linking a Creator to a Work, optionally via
     their role (e.g. 'Composer', 'Director'.)
     """
-    creator = models.ForeignKey('spectator_core.Creator',
-                blank=False,
-                on_delete=models.CASCADE, related_name='work_roles')
 
-    work = models.ForeignKey('spectator_events.Work',
-                on_delete=models.CASCADE,
-                related_name='roles')
+    creator = models.ForeignKey(
+        "spectator_core.Creator",
+        blank=False,
+        on_delete=models.CASCADE,
+        related_name="work_roles",
+    )
+
+    work = models.ForeignKey(
+        "spectator_events.Work", on_delete=models.CASCADE, related_name="roles"
+    )
 
     class Meta:
-        ordering = ('role_order', 'role_name',)
-        verbose_name = 'work role'
+        ordering = ("role_order", "role_name")
+        verbose_name = "work role"
 
 
 class WorkSelection(models.Model):
     """
     Through model for linking a Work to an Event with an order.
     """
-    event = models.ForeignKey('spectator_events.Event',
-                blank=False,
-                on_delete=models.CASCADE,
-                related_name='work_selections')
 
-    work = models.ForeignKey('spectator_events.Work',
-                blank=False,
-                on_delete=models.CASCADE,
-                related_name='events')
+    event = models.ForeignKey(
+        "spectator_events.Event",
+        blank=False,
+        on_delete=models.CASCADE,
+        related_name="work_selections",
+    )
+
+    work = models.ForeignKey(
+        "spectator_events.Work",
+        blank=False,
+        on_delete=models.CASCADE,
+        related_name="events",
+    )
 
     order = models.PositiveSmallIntegerField(
-                default=1,
-                blank=False, null=False,
-                help_text="Position on the Event programme." )
+        default=1, blank=False, null=False, help_text="Position on the Event programme."
+    )
 
     class Meta:
-        ordering = ('order',)
-        verbose_name = 'work selection'
+        ordering = ("order",)
+        verbose_name = "work selection"
 
     def __str__(self):
-        return 'Event #{}: {}'.format(self.event.pk, self.work)
+        return "Event #{}: {}".format(self.event.pk, self.work)
 
 
 class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
     Where an event happens.
     """
-    # From https://github.com/SmileyChris/django-countries/blob/master/django_countries/data.py
+
+    # From
+    # https://github.com/SmileyChris/django-countries/blob/master/django_countries/data.py
     # With those marked #changed being, er, changed.
     COUNTRIES = {
         "AF": _("Afghanistan"),
@@ -695,9 +765,9 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         "UG": _("Uganda"),
         "UA": _("Ukraine"),
         "AE": _("United Arab Emirates"),
-        "GB": _("UK"), #changed
+        "GB": _("UK"),  # changed
         "UM": _("United States Minor Outlying Islands"),
-        "US": _("USA"), #changed
+        "US": _("USA"),  # changed
         "UY": _("Uruguay"),
         "UZ": _("Uzbekistan"),
         "VU": _("Vanuatu"),
@@ -712,41 +782,58 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         "ZW": _("Zimbabwe"),
     }
 
-    COUNTRY_CHOICES = [(k,v) for k,v in COUNTRIES.items()]
+    COUNTRY_CHOICES = [(k, v) for k, v in COUNTRIES.items()]
 
     name = models.CharField(null=False, blank=False, max_length=255)
 
-    name_sort = NaturalSortField('name', max_length=255, default='',
-            help_text="e.g. 'venue, a' or 'biggest venue, the'.")
+    name_sort = NaturalSortField(
+        "name",
+        max_length=255,
+        default="",
+        help_text="e.g. 'venue, a' or 'biggest venue, the'.",
+    )
 
-    note = models.TextField(null=False, blank=True,
-        help_text="Optional. Paragraphs will be surrounded with &lt;p&gt;&lt;/p&gt; tags. HTML allowed.")
+    note = models.TextField(
+        null=False,
+        blank=True,
+        help_text="Optional. Paragraphs will be surrounded with "
+        "&lt;p&gt;&lt;/p&gt; tags. HTML allowed.",
+    )
 
     cinema_treasures_id = models.PositiveIntegerField(
-        null=True, blank=True,
-        help_text='Optional. ID of a cinema at <a href="http://cinematreasures.org/">Cinema Treasures</a>.')
+        null=True,
+        blank=True,
+        help_text="""Optional. ID of a cinema at
+        <a href="http://cinematreasures.org/">Cinema Treasures</a>.""",
+    )
 
-    latitude = models.DecimalField(max_digits=9, decimal_places=6,
-                                                        null=True, blank=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6,
-                                                        null=True, blank=True)
+    latitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True
+    )
+    longitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True
+    )
 
     address = models.CharField(null=False, blank=True, max_length=255)
 
-    country = models.CharField(null=False, blank=True, max_length=2,
-                    choices=COUNTRY_CHOICES,
-                    help_text="The ISO 3166-1 alpha-2 code, e.g. 'GB' or 'FR'")
+    country = models.CharField(
+        null=False,
+        blank=True,
+        max_length=2,
+        choices=COUNTRY_CHOICES,
+        help_text="The ISO 3166-1 alpha-2 code, e.g. 'GB' or 'FR'",
+    )
 
-    objects = VenueManager()
+    objects = managers.VenueManager()
 
     class Meta:
-        ordering = ['name_sort',]
+        ordering = ["name_sort"]
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('spectator:events:venue_detail', kwargs={'slug':self.slug})
+        return reverse("spectator:events:venue_detail", kwargs={"slug": self.slug})
 
     @property
     def country_name(self):
@@ -758,10 +845,11 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     @property
     def cinema_treasures_url(self):
         if self.cinema_treasures_id is not None:
-            return 'http://cinematreasures.org/theaters/{}'.format(
-                                                    self.cinema_treasures_id)
+            return "http://cinematreasures.org/theaters/{}".format(
+                self.cinema_treasures_id
+            )
         else:
-            return ''
+            return ""
 
     @staticmethod
     def get_country_name(country_code):

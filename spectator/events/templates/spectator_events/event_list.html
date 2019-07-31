@@ -6,29 +6,29 @@
 {% block content_title %}Events{% endblock %}
 
 {% block breadcrumbs %}
-	{% if event_kind %}
-		{{ block.super }}
-	{% else %}
-		<li class="breadcrumb-item"><a href="{% url 'spectator:core:home' %}">Home</a></li>
-		<li class="breadcrumb-item active">Events</li>
-	{% endif %}
+  {% if event_kind %}
+    {{ block.super }}
+  {% else %}
+    <li class="breadcrumb-item"><a href="{% url 'spectator:core:home' %}">Home</a></li>
+    <li class="breadcrumb-item active">Events</li>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
 
-    {% if event_list|length > 0 %}
-			{% event_list_tabs counts event_kind page_obj.number %}
-    {% endif %}
+  {% if event_list|length > 0 %}
+    {% event_list_tabs counts event_kind page_obj.number %}
+  {% endif %}
 
-    {% include 'spectator_events/includes/events_paginated.html' with event_list=event_list page_obj=page_obj only %}
+  {% include 'spectator_events/includes/events_paginated.html' with event_list=event_list page_obj=page_obj only %}
 
 {% endblock content %}
 
 
 {% block sidebar_content %}
 
-		{% most_seen_creators_card event_kind=event_kind num=10 %}
+  {% most_seen_creators_card event_kind=event_kind num=10 %}
 
-		{{ block.super }}
+  {{ block.super }}
 
 {% endblock sidebar_content %}

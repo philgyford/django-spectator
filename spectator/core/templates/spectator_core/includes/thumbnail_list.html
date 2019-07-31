@@ -1,0 +1,19 @@
+{% comment %}
+Displays an image for use in a list of things (publication, events) etc.
+
+Expects:
+* url - The URL to link to, default is the URL of the original thumbnail image.
+* field - The ImageField on the model, e.g. Publication.thumbnail
+* alt_text - The text to use as the image's `alt` text.
+{% endcomment %}
+
+{% load imagekit %}
+
+{% generateimage 'spectator:list_thumbnail' source=field as img %}
+{% generateimage 'spectator:list_thumbnail2x' source=field as img2x %}
+
+{% with link_url=url|default:field.url %}
+  <a href="{{ link_url }}">
+    <img src="{{ img.url }}" srcset="{{ img.url }} 1x, {{ img2x.url }} 2x" width="{{ img.width }}" height="{{ img.height }}" alt="{{ alt_text }}" class="align-top border mr-3">
+  </a>
+{% endwith %}

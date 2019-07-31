@@ -1,0 +1,7 @@
+{# For displaying thumbnails in the admin create/edit pages #}
+{% if thumbnail %}
+  {% load imagekit %}
+  {% generateimage 'spectator:detail_thumbnail' source=thumbnail as image %}
+  {% generateimage 'spectator:detail_thumbnail2x' source=thumbnail as image2x %}
+  <img src="{{ image.url }}" srcset="{{ image.url }} 1x, {{ image2x.url }} 2x" width="{{ image.width }}" height="{{ image.height }}" alt="Thumbnail">
+{% endif %}

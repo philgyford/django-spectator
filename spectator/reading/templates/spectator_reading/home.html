@@ -5,30 +5,30 @@
 {% block content_title %}Reading{% endblock %}
 
 {% block breadcrumbs %}
-    <li class="breadcrumb-item"><a href="{% url 'spectator:core:home' %}">Home</a></li>
-    <li class="breadcrumb-item active">Reading</li>
+  <li class="breadcrumb-item"><a href="{% url 'spectator:core:home' %}">Home</a></li>
+  <li class="breadcrumb-item active">Reading</li>
 {% endblock %}
 
 {% block content %}
 
-    {% if in_progress_publication_list|length > 0 %}
-        <h2>Currently reading</h2>
+  {% if in_progress_publication_list|length > 0 %}
+    <h2>Currently reading</h2>
 
-        {% include 'spectator_reading/includes/publications.html' with publication_list=in_progress_publication_list show_readings='current' only %}
-    {% endif %}
+    {% include 'spectator_reading/includes/publications.html' with publication_list=in_progress_publication_list show_readings='current' show_thumbnails=True only %}
+  {% endif %}
 
-    {% if publication_list|length > 0 %}
-        <h2>Unread</h2>
+  {% if publication_list|length > 0 %}
+    <h2>Unread</h2>
 
-        {% include 'spectator_reading/includes/publications.html' with publication_list=publication_list only %}
-    {% endif %}
+    {% include 'spectator_reading/includes/publications.html' with publication_list=publication_list show_thumbnails=True only %}
+  {% endif %}
 
 {% endblock content %}
 
 
 {% block sidebar_content %}
 
-    {% most_read_creators_card num=10 %}
+  {% most_read_creators_card num=10 %}
 
-    {{ block.super }}
+  {{ block.super }}
 {% endblock sidebar_content %}

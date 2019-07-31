@@ -3,20 +3,20 @@
 {% current_url_name as url_name %}
 
 <div class="card mb-3">
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-            {% if url_name == 'spectator:events:home' %}
-                Events
-            {% else %}
-                <a href="{% url 'spectator:events:home' %}">Events</a>
-            {% endif %}
-        </li>
-        <li class="list-group-item">
-            {% if url_name == 'spectator:events:venue_list' %}
-                Venues
-            {% else %}
-                <a href="{% url 'spectator:events:venue_list' %}">Venues</a>
-            {% endif %}
-        </li>
-    </ul>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      {% if url_name == 'spectator:events:home' %}
+        Events
+      {% else %}
+        <a href="{% url 'spectator:events:home' %}">Events</a>
+      {% endif %}
+    </li>
+    <li class="list-group-item">
+      {% if url_name == 'spectator:events:venue_list' %}
+        Venues
+      {% else %}
+        <a href="{% url 'spectator:events:venue_list' %}">Venues</a>
+      {% endif %}
+    </li>
+  </ul>
 </div>

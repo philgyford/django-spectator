@@ -9,13 +9,13 @@ Expects:
 {% endcomment %}
 
 {% if selection_list|length > 0 %}
-	{% if heading %}
-		<h2>{{ heading }}</h2>
-	{% endif %}
+  {% if heading %}
+    <h2>{{ heading }}</h2>
+  {% endif %}
 
-	<ul>
-		{% for selection in selection_list %}
-			{% include 'spectator_events/includes/work.html' with work=selection.work only %}
-		{% endfor %}
-	</ul>
+  <ul>
+    {% for selection in selection_list %}
+      {% include 'spectator_events/includes/work.html' with work=selection.work only %}
+    {% endfor %}
+  </ul>
 {% endif %}

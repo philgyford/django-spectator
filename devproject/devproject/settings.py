@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'debug_toolbar',
+    'imagekit',
     'spectator.core',
     'spectator.events',
     'spectator.reading',

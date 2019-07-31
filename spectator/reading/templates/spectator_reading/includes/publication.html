@@ -5,43 +5,55 @@ Expects:
 
 * publication: The Publication to display.
 * show_readings: 'none' (default), 'all' or 'current' (the in-progress reading, if any).
+* show_thumbnail: Boolean, default is False.
 
 {% endcomment %}
 
+{% if show_thumbnail|default_if_none:False and publication.cover %}
+  <div class="d-flex">
+    {% include 'spectator_core/includes/thumbnail_list.html' with url=publication.get_absolute_url field=publication.thumbnail alt_text="Cover" %}
+
+    <div class="flex-grow-1">
+{% endif %}
+
 <a href="{{ publication.get_absolute_url }}">
 	<strong>
-        {% if publication.series %}
-            <cite>{{ publication.series.title }}</cite>, 
-            {{ publication.title }}
-        {% else %}
-            <cite>{{ publication.title }}</cite>
-        {% endif %}
+    {% if publication.series %}
+      <cite>{{ publication.series.title }}</cite>, 
+      {{ publication.title }}
+    {% else %}
+      <cite>{{ publication.title }}</cite>
+    {% endif %}
 	</strong>
 </a>
 
 {% include 'spectator_core/includes/roles.html' with roles=publication.roles.all intro='<br>by' %}
 
 {% if show_readings == 'all' or show_readings == 'current' %}
-    <ul class="text-muted">
-        {% if show_readings == 'all' %}
-            {% with publication.reading_set.all as readings %}
-                {% if readings|length > 0 %}
-                    {% for reading in readings %}
-                        <li>
-                            {% include 'spectator_reading/includes/reading.html' with reading=reading only %}
-                        </li>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-        {% else %}
-            {% with publication.get_current_reading as reading %}
-                {% if reading %}
-                    <li>
-                        {% include 'spectator_reading/includes/reading.html' with reading=reading only %}
-                    </li>
-                {% endif %}
-            {% endwith %}
+  <ul class="text-muted">
+    {% if show_readings == 'all' %}
+      {% with publication.reading_set.all as readings %}
+        {% if readings|length > 0 %}
+          {% for reading in readings %}
+            <li>
+              {% include 'spectator_reading/includes/reading.html' with reading=reading only %}
+            </li>
+          {% endfor %}
         {% endif %}
-    </ul>
+      {% endwith %}
+    {% else %}
+      {% with publication.get_current_reading as reading %}
+        {% if reading %}
+          <li>
+            {% include 'spectator_reading/includes/reading.html' with reading=reading only %}
+          </li>
+        {% endif %}
+      {% endwith %}
+    {% endif %}
+  </ul>
 {% endif %}
 
+{% if show_thumbnail|default_if_none:False and publication.cover %}
+    </div>
+  </div>
+{% endif %}

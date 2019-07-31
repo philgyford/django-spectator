@@ -1,63 +1,89 @@
-from django import forms
 from django.contrib import admin
-from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.templatetags.l10n import unlocalize
 
+from imagekit.admin import AdminThumbnail
+
 from ..core import app_settings
-from .models import (
-    Event, EventRole,
-    Work, WorkRole, WorkSelection,
-    Venue
-)
+from .models import Event, EventRole, Work, WorkRole, WorkSelection, Venue
 
 
 # INLINES
 
+
 class EventRoleInline(admin.TabularInline):
     model = EventRole
-    fields = ( 'creator', 'role_name', 'role_order',)
-    raw_id_fields = ('creator',)
+    fields = ("creator", "role_name", "role_order")
+    raw_id_fields = ("creator",)
     extra = 0
+
 
 class WorkRoleInline(admin.TabularInline):
     model = WorkRole
-    fields = ( 'creator', 'role_name', 'role_order',)
-    raw_id_fields = ('creator',)
+    fields = ("creator", "role_name", "role_order")
+    raw_id_fields = ("creator",)
     extra = 0
+
 
 class WorkSelectionInline(admin.TabularInline):
     model = WorkSelection
-    fields = ('work', 'order',)
-    raw_id_fields = ('work',)
+    fields = ("work", "order")
+    raw_id_fields = ("work",)
     extra = 0
-
 
 
 # MODEL ADMINS.
 
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
 
-    list_display = ('__str__', 'date', 'kind_name', 'venue',)
-    list_filter = ('kind', 'date',)
-    search_fields = ('title',)
+    list_display = ("__str__", "date", "list_thumbnail", "kind_name", "venue")
+    list_filter = ("kind", "date")
+    search_fields = ("title",)
 
     fieldsets = (
-        (None, {
-            'fields': ( 'kind', 'date', 'venue', 'venue_name',
-                        'title', 'title_sort', 'slug', 'note',)
-        }),
-        ('Times', {
-            'classes': ('collapse',),
-            'fields': ('time_created', 'time_modified',)
-        }),
+        (
+            None,
+            {
+                "fields": (
+                    "kind",
+                    "date",
+                    "venue",
+                    "venue_name",
+                    "title",
+                    "title_sort",
+                    "detail_thumbnail",
+                    "ticket",
+                    "slug",
+                    "note",
+                )
+            },
+        ),
+        (
+            "Times",
+            {"classes": ("collapse",), "fields": ("time_created", "time_modified")},
+        ),
     )
 
-    raw_id_fields = ('venue',)
-    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
+    raw_id_fields = ("venue",)
+    readonly_fields = (
+        "title_sort",
+        "slug",
+        "detail_thumbnail",
+        "time_created",
+        "time_modified",
+    )
 
-    inlines = [WorkSelectionInline, EventRoleInline, ]
+    inlines = [WorkSelectionInline, EventRoleInline]
+
+    detail_thumbnail = AdminThumbnail(
+        image_field="ticket", template="spectator_core/admin/detail_thumbnail.html"
+    )
+
+    list_thumbnail = AdminThumbnail(
+        image_field="ticket", template="spectator_core/admin/list_thumbnail.html"
+    )
 
     def save_related(self, request, form, formsets, change):
         """
@@ -75,33 +101,29 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(Work)
 class WorkAdmin(admin.ModelAdmin):
-    list_display = ('title', 'kind', 'tidy_year',)
-    search_fields = ('title',)
-    list_filter = ('kind', 'year',)
+    list_display = ("title", "kind", "tidy_year")
+    search_fields = ("title",)
+    list_filter = ("kind", "year")
 
     fieldsets = (
-        (None, {
-            'fields': ( 'kind', 'title', 'title_sort', 'slug',
-                        'year', 'imdb_id',)
-        }),
-        ('Times', {
-            'classes': ('collapse',),
-            'fields': ('time_created', 'time_modified',)
-        }),
+        (None, {"fields": ("kind", "title", "title_sort", "slug", "year", "imdb_id")}),
+        (
+            "Times",
+            {"classes": ("collapse",), "fields": ("time_created", "time_modified")},
+        ),
     )
 
-    readonly_fields = ('title_sort', 'slug', 'time_created', 'time_modified',)
-    inlines = [ WorkRoleInline, ]
+    readonly_fields = ("title_sort", "slug", "time_created", "time_modified")
+    inlines = [WorkRoleInline]
 
     def tidy_year(self, obj):
         "Stop the year appearing like '2,018' when USE_THOUSAND_SEPARATOR=True"
         if obj.year:
             return unlocalize(obj.year)
         else:
-            return '-'
-    tidy_year.short_description = 'Year'
+            return "-"
 
-
+    tidy_year.short_description = "Year"
 
 
 class CountryListFilter(admin.SimpleListFilter):
@@ -113,9 +135,10 @@ class CountryListFilter(admin.SimpleListFilter):
 
     Otherwise we have a very long list of countries, most of which are unused.
     """
-    title = 'Country'
 
-    parameter_name = 'country'
+    title = "Country"
+
+    parameter_name = "country"
 
     def lookups(self, request, model_admin):
         """
@@ -134,15 +157,15 @@ class CountryListFilter(admin.SimpleListFilter):
 
         # We don't need the country_count but we need to annotate them in order
         # to group the results.
-        qs = Venue.objects.exclude(country='') \
-                            .values('country') \
-                            .annotate(country_count=Count('country')) \
-                            .order_by('country')
+        qs = (
+            Venue.objects.exclude(country="")
+            .values("country")
+            .annotate(country_count=Count("country"))
+            .order_by("country")
+        )
         for obj in qs:
-            country = obj['country']
-            list_of_countries.append(
-                (country, Venue.COUNTRIES[country])
-            )
+            country = obj["country"]
+            list_of_countries.append((country, Venue.COUNTRIES[country]))
 
         return sorted(list_of_countries, key=lambda c: c[1])
 
@@ -160,30 +183,40 @@ class CountryListFilter(admin.SimpleListFilter):
 
 @admin.register(Venue)
 class VenueAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address', 'country',)
+    list_display = ("name", "address", "country")
     list_filter = (CountryListFilter,)
-    search_fields = ('name',)
+    search_fields = ("name",)
 
     fieldsets = (
-        (None, {
-            'fields': ( 'name', 'name_sort', 'note', 'cinema_treasures_id',
-                        'latitude', 'longitude',
-                        'address', 'country',)
-        }),
-        ('Times', {
-            'classes': ('collapse',),
-            'fields': ('time_created', 'time_modified',)
-        }),
+        (
+            None,
+            {
+                "fields": (
+                    "name",
+                    "name_sort",
+                    "note",
+                    "cinema_treasures_id",
+                    "latitude",
+                    "longitude",
+                    "address",
+                    "country",
+                )
+            },
+        ),
+        (
+            "Times",
+            {"classes": ("collapse",), "fields": ("time_created", "time_modified")},
+        ),
     )
 
-    readonly_fields = ('name_sort', 'time_created', 'time_modified',)
+    readonly_fields = ("name_sort", "time_created", "time_modified")
 
     class Media:
         if app_settings.GOOGLE_MAPS_API_KEY:
-            css = {
-                'all': ('css/admin/location_picker.css',),
-            }
+            css = {"all": ("css/admin/location_picker.css",)}
             js = (
-                'https://maps.googleapis.com/maps/api/js?key={}'.format(app_settings.GOOGLE_MAPS_API_KEY),
-                'js/admin/location_picker.js',
+                "https://maps.googleapis.com/maps/api/js?key={}".format(
+                    app_settings.GOOGLE_MAPS_API_KEY
+                ),
+                "js/admin/location_picker.js",
             )

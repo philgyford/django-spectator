@@ -10,22 +10,22 @@ Expects:
 {% load spectator_events %}
 
 {% if events|length > 0 %}
-    {% if heading_level|default:False %}
-        <{{ heading_level }}>Viewings</{{ heading_level }}>
-    {% endif %}
-    <ul>
-        {% for event in events %}
-            <li class="mb-2">
-                <a href="{{ event.get_absolute_url }}">
-                {% if event.title %}
-                  <strong>{{ event.title }}</strong><br>
-                {% endif %}
-                {% if event.venue %}
-                  {{ event.venue_name }},
-                {% endif %}
-                {% display_date event.date %}</a>
-                {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all %}
-            </li>
-        {% endfor %}
-    </ul>
+  {% if heading_level|default:False %}
+    <{{ heading_level }}>Viewings</{{ heading_level }}>
+  {% endif %}
+  <ul>
+    {% for event in events %}
+      <li class="mb-2">
+        <a href="{{ event.get_absolute_url }}">
+        {% if event.title %}
+          <strong>{{ event.title }}</strong><br>
+        {% endif %}
+        {% if event.venue %}
+          {{ event.venue_name }},
+        {% endif %}
+        {% display_date event.date %}</a>
+        {% include 'spectator_core/includes/roles_list.html' with roles=event.roles.all %}
+      </li>
+    {% endfor %}
+  </ul>
 {% endif %}
