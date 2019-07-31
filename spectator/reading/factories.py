@@ -4,14 +4,14 @@ from . import models
 from spectator.core.factories import IndividualCreatorFactory
 
 
-class PublicationSeriesFactory(factory.DjangoModelFactory):
+class PublicationSeriesFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.PublicationSeries
 
     title = factory.Sequence(lambda n: 'Publication Series %s' % n)
 
 
-class PublicationFactory(factory.DjangoModelFactory):
+class PublicationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Publication
 
@@ -19,7 +19,7 @@ class PublicationFactory(factory.DjangoModelFactory):
     series = factory.SubFactory(PublicationSeriesFactory)
 
 
-class PublicationRoleFactory(factory.DjangoModelFactory):
+class PublicationRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.PublicationRole
 
@@ -28,7 +28,7 @@ class PublicationRoleFactory(factory.DjangoModelFactory):
     publication = factory.SubFactory(PublicationFactory)
 
 
-class ReadingFactory(factory.DjangoModelFactory):
+class ReadingFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Reading
 
