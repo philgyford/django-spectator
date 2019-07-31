@@ -1,9 +1,7 @@
 from django.contrib import admin
-from django.utils.safestring import mark_safe
 
 from imagekit.admin import AdminThumbnail
 
-from spectator.core.imagegenerators import ListThumbnail
 from .models import Publication, PublicationRole, PublicationSeries, Reading
 
 

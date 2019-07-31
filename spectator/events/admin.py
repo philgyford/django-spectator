@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.db.models import Count
 from django.templatetags.l10n import unlocalize
 
+from imagekit.admin import AdminThumbnail
+
 from ..core import app_settings
 from .models import Event, EventRole, Work, WorkRole, WorkSelection, Venue
 
@@ -36,7 +38,7 @@ class WorkSelectionInline(admin.TabularInline):
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
 
-    list_display = ("__str__", "date", "kind_name", "venue")
+    list_display = ("__str__", "date", "list_thumbnail", "kind_name", "venue")
     list_filter = ("kind", "date")
     search_fields = ("title",)
 
@@ -51,6 +53,8 @@ class EventAdmin(admin.ModelAdmin):
                     "venue_name",
                     "title",
                     "title_sort",
+                    "detail_thumbnail",
+                    "ticket",
                     "slug",
                     "note",
                 )
@@ -63,9 +67,23 @@ class EventAdmin(admin.ModelAdmin):
     )
 
     raw_id_fields = ("venue",)
-    readonly_fields = ("title_sort", "slug", "time_created", "time_modified")
+    readonly_fields = (
+        "title_sort",
+        "slug",
+        "detail_thumbnail",
+        "time_created",
+        "time_modified",
+    )
 
     inlines = [WorkSelectionInline, EventRoleInline]
+
+    detail_thumbnail = AdminThumbnail(
+        image_field="ticket", template="spectator_core/admin/detail_thumbnail.html"
+    )
+
+    list_thumbnail = AdminThumbnail(
+        image_field="ticket", template="spectator_core/admin/list_thumbnail.html"
+    )
 
     def save_related(self, request, form, formsets, change):
         """
