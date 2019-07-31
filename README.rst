@@ -29,14 +29,17 @@ This is used on my personal website (with custom templates): `reading <https://w
 Installation
 ************
 
+Install `Pillow <https://python-pillow.org>`_ or `PIL <http://www.pythonware.com/products/pil/>`_ (used by `ImageKit <https://django-imagekit.readthedocs.io/en/latest/>`_ to create thumbnail images).
+
 Install with pip::
 
     pip install django-spectator
 
-Add the apps to your project's ``INSTALLED_APPS`` in ``settings.py``::
+Add these apps to your project's ``INSTALLED_APPS`` in ``settings.py``::
 
     INSTALLED_APPS = [
         ...
+        'imagekit',
         'spectator.core',
         'spectator.events',
         'spectator.reading',
@@ -44,6 +47,9 @@ Add the apps to your project's ``INSTALLED_APPS`` in ``settings.py``::
 
 While ``spectator.core`` is required, you can omit either ``spectator.events``
 or ``spectator.reading`` if you only want to use one of them.
+
+``imagekit`` is required to handle uploaded publication cover and event
+ticket images.
 
 Run migrations::
 
@@ -70,38 +76,67 @@ There are a few optional settings that can be used in your project's
 ``settings.py`` file. This is the full list, with their defaults. Descriptions
 of each are below::
 
-    SPECTATOR_GOOGLE_MAPS_API_KEY = ''
+    SPECTATOR_GOOGLE_MAPS_API_KEY = ""
 
-    SPECTATOR_SLUG_ALPHABET = 'abcdefghijkmnopqrstuvwxyz23456789'
+    SPECTATOR_SLUG_ALPHABET = "abcdefghijkmnopqrstuvwxyz23456789"
 
-    SPECTATOR_SLUG_SALT = 'Django Spectator'
+    SPECTATOR_SLUG_SALT = "Django Spectator"
 
-    SPECTATOR_DATE_FORMAT = '%-d %b %Y'
+    SPECTATOR_DATE_FORMAT = "%-d %b %Y"
 
+    SPECTATOR_THUMBNAIL_DETAIL_SIZE = (320, 320)
+
+    SPECTATOR_THUMBNAIL_LIST_SIZE = (80, 160)
+
+    SPECTATOR_EVENTS_DIR_BASE = "events"
+
+    SPECTATOR_READING_DIR_BASE = "reading"
 
 If you get a `Google Maps JavaScript API key <https://developers.google.com/maps/documentation/javascript/get-api-key>`_ and
 add it to the settings, it will enable using a map in the Django Admin to set
 the location of Venues, and the displaying of Venues' maps in the public
 templates::
 
-    SPECTATOR_GOOGLE_MAPS_API_KEY = 'YOUR-API-KEY'
+    SPECTATOR_GOOGLE_MAPS_API_KEY = "YOUR-API-KEY"
 
 URLs for all objects include automatically-generated slugs, which are based on
 [Hashids](http://hashids.org) of the object's ID. You can change which
 characters are used in these slugs with this setting. e.g.::
 
-    SPECTATOR_SLUG_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+    SPECTATOR_SLUG_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 
 You can also change the salt value used to encode the slugs. While the slugs
 don't provide complete security (i.e. it's not impossible to determine the ID on
 which a slug is based), using your own salt value can't hurt. e.g.::
 
-    SPECTATOR_SLUG_SALT = 'My special salt value is here'
+    SPECTATOR_SLUG_SALT = "My special salt value is here"
 
 You can change the format used for the dates of Events and for the titles of
 some sidebar cards in templates, using `strftime <http://strftime.org>`_ formatting::
 
-    SPECTATOR_DATE_FORMAT = '%Y-%m-%d'
+    SPECTATOR_DATE_FORMAT = "%Y-%m-%d"
+
+There are two sizes of thumbnail images used throughout the site and admin
+pages: those used on "detail" pages (e.g. showing information about a single
+publication) and those used on "list" pages (e.g. listing many Publications).
+Each thumbnail's maximum size is defined as a tuple of width and height. The
+original image will be resized to fit within these limits, without being
+cropped. To make them both bigger than the default you might use::
+
+    SPECTATOR_THUMBNAIL_DETAIL_SIZE = (400, 400)
+
+    SPECTATOR_THUMBNAIL_LIST_SIZE = (150, 200)
+
+When images are uploaded for Publications and Events (see below), they are
+stored within named directories within your Django project's `MEDIA_ROOT`. e.g.
+a Publication with a ``slug`` of ``pzov6`` would have its cover uploaded to
+a path like ``/media/reading/publications/pzov6/my_cover.jpg``. The ``reading``
+part is defined by the ``SPECTATOR_READING_DIR_BASE`` setting. You could change
+the defaults like this::
+
+    SPECTATOR_EVENTS_DIR_BASE = "my-events"
+
+    SPECTATOR_READING_DIR_BASE = "my-reading"
 
 
 ********
