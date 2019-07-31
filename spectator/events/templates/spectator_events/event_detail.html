@@ -11,6 +11,16 @@
 
 {% block content %}
 
+  {% if event.ticket %}
+    {% load imagekit %}
+    {% generateimage 'spectator:detail_thumbnail' source=event.ticket as ticket %}
+    {% generateimage 'spectator:detail_thumbnail2x' source=event.ticket as ticket2x %}
+
+    <a href="{{ event.ticket.url }}" title="See larger version">
+      <img src="{{ ticket.url }}" srcset="{{ ticket.url }} 1x, {{ ticket2x.url }} 2x" width="{{ ticket.width }}" height="{{ ticket.height }}" alt="Ticket" class="float-sm-left border mr-5 mb-4">
+    </a>
+  {% endif %}
+
   <p>
     {% if event.venue %}At <a href="{{ event.venue.get_absolute_url }}">{{ event.venue_name }}</a>
     on{% else %}On{% endif %} {% display_date event.date %}.
