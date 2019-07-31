@@ -15,16 +15,13 @@ class ListThumbnail(Thumbnail):
     processors = [ResizeToFit(*app_settings.LIST_THUMBNAIL_SIZE)]
 
 
-register.generator("spectator:list_thumbnail", ListThumbnail)
-
-
 class ListThumbnail2x(ListThumbnail):
-    "Retina version of ListThumbnail"
-    dimensions = [x * 2 for x in app_settings.LIST_THUMBNAIL_SIZE]
+    """Retina version of ListThumbnail
+    Generated twice the size of our set dimensions.
+    """
+
+    dimensions = [d * 2 for d in app_settings.LIST_THUMBNAIL_SIZE]
     processors = [ResizeToFit(*dimensions)]
-
-
-register.generator("spectator:list_thumbnail2x", ListThumbnail2x)
 
 
 class DetailThumbnail(Thumbnail):
@@ -32,13 +29,16 @@ class DetailThumbnail(Thumbnail):
     processors = [ResizeToFit(*app_settings.DETAIL_THUMBNAIL_SIZE)]
 
 
-register.generator("spectator:detail_thumbnail", DetailThumbnail)
-
-
 class DetailThumbnail2x(DetailThumbnail):
-    "Retina version of DetailThumbnail"
-    dimensions = [x * 2 for x in app_settings.DETAIL_THUMBNAIL_SIZE]
+    """Retina version of DetailThumbnail
+    Generated twice the size of our set dimensions.
+    """
+
+    dimensions = [d * 2 for d in app_settings.DETAIL_THUMBNAIL_SIZE]
     processors = [ResizeToFit(*dimensions)]
 
 
+register.generator("spectator:list_thumbnail", ListThumbnail)
+register.generator("spectator:list_thumbnail2x", ListThumbnail2x)
+register.generator("spectator:detail_thumbnail", DetailThumbnail)
 register.generator("spectator:detail_thumbnail2x", DetailThumbnail2x)
