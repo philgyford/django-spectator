@@ -12,27 +12,27 @@ class Thumbnail(ImageSpec):
 
 class ListThumbnail(Thumbnail):
     "For displaying in lists of Publications, Events, etc."
-    processors = [ResizeToFit(*app_settings.LIST_THUMBNAIL_SIZE)]
+    processors = [ResizeToFit(*app_settings.THUMBNAIL_LIST_SIZE)]
 
 
 class ListThumbnail2x(ListThumbnail):
     """Retina version of ListThumbnail
     Generated twice the size of our set dimensions.
     """
-    dimensions = [d * 2 for d in app_settings.LIST_THUMBNAIL_SIZE]
+    dimensions = [d * 2 for d in app_settings.THUMBNAIL_LIST_SIZE]
     processors = [ResizeToFit(*dimensions)]
 
 
 class DetailThumbnail(Thumbnail):
     "For displaying on the detail pages of Publication, Event, etc"
-    processors = [ResizeToFit(*app_settings.DETAIL_THUMBNAIL_SIZE)]
+    processors = [ResizeToFit(*app_settings.THUMBNAIL_DETAIL_SIZE)]
 
 
 class DetailThumbnail2x(DetailThumbnail):
     """Retina version of DetailThumbnail
     Generated twice the size of our set dimensions.
     """
-    dimensions = [d * 2 for d in app_settings.DETAIL_THUMBNAIL_SIZE]
+    dimensions = [d * 2 for d in app_settings.THUMBNAIL_DETAIL_SIZE]
     processors = [ResizeToFit(*dimensions)]
 
 

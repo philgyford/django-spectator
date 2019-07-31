@@ -20,6 +20,6 @@ SLUG_SALT = getattr(settings, "SPECTATOR_SLUG_SALT", "Django Spectator")
 DATE_FORMAT = getattr(settings, "SPECTATOR_DATE_FORMAT", "%-d %b %Y")
 
 # For Reading and Events
-DETAIL_THUMBNAIL_SIZE = getattr(settings, "SPECTATOR_DETAIL_THUMBNAIL_SIZE", (320, 320))
+THUMBNAIL_DETAIL_SIZE = getattr(settings, "SPECTATOR_THUMBNAIL_DETAIL_SIZE", (320, 320))
 
-LIST_THUMBNAIL_SIZE = getattr(settings, "SPECTATOR_LIST_THUMBNAIL_SIZE", (80, 160))
+THUMBNAIL_LIST_SIZE = getattr(settings, "SPECTATOR_THUMBNAIL_LIST_SIZE", (80, 160))
