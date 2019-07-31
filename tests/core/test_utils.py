@@ -5,7 +5,6 @@ from spectator.core.factories import IndividualCreatorFactory
 
 
 class ChartifyTestCase(TestCase):
-
     def setUp(self):
         super().setUp()
 
@@ -17,7 +16,7 @@ class ChartifyTestCase(TestCase):
         self.creators[4].num_readings = 0
 
     def test_default_list(self):
-        chart = chartify(self.creators, 'num_readings')
+        chart = chartify(self.creators, "num_readings")
 
         self.assertEqual(len(chart), 4)
         self.assertEqual(chart[0].chart_position, 1)
@@ -27,7 +26,7 @@ class ChartifyTestCase(TestCase):
 
     def test_cutoff_is_none(self):
         "Should include the 0-scoring item."
-        chart = chartify(self.creators, 'num_readings', cutoff=None)
+        chart = chartify(self.creators, "num_readings", cutoff=None)
 
         self.assertEqual(len(chart), 5)
         self.assertEqual(chart[0].chart_position, 1)
@@ -38,7 +37,7 @@ class ChartifyTestCase(TestCase):
 
     def test_cutoff_value(self):
         "Should be possible to set a custom cutoff value."
-        chart = chartify(self.creators, 'num_readings', cutoff=6)
+        chart = chartify(self.creators, "num_readings", cutoff=6)
 
         self.assertEqual(len(chart), 3)
         self.assertEqual(chart[0].chart_position, 1)
@@ -51,7 +50,7 @@ class ChartifyTestCase(TestCase):
         for c in creators:
             c.num_readings = 10
 
-        chart = chartify(creators, 'num_readings')
+        chart = chartify(creators, "num_readings")
 
         self.assertEqual(len(chart), 0)
 
@@ -62,7 +61,7 @@ class ChartifyTestCase(TestCase):
         for c in creators:
             c.num_readings = 10
 
-        chart = chartify(creators, 'num_readings', ensure_chartiness=False)
+        chart = chartify(creators, "num_readings", ensure_chartiness=False)
 
         self.assertEqual(len(chart), 3)
 
@@ -71,6 +70,6 @@ class ChartifyTestCase(TestCase):
         creator = IndividualCreatorFactory()
         creator.num_readings = 1
 
-        chart = chartify([creator], 'num_readings', cutoff=1)
+        chart = chartify([creator], "num_readings", cutoff=1)
 
         self.assertEqual(len(chart), 0)

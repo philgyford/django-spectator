@@ -2,9 +2,19 @@
 from django.test import TestCase
 
 from .. import override_app_settings
-from spectator.core.factories import *
-from spectator.events.factories import *
-from spectator.reading.factories import *
+from spectator.core.factories import GroupCreatorFactory, IndividualCreatorFactory
+from spectator.events.factories import (
+    ClassicalWorkFactory,
+    DancePieceFactory,
+    GigEventFactory,
+    EventRoleFactory,
+    ExhibitionFactory,
+    MovieFactory,
+    PlayFactory,
+    WorkRoleFactory,
+    TheatreEventFactory,
+)
+from spectator.reading.factories import PublicationFactory, PublicationRoleFactory
 from spectator.core.models import Creator
 
 
@@ -15,24 +25,23 @@ class SluggedModelMixinTestCase(TestCase):
 
     def test_default_alphabet_and_slug(self):
         creator = IndividualCreatorFactory(pk=123)
-        self.assertEqual(creator.slug, '9g5o8')
+        self.assertEqual(creator.slug, "9g5o8")
 
-    @override_app_settings(SLUG_ALPHABET='ABCDEFG1234567890')
+    @override_app_settings(SLUG_ALPHABET="ABCDEFG1234567890")
     def test_custom_alphabet(self):
         creator = IndividualCreatorFactory(pk=123)
-        self.assertEqual(creator.slug, '18G28')
+        self.assertEqual(creator.slug, "18G28")
 
-    @override_app_settings(SLUG_SALT='My new salt')
+    @override_app_settings(SLUG_SALT="My new salt")
     def test_custom_salt(self):
         creator = IndividualCreatorFactory(pk=123)
-        self.assertEqual(creator.slug, 'y9xgy')
+        self.assertEqual(creator.slug, "y9xgy")
 
 
 class CreatorTestCase(TestCase):
-
     def test_str(self):
-        creator = IndividualCreatorFactory(name='Bill Brown')
-        self.assertEqual(str(creator), 'Bill Brown')
+        creator = IndividualCreatorFactory(name="Bill Brown")
+        self.assertEqual(str(creator), "Bill Brown")
 
     def test_sort_field_length(self):
         """
@@ -44,84 +53,86 @@ class CreatorTestCase(TestCase):
         self.maxDiff = 1000
 
         creator = GroupCreatorFactory(
-            name='1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3')
+            name="1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3"
+        )
         creator.refresh_from_db()
 
-        self.assertEqual(creator.name_sort, '00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001…')
+        self.assertEqual(
+            creator.name_sort,
+            "00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001…",  # noqa: E501
+        )
 
         self.maxDiff = old_maxDiff
 
     def test_ordering(self):
         # Will have a name_sort of 'peaness':
-        b = IndividualCreatorFactory(name='Peaness')
+        b = IndividualCreatorFactory(name="Peaness")
         # Will have a name_sort of 'long blondes, the':
-        a = IndividualCreatorFactory(name='The Long Blondes')
+        a = IndividualCreatorFactory(name="The Long Blondes")
         creators = Creator.objects.all()
         self.assertEqual(creators[0], a)
         self.assertEqual(creators[1], b)
 
     def test_slug(self):
         creator = IndividualCreatorFactory(pk=123)
-        self.assertEqual(creator.slug, '9g5o8')
+        self.assertEqual(creator.slug, "9g5o8")
 
     def test_absolute_url(self):
         creator = IndividualCreatorFactory(pk=123)
-        self.assertEqual(creator.get_absolute_url(), '/creators/9g5o8/')
+        self.assertEqual(creator.get_absolute_url(), "/creators/9g5o8/")
 
     def test_publication_roles(self):
-        bob = IndividualCreatorFactory(name='Bob')
-        pub1 = PublicationFactory(title='Publication 1')
-        pub2 = PublicationFactory(title='Publication 2')
+        bob = IndividualCreatorFactory(name="Bob")
+        pub1 = PublicationFactory(title="Publication 1")
+        pub2 = PublicationFactory(title="Publication 2")
         role1 = PublicationRoleFactory(
-                        publication=pub1, creator=bob, role_name='Author')
+            publication=pub1, creator=bob, role_name="Author"
+        )
         role2 = PublicationRoleFactory(
-                        publication=pub2, creator=bob, role_name='Editor')
+            publication=pub2, creator=bob, role_name="Editor"
+        )
         roles = bob.publication_roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], role1)
         self.assertEqual(roles[1], role2)
-        self.assertEqual(roles[0].role_name, 'Author')
-        self.assertEqual(roles[1].role_name, 'Editor')
+        self.assertEqual(roles[0].role_name, "Author")
+        self.assertEqual(roles[1].role_name, "Editor")
 
     def test_event_roles(self):
-        bob = IndividualCreatorFactory(name='Bob')
+        bob = IndividualCreatorFactory(name="Bob")
         event1 = GigEventFactory()
         event2 = GigEventFactory()
-        role1 = EventRoleFactory(
-                        event=event1, creator=bob, role_name='Headliner')
-        role2 = EventRoleFactory(
-                        event=event2, creator=bob, role_name='Support')
+        role1 = EventRoleFactory(event=event1, creator=bob, role_name="Headliner")
+        role2 = EventRoleFactory(event=event2, creator=bob, role_name="Support")
         roles = bob.event_roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], role1)
         self.assertEqual(roles[1], role2)
-        self.assertEqual(roles[0].role_name, 'Headliner')
-        self.assertEqual(roles[1].role_name, 'Support')
+        self.assertEqual(roles[0].role_name, "Headliner")
+        self.assertEqual(roles[1].role_name, "Support")
 
     def test_work_roles(self):
         bob = IndividualCreatorFactory()
         movie = MovieFactory()
         play = PlayFactory()
         role1 = WorkRoleFactory(
-                        work=movie, creator=bob,
-                        role_name='Director', role_order=1)
-        role2 = WorkRoleFactory(
-                        work=play, creator=bob,
-                        role_name='Actor', role_order=2)
+            work=movie, creator=bob, role_name="Director", role_order=1
+        )
+        role2 = WorkRoleFactory(work=play, creator=bob, role_name="Actor", role_order=2)
         roles = bob.work_roles.all()
         self.assertEqual(len(roles), 2)
         self.assertEqual(roles[0], role1)
         self.assertEqual(roles[1], role2)
-        self.assertEqual(roles[0].role_name, 'Director')
-        self.assertEqual(roles[1].role_name, 'Actor')
+        self.assertEqual(roles[0].role_name, "Director")
+        self.assertEqual(roles[1].role_name, "Actor")
 
     def test_get_events(self):
         bob = IndividualCreatorFactory()
         e1 = TheatreEventFactory()
         e2 = TheatreEventFactory()
-        role1 = EventRoleFactory(event=e1, creator=bob, role_name='Director')
-        role2 = EventRoleFactory(event=e1, creator=bob, role_name='Playwright')
-        role3 = EventRoleFactory(event=e2, creator=bob, role_name='Director')
+        EventRoleFactory(event=e1, creator=bob, role_name="Director")
+        EventRoleFactory(event=e1, creator=bob, role_name="Playwright")
+        EventRoleFactory(event=e2, creator=bob, role_name="Director")
 
         events = bob.get_events()
         self.assertEqual(len(events), 2)
@@ -133,8 +144,8 @@ class CreatorTestCase(TestCase):
         cw = ClassicalWorkFactory()
         dp = DancePieceFactory()
 
-        WorkRoleFactory(work=m, creator=bob, role_name='Director')
-        WorkRoleFactory(work=m, creator=bob, role_name='Actor')
+        WorkRoleFactory(work=m, creator=bob, role_name="Director")
+        WorkRoleFactory(work=m, creator=bob, role_name="Actor")
         WorkRoleFactory(work=p, creator=bob)
         WorkRoleFactory(work=cw, creator=bob)
         WorkRoleFactory(work=dp, creator=bob)

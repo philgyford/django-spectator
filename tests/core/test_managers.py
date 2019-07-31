@@ -1,15 +1,29 @@
 # coding: utf-8
-from django.test import override_settings, TestCase
+from django.test import TestCase
 
 from .. import make_date
-from spectator.core.factories import *
-from spectator.events.factories import *
-from spectator.reading.factories import *
+from spectator.core.factories import IndividualCreatorFactory
+from spectator.events.factories import (
+    CinemaEventFactory,
+    ComedyEventFactory,
+    DancePieceFactory,
+    EventRoleFactory,
+    GigEventFactory,
+    MovieFactory,
+    PlayFactory,
+    TheatreEventFactory,
+    WorkRoleFactory,
+)
+from spectator.reading.factories import (
+    PublicationFactory,
+    PublicationRoleFactory,
+    ReadingFactory,
+)
 from spectator.core.models import Creator
 
 
 # The dates make no difference to these tests, so just define one:
-d = make_date('2017-02-15')
+d = make_date("2017-02-15")
 
 
 class CreatorManagerByPublicationsTestCase(TestCase):
@@ -25,7 +39,7 @@ class CreatorManagerByPublicationsTestCase(TestCase):
         creators = Creator.objects.by_publications()
 
         self.assertEqual(len(creators), 1)
-        self.assertTrue(hasattr(creators[0], 'num_publications'))
+        self.assertTrue(hasattr(creators[0], "num_publications"))
         self.assertEqual(creators[0].num_publications, 1)
 
     def test_does_not_count_unread_publicatios(self):
@@ -43,8 +57,8 @@ class CreatorManagerByPublicationsTestCase(TestCase):
 
     def test_sorts_by_name(self):
         "If counts are equal."
-        terry = IndividualCreatorFactory(name='Terry')
-        bob = IndividualCreatorFactory(name='Bob')
+        terry = IndividualCreatorFactory(name="Terry")
+        bob = IndividualCreatorFactory(name="Bob")
 
         pub1 = PublicationFactory()
         PublicationRoleFactory(publication=pub1, creator=terry)
@@ -90,10 +104,10 @@ class CreatorManagerByPublicationsTestCase(TestCase):
 
         self.assertEqual(len(creators), 2)
 
-        self.assertEqual(creators[0], terry) # 2 solo, 1 joint
+        self.assertEqual(creators[0], terry)  # 2 solo, 1 joint
         self.assertEqual(creators[0].num_publications, 3)
 
-        self.assertEqual(creators[1], bob) # 1 solo, 1 joint
+        self.assertEqual(creators[1], bob)  # 1 solo, 1 joint
         self.assertEqual(creators[1].num_publications, 2)
 
 
@@ -104,18 +118,18 @@ class CreatorManagerByReadingsTestCase(TestCase):
 
     def test_has_count_field(self):
         pub = PublicationFactory()
-        PublicationRoleFactory(publication=pub, role_name='')
+        PublicationRoleFactory(publication=pub, role_name="")
         ReadingFactory(publication=pub, start_date=d, end_date=d)
 
         creators = Creator.objects.by_readings()
 
-        self.assertTrue(hasattr(creators[0], 'num_readings'))
+        self.assertTrue(hasattr(creators[0], "num_readings"))
         self.assertEqual(creators[0].num_readings, 1)
 
     def test_counts_readings(self):
         "Not just publications"
         pub = PublicationFactory()
-        PublicationRoleFactory(publication=pub, role_name='')
+        PublicationRoleFactory(publication=pub, role_name="")
         ReadingFactory(publication=pub, start_date=d, end_date=d)
         ReadingFactory(publication=pub, start_date=d, end_date=d)
 
@@ -125,10 +139,10 @@ class CreatorManagerByReadingsTestCase(TestCase):
 
     def test_does_not_count_unread_publicatios(self):
         unread_pub = PublicationFactory()
-        PublicationRoleFactory(publication=unread_pub, role_name='')
+        PublicationRoleFactory(publication=unread_pub, role_name="")
 
         read_pub = PublicationFactory()
-        PublicationRoleFactory(publication=read_pub, role_name='')
+        PublicationRoleFactory(publication=read_pub, role_name="")
 
         ReadingFactory(publication=read_pub, start_date=d, end_date=d)
         ReadingFactory(publication=read_pub, start_date=d, end_date=d)
@@ -139,13 +153,13 @@ class CreatorManagerByReadingsTestCase(TestCase):
 
     def test_sorts_by_name(self):
         "If counts are equal."
-        terry = IndividualCreatorFactory(name='Terry')
-        bob = IndividualCreatorFactory(name='Bob')
+        terry = IndividualCreatorFactory(name="Terry")
+        bob = IndividualCreatorFactory(name="Bob")
 
         pub1 = PublicationFactory()
-        PublicationRoleFactory(publication=pub1, creator=terry, role_name='')
+        PublicationRoleFactory(publication=pub1, creator=terry, role_name="")
         pub2 = PublicationFactory()
-        PublicationRoleFactory(publication=pub2, creator=bob, role_name='')
+        PublicationRoleFactory(publication=pub2, creator=bob, role_name="")
 
         ReadingFactory(publication=pub2, start_date=d, end_date=d)
         ReadingFactory(publication=pub1, start_date=d, end_date=d)
@@ -160,15 +174,15 @@ class CreatorManagerByReadingsTestCase(TestCase):
         "Includes those a role_name of ''"
 
         pub = PublicationFactory()
-        PublicationRoleFactory(publication=pub, role_name='')
+        PublicationRoleFactory(publication=pub, role_name="")
         ReadingFactory(publication=pub, start_date=d, end_date=d)
 
         pub = PublicationFactory()
-        PublicationRoleFactory(publication=pub, role_name='')
+        PublicationRoleFactory(publication=pub, role_name="")
         ReadingFactory(publication=pub, start_date=d, end_date=d)
 
         pub = PublicationFactory()
-        PublicationRoleFactory(publication=pub, role_name='Translator')
+        PublicationRoleFactory(publication=pub, role_name="Translator")
         ReadingFactory(publication=pub, start_date=d, end_date=d)
 
         creators = Creator.objects.by_readings()
@@ -179,15 +193,15 @@ class CreatorManagerByReadingsTestCase(TestCase):
         "Includes those a role_name of 'Author'"
 
         pub = PublicationFactory()
-        PublicationRoleFactory(publication=pub, role_name='Author')
+        PublicationRoleFactory(publication=pub, role_name="Author")
         ReadingFactory(publication=pub, start_date=d, end_date=d)
 
         pub = PublicationFactory()
-        PublicationRoleFactory(publication=pub, role_name='Author')
+        PublicationRoleFactory(publication=pub, role_name="Author")
         ReadingFactory(publication=pub, start_date=d, end_date=d)
 
         pub = PublicationFactory()
-        PublicationRoleFactory(publication=pub, role_name='Translator')
+        PublicationRoleFactory(publication=pub, role_name="Translator")
         ReadingFactory(publication=pub, start_date=d, end_date=d)
 
         creators = Creator.objects.by_readings()
@@ -196,14 +210,13 @@ class CreatorManagerByReadingsTestCase(TestCase):
 
 
 class CreatorManagerByEventsTestCase(TestCase):
-
     def test_has_count_field(self):
         ev = ComedyEventFactory()
         EventRoleFactory(event=ev)
 
         creators = Creator.objects.by_events()
 
-        self.assertTrue(hasattr(creators[0], 'num_events'))
+        self.assertTrue(hasattr(creators[0], "num_events"))
         self.assertEqual(creators[0].num_events, 1)
 
     def test_counts_events(self):
@@ -240,8 +253,8 @@ class CreatorManagerByEventsTestCase(TestCase):
 
     def test_sorts_by_name(self):
         "If counts are equal"
-        terry = IndividualCreatorFactory(name='terry')
-        bob = IndividualCreatorFactory(name='bob')
+        terry = IndividualCreatorFactory(name="terry")
+        bob = IndividualCreatorFactory(name="bob")
         ev2 = GigEventFactory()
         ev1 = ComedyEventFactory()
 
@@ -262,18 +275,20 @@ class CreatorManagerByEventsTestCase(TestCase):
         EventRoleFactory(creator=c, event=ComedyEventFactory())
         EventRoleFactory(creator=c, event=CinemaEventFactory())
 
-        creators = Creator.objects.by_events(kind='gig')
+        creators = Creator.objects.by_events(kind="gig")
 
         # Should only count the 'gig' event:
         self.assertEqual(creators[0].num_events, 1)
 
     def test_counts_distinct_events(self):
-        "If a Creator has multiple roles on an Event, the Event should only be counted once."
+        """If a Creator has multiple roles on an Event, the Event
+        should only be counted once.
+        """
         c = IndividualCreatorFactory()
         ev = TheatreEventFactory()
 
-        EventRoleFactory(creator=c, event=ev, role_name='Director')
-        EventRoleFactory(creator=c, event=ev, role_name='Playwright')
+        EventRoleFactory(creator=c, event=ev, role_name="Director")
+        EventRoleFactory(creator=c, event=ev, role_name="Playwright")
 
         creators = Creator.objects.by_events()
 
@@ -281,14 +296,13 @@ class CreatorManagerByEventsTestCase(TestCase):
 
 
 class CreatorManagerByWorksTestCase(TestCase):
-
     def test_has_count_field(self):
         movie = MovieFactory()
         WorkRoleFactory(work=movie)
 
         creators = Creator.objects.by_works()
 
-        self.assertTrue(hasattr(creators[0], 'num_works'))
+        self.assertTrue(hasattr(creators[0], "num_works"))
         self.assertEqual(creators[0].num_works, 1)
 
     def test_counts_works(self):
@@ -326,8 +340,8 @@ class CreatorManagerByWorksTestCase(TestCase):
 
     def test_sorts_by_name(self):
         "If counts are equal"
-        terry = IndividualCreatorFactory(name='terry')
-        bob = IndividualCreatorFactory(name='bob')
+        terry = IndividualCreatorFactory(name="terry")
+        bob = IndividualCreatorFactory(name="bob")
         movie = MovieFactory()
         play = PlayFactory()
 
@@ -347,7 +361,7 @@ class CreatorManagerByWorksTestCase(TestCase):
         WorkRoleFactory(creator=c, work=PlayFactory())
         WorkRoleFactory(creator=c, work=DancePieceFactory())
 
-        creators = Creator.objects.by_works(kind='movie')
+        creators = Creator.objects.by_works(kind="movie")
 
         # Should only count the Movie work:
         self.assertEqual(creators[0].num_works, 1)
@@ -355,11 +369,11 @@ class CreatorManagerByWorksTestCase(TestCase):
     def test_filters_by_role_name(self):
         c = IndividualCreatorFactory()
 
-        WorkRoleFactory(creator=c, work=MovieFactory(), role_name='Director')
-        WorkRoleFactory(creator=c, work=MovieFactory(), role_name='Actor')
-        WorkRoleFactory(creator=c, work=MovieFactory(), role_name='')
+        WorkRoleFactory(creator=c, work=MovieFactory(), role_name="Director")
+        WorkRoleFactory(creator=c, work=MovieFactory(), role_name="Actor")
+        WorkRoleFactory(creator=c, work=MovieFactory(), role_name="")
 
-        creators = Creator.objects.by_works(role_name='Director')
+        creators = Creator.objects.by_works(role_name="Director")
 
         # Should only count the 'Director' role:
         self.assertEqual(creators[0].num_works, 1)
@@ -368,22 +382,24 @@ class CreatorManagerByWorksTestCase(TestCase):
         "Can filter by both at once."
         c = IndividualCreatorFactory()
 
-        WorkRoleFactory(creator=c, work=MovieFactory(), role_name='Director')
-        WorkRoleFactory(creator=c, work=PlayFactory(), role_name='Director')
-        WorkRoleFactory(creator=c, work=MovieFactory(), role_name='Actor')
+        WorkRoleFactory(creator=c, work=MovieFactory(), role_name="Director")
+        WorkRoleFactory(creator=c, work=PlayFactory(), role_name="Director")
+        WorkRoleFactory(creator=c, work=MovieFactory(), role_name="Actor")
 
-        creators = Creator.objects.by_works(kind='movie', role_name='Director')
+        creators = Creator.objects.by_works(kind="movie", role_name="Director")
 
         # Should only count the 'Director' role on a movie Work:
         self.assertEqual(creators[0].num_works, 1)
 
     def test_counts_distinct_works(self):
-        "If a Creator has multiple roles on a Work, the Work should only be counted once."
+        """If a Creator has multiple roles on a Work, the Work should
+        only be counted once.
+        """
         c = IndividualCreatorFactory()
         w = MovieFactory()
 
-        WorkRoleFactory(creator=c, work=w, role_name='Director')
-        WorkRoleFactory(creator=c, work=w, role_name='Writer')
+        WorkRoleFactory(creator=c, work=w, role_name="Director")
+        WorkRoleFactory(creator=c, work=w, role_name="Writer")
 
         creators = Creator.objects.by_works()
 

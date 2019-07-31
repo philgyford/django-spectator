@@ -1,7 +1,19 @@
 # coding: utf-8
-from django.test import override_settings, TestCase
+from django.test import TestCase
 
-from spectator.events.factories import *
+from spectator.events.factories import (
+    CinemaEventFactory,
+    ClassicalWorkFactory,
+    ComedyEventFactory,
+    DanceEventFactory,
+    GigEventFactory,
+    MiscEventFactory,
+    MovieFactory,
+    PlayFactory,
+    TheatreEventFactory,
+    VenueFactory,
+    WorkSelectionFactory,
+)
 from spectator.events.models import Venue, Work
 
 
@@ -16,7 +28,7 @@ class VenueManagerByVisitsTestCase(TestCase):
         venues = Venue.objects.by_visits()
 
         self.assertEqual(len(venues), 1)
-        self.assertTrue(hasattr(venues[0], 'num_visits'))
+        self.assertTrue(hasattr(venues[0], "num_visits"))
         self.assertEqual(venues[0].num_visits, 1)
 
     def test_sorts_by_num_visits(self):
@@ -45,9 +57,9 @@ class VenueManagerByVisitsTestCase(TestCase):
 
     def test_sorts_by_name(self):
         "If num_visits is equal"
-        v1 = VenueFactory(name='B')
-        v2 = VenueFactory(name='C')
-        v3 = VenueFactory(name='A')
+        v1 = VenueFactory(name="B")
+        v2 = VenueFactory(name="C")
+        v3 = VenueFactory(name="A")
 
         MiscEventFactory(venue=v1)
         MiscEventFactory(venue=v2)
@@ -67,7 +79,7 @@ class VenueManagerByVisitsTestCase(TestCase):
         ComedyEventFactory(venue=v)
         DanceEventFactory(venue=v)
 
-        venues = Venue.objects.by_visits(event_kind='comedy')
+        venues = Venue.objects.by_visits(event_kind="comedy")
 
         self.assertEqual(venues[0].num_visits, 2)
 
@@ -83,7 +95,7 @@ class WorkManagerByVisitsTestCase(TestCase):
         works = Work.objects.by_views()
 
         self.assertEqual(len(works), 1)
-        self.assertTrue(hasattr(works[0], 'num_views'))
+        self.assertTrue(hasattr(works[0], "num_views"))
         self.assertEqual(works[0].num_views, 1)
 
     def test_sorts_by_num_views(self):
@@ -111,9 +123,9 @@ class WorkManagerByVisitsTestCase(TestCase):
 
     def test_sorts_by_title(self):
         "If num_views is equal"
-        m1 = MovieFactory(title='B')
-        m2 = MovieFactory(title='C')
-        m3 = MovieFactory(title='A')
+        m1 = MovieFactory(title="B")
+        m2 = MovieFactory(title="C")
+        m3 = MovieFactory(title="A")
         WorkSelectionFactory(event=CinemaEventFactory(), work=m1)
         WorkSelectionFactory(event=CinemaEventFactory(), work=m2)
         WorkSelectionFactory(event=CinemaEventFactory(), work=m3)
@@ -130,7 +142,7 @@ class WorkManagerByVisitsTestCase(TestCase):
         WorkSelectionFactory(event=CinemaEventFactory(), work=movie)
         WorkSelectionFactory(event=TheatreEventFactory(), work=play)
 
-        works = Work.objects.by_views(kind='movie')
+        works = Work.objects.by_views(kind="movie")
 
         self.assertEqual(len(works), 1)
         self.assertEqual(works[0], movie)

@@ -7,4 +7,3 @@ class AdminTestCase(TestCase):
 
     def setUp(self):
         self.site = AdminSite()
-
