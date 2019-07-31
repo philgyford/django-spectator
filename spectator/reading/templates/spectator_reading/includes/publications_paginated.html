@@ -13,7 +13,7 @@ Expects:
     {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
   {% endif %}
 
-  {% include 'spectator_reading/includes/publications.html' with publication_list=publication_list show_readings=show_readings|default:'none' only %}
+  {% include 'spectator_reading/includes/publications.html' with publication_list=publication_list show_readings=show_readings|default:'none'  show_thumbnails=True only %}
 
   {% include 'spectator_core/includes/pagination.html' with page_obj=page_obj only %}
 

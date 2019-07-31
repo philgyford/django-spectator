@@ -46,7 +46,7 @@
         <ul>
       {% endifchanged %}
       <li class="mb-2">
-        {% include 'spectator_reading/includes/publication.html' with publication=reading.publication show_readings='none' only %}
+        {% include 'spectator_reading/includes/publication.html' with publication=reading.publication show_readings='none' show_thumbnail=True only %}
       </li>
     {% endfor %}
     </ul>

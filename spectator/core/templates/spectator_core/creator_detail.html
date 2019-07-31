@@ -15,7 +15,7 @@
   {% if creator.publications.count > 0 %}
     <h2>Publications</h2>
 
-    {% include 'spectator_reading/includes/publications.html' with publication_list=creator.publications.all show_readings='none' only %}
+    {% include 'spectator_reading/includes/publications.html' with publication_list=creator.publications.all show_readings='none' show_thumbnails=True only %}
   {% endif %}
 
   {% if creator.events.count > 0 %}

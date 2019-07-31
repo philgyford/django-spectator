@@ -19,7 +19,6 @@ class ListThumbnail2x(ListThumbnail):
     """Retina version of ListThumbnail
     Generated twice the size of our set dimensions.
     """
-
     dimensions = [d * 2 for d in app_settings.LIST_THUMBNAIL_SIZE]
     processors = [ResizeToFit(*dimensions)]
 
@@ -33,7 +32,6 @@ class DetailThumbnail2x(DetailThumbnail):
     """Retina version of DetailThumbnail
     Generated twice the size of our set dimensions.
     """
-
     dimensions = [d * 2 for d in app_settings.DETAIL_THUMBNAIL_SIZE]
     processors = [ResizeToFit(*dimensions)]
 
