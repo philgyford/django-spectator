@@ -1,6 +1,27 @@
 Changelog (Django Spectator)
 ============================
 
+9.0.0
+-----
+
+- Add two ImageFields for uploading images: ``Publication.cover`` and
+  ``Event.ticket``.
+
+- Now installs `ImageKit <https://django-imagekit.readthedocs.io/en/latest/>`_
+  (which needs `Pillow <https://python-pillow.org>`_ or `PIL <http://www.pythonware.com/products/pil/>`_ to be installed first)
+
+- Publication cover images are displayed in a publication's detail template,
+  and in lists, but not in the sidebar cards. Also in the Admin.
+
+- Event ticket images are displayed in an event's detail template and in the
+  Admin.
+
+- There are new settings (with defaults) related to these images:
+  ``SPECTATOR_THUMBNAIL_DETAIL_SIZE``, ``SPECTATOR_THUMBNAIL_LIST_SIZE``,
+  ``SPECTATOR_EVENTS_DIR_BASE`` and ``SPECTATOR_READING_DIR_BASE``. See the
+  README for more details.
+
+
 8.8.0
 -----
 
