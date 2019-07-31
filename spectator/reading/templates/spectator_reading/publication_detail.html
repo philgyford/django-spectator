@@ -28,8 +28,8 @@
     {% include 'spectator_core/includes/roles.html' with roles=publication.roles.all intro='By' %}
   </p>
 
-  {% if publication.cover %}
-    {% include 'spectator_core/includes/thumbnail_detail.html' with field=publication.cover alt_text="Cover" only %}
+  {% if publication.thumbnail %}
+    {% include 'spectator_core/includes/thumbnail_detail.html' with url=publication.thumbnail.url field=publication.thumbnail alt_text="Cover" only %}
   {% endif %}
 
   {% if publication.has_urls %}

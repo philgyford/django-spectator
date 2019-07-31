@@ -201,12 +201,6 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         """In case we have other thumbnails in future and want a
         consistent way to return the main one.
         """
-        return self.cover_thumbnail
-
-    @property
-    def thumbnail_original(self):
-        """Full-size image that the thumbnail is derived from.
-        """
         return self.cover
 
     @property

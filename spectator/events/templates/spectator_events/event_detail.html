@@ -12,7 +12,7 @@
 {% block content %}
 
   {% if event.ticket %}
-    {% include 'spectator_core/includes/thumbnail_detail.html' with field=event.ticket alt_text="Ticket" only %}
+    {% include 'spectator_core/includes/thumbnail_detail.html' with url=event.thumbnail.url field=event.thumbnail alt_text="Ticket" only %}
   {% endif %}
 
   <p>

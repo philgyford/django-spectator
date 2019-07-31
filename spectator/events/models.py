@@ -195,6 +195,13 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     def get_absolute_url(self):
         return reverse("spectator:events:event_detail", kwargs={"slug": self.slug})
 
+    @property
+    def thumbnail(self):
+        """In case we have other thumbnails in future and want a
+        consistent way to return the main one.
+        """
+        return self.ticket
+
     def make_title(self, html=False):
         if self.title == "":
             title_start = Event.get_kind_name_plural(self.kind)
