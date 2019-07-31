@@ -58,6 +58,7 @@ class EventFactory(factory.django.DjangoModelFactory):
 
     title = factory.Sequence(lambda n: "Event %s" % n)
     venue = factory.SubFactory(VenueFactory)
+    ticket = factory.django.ImageField(color="blue")
 
 
 class ComedyEventFactory(EventFactory):

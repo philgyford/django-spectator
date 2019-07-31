@@ -19,7 +19,7 @@ def event_upload_path(instance, filename):
     """For ImageFields' upload_to attribute.
     e.g. '[MEDIA_ROOT]events/event/pok2d/my_cover_image.jpg'
     """
-    return os.path.join(app_settings.EVENTS_DIR_BASE, "event", instance.slug, filename)
+    return os.path.join(app_settings.EVENTS_DIR_BASE, "events", instance.slug, filename)
 
 
 class EventRole(BaseRole):

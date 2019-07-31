@@ -61,6 +61,16 @@ class PublicationTestCase(TestCase):
         pub = PublicationFactory(pk=123)
         self.assertEqual(pub.get_absolute_url(), "/reading/publications/9g5o8/")
 
+    def test_cover_url(self):
+        "By default it should use reading/publications/ as the path."
+        pub = PublicationFactory(cover__filename="tester.jpg")
+        self.assertTrue(pub.cover.url.startswith("reading/publications/tester"))
+
+    def test_thumbnail(self):
+        "It should return the cover image"
+        pub = PublicationFactory(cover__color="green")
+        self.assertEqual(pub.thumbnail, pub.cover)
+
     def test_roles(self):
         "It can have multiple PublicationRoles."
         bob = IndividualCreatorFactory(name="Bob")

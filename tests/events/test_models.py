@@ -367,6 +367,16 @@ class EventTestCase(TestCase):
         event = TheatreEventFactory(pk=123)
         self.assertEqual(event.get_absolute_url(), "/events/9g5o8/")
 
+    def test_ticket_url(self):
+        "By default it should use events/events/ as the path."
+        event = CinemaEventFactory(ticket__filename="tester.jpg")
+        self.assertTrue(event.ticket.url.startswith("events/events/tester"))
+
+    def test_thumbnail(self):
+        "Thumbnail should return the ticket image"
+        event = CinemaEventFactory(ticket__color="green")
+        self.assertEqual(event.thumbnail, event.ticket)
+
     def test_get_works(self):
         event = CinemaEventFactory()
         m = MovieFactory()
