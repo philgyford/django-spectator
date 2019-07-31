@@ -14,6 +14,6 @@ Expects:
 
 {% with link_url=url|default:field.url %}
   <a href="{{ link_url }}">
-    <img src="{{ img.url }}" srcset="{{ img.url }} 1x, {{ img2x.url }} 2x" width="{{ img.width }}" height="{{ img.height }}" alt="{{ alt_text }}" class="float-sm-left border mr-5 mb-4">
+    <img src="{{ img.url }}" srcset="{{ img.url }} 1x, {{ img2x.url }} 2x" width="{{ img.width }}" height="{{ img.height }}" alt="{{ alt_text }}" class="float-md-left border mr-5 mb-4">
   </a>
 {% endwith %}
