@@ -1,0 +1,15 @@
+{% comment %}
+Displays an image for a page like publication_detail or event_detail.
+
+Expects:
+* field - The ImageField on the model, e.g. Publication.cover
+* alt_text - The text to use as the image's `alt` text.
+{% endcomment %}
+
+{% load imagekit %}
+{% generateimage 'spectator:detail_thumbnail' source=field as img %}
+{% generateimage 'spectator:detail_thumbnail2x' source=field as img2x %}
+
+<a href="{{ field.url }}" title="See larger version">
+  <img src="{{ img.url }}" srcset="{{ img.url }} 1x, {{ img2x.url }} 2x" width="{{ img.width }}" height="{{ img.height }}" alt="{{ alt_text }}" class="float-sm-left border mr-5 mb-4">
+</a>
