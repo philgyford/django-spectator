@@ -12,9 +12,11 @@ from spectator.core.models import BaseRole, SluggedModelMixin, TimeStampedModelM
 
 def publication_upload_path(instance, filename):
     """For ImageFields' upload_to attribute.
-    e.g. '[MEDIA_ROOT]reading/pok2d/my_cover_image.jpg'
+    e.g. '[MEDIA_ROOT]reading/publications/pok2d/my_cover_image.jpg'
     """
-    return os.path.join(app_settings.READING_DIR_BASE, instance.slug, filename)
+    return os.path.join(
+        app_settings.READING_DIR_BASE, "publications", instance.slug, filename
+    )
 
 
 class PublicationSeries(TimeStampedModelMixin, SluggedModelMixin, models.Model):
