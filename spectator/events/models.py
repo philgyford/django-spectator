@@ -119,7 +119,8 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         max_length=20,
         choices=KIND_CHOICES,
         blank=False,
-        help_text="Used to categorise event. But any kind of Work can be added to any kind of Event.",
+        help_text="Used to categorise event. But any kind of Work can "
+        "be added to any kind of Event.",
     )
 
     date = models.DateField(null=True, blank=False)
@@ -132,7 +133,8 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         max_length=255,
         null=False,
         blank=True,
-        help_text="The name of the Venue when this event occurred. If left blank, will be set automatically.",
+        help_text="The name of the Venue when this event occurred. If "
+        "left blank, will be set automatically.",
     )
 
     title = models.CharField(
@@ -152,7 +154,8 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     note = models.TextField(
         null=False,
         blank=True,
-        help_text="Optional. Paragraphs will be surrounded with &lt;p&gt;&lt;/p&gt; tags. HTML allowed.",
+        help_text="Optional. Paragraphs will be surrounded with "
+        "&lt;p&gt;&lt;/p&gt; tags. HTML allowed.",
     )
 
     creators = models.ManyToManyField(
@@ -393,10 +396,11 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         blank=True,
         max_length=12,
         verbose_name="IMDb ID",
-        help_text="Starts with 'tt', e.g. 'tt0100842'.",
+        help_text="""Starts with 'tt', e.g. 'tt0100842'.
+            From <a href="https://www.imdb.com">IMDb</a>.""",
         validators=[
             RegexValidator(
-                regex="^tt\d{7,10}$",
+                regex=r"^tt\d{7,10}$",
                 message='IMDb ID should be like "tt1234567"',
                 code="invalid_imdb_id",
             )
@@ -516,7 +520,8 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     Where an event happens.
     """
 
-    # From https://github.com/SmileyChris/django-countries/blob/master/django_countries/data.py
+    # From
+    # https://github.com/SmileyChris/django-countries/blob/master/django_countries/data.py
     # With those marked #changed being, er, changed.
     COUNTRIES = {
         "AF": _("Afghanistan"),
@@ -784,13 +789,15 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     note = models.TextField(
         null=False,
         blank=True,
-        help_text="Optional. Paragraphs will be surrounded with &lt;p&gt;&lt;/p&gt; tags. HTML allowed.",
+        help_text="Optional. Paragraphs will be surrounded with "
+        "&lt;p&gt;&lt;/p&gt; tags. HTML allowed.",
     )
 
     cinema_treasures_id = models.PositiveIntegerField(
         null=True,
         blank=True,
-        help_text='Optional. ID of a cinema at <a href="http://cinematreasures.org/">Cinema Treasures</a>.',
+        help_text="""Optional. ID of a cinema at
+        <a href="http://cinematreasures.org/">Cinema Treasures</a>.""",
     )
 
     latitude = models.DecimalField(
