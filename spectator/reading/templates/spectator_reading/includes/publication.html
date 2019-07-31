@@ -11,13 +11,7 @@ Expects:
 
 {% if show_thumbnail|default_if_none:False and publication.cover %}
   <div class="d-flex">
-    {% load imagekit %}
-    {% generateimage 'spectator:list_thumbnail' source=publication.cover as cover %}
-    {% generateimage 'spectator:list_thumbnail2x' source=publication.cover as cover2x %}
-
-    <a href="{{ publication.get_absolute_url }}" title="See larger version">
-      <img src="{{ cover.url }}" srcset="{{ cover.url }} 1x, {{ cover2x.url }} 2x" width="{{ cover.width }}" height="{{ cover.height }}" alt="Cover" class="align-top border mr-3">
-    </a>
+    {% include 'spectator_core/includes/thumbnail_list.html' with object=publication field=publication.cover alt_text="Cover" %}
 
     <div class="flex-grow-1">
 {% endif %}
