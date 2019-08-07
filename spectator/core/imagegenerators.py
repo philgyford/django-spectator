@@ -7,7 +7,7 @@ from spectator.core import app_settings
 class Thumbnail(ImageSpec):
     "Base class"
     format = "JPEG"
-    options = {"quality": 60}
+    options = {"quality": 80}
 
 
 class ListThumbnail(Thumbnail):
