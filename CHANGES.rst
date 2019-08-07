@@ -1,6 +1,12 @@
 Changelog (Django Spectator)
 ============================
 
+9.0.1
+-----
+
+- Increase thumbnail JPEG quality from 60 to 80.
+
+
 9.0.0
 -----
 
