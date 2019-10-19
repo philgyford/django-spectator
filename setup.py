@@ -49,14 +49,17 @@ if sys.argv[-1] == "tag":
 
 # Do `python setup.py publish` to send current version to PyPI.
 if sys.argv[-1] == "publish":
-    os.system("python setup.py sdist upload -r pypi")
-    # os.system("python setup.py bdist_wheel upload")
+    os.system("python setup.py sdist")
+    os.system("twine upload dist/django-spectator-%s.tar.gz" % (get_version()))
     sys.exit()
 
 # Do `python setup.py testpublish` to send current version to Test PyPI.
 if sys.argv[-1] == "testpublish":
-    os.system("python setup.py sdist upload -r pypitest")
-    # os.system("python setup.py bdist_wheel upload")
+    os.system("python setup.py sdist")
+    os.system(
+            "twine upload --repository-url https://test.pypi.org/legacy/ dist/django-spectator-%s.tar.gz"  # noqa: E501
+        % (get_version())
+    )
     sys.exit()
 
 setup(
@@ -69,11 +72,7 @@ setup(
         "pillow>=6.1.0,<6.3",
     ],
     dependency_links=[],
-    tests_require=[
-        "factory-boy>=2.11.1,<3.0",
-        "freezegun>=0.3.11,<0.4",
-        "coverage"
-    ],
+    tests_require=["factory-boy>=2.11.1,<3.0", "freezegun>=0.3.11,<0.4", "coverage"],
     include_package_data=True,
     license=get_license(),
     description="A Django app to track book reading, movie viewing, "
