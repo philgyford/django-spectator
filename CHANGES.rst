@@ -1,6 +1,17 @@
 Changelog (Django Spectator)
 ============================
 
+9.1.0
+-----
+
+- If the end reading dates for all publications on a year archive page only
+  have year granularity, don't show the months (which was always "January").
+
+- Add 'loading="lazy"' to thumbnail images in lists (only works on Chrome).
+
+- Fix sort order of names that end with parentheses like "Sam Taylor (1)".
+
+
 9.0.1
 -----
 
