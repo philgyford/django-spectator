@@ -66,7 +66,7 @@ setup(
     install_requires=[
         "django-imagekit>=4.0,<4.1",
         "hashids>=1.2.0,<1.3",
-        "pillow>=6.1.0,<6.2",
+        "pillow>=6.1.0,<6.3",
     ],
     dependency_links=[],
     tests_require=[
