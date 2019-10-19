@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 django-debug-toolbar = "==2.0"
-Django = "==2.2.3"
+Django = "==2.2.6"
 django-spectator = {editable = true, path = "./.."}
 
 [dev-packages]
