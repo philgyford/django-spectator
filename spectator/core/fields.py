@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class UniqueFieldMixin(object):
     """
-    Taken from https://github.com/django-extensions/django-extensions/blob/b5404a4a5ed3a5893727b3be3d6a50bc21c534e3/django_extensions/db/fields/__init__.py
+    Taken from https://github.com/django-extensions/django-extensions/blob/b5404a4a5ed3a5893727b3be3d6a50bc21c534e3/django_extensions/db/fields/__init__.py  # noqa: E501
     """
 
     def check_is_bool(self, attrname):
@@ -20,7 +20,8 @@ class UniqueFieldMixin(object):
     @staticmethod
     def _get_fields(model_cls):
         return [
-            (f, f.model if f.model != model_cls else None) for f in model_cls._meta.get_fields()
+            (f, f.model if f.model != model_cls else None)
+            for f in model_cls._meta.get_fields()
             if not f.is_relation or f.one_to_one or (f.many_to_one and f.related_model)
         ]
 
@@ -104,12 +105,12 @@ class NaturalSortField(models.CharField):
                     e.g. 'title' or 'name'.
         """
         self.for_field = for_field
-        kwargs.setdefault('db_index', True)
-        kwargs.setdefault('editable', False)
-        kwargs.setdefault('max_length', 255)
+        kwargs.setdefault("db_index", True)
+        kwargs.setdefault("editable", False)
+        kwargs.setdefault("max_length", 255)
 
         # For use in pre_save()
-        self.max_length = kwargs['max_length']
+        self.max_length = kwargs["max_length"]
 
         super(NaturalSortField, self).__init__(**kwargs)
 
@@ -125,13 +126,21 @@ class NaturalSortField(models.CharField):
             # During migrations a model being saved does not have access
             # to any of its methods. So we can't access, for example,
             # the @property Event.title_to_sort()
-            logger.error("Error in NaturalSortField.pre_save(): {}: The value of the '{}' field will not be changed.".format(e, self.attname))
+            logger.error(
+                "Error in NaturalSortField.pre_save(): {}: "
+                "The value of the '{}' field will not be changed.".format(
+                    e, self.attname
+                )
+            )
 
             string = getattr(model_instance, self.attname)
         else:
             string = string.strip()
 
-            if hasattr(model_instance, 'sort_as') and model_instance.sort_as == 'person':
+            if (
+                hasattr(model_instance, "sort_as")
+                and model_instance.sort_as == "person"
+            ):
                 string = self.naturalize_person(string)
                 # The case of the name is important, so we lowercase afterwards:
                 string = string.lower()
@@ -140,7 +149,9 @@ class NaturalSortField(models.CharField):
                 string = self.naturalize_thing(string)
 
         # Ensure the string isn't over long:
-        string = truncate_string(string, chars=self.max_length, truncate='…', at_word_boundary=True)
+        string = truncate_string(
+            string, chars=self.max_length, truncate="…", at_word_boundary=True
+        )
 
         return string
 
@@ -154,20 +165,45 @@ class NaturalSortField(models.CharField):
 
         # Things we want to move to the back of the string:
         articles = [
-                        'a', 'an', 'the',
-                        'un', 'une', 'le', 'la', 'les', "l'", "l’",
-                        'ein', 'eine', 'der', 'die', 'das',
-                        'una', 'el', 'los', 'las',
-                    ]
+            "a",
+            "an",
+            "the",
+            "un",
+            "une",
+            "le",
+            "la",
+            "les",
+            "l'",
+            "l’",
+            "ein",
+            "eine",
+            "der",
+            "die",
+            "das",
+            "una",
+            "el",
+            "los",
+            "las",
+        ]
+
+        parentheses = ""  # (1)
 
         sort_string = string
-        parts = string.split(' ')
+        parts = string.split(" ")
+
+        if parts[-1].startswith("("):
+            # Remove so we can add it back at the end.
+            parentheses = parts.pop()
 
         if len(parts) > 1 and parts[0] in articles:
             if parts[0] != parts[1]:
                 # Don't do this if the name is 'The The' or 'La La Land'.
                 # Makes 'long blondes, the':
-                sort_string = '{}, {}'.format(' '.join(parts[1:]), parts[0])
+                sort_string = "{}, {}".format(" ".join(parts[1:]), parts[0])
+
+        if parentheses:
+            # Add it back on.
+            sort_string = "{} {}".format(sort_string, parentheses)
 
         sort_string = self._naturalize_numbers(sort_string)
 
@@ -178,53 +214,54 @@ class NaturalSortField(models.CharField):
         Attempt to make a version of the string that has the surname, if any,
         at the start.
 
-        'John, Brown' to 'Brown, John'
-        'Sir John Brown Jr' to 'Brown, Sir John Jr'
-        'Prince' to 'Prince'
+        'John, Brown' to 'brown, john'
+        'Sir John Brown Jr' to 'brown, sir john jr'
+        'Prince' to 'prince'
+        'Sam Taylor (1)' to 'taylor, sam (00000001)'
 
         string -- The string to change.
         """
-        suffixes = [
-                    'Jr', 'Jr.', 'Sr', 'Sr.',
-                    'I', 'II', 'III', 'IV', 'V',
-                    ]
+        suffixes = ["Jr", "Jr.", "Sr", "Sr.", "I", "II", "III", "IV", "V"]
         # Add lowercase versions:
         suffixes = suffixes + [s.lower() for s in suffixes]
 
         # If a name has a capitalised particle in we use that to sort.
         # So 'Le Carre, John' but 'Carre, John le'.
-        particles = [
-                    'Le', 'La',
-                    'Von', 'Van',
-                    'Du', 'De',
-                    ]
+        particles = ["Le", "La", "Von", "Van", "Du", "De"]
 
-        surname = '' # Smith
-        names = ''   # Fred James
-        suffix = ''  # Jr
+        suffix = ""  # Jr
+        parentheses = ""  # (1)
 
         sort_string = string
-        parts = string.split(' ')
+        parts = string.split(" ")
+
+        if parts[-1].startswith("("):
+            # Remove so we can add it back at the end.
+            parentheses = parts.pop()
 
         if parts[-1] in suffixes:
             # Remove suffixes entirely, as we'll add them back on the end.
             suffix = parts[-1]
-            parts = parts[0:-1] # Remove suffix from parts
-            sort_string = ' '.join(parts)
+            parts = parts[0:-1]  # Remove suffix from parts
+            sort_string = " ".join(parts)
 
         if len(parts) > 1:
 
             if parts[-2] in particles:
                 # From ['Alan', 'Barry', 'Le', 'Carré']
                 # to   ['Alan', 'Barry', 'Le Carré']:
-                parts = parts[0:-2] + [ ' '.join(parts[-2:]) ]
+                parts = parts[0:-2] + [" ".join(parts[-2:])]
 
             # From 'David Foster Wallace' to 'Wallace, David Foster':
-            sort_string = '{}, {}'.format(parts[-1], ' '.join(parts[:-1]))
+            sort_string = "{}, {}".format(parts[-1], " ".join(parts[:-1]))
 
         if suffix:
             # Add it back on.
-            sort_string = '{} {}'.format(sort_string, suffix)
+            sort_string = "{} {}".format(sort_string, suffix)
+
+        if parentheses:
+            # Add it back on.
+            sort_string = "{} {}".format(sort_string, parentheses)
 
         # In case this name has any numbers in it.
         sort_string = self._naturalize_numbers(sort_string)
@@ -238,15 +275,16 @@ class NaturalSortField(models.CharField):
         """
 
         def naturalize_int_match(match):
-            return '%08d' % (int(match.group(0)),)
+            return "%08d" % (int(match.group(0)),)
 
-        string = re.sub(r'\d+', naturalize_int_match, string)
+        string = re.sub(r"\d+", naturalize_int_match, string)
 
         return string
 
 
 class PersonNaturalSortField(NaturalSortField):
     pass
+
 
 class PersonDisplayNaturalSortField(NaturalSortField):
     pass
