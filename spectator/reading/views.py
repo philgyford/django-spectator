@@ -127,6 +127,21 @@ class ReadingYearArchiveView(YearArchiveView):
         context["periodical_count"] = self.all_publications_queryset.filter(
             publication__kind="periodical"
         ).count()
+
+        # Should we divide the readings up by month in the template?
+        context["show_months"] = True
+
+        objects = context["object_list"]
+        if len(objects) > 1:
+            if (
+                objects.first().end_granularity == Reading.DATE_GRANULARITY_YEAR
+                and objects.last().end_granularity == Reading.DATE_GRANULARITY_YEAR
+            ):
+                # If the first and last publications only have year-based
+                # granularity, assume everything does, so we shouldn't
+                # show the months in the template.
+                context["show_months"] = False
+
         return context
 
     def get_queryset(self):

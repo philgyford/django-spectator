@@ -256,12 +256,16 @@ class Reading(TimeStampedModelMixin, models.Model):
     A period when a Publication was read.
     """
 
+    DATE_GRANULARITY_DAY = 3
+    DATE_GRANULARITY_MONTH = 4
+    DATE_GRANULARITY_YEAR = 6
+
     # Via https://www.flickr.com/services/api/misc.dates.html
     DATE_GRANULARITIES = (
         # (0, 'Y-m-d H:i:s'),
-        (3, "Y-m-d"),
-        (4, "Y-m"),
-        (6, "Y"),
+        (DATE_GRANULARITY_DAY, "Y-m-d"),
+        (DATE_GRANULARITY_MONTH, "Y-m"),
+        (DATE_GRANULARITY_YEAR, "Y"),
         # (8, 'Circa...'),
     )
 

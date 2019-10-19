@@ -37,14 +37,21 @@
 
   {% if reading_list|length > 0 %}
 
+    {% if show_months|default_if_none:"True" is False %}
+      <ul>
+    {% endif %}
+
     {% for reading in reading_list %}
-      {% ifchanged reading.end_date|date:"m" %}
-        {% if not forloop.first %}
-          </ul>
-        {% endif %}
-        <h2>{{ reading.end_date|date:"F"}}</h2>
-        <ul>
-      {% endifchanged %}
+
+      {% if show_months|default_if_none:"True" is True %}
+        {% ifchanged reading.end_date|date:"m" %}
+          {% if not forloop.first %}
+            </ul>
+          {% endif %}
+          <h2>{{ reading.end_date|date:"F"}}</h2>
+          <ul>
+        {% endifchanged %}
+      {% endif %}
       <li class="mb-2">
         {% include 'spectator_reading/includes/publication.html' with publication=reading.publication show_readings='none' show_thumbnail=True only %}
       </li>
