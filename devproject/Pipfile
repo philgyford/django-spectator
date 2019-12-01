@@ -4,8 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django-debug-toolbar = "==2.0"
-Django = "==2.2.6"
+django-debug-toolbar = "==2.1"
+Django = "==2.2.7"
 django-spectator = {editable = true, path = "./.."}
 
 [dev-packages]
