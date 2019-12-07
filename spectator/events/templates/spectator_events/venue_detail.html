@@ -1,8 +1,23 @@
 {% extends 'spectator_events/base.html' %}
-{% load spectator_events %}
+{% load spectator_events static %}
 
 {% block head_extra %}
-  {% if SPECTATOR_GOOGLE_MAPS_API_KEY %}
+  {% if SPECTATOR_MAPS.enable %}
+    {% if SPECTATOR_MAPS.library == "leaflet" %}
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    {% elif SPECTATOR_MAPS.library == "mapbox" %}
+      <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css' rel='stylesheet' />
+      <style>
+        .spectator-marker {
+          background-image: url("{% static "img/map-marker.png" %}");
+          background-size: cover;
+          width: 58px;
+          height: 41px;
+          cursor: pointer;
+        }
+      </style>
+    {% endif %}
+
     <style type="text/css">
       .venue-map {
         max-width: 100%;
@@ -38,7 +53,7 @@
     <p><a href="{{ venue.cinema_treasures_url }}">See at Cinema Treasures.</a></p>
   {% endif %}
 
-  {% if SPECTATOR_GOOGLE_MAPS_API_KEY %}
+  {% if SPECTATOR_MAPS.enable %}
     <div class="js-venue-map-container"></div>
   {% endif %}
 
@@ -69,14 +84,38 @@
 
 
 {% block foot_extra %}
-  {% if SPECTATOR_GOOGLE_MAPS_API_KEY %}
-    {% load static %}
+  {% if SPECTATOR_MAPS.enable %}
+    {{ SPECTATOR_MAPS|json_script:"spectator-maps-config" }}
     <script>
-      var spectator_map_latitude = '{{ venue.latitude }}';
-      var spectator_map_longitude = '{{ venue.longitude }}';
+      var spectator_map_latitude = '{{ venue.latitude|escapejs }}';
+      var spectator_map_longitude = '{{ venue.longitude|escapejs }}';
+      var spectator_map_config = JSON.parse(
+        document.getElementById("spectator-maps-config").textContent
+      );
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ SPECTATOR_GOOGLE_MAPS_API_KEY }}&callback=spectatorInitMap"></script>
+
     <script src="{% static "js/venue_map.js" %}"></script>
+
+    {% if SPECTATOR_MAPS.library == "google" and SPECTATOR_MAPS.api_key %}
+      <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ SPECTATOR_MAPS.api_key }}&callback=spectatorInitMap"></script>
+    {% else %}
+
+      {% if SPECTATOR_MAPS.library == "leaflet" %}
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+        {% if SPECTATOR_MAPS.tile_provider == "stamen" %}
+          <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
+        {% endif %}
+      {% elif SPECTATOR_MAPS.library == "mapbox" %}
+        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.js'></script>
+        <script>
+          mapboxgl.accessToken = "{{ SPECTATOR_MAPS.api_key|escapejs }}";
+        </script>
+      {% endif %}
+
+      <script>
+        spectatorInitMap();
+      </script>
+    {% endif %}
   {% endif %}
 
   {{ block.super }}

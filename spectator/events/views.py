@@ -265,11 +265,10 @@ class VenueDetailView(SingleObjectMixin, PaginatedListView):
 
         context["event_list"] = context["object_list"]
 
-        if app_settings.GOOGLE_MAPS_API_KEY:
-            if self.object.latitude is not None and self.object.longitude is not None:
-                context[
-                    "SPECTATOR_GOOGLE_MAPS_API_KEY"
-                ] = app_settings.GOOGLE_MAPS_API_KEY
+        if self.object.latitude is None or self.object.longitude is None:
+            context["SPECTATOR_MAPS"] = {"enable": False}
+        else:
+            context["SPECTATOR_MAPS"] = app_settings.MAPS
 
         return context
 

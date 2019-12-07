@@ -330,28 +330,32 @@ class VenueDetailViewTestCase(ViewTestCase):
         self.assertIn("event_list", context)
         self.assertEqual(len(context["event_list"]), 3)
 
-    @override_app_settings(GOOGLE_MAPS_API_KEY="123456")
+    @override_app_settings(
+        MAPS={"enable": True, "library": "google", "api_key": "123456"}
+    )
     def test_context_map_on(self):
-        "It should put the api key in context when it, and lat/lon, exist."
+        "It should put map config in context when enable is True, and lat/lon, exist."
         VenueFactory(pk=456, latitude=51, longitude=0)
         response = views.VenueDetailView.as_view()(self.request, slug="8wozp")
-        self.assertIn("SPECTATOR_GOOGLE_MAPS_API_KEY", response.context_data)
         self.assertEqual(
-            response.context_data["SPECTATOR_GOOGLE_MAPS_API_KEY"], "123456"
+            response.context_data["SPECTATOR_MAPS"],
+            {"enable": True, "library": "google", "api_key": "123456"},
         )
 
-    @override_app_settings(GOOGLE_MAPS_API_KEY="123456")
+    @override_app_settings(
+        MAPS={"enable": False, "library": "google", "api_key": "123456"}
+    )
     def test_context_map_off_1(self):
-        "It should NOT put the api key in context when it exists but lat/lon, don't."
+        "It should disable map in context when enable is True but lat/lon don't exist."
         VenueFactory(pk=456, latitude=None, longitude=None)
         response = views.VenueDetailView.as_view()(self.request, slug="8wozp")
-        self.assertNotIn("SPECTATOR_GOOGLE_MAPS_API_KEY", response.context_data)
+        self.assertFalse(response.context_data["SPECTATOR_MAPS"]["enable"])
 
-    @override_app_settings(GOOGLE_MAPS_API_KEY="")
+    @override_app_settings(
+        MAPS={"enable": False, "library": "google", "api_key": "123456"}
+    )
     def test_context_map_off_2(self):
-        """It should NOT put the api key in context when it does not exist
-        but lat/lon do.
-        """
+        "It should disable map in context when enable is False and lat/lon exist."
         VenueFactory(pk=456, latitude=51, longitude=0)
         response = views.VenueDetailView.as_view()(self.request, slug="8wozp")
-        self.assertNotIn("SPECTATOR_GOOGLE_MAPS_API_KEY", response.context_data)
+        self.assertFalse(response.context_data["SPECTATOR_MAPS"]["enable"])

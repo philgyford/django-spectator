@@ -162,8 +162,32 @@ MEDIA_URL = '/media/'
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 INTERNAL_IPS = ['127.0.0.1', '::1',]
 
+# Example of using Leaflet.js maps with Stamen toner tiles:
+# SPECTATOR_MAPS = {
+#     "enable": True,
+#     "library": "leaflet",
+#     "tile_provider": "stamen",
+#     "tile_style": "toner",
+# }
 
-SPECTATOR_GOOGLE_MAPS_API_KEY = os.getenv('SPECTATOR_GOOGLE_MAPS_API_KEY', None)
+# Example of using Mapbox maps:
+SPECTATOR_MAPS = {
+    "enable": True,
+    "library": "mapbox",
+    "api_key": os.getenv("SPECTATOR_MAPBOX_API_KEY", None),
+    "tile_style": "mapbox://styles/mapbox/light-v10",
+}
+
+# Example of using Google maps:
+# SPECTATOR_MAPS = {
+#     "enable": True,
+#     "library": "google",
+#     "api_key": os.getenv("SPECTATOR_GOOGLE_MAPS_API_KEY", None)
+# }
+
+# Deprecated maps config for Google maps:
+# SPECTATOR_GOOGLE_MAPS_API_KEY = os.getenv("SPECTATOR_GOOGLE_MAPS_API_KEY", None)
+
 
 # To show up places where we don't want it, like in years.
 USE_THOUSAND_SEPARATOR = True
