@@ -76,7 +76,7 @@ There are a few optional settings that can be used in your project's
 ``settings.py`` file. This is the full list, with their defaults. Descriptions
 of each are below::
 
-    SPECTATOR_GOOGLE_MAPS_API_KEY = ""
+    SPECTATOR_MAPS = {"enable": False}
 
     SPECTATOR_SLUG_ALPHABET = "abcdefghijkmnopqrstuvwxyz23456789"
 
@@ -92,12 +92,32 @@ of each are below::
 
     SPECTATOR_READING_DIR_BASE = "reading"
 
-If you get a `Google Maps JavaScript API key <https://developers.google.com/maps/documentation/javascript/get-api-key>`_ and
-add it to the settings, it will enable using a map in the Django Admin to set
-the location of Venues, and the displaying of Venues' maps in the public
-templates::
+Venues can have their location displayed on a map and, in the Admin, have their
+location set by clicking on a map. You can use either Google or Mapbox maps,
+both of which require a API key.
 
-    SPECTATOR_GOOGLE_MAPS_API_KEY = "YOUR-API-KEY"
+To use Google, get a `Google Maps JavaScript API key <https://developers.google.com/maps/documentation/javascript/get-api-key>`_ and set ``SPECTATOR_MAPS`` to::
+
+    SPECTATOR_MAPS = {
+        "enable": True,
+        "library": "google",
+        "api_key": "YOUR-API-KEY"
+    }
+
+To use `Mapbox <https://www.mapbox.com>`_ sign up and get an API key for `Mapbox
+GL JS <https://docs.mapbox.com/mapbox-gl-js/api/>`_, then set
+``SPECTATOR_MAPS`` to this (``tile_style`` can be any of the pre-defined Mapbox
+map styles, `listed under options.styles <https://docs.mapbox.com/mapbox-gl-js/api/#map>`_)::
+
+    SPECTATOR_MAPS = {
+        "enable": True,
+        "library": "mapbox",
+        "tile_style": "mapbox://styles/mapbox/streets-v11",
+        "api_key": "YOUR-API-KEY"
+    }
+
+Setting ``"enable"`` to ``False`` in the above dicts will prevent maps
+appearing.
 
 URLs for all objects include automatically-generated slugs, which are based on
 [Hashids](http://hashids.org) of the object's ID. You can change which
