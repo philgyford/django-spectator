@@ -18,14 +18,7 @@
  *    "library": "google"
  *  }
  *
- * 2. Leaflet.js
- *  {
- *    "library": "leaflet",
- *    "tile_provider": "stamen",
- *    "tile_style": "toner"
- *  }
- *
- * 3. Mabox
+ * 2. Mabox
  *  {
  *    "library": "mapbox",
  *    "tile_style": "mapbox://styles/mapbox/light-v10"
@@ -67,18 +60,6 @@ function spectatorInitMap() {
       map: map,
       position: position
     });
-  } else if (mapConfig.library == "leaflet") {
-    var position = [parseFloat(lat), parseFloat(lon)];
-
-    map = L.map(mapEl).setView(position, 12);
-
-    if (mapConfig.tile_provider == "stamen") {
-      // The only one we support at the moment.
-      var layer = new L.StamenTileLayer(mapConfig.tile_style);
-      map.addLayer(layer);
-    }
-
-    L.marker(position).addTo(map);
   } else if (mapConfig.library == "mapbox") {
     var position = [parseFloat(lon), parseFloat(lat)];
 
