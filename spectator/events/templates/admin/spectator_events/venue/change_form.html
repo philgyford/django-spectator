@@ -1,7 +1,7 @@
 {% extends "admin/change_form.html" %}
 {% load static %}
 {# Overriding default template for the Venue change form, so we can include
-the below CSS and JS. This is only needed for the Mapbox maps, not Google. #}
+the below CSS and JS. #}
 
 {% block extrastyle %}
   {{ block.super }}
@@ -23,7 +23,7 @@ the below CSS and JS. This is only needed for the Mapbox maps, not Google. #}
 {% block footer %}
   {{ block.super }}
 
-  {% if SPECTATOR_MAPS and SPECTATOR_MAPS.enable and SPECTATOR_MAPS.library == "mapbox" %}
+  {% if SPECTATOR_MAPS and SPECTATOR_MAPS.enable %}
     {# Best way of putting the config dict into a JS variable. #}
     {{ SPECTATOR_MAPS|json_script:"spectator-maps-config" }}
     <script>
@@ -32,8 +32,10 @@ the below CSS and JS. This is only needed for the Mapbox maps, not Google. #}
       );
     </script>
 
-    <script>
-      mapboxgl.accessToken = "{{ SPECTATOR_MAPS.api_key|escapejs }}";
-    </script>
+    {% if SPECTATOR_MAPS.library == "mapbox" %}
+      <script>
+        mapboxgl.accessToken = "{{ SPECTATOR_MAPS.api_key|escapejs }}";
+      </script>
+    {% endif %}
   {% endif %}
 {% endblock footer %}

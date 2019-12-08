@@ -96,17 +96,18 @@ Venues can have their location displayed on a map and, in the Admin, have their
 location set by clicking on a map. You can use either Google or Mapbox maps,
 both of which require a API key.
 
-To use Google, get a `Google Maps JavaScript API key <https://developers.google.com/maps/documentation/javascript/get-api-key>`_ and set ``SPECTATOR_MAPS`` to::
+To use Google, get a `Google Maps JavaScript API key <https://developers.google.com/maps/documentation/javascript/get-api-key>`_ and create a billing account. Then set ``SPECTATOR_MAPS`` to (``tile_style`` can be one of the basic `map styles <https://developers.google.com/maps/documentation/javascript/maptypes>`_)::
 
     SPECTATOR_MAPS = {
         "enable": True,
         "library": "google",
+        "tile_style": "roadmap",
         "api_key": "YOUR-API-KEY"
     }
 
 To use `Mapbox <https://www.mapbox.com>`_ sign up and get an API key for `Mapbox
-GL JS <https://docs.mapbox.com/mapbox-gl-js/api/>`_, then set
-``SPECTATOR_MAPS`` to this (``tile_style`` can be any of the pre-defined Mapbox
+GL JS <https://docs.mapbox.com/mapbox-gl-js/api/>`_. Then set
+``SPECTATOR_MAPS`` to this (``tile_style`` can be one of the pre-defined 
 map styles, `listed under options.styles <https://docs.mapbox.com/mapbox-gl-js/api/#map>`_)::
 
     SPECTATOR_MAPS = {

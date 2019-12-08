@@ -50,8 +50,6 @@
    * Create HTML elements, display map, set up event listenerss.
    */
   function initMap() {
-    var $prevEl = $(prev_el_selector);
-
     mapConfig =
       typeof spectator_map_config !== "undefined"
         ? spectator_map_config
@@ -61,6 +59,8 @@
       console.error("The spectator_map_config variable is not set");
       return;
     }
+
+    var $prevEl = $(prev_el_selector);
 
     if ($prevEl.length === 0) {
       // Can't find where to put the map.
@@ -88,11 +88,8 @@
 
     var position = [initial_lon, initial_lat];
 
-    var tilesStyle = "mapbox://styles/mapbox/streets-v11";
-    if (mapConfig.tile_style) {
-      tileStyle = mapConfig.tile_style;
-    }
-
+    var tileStyle = mapConfig.tile_style ? mapConfig.tile_style : "roadmap";
+    
     map = new mapboxgl.Map({
       container: mapEl,
       center: position,

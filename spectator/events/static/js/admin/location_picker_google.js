@@ -42,12 +42,22 @@
   var initial_with_loc_zoom = 12;
 
   // Global variables. Nice.
-  var geocoder, map, marker, $lat, $lon, $address, $country;
+  var mapConfig, geocoder, map, marker, $lat, $lon, $address, $country;
 
   /**
    * Create HTML elements, display map, set up event listenerss.
    */
   function initMap() {
+    mapConfig =
+      typeof spectator_map_config !== "undefined"
+        ? spectator_map_config
+        : false;
+
+    if (mapConfig === false) {
+      console.error("The spectator_map_config variable is not set");
+      return;
+    }
+
     var $prevEl = $(prev_el_selector);
 
     if ($prevEl.length === 0) {
@@ -74,9 +84,12 @@
 
     var mapEl = document.getElementsByClassName("js-setloc-map")[0];
 
+    var tileStyle = mapConfig.tile_style ? mapConfig.tile_style : "roadmap";
+    
     map = new google.maps.Map(mapEl, {
       zoom: initial_zoom,
-      center: { lat: initial_lat, lng: initial_lon }
+      center: { lat: initial_lat, lng: initial_lon },
+      mapTypeId: tileStyle
     });
 
     geocoder = new google.maps.Geocoder();

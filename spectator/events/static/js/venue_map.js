@@ -51,9 +51,12 @@ function spectatorInitMap() {
   if (mapConfig.library === "google") {
     var position = { lat: parseFloat(lat), lng: parseFloat(lon) };
 
+    var tileStyle = mapConfig.tile_style ? mapConfig.tile_style : "roadmap";
+
     map = new google.maps.Map(mapEl, {
       zoom: 12,
-      center: position
+      center: position,
+      mapTypeId: tileStyle
     });
 
     new google.maps.Marker({
