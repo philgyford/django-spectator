@@ -1,11 +1,22 @@
+import logging
+
 from django.conf import settings
 
+LOGGER = logging.getLogger(__name__)
 
 # Creating all the defaults for settings.
 # In our code, if we want to use a SPECTATOR_* setting we should import
 # from here, not django.conf.settings.
 
-GOOGLE_MAPS_API_KEY = getattr(settings, "SPECTATOR_GOOGLE_MAPS_API_KEY", "")
+if getattr(settings, "SPECTATOR_GOOGLE_MAPS_API_KEY", False):
+    LOGGER.warning(
+        "The SPECTATOR_GOOGLE_MAPS_API_KEY setting is no longer recognised. "
+        "Please update to use the SPECTATOR_MAPS dictionary setting."
+    )
+
+
+MAPS = getattr(settings, "SPECTATOR_MAPS", {"enable": False})
+
 
 # The characters to use for things that require an automatically-generated
 # URL slug:
