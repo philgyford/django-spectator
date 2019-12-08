@@ -212,11 +212,10 @@ class VenueAdmin(admin.ModelAdmin):
     readonly_fields = ("name_sort", "time_created", "time_modified")
 
     class Media:
-        if app_settings.GOOGLE_MAPS_API_KEY:
+        if app_settings.MAPS["enable"] is True:
             css = {"all": ("css/admin/location_picker.css",)}
-            js = (
-                "https://maps.googleapis.com/maps/api/js?key={}".format(
-                    app_settings.GOOGLE_MAPS_API_KEY
-                ),
-                "js/admin/location_picker.js",
-            )
+            if app_settings.MAPS["library"] == "google":
+                library_js = "https://maps.googleapis.com/maps/api/js?key={}".format(
+                    app_settings.MAPS["api_key"]
+                )
+                js = (library_js, "js/admin/location_picker.js")
