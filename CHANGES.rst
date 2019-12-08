@@ -1,6 +1,19 @@
 Changelog (Django Spectator)
 ============================
 
+10.0.0
+------
+
+- Breaking change: The ``SPECTATOR_GOOGLE_MAPS_API_KEY`` is no longer
+  supported. See the README for the new ``SPECTATOR_MAPS`` setting that
+  replaces it.
+
+- Add option to use Mapbox for Venue maps and geocoding, instead of Google. SEe
+  the ``SPECTATOR_MAPS`` setting.
+
+- Checked that it works with Python 3.8 and Django 3.0.
+
+
 9.1.0
 -----
 
