@@ -2,7 +2,7 @@
 {% load spectator_events static %}
 
 {% block head_extra %}
-  {% if SPECTATOR_MAPS.enable %}
+  {% if SPECTATOR_MAPS and SPECTATOR_MAPS.enable %}
     {% if SPECTATOR_MAPS.library == "leaflet" %}
       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
     {% elif SPECTATOR_MAPS.library == "mapbox" %}
@@ -84,7 +84,9 @@
 
 
 {% block foot_extra %}
-  {% if SPECTATOR_MAPS.enable %}
+  {% if SPECTATOR_MAPS and SPECTATOR_MAPS.enable %}
+
+    {# Best way of putting the config dict into a JS variable. #}
     {{ SPECTATOR_MAPS|json_script:"spectator-maps-config" }}
     <script>
       var spectator_map_latitude = '{{ venue.latitude|escapejs }}';

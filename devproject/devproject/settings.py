@@ -161,19 +161,19 @@ INTERNAL_IPS = ["127.0.0.1", "::1"]
 # }
 
 # Example of using Mapbox maps:
-# SPECTATOR_MAPS = {
-#     "enable": True,
-#     "library": "mapbox",
-#     "api_key": os.getenv("SPECTATOR_MAPBOX_API_KEY", None),
-#     "tile_style": "mapbox://styles/mapbox/light-v10",
-# }
-
-# Example of using Google maps:
 SPECTATOR_MAPS = {
     "enable": True,
-    "library": "google",
-    "api_key": os.getenv("SPECTATOR_GOOGLE_MAPS_API_KEY", None)
+    "library": "mapbox",
+    "api_key": os.getenv("SPECTATOR_MAPBOX_API_KEY", None),
+    "tile_style": "mapbox://styles/mapbox/light-v10",
 }
+
+# Example of using Google maps:
+# SPECTATOR_MAPS = {
+#     "enable": True,
+#     "library": "google",
+#     "api_key": os.getenv("SPECTATOR_GOOGLE_MAPS_API_KEY", None)
+# }
 
 
 # To show up places where we don't want it, like in years.

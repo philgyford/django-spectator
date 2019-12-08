@@ -212,10 +212,45 @@ class VenueAdmin(admin.ModelAdmin):
     readonly_fields = ("name_sort", "time_created", "time_modified")
 
     class Media:
+        """
+        If maps are enabled then we add the JS and CSS for either
+        Google JS Maps API or the Mapbox APIs (including Geocoding).
+        """
+
         if app_settings.MAPS["enable"] is True:
-            css = {"all": ("css/admin/location_picker.css",)}
+
+            # Add the CSS and JS for Google or Mapbox maps and geocoding.
+            library_css = ()
+            library_js = ()
+
             if app_settings.MAPS["library"] == "google":
-                library_js = "https://maps.googleapis.com/maps/api/js?key={}".format(
-                    app_settings.MAPS["api_key"]
+                library_js = (
+                    "https://maps.googleapis.com/maps/api/js?key={}".format(
+                        app_settings.MAPS["api_key"]
+                    ),
+                    "js/admin/location_picker_google.js",
                 )
-                js = (library_js, "js/admin/location_picker.js")
+
+            elif app_settings.MAPS["library"] == "mapbox":
+                library_css = (
+                    "https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css",
+                )
+                library_js = (
+                    "https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.js",
+                    "js/admin/location_picker_mapbox.js",
+                )
+
+            css = {"all": library_css + ("css/admin/location_picker.css",)}
+            js = library_js
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        """
+        Add the SPECTATOR_MAPS setting to context.
+        Only currently needed if we're using Mapbox, because we need to set
+        the API key in JS in the page.
+        """
+        extra = extra_context or {}
+        extra["SPECTATOR_MAPS"] = app_settings.MAPS
+        return super(VenueAdmin, self).change_view(
+            request, object_id, form_url, extra_context=extra
+        )
