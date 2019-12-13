@@ -1,6 +1,12 @@
 Changelog (Django Spectator)
 ============================
 
+Unreleased
+----------
+
+- Reduce geocoding API calls from Venue add/change admin page.
+
+
 10.0.0
 ------
 
