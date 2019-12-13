@@ -89,7 +89,7 @@
     var position = [initial_lon, initial_lat];
 
     var tileStyle = mapConfig.tile_style ? mapConfig.tile_style : "roadmap";
-    
+
     map = new mapboxgl.Map({
       container: mapEl,
       center: position,
@@ -113,20 +113,20 @@
 
     map.on("click", function(ev) {
       setMarkerPosition(ev.lngLat.lat, ev.lngLat.lng);
+      setInputValues(ev.lngLat.lat, ev.lngLat.lng);
     });
 
     marker.on("dragend", function() {
       var lngLat = marker.getLngLat();
-      setMarkerPosition(lngLat.lat, lngLat.lng);
+      setInputValues(lngLat.lat, lngLat.lng);
     });
   }
 
   /**
-   * Re-position marker and set input values.
+   * Re-position marker.
    */
   function setMarkerPosition(lat, lon) {
     marker.setLngLat([lon, lat]);
-    setInputValues(lat, lon);
   }
 
   /**

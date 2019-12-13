@@ -85,7 +85,7 @@
     var mapEl = document.getElementsByClassName("js-setloc-map")[0];
 
     var tileStyle = mapConfig.tile_style ? mapConfig.tile_style : "roadmap";
-    
+
     map = new google.maps.Map(mapEl, {
       zoom: initial_zoom,
       center: { lat: initial_lat, lng: initial_lon },
@@ -107,6 +107,7 @@
 
     google.maps.event.addListener(map, "click", function(ev) {
       setMarkerPosition(ev.latLng.lat(), ev.latLng.lng());
+      setInputValues(ev.latLng.lat(), ev.latLng.lng());
     });
 
     google.maps.event.addListener(marker, "dragend", function() {
@@ -115,11 +116,10 @@
   }
 
   /**
-   * Re-position marker and set input values.
+   * Re-position marker.
    */
   function setMarkerPosition(lat, lon) {
     marker.setPosition({ lat: lat, lng: lon });
-    setInputValues(lat, lon);
   }
 
   /**
