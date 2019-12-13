@@ -57,7 +57,7 @@ if sys.argv[-1] == "publish":
 if sys.argv[-1] == "testpublish":
     os.system("python setup.py sdist")
     os.system(
-            "twine upload --repository-url https://test.pypi.org/legacy/ dist/django-spectator-%s.tar.gz"  # noqa: E501
+        "twine upload --repository-url https://test.pypi.org/legacy/ dist/django-spectator-%s.tar.gz"  # noqa: E501
         % (get_version())
     )
     sys.exit()
@@ -101,4 +101,12 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
     keywords="",
+    project_urls={
+        "Blog posts": "https://www.gyford.com/phil/writing/tags/django-spectator/",
+        "Bug Reports": "https://github.com/philgyford/django-spectator/issues",
+        "Documentation": (
+            "https://github.com/philgyford/django-spectator/blob/master/README.rst"
+        ),
+        "Source": "https://github.com/philgyford/django-spectator",
+    },
 )
