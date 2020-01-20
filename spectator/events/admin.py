@@ -243,6 +243,16 @@ class VenueAdmin(admin.ModelAdmin):
             css = {"all": library_css + ("css/admin/location_picker.css",)}
             js = library_js
 
+    def add_view(self, request, form_url="", extra_context=None):
+        """
+        Add the SPECTATOR_MAPS setting to context.
+        Only currently needed if we're using Mapbox, because we need to set
+        the API key in JS in the page.
+        """
+        extra = extra_context or {}
+        extra["SPECTATOR_MAPS"] = app_settings.MAPS
+        return super(VenueAdmin, self).add_view(request, form_url, extra_context=extra)
+
     def change_view(self, request, object_id, form_url="", extra_context=None):
         """
         Add the SPECTATOR_MAPS setting to context.
