@@ -233,10 +233,10 @@ class VenueAdmin(admin.ModelAdmin):
 
             elif app_settings.MAPS["library"] == "mapbox":
                 library_css = (
-                    "https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css",
+                    "https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.css",
                 )
                 library_js = (
-                    "https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.js",
+                    "https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.js",
                     "js/admin/location_picker_mapbox.js",
                 )
 

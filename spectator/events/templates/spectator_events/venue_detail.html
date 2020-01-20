@@ -4,7 +4,7 @@
 {% block head_extra %}
   {% if SPECTATOR_MAPS and SPECTATOR_MAPS.enable %}
     {% if SPECTATOR_MAPS.library == "mapbox" %}
-      <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css' rel='stylesheet' />
+      <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.css' rel='stylesheet' />
       <style>
         .spectator-marker {
           background-image: url("{% static "img/map-marker.png" %}");
@@ -101,7 +101,7 @@
     {% else %}
 
       {% if SPECTATOR_MAPS.library == "mapbox" %}
-        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.js'></script>
+        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.js'></script>
         <script>
           mapboxgl.accessToken = "{{ SPECTATOR_MAPS.api_key|escapejs }}";
         </script>
