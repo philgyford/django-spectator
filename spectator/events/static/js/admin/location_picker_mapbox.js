@@ -43,6 +43,9 @@
   // Initial zoom level if input fields have a location.
   var initial_with_loc_zoom = 11;
 
+  // Need to keep track of this in case we don't add the marker initially:
+  var markerIsAddedToMap = false;
+
   // Global variables. Nice.
   var mapConfig, geocoder, map, marker, $lat, $lon, $address, $country;
 
@@ -107,12 +110,19 @@
     if (has_initial_loc) {
       // There is lat/lon in the fields, so centre the marker on that.
       setMarkerPosition(initial_lat, initial_lon);
+      // This makes the marker visible on the map:
+      marker.addTo(map);
+      markerIsAddedToMap = true;
     }
-
-    marker.addTo(map);
 
     map.on("click", function(ev) {
       setMarkerPosition(ev.lngLat.lat, ev.lngLat.lng);
+      if (!markerIsAddedToMap) {
+        // There was no previous location so we haven't already done addTo()
+        // which makes the marker visible. So do it now.
+        marker.addTo(map);
+        markerIsAddedToMap = true;
+      }
       setInputValues(ev.lngLat.lat, ev.lngLat.lng);
     });
 
