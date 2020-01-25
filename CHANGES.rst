@@ -4,7 +4,20 @@ Changelog (Django Spectator)
 Unreleased
 ----------
 
+None
+
+
+10.0.1
+------
+
+- Fix issue where the Mapbox map didn't load when creating a new venue in
+  admin.
+
+- Fix issue where the Mapbox venue map marker moved when zooming out.
+
 - Reduce geocoding API calls from Venue add/change admin page.
+
+- Update devproject's Django version from 3.0.0 to 3.0.2
 
 
 10.0.0
