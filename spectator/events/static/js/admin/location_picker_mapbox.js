@@ -105,7 +105,12 @@
     // Create but don't position the marker:
     var el = document.createElement("div");
     el.className = "spectator-marker"; // The CSS classname
-    marker = new mapboxgl.Marker(el, { draggable: true });
+    marker = new mapboxgl.Marker(el, {
+      draggable: true,
+      // This is because of the shape of our custom marker icon.
+      // We want the chosen point to be at the middle bottom of the pin.
+      anchor: "bottom"
+    });
 
     if (has_initial_loc) {
       // There is lat/lon in the fields, so centre the marker on that.
