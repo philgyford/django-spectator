@@ -4,6 +4,8 @@ Changelog (Django Spectator)
 Unreleased
 ----------
 
+- Drop support for Django 1.11 and 2.1
+
 - Update Boostrap CSS files from v4.3.1 to v4.4.1
 
 
