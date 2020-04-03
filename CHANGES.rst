@@ -4,7 +4,7 @@ Changelog (Django Spectator)
 Unreleased
 ----------
 
-None
+- Update Boostrap CSS files from v4.3.1 to v4.4.1
 
 
 10.0.1
