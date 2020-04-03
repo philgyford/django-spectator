@@ -69,7 +69,7 @@ setup(
     install_requires=[
         "django-imagekit>=4.0,<4.1",
         "hashids>=1.2.0,<1.3",
-        "pillow>=6.1.0,<6.3",
+        "pillow>=6.1.0,<7.2",
     ],
     dependency_links=[],
     tests_require=["factory-boy>=2.12.0,<3.0", "freezegun>=0.3.12,<0.4", "coverage"],
