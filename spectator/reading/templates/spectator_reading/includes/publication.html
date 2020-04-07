@@ -11,7 +11,7 @@ Expects:
 
 {% if show_thumbnail|default_if_none:False and publication.cover %}
   <div class="d-flex">
-    {% include 'spectator_core/includes/thumbnail_list.html' with url=publication.get_absolute_url field=publication.thumbnail alt_text="Cover" %}
+    {% include 'spectator_core/includes/thumbnail_list.html' with url=publication.get_absolute_url obj=publication alt_text="Cover" %}
 
     <div class="flex-grow-1">
 {% endif %}

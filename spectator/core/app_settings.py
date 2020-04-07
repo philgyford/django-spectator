@@ -30,7 +30,11 @@ SLUG_SALT = getattr(settings, "SPECTATOR_SLUG_SALT", "Django Spectator")
 # For Events and card titles.
 DATE_FORMAT = getattr(settings, "SPECTATOR_DATE_FORMAT", "%-d %b %Y")
 
-# For Reading and Events
+# For Reading and Events:
 THUMBNAIL_DETAIL_SIZE = getattr(settings, "SPECTATOR_THUMBNAIL_DETAIL_SIZE", (320, 320))
-
 THUMBNAIL_LIST_SIZE = getattr(settings, "SPECTATOR_THUMBNAIL_LIST_SIZE", (80, 160))
+
+# Top-level directories, within MEDIA_ROOT, for the Event and
+# Publication thumbnails to go in:
+EVENTS_DIR_BASE = getattr(settings, 'SPECTATOR_EVENTS_DIR_BASE', 'events')
+READING_DIR_BASE = getattr(settings, 'SPECTATOR_READING_DIR_BASE', 'reading')

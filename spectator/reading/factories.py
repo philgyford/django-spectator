@@ -17,7 +17,8 @@ class PublicationFactory(factory.django.DjangoModelFactory):
 
     title = factory.Sequence(lambda n: "Publication %s" % n)
     series = factory.SubFactory(PublicationSeriesFactory)
-    cover = factory.django.ImageField(color="blue")
+    # Bigger width/height than default detail_thumbnail_2x size:
+    thumbnail = factory.django.ImageField(color="blue", width=800, height=800)
 
 
 class PublicationRoleFactory(factory.django.DjangoModelFactory):

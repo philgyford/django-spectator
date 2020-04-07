@@ -77,7 +77,7 @@ class PublicationAdmin(admin.ModelAdmin):
                     "title",
                     "title_sort",
                     "detail_thumbnail",
-                    "cover",
+                    "thumbnail",
                     "slug",
                     "kind",
                     "series",
@@ -115,9 +115,9 @@ class PublicationAdmin(admin.ModelAdmin):
     show_creators.short_description = "Creators"
 
     detail_thumbnail = AdminThumbnail(
-        image_field="cover", template="spectator_core/admin/detail_thumbnail.html"
+        image_field="thumbnail", template="spectator_core/admin/detail_thumbnail.html"
     )
 
     list_thumbnail = AdminThumbnail(
-        image_field="cover", template="spectator_core/admin/list_thumbnail.html"
+        image_field="thumbnail", template="spectator_core/admin/list_thumbnail.html"
     )

@@ -170,3 +170,5 @@ SPECTATOR_MAPS = {
 
 # To show up places where we don't want it, like in years.
 USE_THOUSAND_SEPARATOR = True
+
+IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'imagekit.cachefiles.strategies.Optimistic'

@@ -1,7 +1,11 @@
+import os
+
 from django.db import models
 from django.urls import reverse
 
 from hashids import Hashids
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFit
 
 from . import app_settings
 from .fields import NaturalSortField
@@ -56,6 +60,64 @@ class SluggedModelMixin(models.Model):
         hashids = Hashids(alphabet=alphabet, salt=salt, min_length=5)
 
         return hashids.encode(value)
+
+
+def thumbnail_upload_path(instance, filename):
+    """For ImageFields' upload_to attribute.
+    e.g. '[MEDIA_ROOT]reading/publications/pok2d/my_cover_image.jpg'
+    """
+    # e.g. "publications" or "events":
+    folder = f"{instance.__class__.__name__}s".lower()
+
+    # This is kludgy, but...
+    if folder == "publications":
+        path = app_settings.READING_DIR_BASE
+    elif folder == "events":
+        path = app_settings.EVENTS_DIR_BASE
+    else:
+        raise NotImplementedError("No base directory set for this app's thumbnails")
+
+    return os.path.join(path, folder, instance.slug, filename)
+
+
+class ThumbnailModelMixin(models.Model):
+    """
+    """
+
+    thumbnail = models.ImageField(
+        upload_to=thumbnail_upload_path, null=False, blank=True, default=""
+    )
+
+    # Common ImageSpecField arguments:
+    thumbnail_kwargs = {
+        "source": "thumbnail",
+        "format": "JPEG",
+        "options": {"quality": 80},
+    }
+
+    # Calculate dimensions for 2x images:
+    list_thumbnail_2x_dimensions = [d * 2 for d in app_settings.THUMBNAIL_LIST_SIZE]
+    detail_thumbnail_2x_dimensions = [d * 2 for d in app_settings.THUMBNAIL_DETAIL_SIZE]
+
+    list_thumbnail = ImageSpecField(
+        processors=[ResizeToFit(*app_settings.THUMBNAIL_LIST_SIZE)], **thumbnail_kwargs
+    )
+
+    list_thumbnail_2x = ImageSpecField(
+        processors=[ResizeToFit(*list_thumbnail_2x_dimensions)], **thumbnail_kwargs
+    )
+
+    detail_thumbnail = ImageSpecField(
+        processors=[ResizeToFit(*app_settings.THUMBNAIL_DETAIL_SIZE)],
+        **thumbnail_kwargs
+    )
+
+    detail_thumbnail_2x = ImageSpecField(
+        processors=[ResizeToFit(*detail_thumbnail_2x_dimensions)], **thumbnail_kwargs
+    )
+
+    class Meta:
+        abstract = True
 
 
 class BaseRole(TimeStampedModelMixin, models.Model):
