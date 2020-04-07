@@ -7,6 +7,12 @@ Unreleased
 - Nothing
 
 
+11.0.1
+------
+
+- Fix display of thumbnails in templates.
+
+
 11.0.0
 ------
 
