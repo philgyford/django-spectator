@@ -82,6 +82,17 @@ def thumbnail_upload_path(instance, filename):
 
 class ThumbnailModelMixin(models.Model):
     """
+    Model mixin used to add a thumbnail ImageField, and associated
+    fields in different sizes, powered by django-imagekit.
+
+    * thumbnail - The uploaded image, stored in MEDIA
+    * list_thumbnail - The smallest size, for lists of objects
+    * list_thumbnail_2x - Retina version of list_thumbnail
+    * detail_thumbnail - Used for detail pages
+    * detail_thumbnail_2x - Retina version of detail_thumbnail
+
+    Specify the dimensions using the THUMBNAIL_LIST_SIZE and
+    THUMBNAIL_DETAIL_SIZE Django settings.
     """
 
     thumbnail = models.ImageField(
