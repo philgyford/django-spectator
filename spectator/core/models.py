@@ -67,7 +67,7 @@ def thumbnail_upload_path(instance, filename):
     e.g. '[MEDIA_ROOT]reading/publications/pok2d/my_cover_image.jpg'
     """
     # e.g. "publications" or "events":
-    folder = f"{instance.__class__.__name__}s".lower()
+    folder = "{}s".format(instance.__class__.__name__).lower()
 
     # This is kludgy, but...
     if folder == "publications":
