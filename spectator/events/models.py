@@ -102,8 +102,6 @@ class Event(
         print(role.role_order)
     """
 
-    IMAGE_SPEC_SOURCE_FIELD = "ticket"
-
     KIND_CHOICES = (
         ("cinema", "Cinema"),
         ("concert", "Concert"),

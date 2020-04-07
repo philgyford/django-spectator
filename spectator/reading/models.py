@@ -115,8 +115,6 @@ class Publication(
 
     KIND_CHOICES = (("book", "Book"), ("periodical", "Periodical"))
 
-    IMAGE_SPEC_SOURCE_FIELD = "cover"
-
     title = models.CharField(
         null=False,
         blank=False,
