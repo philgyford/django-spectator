@@ -9,7 +9,7 @@ Expects:
 
 {% endcomment %}
 
-{% if show_thumbnail|default_if_none:False and publication.cover %}
+{% if show_thumbnail|default_if_none:False and publication.thumbnail %}
   <div class="d-flex">
     {% include 'spectator_core/includes/thumbnail_list.html' with url=publication.get_absolute_url obj=publication alt_text="Cover" %}
 
@@ -19,7 +19,7 @@ Expects:
 <a href="{{ publication.get_absolute_url }}">
 	<strong>
     {% if publication.series %}
-      <cite>{{ publication.series.title }}</cite>, 
+      <cite>{{ publication.series.title }}</cite>,
       {{ publication.title }}
     {% else %}
       <cite>{{ publication.title }}</cite>
@@ -53,7 +53,7 @@ Expects:
   </ul>
 {% endif %}
 
-{% if show_thumbnail|default_if_none:False and publication.cover %}
+{% if show_thumbnail|default_if_none:False and publication.thumbnail %}
     </div>
   </div>
 {% endif %}
