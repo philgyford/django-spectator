@@ -1,7 +1,11 @@
+import os
+
 from django.db import models
 from django.urls import reverse
 
 from hashids import Hashids
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFit
 
 from . import app_settings
 from .fields import NaturalSortField
@@ -10,10 +14,12 @@ from .managers import CreatorManager
 
 class TimeStampedModelMixin(models.Model):
     "Should be mixed in to all models."
-    time_created = models.DateTimeField(auto_now_add=True,
-                help_text="The time this item was created in the database.")
-    time_modified = models.DateTimeField(auto_now=True,
-                help_text="The time this item was last saved to the database.")
+    time_created = models.DateTimeField(
+        auto_now_add=True, help_text="The time this item was created in the database."
+    )
+    time_modified = models.DateTimeField(
+        auto_now=True, help_text="The time this item was last saved to the database."
+    )
 
     class Meta:
         abstract = True
@@ -29,6 +35,7 @@ class SluggedModelMixin(models.Model):
     pk (e.g. in a view). But we're not relying on that, and simply using
     Hashid as a good method to generate unique, short URL-friendly slugs.
     """
+
     slug = models.SlugField(max_length=10, null=False, blank=True)
 
     class Meta:
@@ -40,7 +47,7 @@ class SluggedModelMixin(models.Model):
         if not self.slug:
             self.slug = self._generate_slug(self.pk)
             # Don't want to insert again, if that's what was forced:
-            kwargs['force_insert'] = False
+            kwargs["force_insert"] = False
             self.save(*args, **kwargs)
 
     def _generate_slug(self, value):
@@ -55,6 +62,64 @@ class SluggedModelMixin(models.Model):
         return hashids.encode(value)
 
 
+def thumbnail_upload_path(instance, filename):
+    """For ImageFields' upload_to attribute.
+    e.g. '[MEDIA_ROOT]reading/publications/pok2d/my_cover_image.jpg'
+    """
+    # e.g. "publications" or "events":
+    folder = "{}s".format(instance.__class__.__name__).lower()
+
+    # This is kludgy, but...
+    if folder == "publications":
+        path = app_settings.READING_DIR_BASE
+    elif folder == "events":
+        path = app_settings.EVENTS_DIR_BASE
+    else:
+        raise NotImplementedError("No base directory set for this app's thumbnails")
+
+    return os.path.join(path, folder, instance.slug, filename)
+
+
+class ThumbnailModelMixin(models.Model):
+    """
+    """
+
+    thumbnail = models.ImageField(
+        upload_to=thumbnail_upload_path, null=False, blank=True, default=""
+    )
+
+    # Common ImageSpecField arguments:
+    thumbnail_kwargs = {
+        "source": "thumbnail",
+        "format": "JPEG",
+        "options": {"quality": 80},
+    }
+
+    # Calculate dimensions for 2x images:
+    list_thumbnail_2x_dimensions = [d * 2 for d in app_settings.THUMBNAIL_LIST_SIZE]
+    detail_thumbnail_2x_dimensions = [d * 2 for d in app_settings.THUMBNAIL_DETAIL_SIZE]
+
+    list_thumbnail = ImageSpecField(
+        processors=[ResizeToFit(*app_settings.THUMBNAIL_LIST_SIZE)], **thumbnail_kwargs
+    )
+
+    list_thumbnail_2x = ImageSpecField(
+        processors=[ResizeToFit(*list_thumbnail_2x_dimensions)], **thumbnail_kwargs
+    )
+
+    detail_thumbnail = ImageSpecField(
+        processors=[ResizeToFit(*app_settings.THUMBNAIL_DETAIL_SIZE)],
+        **thumbnail_kwargs
+    )
+
+    detail_thumbnail_2x = ImageSpecField(
+        processors=[ResizeToFit(*detail_thumbnail_2x_dimensions)], **thumbnail_kwargs
+    )
+
+    class Meta:
+        abstract = True
+
+
 class BaseRole(TimeStampedModelMixin, models.Model):
     """
     Base class for linking a Creator to a Book, Event, Movie, etc.
@@ -67,20 +132,32 @@ class BaseRole(TimeStampedModelMixin, models.Model):
         publication = models.ForeignKey('spectator_reading.Publication',
                     on_delete=models.CASCADE, related_name='roles')
     """
-    role_name = models.CharField(null=False, blank=True, max_length=50,
-            help_text="e.g. 'Headliner', 'Support', 'Editor', 'Illustrator', 'Director', etc. Optional.")
 
-    role_order = models.PositiveSmallIntegerField(null=False, blank=False,
-            default=1,
-            help_text="The order in which the Creators will be listed.")
+    role_name = models.CharField(
+        null=False,
+        blank=True,
+        max_length=50,
+        help_text="e.g. 'Headliner', 'Support', 'Editor', 'Illustrator', "
+        "'Director', etc. Optional.",
+    )
+
+    role_order = models.PositiveSmallIntegerField(
+        null=False,
+        blank=False,
+        default=1,
+        help_text="The order in which the Creators will be listed.",
+    )
 
     class Meta:
         abstract = True
-        ordering = ('role_order', 'role_name',)
+        ordering = (
+            "role_order",
+            "role_name",
+        )
 
     def __str__(self):
         if self.role_name:
-            return '{} ({})'.format(self.creator, self.role_name)
+            return "{} ({})".format(self.creator, self.role_name)
         else:
             return str(self.creator)
 
@@ -116,39 +193,42 @@ class Creator(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
 
     KIND_CHOICES = (
-        ('individual', 'Individual'),
-        ('group', 'Group'),
+        ("individual", "Individual"),
+        ("group", "Group"),
     )
 
-    name = models.CharField(max_length=255,
-            help_text="e.g. 'Douglas Adams' or 'The Long Blondes'.")
+    name = models.CharField(
+        max_length=255, help_text="e.g. 'Douglas Adams' or 'The Long Blondes'."
+    )
 
     name_sort = NaturalSortField(
-        'name', max_length=255, default='',
-        help_text="Best for sorting groups. e.g. 'long blondes, the' or 'adams, douglas'.")
+        "name",
+        max_length=255,
+        default="",
+        help_text="Best for sorting groups. e.g. 'long blondes, the' or "
+        "'adams, douglas'.",
+    )
 
-    kind = models.CharField(max_length=20, choices=KIND_CHOICES,
-                                                        default='individual')
+    kind = models.CharField(max_length=20, choices=KIND_CHOICES, default="individual")
 
     objects = CreatorManager()
 
     class Meta:
-        ordering = ('name_sort',)
+        ordering = ("name_sort",)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('spectator:creators:creator_detail',
-                                                    kwargs={'slug':self.slug})
+        return reverse("spectator:creators:creator_detail", kwargs={"slug": self.slug})
 
     @property
     def sort_as(self):
         "Used by the NaturalSortField."
-        if self.kind == 'individual':
-            return 'person'
+        if self.kind == "individual":
+            return "person"
         else:
-            return 'thing'
+            return "thing"
 
     def get_events(self):
         """
@@ -162,16 +242,16 @@ class Creator(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         return self.works.distinct()
 
     def get_classical_works(self):
-        return self.works.filter(kind='classicalwork').distinct()
+        return self.works.filter(kind="classicalwork").distinct()
 
     def get_dance_pieces(self):
-        return self.works.filter(kind='dancepiece').distinct()
+        return self.works.filter(kind="dancepiece").distinct()
 
     def get_exhibitions(self):
-        return self.works.filter(kind='exhibition').distinct()
+        return self.works.filter(kind="exhibition").distinct()
 
     def get_movies(self):
-        return self.works.filter(kind='movie').distinct()
+        return self.works.filter(kind="movie").distinct()
 
     def get_plays(self):
-        return self.works.filter(kind='play').distinct()
+        return self.works.filter(kind="play").distinct()

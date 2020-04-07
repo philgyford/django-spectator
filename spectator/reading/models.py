@@ -1,22 +1,27 @@
-import os
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 
-from . import app_settings, managers
+from . import managers
 from spectator.core.fields import NaturalSortField
-from spectator.core.models import BaseRole, SluggedModelMixin, TimeStampedModelMixin
+from spectator.core.models import (
+    BaseRole,
+    SluggedModelMixin,
+    ThumbnailModelMixin,
+    thumbnail_upload_path,
+    TimeStampedModelMixin,
+)
 
 
 def publication_upload_path(instance, filename):
-    """For ImageFields' upload_to attribute.
-    e.g. '[MEDIA_ROOT]reading/publications/pok2d/my_cover_image.jpg'
     """
-    return os.path.join(
-        app_settings.READING_DIR_BASE, "publications", instance.slug, filename
-    )
+    This function is now only kept so that older migrations still work.
+    No longer needed since moving the Publication.thumbnail field to the
+    ThumbnailModelMixin.
+    2020-04-07
+    """
+    return thumbnail_upload_path(instance, filename)
 
 
 class PublicationSeries(TimeStampedModelMixin, SluggedModelMixin, models.Model):
@@ -86,7 +91,9 @@ class PublicationRole(BaseRole):
         verbose_name = "Publication role"
 
 
-class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
+class Publication(
+    ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin
+):
     """
     Get a Publication's creators:
 
@@ -107,6 +114,8 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     """
 
     KIND_CHOICES = (("book", "Book"), ("periodical", "Periodical"))
+
+    IMAGE_SPEC_SOURCE_FIELD = "cover"
 
     title = models.CharField(
         null=False,
@@ -167,10 +176,6 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         "spectator_core.Creator", through="PublicationRole", related_name="publications"
     )
 
-    cover = models.ImageField(
-        upload_to=publication_upload_path, null=False, blank=True, default=""
-    )
-
     # Managers
 
     objects = models.Manager()
@@ -197,13 +202,6 @@ class Publication(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             return self.reading_set.filter(end_date__isnull=True)[0]
         except IndexError:
             pass
-
-    @property
-    def thumbnail(self):
-        """In case we have other thumbnails in future and want a
-        consistent way to return the main one.
-        """
-        return self.cover
 
     @property
     def amazon_uk_url(self):

@@ -61,15 +61,50 @@ class PublicationTestCase(TestCase):
         pub = PublicationFactory(pk=123)
         self.assertEqual(pub.get_absolute_url(), "/reading/publications/9g5o8/")
 
-    def test_cover_url(self):
+    def test_thumbnail_url(self):
         "By default it should use reading/publications/ as the path."
-        pub = PublicationFactory(cover__filename="tester.jpg")
-        self.assertTrue(pub.cover.url.startswith("reading/publications/tester"))
+        pub = PublicationFactory(thumbnail__filename="tester.jpg")
+        self.assertTrue(pub.thumbnail.url.startswith("reading/publications/tester"))
 
-    def test_thumbnail(self):
-        "It should return the cover image"
-        pub = PublicationFactory(cover__color="green")
-        self.assertEqual(pub.thumbnail, pub.cover)
+    def test_list_thumbnail(self):
+        pub = PublicationFactory(thumbnail__filename="tester.jpg")
+        self.assertTrue(
+            pub.list_thumbnail.url.startswith(
+                "CACHE/images/reading/publications/tester_"
+            )
+        )
+        self.assertEqual(pub.list_thumbnail.width, 80)
+        self.assertEqual(pub.list_thumbnail.height, 80)
+
+    def test_list_thumbnail_2x(self):
+        pub = PublicationFactory(thumbnail__filename="tester.jpg")
+        self.assertTrue(
+            pub.list_thumbnail_2x.url.startswith(
+                "CACHE/images/reading/publications/tester_"
+            )
+        )
+        self.assertEqual(pub.list_thumbnail_2x.width, 160)
+        self.assertEqual(pub.list_thumbnail_2x.height, 160)
+
+    def test_detail_thumbnail(self):
+        pub = PublicationFactory(thumbnail__filename="tester.jpg")
+        self.assertTrue(
+            pub.detail_thumbnail.url.startswith(
+                "CACHE/images/reading/publications/tester/"
+            )
+        )
+        self.assertEqual(pub.detail_thumbnail.width, 320)
+        self.assertEqual(pub.detail_thumbnail.height, 320)
+
+    def test_detail_thumbnail_2x(self):
+        pub = PublicationFactory(thumbnail__filename="tester.jpg")
+        self.assertTrue(
+            pub.detail_thumbnail_2x.url.startswith(
+                "CACHE/images/reading/publications/tester_"
+            )
+        )
+        self.assertEqual(pub.detail_thumbnail_2x.width, 640)
+        self.assertEqual(pub.detail_thumbnail_2x.height, 640)
 
     def test_roles(self):
         "It can have multiple PublicationRoles."

@@ -58,7 +58,8 @@ class EventFactory(factory.django.DjangoModelFactory):
 
     title = factory.Sequence(lambda n: "Event %s" % n)
     venue = factory.SubFactory(VenueFactory)
-    ticket = factory.django.ImageField(color="blue")
+    # Bigger width/height than default detail_thumbnail_2x size:
+    thumbnail = factory.django.ImageField(color="blue", width=800, height=800)
 
 
 class ComedyEventFactory(EventFactory):

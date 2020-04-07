@@ -16,10 +16,10 @@ Two Django apps:
   classical), including date, venue (with maps), people/organisations involved,
   and images of tickets.
 
-For Django 1.11 to Django 3.0, running on Python 3.5 to 3.8.
+For Django 2.2 to Django 3.0, running on Python 3.5 to 3.8.
 
 It has URLs, views and templates to create a site displaying all the data, and
-Django admin screens to add and edit them. The templates use `Bootstrap v4.3 <https://getbootstrap.com>`_.
+Django admin screens to add and edit them. The templates use `Bootstrap v4.4 <https://getbootstrap.com>`_.
 
 There are also template tags for displaying data in your own templates (see
 below).

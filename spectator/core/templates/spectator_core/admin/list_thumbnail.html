@@ -1,6 +1,4 @@
 {# For displaying thumbnails in the admin list #}
 {% if thumbnail %}
-  {% load imagekit %}
-  {% generateimage 'spectator:list_thumbnail' source=thumbnail as image %}
-  <img src="{{ image.url }}" width="{{ image.width }}" height="{{ image.height }}" alt="Thumbnail">
+  {% include "spectator_core/includes/thumbnail_list.html" with obj=model alt_text="Thumbnail" %}
 {% endif %}

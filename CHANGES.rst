@@ -4,9 +4,29 @@ Changelog (Django Spectator)
 Unreleased
 ----------
 
+- Nothing
+
+
+11.0.0
+------
+
 - Drop support for Django 1.11 and 2.1
 
+- Switch from using django-imagekit specs in `spectator/core/imagegenerators.py`
+  to adding `ImageSpecField`s directly on the `Publication` and `Event` models.
+  - The `spectator_core/includes/thumbnail_*.html` templates have been updated.
+  - The old image specs in `imagegenerators.py` are deprecated and should no
+    longer be used. They will be removed in a future release.
+  - This change means working with models' thumbnails is a little easier. e.g.
+    if django-imagekit's "Optimistic" cache file strategy is used, all of a
+    model's thumbnail sizes will have cached files generated when its thumbnail
+    is added or changed.
+
+- Allow use of pillow up to v7.2 (from v6.3)
+
 - Update Boostrap CSS files from v4.3.1 to v4.4.1
+
+- Make devproject's python dependencies a little laxer
 
 
 10.0.1

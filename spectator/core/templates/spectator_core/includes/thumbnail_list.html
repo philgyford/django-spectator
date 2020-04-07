@@ -2,18 +2,12 @@
 Displays an image for use in a list of things (publication, events) etc.
 
 Expects:
-* url - The URL to link to, default is the URL of the original thumbnail image.
-* field - The ImageField on the model, e.g. Publication.thumbnail
+* obj - The object whose thumbnail we're showing.
 * alt_text - The text to use as the image's `alt` text.
 {% endcomment %}
 
-{% load imagekit %}
-
-{% generateimage 'spectator:list_thumbnail' source=field as img %}
-{% generateimage 'spectator:list_thumbnail2x' source=field as img2x %}
-
-{% with link_url=url|default:field.url %}
+{% with link_url=url|default:obj.thumbnail.url %}
   <a href="{{ link_url }}">
-    <img src="{{ img.url }}" srcset="{{ img.url }} 1x, {{ img2x.url }} 2x" width="{{ img.width }}" height="{{ img.height }}" alt="{{ alt_text }}" class="align-top border mr-3" loading="lazy">
+    <img src="{{ obj.list_thumbnail.url }}" srcset="{{ obj.list_thumbnail.url }} 1x, {{ ob.list_thumbnail_2x.url }} 2x" width="{{ obj.list_thumbnail.width }}" height="{{ obj.list_thumbnail.height }}" alt="{{ alt_text }}" class="align-top border mr-3" loading="lazy">
   </a>
 {% endwith %}

@@ -54,7 +54,7 @@ class EventAdmin(admin.ModelAdmin):
                     "title",
                     "title_sort",
                     "detail_thumbnail",
-                    "ticket",
+                    "thumbnail",
                     "slug",
                     "note",
                 )
@@ -78,11 +78,11 @@ class EventAdmin(admin.ModelAdmin):
     inlines = [WorkSelectionInline, EventRoleInline]
 
     detail_thumbnail = AdminThumbnail(
-        image_field="ticket", template="spectator_core/admin/detail_thumbnail.html"
+        image_field="thumbnail", template="spectator_core/admin/detail_thumbnail.html"
     )
 
     list_thumbnail = AdminThumbnail(
-        image_field="ticket", template="spectator_core/admin/list_thumbnail.html"
+        image_field="thumbnail", template="spectator_core/admin/list_thumbnail.html"
     )
 
     def save_related(self, request, form, formsets, change):

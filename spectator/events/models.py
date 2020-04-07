@@ -1,6 +1,5 @@
 # coding: utf-8
 import datetime
-import os
 
 from django.core.validators import RegexValidator
 from django.db import models
@@ -9,17 +8,26 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
-from . import app_settings, managers
-from spectator.core.models import BaseRole, SluggedModelMixin, TimeStampedModelMixin
+from . import managers
+from spectator.core.models import (
+    BaseRole,
+    SluggedModelMixin,
+    ThumbnailModelMixin,
+    thumbnail_upload_path,
+    TimeStampedModelMixin,
+)
 from spectator.core.fields import NaturalSortField
 from spectator.core.utils import truncate_string
 
 
 def event_upload_path(instance, filename):
-    """For ImageFields' upload_to attribute.
-    e.g. '[MEDIA_ROOT]events/event/pok2d/my_cover_image.jpg'
     """
-    return os.path.join(app_settings.EVENTS_DIR_BASE, "events", instance.slug, filename)
+    This function is now only kept so that older migrations still work.
+    No longer needed since moving the Event.thumbnail field to the
+    ThumbnailModelMixin.
+    2020-04-07
+    """
+    return thumbnail_upload_path(instance, filename)
 
 
 class EventRole(BaseRole):
@@ -47,7 +55,9 @@ class EventRole(BaseRole):
         ordering = ("role_order", "role_name")
 
 
-class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
+class Event(
+    ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin, models.Model
+):
     """
     A thing that happened at a particular venue on a particular date.
 
@@ -91,6 +101,8 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         print(role.creator.name)
         print(role.role_order)
     """
+
+    IMAGE_SPEC_SOURCE_FIELD = "ticket"
 
     KIND_CHOICES = (
         ("cinema", "Cinema"),
@@ -170,10 +182,6 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         null=False, blank=True, help_text="Set when the event is saved."
     )
 
-    ticket = models.ImageField(
-        upload_to=event_upload_path, null=False, blank=True, default=""
-    )
-
     class Meta:
         ordering = ["-date"]
 
@@ -194,13 +202,6 @@ class Event(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     def get_absolute_url(self):
         return reverse("spectator:events:event_detail", kwargs={"slug": self.slug})
-
-    @property
-    def thumbnail(self):
-        """In case we have other thumbnails in future and want a
-        consistent way to return the main one.
-        """
-        return self.ticket
 
     def make_title(self, html=False):
         if self.title == "":

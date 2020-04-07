@@ -367,15 +367,44 @@ class EventTestCase(TestCase):
         event = TheatreEventFactory(pk=123)
         self.assertEqual(event.get_absolute_url(), "/events/9g5o8/")
 
-    def test_ticket_url(self):
+    def test_thumbnail_url(self):
         "By default it should use events/events/ as the path."
-        event = CinemaEventFactory(ticket__filename="tester.jpg")
-        self.assertTrue(event.ticket.url.startswith("events/events/tester"))
+        event = CinemaEventFactory(thumbnail__filename="tester.jpg")
+        self.assertTrue(event.thumbnail.url.startswith("events/events/tester"))
 
-    def test_thumbnail(self):
-        "Thumbnail should return the ticket image"
-        event = CinemaEventFactory(ticket__color="green")
-        self.assertEqual(event.thumbnail, event.ticket)
+    def test_list_thumbnail(self):
+        event = CinemaEventFactory(thumbnail__filename="tester.jpg")
+        self.assertTrue(
+            event.list_thumbnail.url.startswith("CACHE/images/events/events/tester_")
+        )
+        self.assertEqual(event.list_thumbnail.width, 80)
+        self.assertEqual(event.list_thumbnail.height, 80)
+
+    def test_list_thumbnail_2x(self):
+        event = CinemaEventFactory(thumbnail__filename="tester.jpg")
+        self.assertTrue(
+            event.list_thumbnail_2x.url.startswith("CACHE/images/events/events/tester_")
+        )
+        self.assertEqual(event.list_thumbnail_2x.width, 160)
+        self.assertEqual(event.list_thumbnail_2x.height, 160)
+
+    def test_detail_thumbnail(self):
+        event = CinemaEventFactory(thumbnail__filename="tester.jpg")
+        self.assertTrue(
+            event.detail_thumbnail.url.startswith("CACHE/images/events/events/tester/")
+        )
+        self.assertEqual(event.detail_thumbnail.width, 320)
+        self.assertEqual(event.detail_thumbnail.height, 320)
+
+    def test_detail_thumbnail_2x(self):
+        event = CinemaEventFactory(thumbnail__filename="tester.jpg")
+        self.assertTrue(
+            event.detail_thumbnail_2x.url.startswith(
+                "CACHE/images/events/events/tester_"
+            )
+        )
+        self.assertEqual(event.detail_thumbnail_2x.width, 640)
+        self.assertEqual(event.detail_thumbnail_2x.height, 640)
 
     def test_get_works(self):
         event = CinemaEventFactory()

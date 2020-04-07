@@ -29,7 +29,7 @@
   </p>
 
   {% if publication.thumbnail %}
-    {% include 'spectator_core/includes/thumbnail_detail.html' with url=publication.thumbnail.url field=publication.thumbnail alt_text="Cover" only %}
+    {% include 'spectator_core/includes/thumbnail_detail.html' with url=publication.cover.url obj=publication alt_text="Cover" only %}
   {% endif %}
 
   {% if publication.has_urls %}
