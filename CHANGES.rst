@@ -4,6 +4,12 @@ Changelog (Django Spectator)
 Unreleased
 ----------
 
+- Nothing
+
+
+11.0.0
+------
+
 - Drop support for Django 1.11 and 2.1
 
 - Switch from using django-imagekit specs in `spectator/core/imagegenerators.py`
