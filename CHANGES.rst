@@ -4,7 +4,7 @@ Changelog (Django Spectator)
 Unreleased
 ----------
 
-- Nothing
+- Add flake8 to tests
 
 
 11.0.1
