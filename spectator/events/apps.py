@@ -7,5 +7,4 @@ class SpectatorEventsAppConfig(AppConfig):
     verbose_name = 'Spectator Events'
 
     def ready(self):
-        import spectator.events.signals
-
+        import spectator.events.signals  # noqa: F401

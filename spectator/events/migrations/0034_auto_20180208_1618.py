@@ -6,13 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0033_auto_20180208_1613'),
+        ("spectator_events", "0033_auto_20180208_1613"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='event',
-            name='kind',
-            field=models.CharField(choices=[('concert', 'Classical'), ('comedy', 'Comedy'), ('dance', 'Dance'), ('exhibition', 'Exhibition'), ('gig', 'Gig'), ('misc', 'Other'), ('movie', 'Movie'), ('play', 'Theatre')], help_text='Used to categorise event. But any kind of Work can be added to any kind of Event.', max_length=20),
+            model_name="event",
+            name="kind",
+            field=models.CharField(
+                choices=[
+                    ("concert", "Classical"),
+                    ("comedy", "Comedy"),
+                    ("dance", "Dance"),
+                    ("exhibition", "Exhibition"),
+                    ("gig", "Gig"),
+                    ("misc", "Other"),
+                    ("movie", "Movie"),
+                    ("play", "Theatre"),
+                ],
+                help_text="Used to categorise event. But any kind of Work can be added to any kind of Event.",  # noqa: E501
+                max_length=20,
+            ),
         ),
     ]

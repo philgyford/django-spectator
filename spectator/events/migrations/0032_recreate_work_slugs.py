@@ -13,13 +13,13 @@ def generate_slug(value):
     Taken from spectator_core.models.SluggedModelMixin
     """
     # Defaults:
-    alphabet = 'abcdefghijkmnopqrstuvwxyz23456789'
-    salt = 'Django Spectator'
+    alphabet = "abcdefghijkmnopqrstuvwxyz23456789"
+    salt = "Django Spectator"
 
-    if hasattr(settings, 'SPECTATOR_SLUG_ALPHABET'):
+    if hasattr(settings, "SPECTATOR_SLUG_ALPHABET"):
         alphabet = settings.SPECTATOR_SLUG_ALPHABET
 
-    if hasattr(settings, 'SPECTATOR_SLUG_SALT'):
+    if hasattr(settings, "SPECTATOR_SLUG_SALT"):
         salt = settings.SPECTATOR_SLUG_SALT
 
     hashids = Hashids(alphabet=alphabet, salt=salt, min_length=5)
@@ -31,7 +31,7 @@ def forwards(apps, schema_editor):
     """
     Re-save all the Works because something earlier didn't create their slugs.
     """
-    Work = apps.get_model('spectator_events', 'Work')
+    Work = apps.get_model("spectator_events", "Work")
 
     for work in Work.objects.all():
         if not work.slug:
@@ -42,7 +42,7 @@ def forwards(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0031_auto_20180208_1412'),
+        ("spectator_events", "0031_auto_20180208_1412"),
     ]
 
     operations = [

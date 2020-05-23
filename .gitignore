@@ -8,3 +8,4 @@ htmlcov
 import_gyford_reading.py
 dist
 build
+.vscode

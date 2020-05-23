@@ -10,22 +10,62 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Creator',
+            name="Creator",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('time_created', models.DateTimeField(auto_now_add=True, help_text='The time this item was created in the database.')),
-                ('time_modified', models.DateTimeField(auto_now=True, help_text='The time this item was last saved to the database.')),
-                ('name', models.CharField(help_text="e.g. 'Douglas Adams' or 'The Long Blondes'.", max_length=255)),
-                ('name_sort', spectator.core.fields.NaturalSortField('name', db_index=True, default='', editable=False, help_text="Best for sorting groups. e.g. 'long blondes, the' or 'adams, douglas'.", max_length=255)),
-                ('kind', models.CharField(choices=[('individual', 'Individual'), ('group', 'Group')], default='individual', max_length=20)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "time_created",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="The time this item was created in the database.",
+                    ),
+                ),
+                (
+                    "time_modified",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="The time this item was last saved to the database.",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="e.g. 'Douglas Adams' or 'The Long Blondes'.",
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "name_sort",
+                    spectator.core.fields.NaturalSortField(
+                        "name",
+                        db_index=True,
+                        default="",
+                        editable=False,
+                        help_text="Best for sorting groups. e.g. 'long blondes, the' or 'adams, douglas'.",  # noqa: E501
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "kind",
+                    models.CharField(
+                        choices=[("individual", "Individual"), ("group", "Group")],
+                        default="individual",
+                        max_length=20,
+                    ),
+                ),
             ],
-            options={
-                'ordering': ('name_sort',),
-            },
+            options={"ordering": ("name_sort",)},
         ),
     ]

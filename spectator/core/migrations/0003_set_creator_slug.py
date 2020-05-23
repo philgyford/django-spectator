@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_core', '0002_creator_slug'),
+        ("spectator_core", "0002_creator_slug"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='creator',
-            name='slug',
+            model_name="creator",
+            name="slug",
             field=models.SlugField(blank=True, max_length=10),
         ),
     ]

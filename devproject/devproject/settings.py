@@ -157,7 +157,7 @@ SPECTATOR_MAPS = {
     "enable": True,
     "library": "mapbox",
     "tile_style": "mapbox://styles/mapbox/light-v10",
-    "api_key": os.getenv("SPECTATOR_MAPBOX_API_KEY", None)
+    "api_key": os.getenv("SPECTATOR_MAPBOX_API_KEY", None),
 }
 
 # Example of using Google maps:
@@ -171,4 +171,4 @@ SPECTATOR_MAPS = {
 # To show up places where we don't want it, like in years.
 USE_THOUSAND_SEPARATOR = True
 
-IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'imagekit.cachefiles.strategies.Optimistic'
+IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "imagekit.cachefiles.strategies.Optimistic"

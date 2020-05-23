@@ -64,9 +64,7 @@ class PublicationSeriesDetailViewTestCase(ViewTestCase):
     def test_response_404(self):
         "It should raise 404 if there's no PublicationSeries with that slug."
         with self.assertRaises(Http404):
-            views.PublicationSeriesDetailView.as_view()(
-                self.request, slug="nope"
-            )
+            views.PublicationSeriesDetailView.as_view()(self.request, slug="nope")
 
     def test_templates(self):
         response = views.PublicationSeriesDetailView.as_view()(

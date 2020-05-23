@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import F, Min
+from django.db.models import Min
 
 
 class InProgressPublicationsManager(models.Manager):
@@ -8,21 +8,25 @@ class InProgressPublicationsManager(models.Manager):
     most-recently-started last.
     They might have previously been finished.
     """
+
     def get_queryset(self):
-        from .models import Publication
-        return super().get_queryset()\
-                .filter(reading__start_date__isnull=False,
-                        reading__end_date__isnull=True)\
-                .annotate(min_start_date=Min('reading__start_date'))\
-                .order_by('min_start_date')
+        from .models import Publication  # noqa: F401
+
+        return (
+            super()
+            .get_queryset()
+            .filter(reading__start_date__isnull=False, reading__end_date__isnull=True)
+            .annotate(min_start_date=Min("reading__start_date"))
+            .order_by("min_start_date")
+        )
 
 
 class UnreadPublicationsManager(models.Manager):
     """
     Returns Publications that haven't been started (have no Readings).
     """
+
     def get_queryset(self):
-        from .models import Publication
         return super().get_queryset().filter(reading__isnull=True)
 
 
@@ -32,11 +36,12 @@ class EndDateAscendingReadingsManager(models.Manager):
     no end_date first.
     Via http://stackoverflow.com/a/15125261/250962
     """
+
     def get_queryset(self):
-        from .models import Reading
         qs = super().get_queryset()
-        qs = qs.extra(select={'end_date_null': 'end_date is null'})
-        return qs.extra(order_by=['end_date_null', 'end_date'])
+        qs = qs.extra(select={"end_date_null": "end_date is null"})
+        return qs.extra(order_by=["end_date_null", "end_date"])
+
 
 class EndDateDescendingReadingsManager(models.Manager):
     """
@@ -44,8 +49,8 @@ class EndDateDescendingReadingsManager(models.Manager):
     no end_date last.
     Via http://stackoverflow.com/a/15125261/250962
     """
+
     def get_queryset(self):
-        from .models import Reading
         qs = super().get_queryset()
-        qs = qs.extra(select={'end_date_null': 'end_date is null'})
-        return qs.extra(order_by=['-end_date_null', '-end_date'])
+        qs = qs.extra(select={"end_date_null": "end_date is null"})
+        return qs.extra(order_by=["-end_date_null", "-end_date"])

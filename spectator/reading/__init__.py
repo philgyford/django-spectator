@@ -1,2 +1,1 @@
-default_app_config = 'spectator.reading.apps.SpectatorReadingAppConfig'
-
+default_app_config = "spectator.reading.apps.SpectatorReadingAppConfig"

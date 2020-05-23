@@ -7,7 +7,6 @@ from django.db import migrations
 from spectator.core import app_settings
 
 
-
 def generate_slug(value):
     """
     Generates a slug using a Hashid of `value`.
@@ -32,19 +31,17 @@ def forwards(apps, schema_editor):
     So, we'll add one, with the same title as the Event.
     And we'll move all Creators from the Event to the Exhibition.
     """
-    Event = apps.get_model('spectator_events', 'Event')
-    Work = apps.get_model('spectator_events', 'Work')
-    WorkRole = apps.get_model('spectator_events', 'WorkRole')
-    WorkSelection = apps.get_model('spectator_events', 'WorkSelection')
+    Event = apps.get_model("spectator_events", "Event")
+    Work = apps.get_model("spectator_events", "Work")
+    WorkRole = apps.get_model("spectator_events", "WorkRole")
+    WorkSelection = apps.get_model("spectator_events", "WorkSelection")
 
-    for event in Event.objects.filter(kind='museum'):
+    for event in Event.objects.filter(kind="museum"):
 
         # Create a new Work based on this Event's details.
 
         work = Work.objects.create(
-            kind='exhibition',
-            title=event.title,
-            title_sort=event.title_sort
+            kind="exhibition", title=event.title, title_sort=event.title_sort
         )
         # This doesn't generate the slug field automatically because Django.
         # So we'll have to do it manually. Graarhhh.
@@ -52,10 +49,7 @@ def forwards(apps, schema_editor):
         work.save()
 
         # Associate the new Work with the Event.
-        WorkSelection.objects.create(
-            event=event,
-            work=work
-        )
+        WorkSelection.objects.create(event=event, work=work)
 
         # Associate any Creators on the Event with the new Work.
         for role in event.roles.all():
@@ -63,7 +57,7 @@ def forwards(apps, schema_editor):
                 creator=role.creator,
                 work=work,
                 role_name=role.role_name,
-                role_order=role.role_order
+                role_order=role.role_order,
             )
 
             # Remove Creators from the Event.
@@ -73,7 +67,7 @@ def forwards(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0038_auto_20180417_1224'),
+        ("spectator_events", "0038_auto_20180417_1224"),
     ]
 
     operations = [

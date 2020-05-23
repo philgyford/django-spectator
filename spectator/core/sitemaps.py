@@ -4,7 +4,7 @@ from .models import Creator
 
 
 class CreatorSitemap(Sitemap):
-    changefreq = 'yearly'
+    changefreq = "yearly"
     priority = 0.5
 
     def items(self):
@@ -12,4 +12,3 @@ class CreatorSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj.time_modified
-

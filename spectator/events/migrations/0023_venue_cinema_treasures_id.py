@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0022_auto_20180129_1752'),
+        ("spectator_events", "0022_auto_20180129_1752"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='venue',
-            name='cinema_treasures_id',
-            field=models.PositiveSmallIntegerField(blank=True, help_text='Optional. ID of a cinema at <a href="http://cinematreasures.org/">Cinema Treasures</a>.', null=True),
+            model_name="venue",
+            name="cinema_treasures_id",
+            field=models.PositiveSmallIntegerField(
+                blank=True,
+                help_text='Optional. ID of a cinema at <a href="http://cinematreasures.org/">Cinema Treasures</a>.',  # noqa: E501
+                null=True,
+            ),
         ),
     ]

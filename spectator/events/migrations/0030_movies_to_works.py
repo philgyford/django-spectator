@@ -8,19 +8,19 @@ def forwards(apps, schema_editor):
     Change all Movie objects into Work objects, and their associated
     data into WorkRole and WorkSelection models, then delete the Movie.
     """
-    Movie = apps.get_model('spectator_events', 'Movie')
-    Work = apps.get_model('spectator_events', 'Work')
-    WorkRole = apps.get_model('spectator_events', 'WorkRole')
-    WorkSelection = apps.get_model('spectator_events', 'WorkSelection')
+    Movie = apps.get_model("spectator_events", "Movie")
+    Work = apps.get_model("spectator_events", "Work")
+    WorkRole = apps.get_model("spectator_events", "WorkRole")
+    WorkSelection = apps.get_model("spectator_events", "WorkSelection")
 
     for m in Movie.objects.all():
 
         work = Work.objects.create(
-            kind='movie',
+            kind="movie",
             title=m.title,
             title_sort=m.title_sort,
             year=m.year,
-            imdb_id=m.imdb_id
+            imdb_id=m.imdb_id,
         )
 
         for role in m.roles.all():
@@ -28,14 +28,12 @@ def forwards(apps, schema_editor):
                 creator=role.creator,
                 work=work,
                 role_name=role.role_name,
-                role_order=role.role_order
+                role_order=role.role_order,
             )
 
         for selection in m.events.all():
             WorkSelection.objects.create(
-                event=selection.event,
-                work=work,
-                order=selection.order
+                event=selection.event, work=work, order=selection.order
             )
 
         m.delete()
@@ -44,7 +42,7 @@ def forwards(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0029_plays_to_works'),
+        ("spectator_events", "0029_plays_to_works"),
     ]
 
     operations = [

@@ -6,29 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0030_movies_to_works'),
+        ("spectator_events", "0030_movies_to_works"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='event',
-            name='classicalworks',
-        ),
-        migrations.RemoveField(
-            model_name='event',
-            name='dancepieces',
-        ),
-        migrations.RemoveField(
-            model_name='event',
-            name='movies',
-        ),
-        migrations.RemoveField(
-            model_name='event',
-            name='plays',
-        ),
+        migrations.RemoveField(model_name="event", name="classicalworks",),
+        migrations.RemoveField(model_name="event", name="dancepieces",),
+        migrations.RemoveField(model_name="event", name="movies",),
+        migrations.RemoveField(model_name="event", name="plays",),
         migrations.AddField(
-            model_name='event',
-            name='works',
-            field=models.ManyToManyField(blank=True, through='spectator_events.WorkSelection', to='spectator_events.Work'),
+            model_name="event",
+            name="works",
+            field=models.ManyToManyField(
+                blank=True,
+                through="spectator_events.WorkSelection",
+                to="spectator_events.Work",
+            ),
         ),
     ]

@@ -10,21 +10,21 @@ def forwards(apps, schema_editor):
 
     Purely for more consistency.
     """
-    Event = apps.get_model('spectator_events', 'Event')
+    Event = apps.get_model("spectator_events", "Event")
 
-    for ev in Event.objects.filter(kind='movie'):
-        ev.kind = 'cinema'
+    for ev in Event.objects.filter(kind="movie"):
+        ev.kind = "cinema"
         ev.save()
 
-    for ev in Event.objects.filter(kind='play'):
-        ev.kind = 'theatre'
+    for ev in Event.objects.filter(kind="play"):
+        ev.kind = "theatre"
         ev.save()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0034_auto_20180208_1618'),
+        ("spectator_events", "0034_auto_20180208_1618"),
     ]
 
     operations = [

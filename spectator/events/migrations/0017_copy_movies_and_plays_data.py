@@ -9,9 +9,9 @@ def forward(apps, schema_editor):
     into the new `Event.movies` and `Event.plays` ManyToManyFields.
     """
 
-    Event = apps.get_model('spectator_events', 'Event')
-    MovieSelection = apps.get_model('spectator_events', 'MovieSelection')
-    PlaySelection = apps.get_model('spectator_events', 'PlaySelection')
+    Event = apps.get_model("spectator_events", "Event")
+    MovieSelection = apps.get_model("spectator_events", "MovieSelection")
+    PlaySelection = apps.get_model("spectator_events", "PlaySelection")
 
     for event in Event.objects.all():
         if event.movie is not None:
@@ -26,7 +26,7 @@ def forward(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0016_add_movies_plays_m2ms_on_event'),
+        ("spectator_events", "0016_add_movies_plays_m2ms_on_event"),
     ]
 
     operations = [

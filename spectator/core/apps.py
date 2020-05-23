@@ -2,9 +2,9 @@ from django.apps import apps, AppConfig
 
 
 class SpectatorCoreAppConfig(AppConfig):
-    label = 'spectator_core'
-    name = 'spectator.core'
-    verbose_name = 'Spectator Core'
+    label = "spectator_core"
+    name = "spectator.core"
+    verbose_name = "Spectator Core"
 
 
 class Apps(object):
@@ -19,9 +19,9 @@ class Apps(object):
     def all(self):
         "A list of all possible Spectator apps that could be installed/enabled."
         return [
-                'events',
-                'reading',
-               ]
+            "events",
+            "reading",
+        ]
 
     def installed(self):
         "A list of all the installed Spectator apps."
@@ -33,7 +33,7 @@ class Apps(object):
 
     def is_installed(self, app_name):
         "Is this Spectator app installed?"
-        return apps.is_installed('spectator.%s' % app_name)
+        return apps.is_installed("spectator.%s" % app_name)
 
     def is_enabled(self, app_name):
         """Determine if a particular Spectator app is installed and enabled.
@@ -48,8 +48,7 @@ class Apps(object):
         other conditions in future, like being able to enable/disable installed
         apps.
         """
-        return apps.is_installed('spectator.%s' % app_name)
+        return apps.is_installed("spectator.%s" % app_name)
 
 
 spectator_apps = Apps()
-

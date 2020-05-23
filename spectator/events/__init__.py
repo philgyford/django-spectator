@@ -1,2 +1,1 @@
-default_app_config = 'spectator.events.apps.SpectatorEventsAppConfig'
-
+default_app_config = "spectator.events.apps.SpectatorEventsAppConfig"

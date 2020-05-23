@@ -10,26 +10,30 @@ class Migration(migrations.Migration):
     """
 
     dependencies = [
-        ('spectator_events', '0014_remove_old_classical_dance'),
+        ("spectator_events", "0014_remove_old_classical_dance"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='event',
-            name='classicalworks2',
-        ),
-        migrations.RemoveField(
-            model_name='event',
-            name='dancepieces2',
+        migrations.RemoveField(model_name="event", name="classicalworks2",),
+        migrations.RemoveField(model_name="event", name="dancepieces2",),
+        migrations.AddField(
+            model_name="event",
+            name="classicalworks",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Only used if event is of 'Classical Concert' kind.",
+                through="spectator_events.ClassicalWorkSelection",
+                to="spectator_events.ClassicalWork",
+            ),
         ),
         migrations.AddField(
-            model_name='event',
-            name='classicalworks',
-            field=models.ManyToManyField(blank=True, help_text="Only used if event is of 'Classical Concert' kind.", through='spectator_events.ClassicalWorkSelection', to='spectator_events.ClassicalWork'),
-        ),
-        migrations.AddField(
-            model_name='event',
-            name='dancepieces',
-            field=models.ManyToManyField(blank=True, help_text="Only used if event is of 'Dance' kind.", through='spectator_events.DancePieceSelection', to='spectator_events.DancePiece'),
+            model_name="event",
+            name="dancepieces",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Only used if event is of 'Dance' kind.",
+                through="spectator_events.DancePieceSelection",
+                to="spectator_events.DancePiece",
+            ),
         ),
     ]

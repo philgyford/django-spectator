@@ -7,18 +7,30 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0004_venue_slug'),
+        ("spectator_events", "0004_venue_slug"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='event',
-            name='movie',
-            field=models.ForeignKey(blank=True, help_text="Only used if event is of 'Movie' kind.", null=True, on_delete=django.db.models.deletion.SET_NULL, to='spectator_events.Movie'),
+            model_name="event",
+            name="movie",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Only used if event is of 'Movie' kind.",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="spectator_events.Movie",
+            ),
         ),
         migrations.AlterField(
-            model_name='event',
-            name='play',
-            field=models.ForeignKey(blank=True, help_text="Only used if event is of 'Play' kind.", null=True, on_delete=django.db.models.deletion.SET_NULL, to='spectator_events.Play'),
+            model_name="event",
+            name="play",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Only used if event is of 'Play' kind.",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="spectator_events.Play",
+            ),
         ),
     ]

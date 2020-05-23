@@ -3,7 +3,6 @@ from django.db.models import Count
 
 
 class VenueManager(models.Manager):
-
     def by_visits(self, event_kind=None):
         """
         Gets Venues in order of how many Events have been held there.
@@ -16,14 +15,12 @@ class VenueManager(models.Manager):
         if event_kind is not None:
             qs = qs.filter(event__kind=event_kind)
 
-        qs = qs.annotate(num_visits=Count('event')) \
-                .order_by('-num_visits', 'name_sort')
+        qs = qs.annotate(num_visits=Count("event")).order_by("-num_visits", "name_sort")
 
         return qs
 
 
 class WorkManager(models.Manager):
-
     def by_views(self, kind=None):
         """
         Gets Works in order of how many times they've been attached to
@@ -36,7 +33,6 @@ class WorkManager(models.Manager):
         if kind is not None:
             qs = qs.filter(kind=kind)
 
-        qs = qs.annotate(num_views=Count('event')) \
-                .order_by('-num_views', 'title_sort')
+        qs = qs.annotate(num_views=Count("event")).order_by("-num_views", "title_sort")
 
         return qs

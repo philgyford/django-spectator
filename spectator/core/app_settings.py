@@ -36,5 +36,5 @@ THUMBNAIL_LIST_SIZE = getattr(settings, "SPECTATOR_THUMBNAIL_LIST_SIZE", (80, 16
 
 # Top-level directories, within MEDIA_ROOT, for the Event and
 # Publication thumbnails to go in:
-EVENTS_DIR_BASE = getattr(settings, 'SPECTATOR_EVENTS_DIR_BASE', 'events')
-READING_DIR_BASE = getattr(settings, 'SPECTATOR_READING_DIR_BASE', 'reading')
+EVENTS_DIR_BASE = getattr(settings, "SPECTATOR_EVENTS_DIR_BASE", "events")
+READING_DIR_BASE = getattr(settings, "SPECTATOR_READING_DIR_BASE", "reading")
