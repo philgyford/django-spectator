@@ -4,9 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django-debug-toolbar = ">=2.0, <3.0"
-Django = ">=3.0, <3.1"
-django-spectator = {editable = true, path = "./.."}
+"django-spectator" = {editable = true, path = "./..", extras = ["dev"]}
 
 [dev-packages]
 

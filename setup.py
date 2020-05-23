@@ -62,6 +62,17 @@ if sys.argv[-1] == "testpublish":
     )
     sys.exit()
 
+dev_require = [
+    "django-debug-toolbar>=2.0,<3.0",
+    "flake8>=3.8,<3.9",
+    "black==19.10b0"
+]
+tests_require = dev_require + [
+    "factory-boy>=2.12.0,<3.0",
+    "freezegun>=0.3.12,<0.4",
+    "coverage",
+]
+
 setup(
     name="django-spectator",
     version=get_version(),
@@ -72,7 +83,13 @@ setup(
         "pillow>=6.1.0,<7.2",
     ],
     dependency_links=[],
-    tests_require=["factory-boy>=2.12.0,<3.0", "freezegun>=0.3.12,<0.4", "coverage"],
+    tests_require=tests_require,
+    extras_require={
+        "dev": dev_require + [
+            "Django>=3.0,<3.1",
+        ],
+        "test": tests_require
+    },
     include_package_data=True,
     license=get_license(),
     description="A Django app to track book reading, movie viewing, "
