@@ -17,6 +17,7 @@ from spectator.core.models import (
 def publication_upload_path(instance, filename):
     """
     This function is now only kept so that older migrations still work.
+
     No longer needed since moving the Publication.thumbnail field to the
     ThumbnailModelMixin.
     2020-04-07
@@ -91,9 +92,7 @@ class PublicationRole(BaseRole):
         verbose_name = "Publication role"
 
 
-class Publication(
-    ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin
-):
+class Publication(ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin):
     """
     Get a Publication's creators:
 

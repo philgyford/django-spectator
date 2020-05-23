@@ -8,32 +8,32 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0002_event_slug'),
+        ("spectator_events", "0002_event_slug"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='classicalwork',
-            name='slug',
-            field=models.SlugField(blank=True, default='a', max_length=10),
+            model_name="classicalwork",
+            name="slug",
+            field=models.SlugField(blank=True, default="a", max_length=10),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='dancepiece',
-            name='slug',
-            field=models.SlugField(blank=True, default='a', max_length=10),
+            model_name="dancepiece",
+            name="slug",
+            field=models.SlugField(blank=True, default="a", max_length=10),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='movie',
-            name='slug',
-            field=models.SlugField(blank=True, default='a', max_length=10),
+            model_name="movie",
+            name="slug",
+            field=models.SlugField(blank=True, default="a", max_length=10),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='play',
-            name='slug',
-            field=models.SlugField(blank=True, default='a', max_length=10),
+            model_name="play",
+            name="slug",
+            field=models.SlugField(blank=True, default="a", max_length=10),
             preserve_default=False,
         ),
     ]

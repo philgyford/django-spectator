@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0009_event_note'),
+        ("spectator_events", "0009_event_note"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='event',
-            name='note',
-            field=models.TextField(blank=True, help_text='Optional. Paragraphs will be surrounded with &lt;p&gt;&lt;/p&gt; tags. HTML allowed.'),
+            model_name="event",
+            name="note",
+            field=models.TextField(
+                blank=True,
+                help_text="Optional. Paragraphs will be surrounded with &lt;p&gt;&lt;/p&gt; tags. HTML allowed.",  # noqa: E501
+            ),
         ),
     ]

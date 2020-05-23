@@ -7,13 +7,17 @@ import spectator.reading.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_reading', '0005_auto_20180125_1348'),
+        ("spectator_reading", "0005_auto_20180125_1348"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='publication',
-            name='cover',
-            field=models.ImageField(blank=True, default='', upload_to=spectator.reading.models.publication_upload_path),
+            model_name="publication",
+            name="cover",
+            field=models.ImageField(
+                blank=True,
+                default="",
+                upload_to=spectator.reading.models.publication_upload_path,
+            ),
         ),
     ]

@@ -10,16 +10,10 @@ class Migration(migrations.Migration):
     """
 
     dependencies = [
-        ('spectator_events', '0017_copy_movies_and_plays_data'),
+        ("spectator_events", "0017_copy_movies_and_plays_data"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='event',
-            name='movie',
-        ),
-        migrations.RemoveField(
-            model_name='event',
-            name='play',
-        ),
+        migrations.RemoveField(model_name="event", name="movie",),
+        migrations.RemoveField(model_name="event", name="play",),
     ]

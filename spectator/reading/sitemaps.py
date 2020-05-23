@@ -4,7 +4,7 @@ from .models import Publication, PublicationSeries
 
 
 class PublicationSitemap(Sitemap):
-    changefreq = 'yearly'
+    changefreq = "yearly"
     priority = 0.5
 
     def items(self):
@@ -15,7 +15,7 @@ class PublicationSitemap(Sitemap):
 
 
 class PublicationSeriesSitemap(Sitemap):
-    changefreq = 'monthly'
+    changefreq = "monthly"
     priority = 0.5
 
     def items(self):
@@ -23,4 +23,3 @@ class PublicationSeriesSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj.time_modified
-

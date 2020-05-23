@@ -11,7 +11,7 @@ register = template.Library()
 
 
 @register.simple_tag
-def annual_reading_counts(kind='all'):
+def annual_reading_counts(kind="all"):
     """
     Returns a list of dicts, one per year of reading. In year order.
     Each dict is like this (if kind is 'all'):
@@ -29,8 +29,8 @@ def annual_reading_counts(kind='all'):
     return utils.annual_reading_counts(kind=kind)
 
 
-@register.inclusion_tag('spectator_reading/includes/card_annual_reading_counts.html')
-def annual_reading_counts_card(kind='all', current_year=None):
+@register.inclusion_tag("spectator_reading/includes/card_annual_reading_counts.html")
+def annual_reading_counts_card(kind="all", current_year=None):
     """
     Displays years and the number of books/periodicals read per year.
 
@@ -38,19 +38,19 @@ def annual_reading_counts_card(kind='all', current_year=None):
     current_year is an optional date object representing the year we're already
         showing information about.
     """
-    if kind == 'book':
-        card_title = 'Books per year'
-    elif kind == 'periodical':
-        card_title = 'Periodicals per year'
+    if kind == "book":
+        card_title = "Books per year"
+    elif kind == "periodical":
+        card_title = "Periodicals per year"
     else:
-        card_title = 'Reading per year'
+        card_title = "Reading per year"
 
     return {
-            'card_title': card_title,
-            'kind': kind,
-            'years': utils.annual_reading_counts(kind),
-            'current_year': current_year
-            }
+        "card_title": card_title,
+        "kind": kind,
+        "years": utils.annual_reading_counts(kind),
+        "current_year": current_year,
+    }
 
 
 @register.simple_tag
@@ -58,20 +58,20 @@ def in_progress_publications():
     """
     Returns a QuerySet of any Publications that are currently being read.
     """
-    return Publication.in_progress_objects\
-                        .select_related('series')\
-                        .prefetch_related('roles__creator')
+    return Publication.in_progress_objects.select_related("series").prefetch_related(
+        "roles__creator"
+    )
 
 
-@register.inclusion_tag('spectator_reading/includes/card_publications.html')
+@register.inclusion_tag("spectator_reading/includes/card_publications.html")
 def in_progress_publications_card():
     """
     Displays Publications that are currently being read.
     """
     return {
-            'card_title': 'Currently reading',
-            'publication_list': in_progress_publications(),
-            }
+        "card_title": "Currently reading",
+        "publication_list": in_progress_publications(),
+    }
 
 
 @register.simple_tag
@@ -80,34 +80,32 @@ def day_publications(date):
     Returns a QuerySet of Publications that were being read on `date`.
     `date` is a date tobject.
     """
-    readings = Reading.objects \
-                        .filter(start_date__lte=date) \
-                        .filter(
-                            Q(end_date__gte=date)
-                            |
-                            Q(end_date__isnull=True)
-                        )
+    readings = Reading.objects.filter(start_date__lte=date).filter(
+        Q(end_date__gte=date) | Q(end_date__isnull=True)
+    )
     if readings:
-        return Publication.objects.filter(reading__in=readings) \
-                        .select_related('series') \
-                        .prefetch_related('roles__creator') \
-                        .distinct()
+        return (
+            Publication.objects.filter(reading__in=readings)
+            .select_related("series")
+            .prefetch_related("roles__creator")
+            .distinct()
+        )
     else:
         return Publication.objects.none()
 
 
-@register.inclusion_tag('spectator_reading/includes/card_publications.html')
+@register.inclusion_tag("spectator_reading/includes/card_publications.html")
 def day_publications_card(date):
     """
     Displays Publications that were being read on `date`.
     `date` is a date tobject.
     """
     d = date.strftime(app_settings.DATE_FORMAT)
-    card_title = 'Reading on {}'.format(d)
+    card_title = "Reading on {}".format(d)
     return {
-            'card_title': card_title,
-            'publication_list': day_publications(date=date),
-            }
+        "card_title": card_title,
+        "publication_list": day_publications(date=date),
+    }
 
 
 @register.simple_tag
@@ -116,10 +114,10 @@ def reading_years():
     Returns a QuerySet of date objects, one for each year in which there are
     Readings.
     """
-    return Reading.objects.dates('end_date', 'year')
+    return Reading.objects.dates("end_date", "year")
 
 
-@register.inclusion_tag('spectator_reading/includes/card_years.html')
+@register.inclusion_tag("spectator_reading/includes/card_years.html")
 def reading_years_card(current_year=None):
     """
     Displays the years in which there are Readings.
@@ -127,9 +125,9 @@ def reading_years_card(current_year=None):
     current_year is a date object; this year won't be linked.
     """
     return {
-            'current_year': current_year,
-            'years': reading_years(),
-            }
+        "current_year": current_year,
+        "years": reading_years(),
+    }
 
 
 @register.simple_tag
@@ -148,21 +146,21 @@ def reading_dates(reading):
     """
 
     # 3 September 2017
-    full_format = '<time datetime="%Y-%m-%d">{}</time>'.format('%-d %B %Y')
+    full_format = '<time datetime="%Y-%m-%d">{}</time>'.format("%-d %B %Y")
     # September 2017
-    month_year_format = '<time datetime="%Y-%m">{}</time>'.format('%B %Y')
+    month_year_format = '<time datetime="%Y-%m">{}</time>'.format("%B %Y")
     # 2017
-    year_format = '<time datetime="%Y">{}</time>'.format('%Y')
+    year_format = '<time datetime="%Y">{}</time>'.format("%Y")
     # 3
-    day_format = '<time datetime="%Y-%m-%d">{}</time>'.format('%-d')
+    day_format = '<time datetime="%Y-%m-%d">{}</time>'.format("%-d")
     # 3 September
-    day_month_format = '<time datetime="%Y-%m-%d">{}</time>'.format('%-d %B')
+    day_month_format = '<time datetime="%Y-%m-%d">{}</time>'.format("%-d %B")
     # September
-    month_format = '<time datetime="%Y-%m">{}</time>'.format('%B')
+    month_format = '<time datetime="%Y-%m">{}</time>'.format("%B")
 
-    period_format_short = '{}–{}'
+    period_format_short = "{}–{}"
 
-    period_format_long = '{} to {}'
+    period_format_long = "{} to {}"
 
     # For brevity:
     start_date = reading.start_date
@@ -176,16 +174,16 @@ def reading_dates(reading):
     same_year = False
 
     if start_date and end_date:
-        if start_date.strftime('%Y') == end_date.strftime('%Y'):
+        if start_date.strftime("%Y") == end_date.strftime("%Y"):
             same_year = True
-            if start_date.strftime('%m%Y') == end_date.strftime('%m%Y'):
+            if start_date.strftime("%m%Y") == end_date.strftime("%m%Y"):
                 same_month = True
-                if start_date.strftime('%d%m%Y') == end_date.strftime('%d%m%Y'):
+                if start_date.strftime("%d%m%Y") == end_date.strftime("%d%m%Y"):
                     same_day = True
 
-    start_str = ''
-    end_str = ''
-    output = ''
+    start_str = ""
+    end_str = ""
+    output = ""
 
     # Make some basic start and end strings, which we might use...
 
@@ -238,32 +236,32 @@ def reading_dates(reading):
                 elif same_month:
                     # 1–6 February 2017
                     output = period_format_short.format(
-                                start_date.strftime(day_format),
-                                end_str)
+                        start_date.strftime(day_format), end_str
+                    )
                 elif same_year:
                     # 1 February to 3 March 2017
                     output = period_format_long.format(
-                                        start_date.strftime(day_month_format),
-                                        end_str)
+                        start_date.strftime(day_month_format), end_str
+                    )
             elif end_gran == 4:
                 if same_year:
                     # 1 February to March 2017
                     output = period_format_long.format(
-                                        start_date.strftime(day_month_format),
-                                        end_str)
+                        start_date.strftime(day_month_format), end_str
+                    )
         elif start_gran == 4:
             if end_gran == 3:
                 if same_year:
                     # February to 3 March 2017
                     output = period_format_long.format(
-                                            start_date.strftime(month_format),
-                                            end_str)
+                        start_date.strftime(month_format), end_str
+                    )
             elif end_gran == 4:
                 if same_year:
                     # February to March 2017
                     output = period_format_long.format(
-                                            start_date.strftime(month_format),
-                                            end_str)
+                        start_date.strftime(month_format), end_str
+                    )
     elif end_date:
         # Only an end_date.
         if end_gran == 3:

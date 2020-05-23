@@ -2,7 +2,9 @@ from django.utils.html import strip_tags
 from django.utils.text import Truncator
 
 
-def truncate_string(text, strip_html=True, chars=255, truncate='…', at_word_boundary=False):
+def truncate_string(
+    text, strip_html=True, chars=255, truncate="…", at_word_boundary=False
+):
     """Truncate a string to a certain length, removing line breaks and mutliple
     spaces, optionally removing HTML, and appending a 'truncate' string.
 
@@ -15,11 +17,11 @@ def truncate_string(text, strip_html=True, chars=255, truncate='…', at_word_bo
     """
     if strip_html:
         text = strip_tags(text)
-    text = text.replace('\n', ' ').replace('\r', '')
-    text = ' '.join(text.split())
+    text = text.replace("\n", " ").replace("\r", "")
+    text = " ".join(text.split())
     if at_word_boundary:
         if len(text) > chars:
-            text = text[:chars].rsplit(' ', 1)[0] + truncate
+            text = text[:chars].rsplit(" ", 1)[0] + truncate
     else:
         text = Truncator(text).chars(chars, html=False, truncate=truncate)
     return text

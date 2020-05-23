@@ -7,13 +7,13 @@ from hashids import Hashids
 
 def generate_slug(value):
     "A copy of spectator.core.models.SluggedModelMixin._generate_slug()"
-    alphabet = 'abcdefghijkmnopqrstuvwxyz23456789'
-    salt = 'Django Spectator'
+    alphabet = "abcdefghijkmnopqrstuvwxyz23456789"
+    salt = "Django Spectator"
 
-    if hasattr(settings, 'SPECTATOR_SLUG_ALPHABET'):
+    if hasattr(settings, "SPECTATOR_SLUG_ALPHABET"):
         alphabet = settings.SPECTATOR_SLUG_ALPHABET
 
-    if hasattr(settings, 'SPECTATOR_SLUG_SALT'):
+    if hasattr(settings, "SPECTATOR_SLUG_SALT"):
         salt = settings.SPECTATOR_SLUG_SALT
 
     hashids = Hashids(alphabet=alphabet, salt=salt, min_length=5)
@@ -25,24 +25,24 @@ def set_slug(apps, schema_editor):
     """
     Create a slug for each Event already in the DB.
     """
-    Event = apps.get_model('spectator_events', 'Event')
+    Event = apps.get_model("spectator_events", "Event")
 
     for e in Event.objects.all():
         e.slug = generate_slug(e.pk)
-        e.save(update_fields=['slug'])
+        e.save(update_fields=["slug"])
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0005_auto_20180102_0959'),
+        ("spectator_events", "0005_auto_20180102_0959"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='event',
-            name='slug',
-            field=models.SlugField(blank=True, default='a', max_length=10),
+            model_name="event",
+            name="slug",
+            field=models.SlugField(blank=True, default="a", max_length=10),
             preserve_default=False,
         ),
         migrations.RunPython(set_slug),

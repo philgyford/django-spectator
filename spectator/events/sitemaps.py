@@ -4,21 +4,20 @@ from .models import Event, Venue, Work
 
 
 class EventSitemap(Sitemap):
-    changefreq = 'never'
+    changefreq = "never"
     priority = 0.5
 
     def items(self):
         # Exclude movies and plays because they'll have the same URLs as their
         # Movie and Play objects.
-        return Event.objects.exclude(kind='movie')\
-                            .exclude(kind='play')
+        return Event.objects.exclude(kind="movie").exclude(kind="play")
 
     def lastmod(self, obj):
         return obj.time_modified
 
 
 class VenueSitemap(Sitemap):
-    changefreq = 'monthly'
+    changefreq = "monthly"
     priority = 0.5
 
     def items(self):
@@ -29,7 +28,7 @@ class VenueSitemap(Sitemap):
 
 
 class WorkSitemap(Sitemap):
-    changefreq = 'monthly'
+    changefreq = "monthly"
     priority = 0.5
 
     def items(self):

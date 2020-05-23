@@ -3,12 +3,11 @@
 from django.db import migrations, models
 
 
-
 def forwards(apps, schema_editor):
     """
     Set the venue_name field of all Events that have a Venue.
     """
-    Event = apps.get_model('spectator_events', 'Event')
+    Event = apps.get_model("spectator_events", "Event")
 
     for event in Event.objects.all():
         if event.venue is not None:
@@ -16,18 +15,21 @@ def forwards(apps, schema_editor):
             event.save()
 
 
-
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0023_venue_cinema_treasures_id'),
+        ("spectator_events", "0023_venue_cinema_treasures_id"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='venue_name',
-            field=models.CharField(blank=True, help_text='The name of the Venue when this event occurred. If left blank, will be set automatically.', max_length=255),
+            model_name="event",
+            name="venue_name",
+            field=models.CharField(
+                blank=True,
+                help_text="The name of the Venue when this event occurred. If left blank, will be set automatically.",  # noqa: E501
+                max_length=255,
+            ),
         ),
         migrations.RunPython(forwards),
     ]

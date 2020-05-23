@@ -7,13 +7,17 @@ import spectator.events.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spectator_events', '0040_auto_20180417_1721'),
+        ("spectator_events", "0040_auto_20180417_1721"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='ticket',
-            field=models.ImageField(blank=True, default='', upload_to=spectator.events.models.event_upload_path),
+            model_name="event",
+            name="ticket",
+            field=models.ImageField(
+                blank=True,
+                default="",
+                upload_to=spectator.events.models.event_upload_path,
+            ),
         ),
     ]
