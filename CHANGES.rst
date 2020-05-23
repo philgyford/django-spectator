@@ -4,7 +4,11 @@ Changelog (Django Spectator)
 Unreleased
 ----------
 
+- Drop official support for python 3.5
+
 - Add flake8 to tests
+
+- Upgrade included Bootstrap CSS from v4.4 to v4.5.
 
 
 11.0.1
