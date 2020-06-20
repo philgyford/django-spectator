@@ -2,11 +2,11 @@
  Django Spectator
 ==================
 
-.. image:: https://travis-ci.org/philgyford/django-spectator.svg?branch=master
-  :target: https://travis-ci.org/philgyford/django-spectator?branch=master
+.. image:: https://travis-ci.org/philgyford/django-spectator.svg?branch=main
+  :target: https://travis-ci.org/philgyford/django-spectator?branch=main
 
-.. image:: https://coveralls.io/repos/github/philgyford/django-spectator/badge.svg?branch=master
-  :target: https://coveralls.io/github/philgyford/django-spectator?branch=master
+.. image:: https://coveralls.io/repos/github/philgyford/django-spectator/badge.svg?branch=main
+  :target: https://coveralls.io/github/philgyford/django-spectator?branch=main
 
 Two Django apps:
 
@@ -540,7 +540,7 @@ Making a new release
 
 So I don't forget...
 
-1. Put new changes on ``master``.
+1. Put new changes on ``main``.
 2. Update the ``__version__`` in ``spectator.__init__.py``.
 3. Update ``CHANGES.rst``.
 4. Do ``python setup.py tag``.
