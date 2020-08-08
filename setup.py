@@ -79,14 +79,14 @@ setup(
     packages=["spectator"],
     install_requires=[
         "django-imagekit>=4.0,<4.1",
-        "hashids>=1.2.0,<1.3",
-        "pillow>=6.1.0,<7.2",
+        "hashids>=1.2.0,<1.4",
+        "pillow>=6.1.0,<7.3",
     ],
     dependency_links=[],
     tests_require=tests_require,
     extras_require={
         "dev": dev_require + [
-            "Django>=3.0,<3.1",
+            "Django>=3.0,<3.2",
         ],
         "test": tests_require
     },
@@ -104,6 +104,7 @@ setup(
         "Framework :: Django",
         "Framework :: Django :: 2.2",
         "Framework :: Django :: 3.0",
+        "Framework :: Django :: 3.1",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",

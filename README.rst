@@ -16,10 +16,10 @@ Two Django apps:
   classical), including date, venue (with maps), people/organisations involved,
   and images of tickets.
 
-For Django 2.2 to Django 3.0, running on Python 3.6 to 3.8.
+For Django 2.2 to Django 3.1, running on Python 3.6 to 3.8.
 
 It has URLs, views and templates to create a site displaying all the data, and
-Django admin screens to add and edit them. The templates use `Bootstrap v4.4 <https://getbootstrap.com>`_.
+Django admin screens to add and edit them. The templates use `Bootstrap v4 <https://getbootstrap.com>`_.
 
 There are also template tags for displaying data in your own templates (see
 below).
@@ -523,13 +523,13 @@ Run all tests in all environments like::
 
 $ tox
 
-To run tests in only one environment, specify it. In this case, Python 3.6 and Django 2.0::
+To run tests in only one environment, specify it. In this case, Python 3.8 and Django 3.1::
 
-$ tox -e py36-django20
+$ tox -e py38-django31
 
 To run a specific test, add its path after ``--``, eg::
 
-$ tox -e py36-django20 -- tests.core.test_models.CreatorTestCase.test_ordering
+$ tox -e py38-django31 -- tests.core.test_models.CreatorTestCase.test_ordering
 
 Running the tests in all environments will generate coverage output. There will also be an ``htmlcov/`` directory containing an HTML report. You can also generate these reports without running all the other tests::
 

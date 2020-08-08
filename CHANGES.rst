@@ -14,6 +14,8 @@ Unreleased
 
 - Upgrade included Bootstrap CSS from v4.4 to v4.5.
 
+- Allow usage of Django 3.1, Pillow 7.2, hashids 1.3
+
 
 11.0.1
 ------
