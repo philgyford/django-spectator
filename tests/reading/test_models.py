@@ -64,13 +64,13 @@ class PublicationTestCase(TestCase):
     def test_thumbnail_url(self):
         "By default it should use reading/publications/ as the path."
         pub = PublicationFactory(thumbnail__filename="tester.jpg")
-        self.assertTrue(pub.thumbnail.url.startswith("reading/publications/tester"))
+        self.assertTrue(pub.thumbnail.url.startswith("/reading/publications/tester"))
 
     def test_list_thumbnail(self):
         pub = PublicationFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             pub.list_thumbnail.url.startswith(
-                "CACHE/images/reading/publications/tester_"
+                "/CACHE/images/reading/publications/tester_"
             )
         )
         self.assertEqual(pub.list_thumbnail.width, 80)
@@ -80,7 +80,7 @@ class PublicationTestCase(TestCase):
         pub = PublicationFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             pub.list_thumbnail_2x.url.startswith(
-                "CACHE/images/reading/publications/tester_"
+                "/CACHE/images/reading/publications/tester_"
             )
         )
         self.assertEqual(pub.list_thumbnail_2x.width, 160)
@@ -90,7 +90,7 @@ class PublicationTestCase(TestCase):
         pub = PublicationFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             pub.detail_thumbnail.url.startswith(
-                "CACHE/images/reading/publications/tester/"
+                "/CACHE/images/reading/publications/tester/"
             )
         )
         self.assertEqual(pub.detail_thumbnail.width, 320)
@@ -100,7 +100,7 @@ class PublicationTestCase(TestCase):
         pub = PublicationFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             pub.detail_thumbnail_2x.url.startswith(
-                "CACHE/images/reading/publications/tester_"
+                "/CACHE/images/reading/publications/tester_"
             )
         )
         self.assertEqual(pub.detail_thumbnail_2x.width, 640)
