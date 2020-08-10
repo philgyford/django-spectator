@@ -10,16 +10,17 @@ Unreleased
 
 - Nothing
 
+
 11.1.0
 ------
 
 - Drop official support for python 3.5.
 
-- Add flake8 to tests.
+- Allow usage of Django 3.1, Pillow 7.2, hashids 1.3.
 
 - Upgrade included Bootstrap CSS from v4.4 to v4.5.
 
-- Allow usage of Django 3.1, Pillow 7.2, hashids 1.3.
+- Add flake8 to tests.
 
 
 11.0.1
