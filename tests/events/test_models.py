@@ -370,12 +370,14 @@ class EventTestCase(TestCase):
     def test_thumbnail_url(self):
         "By default it should use events/events/ as the path."
         event = CinemaEventFactory(thumbnail__filename="tester.jpg")
-        self.assertTrue(event.thumbnail.url.startswith("/events/events/tester"))
+        self.assertTrue(event.thumbnail.url.startswith("/media/events/events/tester"))
 
     def test_list_thumbnail(self):
         event = CinemaEventFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
-            event.list_thumbnail.url.startswith("/CACHE/images/events/events/tester_")
+            event.list_thumbnail.url.startswith(
+                "/media/CACHE/images/events/events/tester_"
+            )
         )
         self.assertEqual(event.list_thumbnail.width, 80)
         self.assertEqual(event.list_thumbnail.height, 80)
@@ -384,7 +386,7 @@ class EventTestCase(TestCase):
         event = CinemaEventFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             event.list_thumbnail_2x.url.startswith(
-                "/CACHE/images/events/events/tester_"
+                "/media/CACHE/images/events/events/tester_"
             )
         )
         self.assertEqual(event.list_thumbnail_2x.width, 160)
@@ -393,7 +395,9 @@ class EventTestCase(TestCase):
     def test_detail_thumbnail(self):
         event = CinemaEventFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
-            event.detail_thumbnail.url.startswith("/CACHE/images/events/events/tester/")
+            event.detail_thumbnail.url.startswith(
+                "/media/CACHE/images/events/events/tester/"
+            )
         )
         self.assertEqual(event.detail_thumbnail.width, 320)
         self.assertEqual(event.detail_thumbnail.height, 320)
@@ -402,7 +406,7 @@ class EventTestCase(TestCase):
         event = CinemaEventFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             event.detail_thumbnail_2x.url.startswith(
-                "/CACHE/images/events/events/tester_"
+                "/media/CACHE/images/events/events/tester_"
             )
         )
         self.assertEqual(event.detail_thumbnail_2x.width, 640)
