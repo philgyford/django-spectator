@@ -1,5 +1,3 @@
-import os
-
 from django.db import models
 from django.urls import reverse
 
@@ -77,7 +75,7 @@ def thumbnail_upload_path(instance, filename):
     else:
         raise NotImplementedError("No base directory set for this app's thumbnails")
 
-    return os.path.join(path, folder, instance.slug, filename)
+    return "/".join([path, folder, instance.slug, filename])
 
 
 class ThumbnailModelMixin(models.Model):
