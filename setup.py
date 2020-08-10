@@ -86,7 +86,7 @@ setup(
     tests_require=tests_require,
     extras_require={
         "dev": dev_require + [
-            "Django>=3.0,<3.2",
+            "Django>=3.1,<3.2",
         ],
         "test": tests_require
     },
