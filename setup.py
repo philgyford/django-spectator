@@ -68,7 +68,7 @@ dev_require = [
     "black==19.10b0"
 ]
 tests_require = dev_require + [
-    "factory-boy>=2.12.0,<3.0",
+    "factory-boy>=2.12.0,<4.0",
     "freezegun>=0.3.12,<0.4",
     "coverage",
 ]
