@@ -12,13 +12,13 @@
 {% block content %}
 
   {% if in_progress_publication_list|length > 0 %}
-    <h2>Currently reading</h2>
+    <h2>Currently reading <small class="text-muted">({{ in_progress_publication_list|length }})</small></h2>
 
     {% include 'spectator_reading/includes/publications.html' with publication_list=in_progress_publication_list show_readings='current' show_thumbnails=True only %}
   {% endif %}
 
   {% if publication_list|length > 0 %}
-    <h2>Unread</h2>
+    <h2>Unread <small class="text-muted">({{ publication_list|length }})</small></h2>
 
     {% include 'spectator_reading/includes/publications.html' with publication_list=publication_list show_thumbnails=True only %}
   {% endif %}
