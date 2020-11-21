@@ -201,7 +201,7 @@ include an optional ``role_name`` such as "Author", "Illustrator", "Director",
 creators of a thing will be listed in the appropriate order (such as the
 director before a movie's actors).
 
-See ``spectator/models/core.py`` for these models.
+See `spectator/models/core.py <https://github.com/philgyford/django-spectator/blob/main/spectator/core/models.py>`_ for these models.
 
 Reading
 =======
@@ -222,7 +222,7 @@ Both ``start_date`` and ``end_date`` indicates a specific day by default. If
 you don't know the day, or the month, a granularity can be specified indicating
 whether the reading started/ended sometime during the month or year.
 
-See ``spectator/models/reading.py`` for these models.
+See `spectator/reading/models.py <https://github.com/philgyford/django-spectator/blob/main/spectator/reading/models.py>`_ for these models.
 
 Events
 ======
@@ -250,6 +250,8 @@ Each Event can have zero or more Works associated with it: movies, plays, classi
 Events can be given an optional title (e.g. "Glastonbury Festival"). If a title
 isn't specified one is created automatically when needed, based on any Works
 associated with it, or else any Creators associated with it.
+
+See `spectator/events/models.py <https://github.com/philgyford/django-spectator/blob/main/spectator/events/models.py>`_ for these models.
 
 
 *************
