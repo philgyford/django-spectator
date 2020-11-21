@@ -15,14 +15,14 @@
       {% if book_count > 0 %}
         <li class="nav-item">
           <a class="nav-link{% if publication_kind == 'book' %} active{% endif %}" href="{% url 'spectator:reading:publication_list' %}">
-            Books ({{ book_count }})
+            Books <small>({{ book_count }})</small>
           </a>
         </li>
       {% endif %}
       {% if periodical_count > 0 %}
         <li class="nav-item">
           <a class="nav-link{% if publication_kind == 'periodical' %} active{% endif %}" href="{% url 'spectator:reading:publication_list_periodical' %}">
-            Periodicals ({{ periodical_count }})
+            Periodicals <small>({{ periodical_count }})</small>
           </a>
         </li>
       {% endif %}

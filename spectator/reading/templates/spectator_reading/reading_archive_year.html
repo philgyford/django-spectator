@@ -15,20 +15,20 @@
     <ul class="nav nav-tabs mb-4">
       <li class="nav-item">
         <a class="nav-link{% if publication_kind == None %} active{% endif %}" href="{% url 'spectator:reading:reading_year_archive' year=year|date:"Y" %}">
-          All ({{ publication_count }})
+          All <small>({{ publication_count }})</small>
         </a>
       </li>
       {% if book_count > 0 %}
         <li class="nav-item">
           <a class="nav-link{% if publication_kind == 'book' %} active{% endif %}" href="{% url 'spectator:reading:reading_year_archive' year=year|date:"Y" kind='books' %}">
-            Books ({{ book_count }})
+            Books <small>({{ book_count }})</small>
           </a>
         </li>
       {% endif %}
       {% if periodical_count > 0 %}
         <li class="nav-item">
           <a class="nav-link{% if publication_kind == 'periodical' %} active{% endif %}" href="{% url 'spectator:reading:reading_year_archive' year=year|date:"Y" kind='periodicals' %}">
-            Periodicals ({{ periodical_count }})
+            Periodicals <small>({{ periodical_count }})</small>
           </a>
         </li>
       {% endif %}

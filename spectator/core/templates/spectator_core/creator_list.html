@@ -15,14 +15,14 @@
       {% if individual_count > 0 %}
         <li class="nav-item">
           <a class="nav-link{% if creator_kind == 'individual' %} active{% endif %}" href="{% url 'spectator:creators:creator_list' %}">
-            People ({{ individual_count }})
+            People <small>({{ individual_count }})</small>
           </a>
         </li>
       {% endif %}
       {% if group_count > 0 %}
         <li class="nav-item">
           <a class="nav-link{% if creator_kind == 'group' %} active{% endif %}" href="{% url 'spectator:creators:creator_list_group' %}">
-            Groups ({{ group_count }})
+            Groups <small>({{ group_count }})</small>
           </a>
         </li>
       {% endif %}
