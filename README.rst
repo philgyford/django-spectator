@@ -102,6 +102,8 @@ of each are below::
 
     SPECTATOR_READING_DIR_BASE = "reading"
 
+    SPECTATOR_AFFILIATE_CODES = {}
+
     SPECTATOR_DATE_FORMAT = "%-d %b %Y"
 
     SPECTATOR_MAPS = {"enable": False}
@@ -128,6 +130,21 @@ the defaults like this::
     SPECTATOR_EVENTS_DIR_BASE = "my-events"
 
     SPECTATOR_READING_DIR_BASE = "my-reading"
+
+
+``SPECTATOR_AFFILIATE_CODES``
+-----------------------------
+
+If you provide a US or UK ISBN number for a Publication the default templates
+will display links to it on Amazon.com or Amazon.co.uk. If you have Amazon
+Associates code(s), and you create a ``SPECTATOR_AFFILIATE_CODES`` setting and
+add it/them in, the Amazon links will include your code. You can include none,
+one or both:
+
+    SPECTATOR_AFFILIATE_CODES = {
+        "amazon.com": "foobar-20",
+        "amazon.co.uk": "foobar-21",
+    }
 
 
 ``SPECTATOR_DATE_FORMAT``

@@ -38,3 +38,6 @@ THUMBNAIL_LIST_SIZE = getattr(settings, "SPECTATOR_THUMBNAIL_LIST_SIZE", (80, 16
 # Publication thumbnails to go in:
 EVENTS_DIR_BASE = getattr(settings, "SPECTATOR_EVENTS_DIR_BASE", "events")
 READING_DIR_BASE = getattr(settings, "SPECTATOR_READING_DIR_BASE", "reading")
+
+
+AFFILIATE_CODES = getattr(settings, "SPECTATOR_AFFILIATE_CODES", {})

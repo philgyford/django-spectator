@@ -160,6 +160,13 @@ SPECTATOR_MAPS = {
     "api_key": os.getenv("SPECTATOR_MAPBOX_API_KEY", None),
 }
 
+SPECTATOR_AFFILIATE_CODES = {
+    "amazon.com": "haddockorg-20",
+    "amazon.co.uk": "haddockorg-21",
+    "bookshop.org": "17650",
+    "uk.bookshop.org": "4104"
+}
+
 # Example of using Google maps:
 # SPECTATOR_MAPS = {
 #     "enable": True,

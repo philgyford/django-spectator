@@ -1,9 +1,9 @@
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 
 from . import managers
+from spectator.core import app_settings
 from spectator.core.fields import NaturalSortField
 from spectator.core.models import (
     BaseRole,
@@ -205,11 +205,10 @@ class Publication(ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin)
         url = ""
         if self.isbn_uk:
             url = "https://www.amazon.co.uk/gp/product/{}/".format(self.isbn_uk)
-            if (
-                hasattr(settings, "SPECTATOR_AMAZON")
-                and "uk" in settings.SPECTATOR_AMAZON
-            ):
-                url = "{}?tag={}".format(url, settings.SPECTATOR_AMAZON["uk"])
+            if "amazon.co.uk" in app_settings.AFFILIATE_CODES:
+                url = "{}?tag={}".format(
+                    url, app_settings.AFFILIATE_CODES["amazon.co.uk"]
+                )
         return url
 
     @property
@@ -217,11 +216,10 @@ class Publication(ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin)
         url = ""
         if self.isbn_us:
             url = "https://www.amazon.com/dp/{}/".format(self.isbn_us)
-            if (
-                hasattr(settings, "SPECTATOR_AMAZON")
-                and "us" in settings.SPECTATOR_AMAZON
-            ):
-                url = "{}?tag={}".format(url, settings.SPECTATOR_AMAZON["us"])
+            if "amazon.com" in app_settings.AFFILIATE_CODES:
+                url = "{}?tag={}".format(
+                    url, app_settings.AFFILIATE_CODES["amazon.com"]
+                )
         return url
 
     @property

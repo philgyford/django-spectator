@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase, override_settings
+from django.test import TestCase
 
-from .. import make_date
+from .. import make_date, override_app_settings
 from spectator.core.factories import IndividualCreatorFactory
 from spectator.reading.factories import (
     PublicationFactory,
@@ -136,8 +136,8 @@ class PublicationTestCase(TestCase):
         p = PublicationFactory(isbn_uk="")
         self.assertEqual(p.amazon_uk_url, "")
 
-    @override_settings(SPECTATOR_AMAZON={"uk": "foobar-21"})
-    def test_amazon_uk_url_affiliate(self):
+    @override_app_settings(AFFILIATE_CODES={"amazon.co.uk": "foobar-21"})
+    def test_amazon_uk_url_associate_code(self):
         p = PublicationFactory(isbn_uk="0356500489")
         self.assertEqual(
             p.amazon_uk_url,
@@ -152,8 +152,8 @@ class PublicationTestCase(TestCase):
         p = PublicationFactory(isbn_us="")
         self.assertEqual(p.amazon_us_url, "")
 
-    @override_settings(SPECTATOR_AMAZON={"us": "foobar-20"})
-    def test_amazon_us_url_affiliate(self):
+    @override_app_settings(AFFILIATE_CODES={"amazon.com": "foobar-20"})
+    def test_amazon_us_url_associate_code(self):
         p = PublicationFactory(isbn_us="0356500489")
         self.assertEqual(
             p.amazon_us_url, "https://www.amazon.com/dp/0356500489/?tag=foobar-20"
