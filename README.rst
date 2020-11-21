@@ -37,14 +37,14 @@ Contents
     * `Creators <#creators>`_
     * `Reading <#reading>`_
     * `Events <#events>`_
- * `Template tags <#template-tags>`_
-     * `Core template tags <#core-template-tags>`_
-     * `Reading template tags <#reading-template-tags>`_
-     * `Events template tags <#events-template-tags>`_
- * `Local development <#local-development>`_
-     * `Making a new release <#making-a-new-release>`_
-     * `Adding a new Event kind <#adding-a-new-event-kind>`_
-     * `Adding a new Work kind <#adding-a-new-work-kind>`_
+* `Template tags <#template-tags>`_
+    * `Core template tags <#core-template-tags>`_
+    * `Reading template tags <#reading-template-tags>`_
+    * `Events template tags <#events-template-tags>`_
+* `Local development <#local-development>`_
+    * `Making a new release <#making-a-new-release>`_
+    * `Adding a new Event kind <#adding-a-new-event-kind>`_
+    * `Adding a new Work kind <#adding-a-new-work-kind>`_
 * `Contact <#contact>`_
 
 ************
