@@ -98,21 +98,49 @@ There are a few optional settings that can be used in your project's
 ``settings.py`` file. This is the full list, with their defaults. Descriptions
 of each are below::
 
+    SPECTATOR_EVENTS_DIR_BASE = "events"
+
+    SPECTATOR_READING_DIR_BASE = "reading"
+
+    SPECTATOR_DATE_FORMAT = "%-d %b %Y"
+
     SPECTATOR_MAPS = {"enable": False}
 
     SPECTATOR_SLUG_ALPHABET = "abcdefghijkmnopqrstuvwxyz23456789"
 
     SPECTATOR_SLUG_SALT = "Django Spectator"
 
-    SPECTATOR_DATE_FORMAT = "%-d %b %Y"
-
     SPECTATOR_THUMBNAIL_DETAIL_SIZE = (320, 320)
 
     SPECTATOR_THUMBNAIL_LIST_SIZE = (80, 160)
 
-    SPECTATOR_EVENTS_DIR_BASE = "events"
 
-    SPECTATOR_READING_DIR_BASE = "reading"
+``SPECTATOR_EVENTS_DIR_BASE`` and ``SPECTATOR_READING_DIR_BASE``
+----------------------------------------------------------------
+
+When images are uploaded for Publications and Events (see below), they are
+stored within named directories within your Django project's `MEDIA_ROOT`. e.g.
+a Publication with a ``slug`` of ``pzov6`` would have its cover uploaded to
+a path like ``/media/reading/publications/pzov6/my_cover.jpg``. The ``reading``
+part is defined by the ``SPECTATOR_READING_DIR_BASE`` setting. You could change
+the defaults like this::
+
+    SPECTATOR_EVENTS_DIR_BASE = "my-events"
+
+    SPECTATOR_READING_DIR_BASE = "my-reading"
+
+
+``SPECTATOR_DATE_FORMAT``
+-------------------------
+
+You can change the format used for the dates of Events and for the titles of
+some sidebar cards in templates, using `strftime <http://strftime.org>`_ formatting::
+
+    SPECTATOR_DATE_FORMAT = "%Y-%m-%d"
+
+
+``SPECTATOR_MAPS``
+------------------
 
 Venues can have their location displayed on a map and, in the Admin, have their
 location set by clicking on a map. You can use either Google or Mapbox maps,
@@ -142,22 +170,28 @@ map styles, `listed under options.styles <https://docs.mapbox.com/mapbox-gl-js/a
 Setting ``"enable"`` to ``False`` in the above dicts will prevent maps
 appearing.
 
+
+``SPECTATOR_SLUG_ALPHABET``
+---------------------------
+
 URLs for all objects include automatically-generated slugs, which are based on
 [Hashids](http://hashids.org) of the object's ID. You can change which
 characters are used in these slugs with this setting. e.g.::
 
     SPECTATOR_SLUG_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 
+
+``SPECTATOR_SLUG_SALT``
+-----------------------
 You can also change the salt value used to encode the slugs. While the slugs
 don't provide complete security (i.e. it's not impossible to determine the ID on
 which a slug is based), using your own salt value can't hurt. e.g.::
 
     SPECTATOR_SLUG_SALT = "My special salt value is here"
 
-You can change the format used for the dates of Events and for the titles of
-some sidebar cards in templates, using `strftime <http://strftime.org>`_ formatting::
 
-    SPECTATOR_DATE_FORMAT = "%Y-%m-%d"
+``SPECTATOR_THUMBNAIL_DETAIL_SIZE`` and ``SPECTATOR_THUMBNAIL_LIST_SIZE``
+-------------------------------------------------------------------------
 
 There are two sizes of thumbnail images used throughout the site and admin
 pages: those used on "detail" pages (e.g. showing information about a single
@@ -169,17 +203,6 @@ cropped. To make them both bigger than the default you might use::
     SPECTATOR_THUMBNAIL_DETAIL_SIZE = (400, 400)
 
     SPECTATOR_THUMBNAIL_LIST_SIZE = (150, 200)
-
-When images are uploaded for Publications and Events (see below), they are
-stored within named directories within your Django project's `MEDIA_ROOT`. e.g.
-a Publication with a ``slug`` of ``pzov6`` would have its cover uploaded to
-a path like ``/media/reading/publications/pzov6/my_cover.jpg``. The ``reading``
-part is defined by the ``SPECTATOR_READING_DIR_BASE`` setting. You could change
-the defaults like this::
-
-    SPECTATOR_EVENTS_DIR_BASE = "my-events"
-
-    SPECTATOR_READING_DIR_BASE = "my-reading"
 
 
 ********
