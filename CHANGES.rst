@@ -8,15 +8,23 @@ NOTE: 2020-06-20: Renamed ``master`` branch to ``main``
 Unreleased
 ----------
 
+- None
+
+
+11.4.0 - 2020-12-21
+-------------------
+
 - Update python dependencies, including allowing django-debug-toolbar v4,
   frezegun up to v2, pillow up to v9.
 
 - Update included Bootstrap CSS from 4.5.2 to 4.5.3.
 
-- Change "Publication Series" to "Series" in the Reading `includes/card_nav.html`
-  template.
+- Change text "Publication Series" to "Series" in the
+  `reading/includes/card_nav.html` template.
 
 - Make counts in `.nav-tabs` consistently `<small>` in templates.
+
+- Add missing migrations
 
 
 11.3.0 - 2020-08-22
