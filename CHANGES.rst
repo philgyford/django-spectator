@@ -14,7 +14,7 @@ Unreleased
 11.4.0 - 2020-12-21
 -------------------
 
-- Update python dependencies, including allowing django-debug-toolbar v4,
+- Update python dependencies, including allowing django-debug-toolbar v3,
   frezegun up to v2, pillow up to v9.
 
 - Update Mapbox GL for Venue maps from v1.6.1 to v2.0.0.
