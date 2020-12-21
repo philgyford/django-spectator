@@ -83,6 +83,6 @@ function spectatorInitMap() {
     // Create and add marker
     var el = document.createElement("div");
     el.className = "spectator-marker"; // The CSS classname
-    new mapboxgl.Marker(el).setLngLat(position).addTo(map);
+    new mapboxgl.Marker(el, {anchor: "bottom"}).setLngLat(position).addTo(map);
   }
 }
