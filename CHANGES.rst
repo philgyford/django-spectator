@@ -17,6 +17,9 @@ Unreleased
 - Update python dependencies, including allowing django-debug-toolbar v4,
   frezegun up to v2, pillow up to v9.
 
+- Update Mapbox GL for Venue maps from v1.6.1 to v2.0.0.
+  See the `Mapbox GL Changelog <https://github.com/mapbox/mapbox-gl-js/blob/main/CHANGELOG.md>`_.
+
 - Update included Bootstrap CSS from 4.5.2 to 4.5.3.
 
 - Change text "Publication Series" to "Series" in the
