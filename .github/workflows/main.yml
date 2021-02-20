@@ -45,4 +45,5 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: tests.settings
         run: |
-          python manage.py test
+          django-admin.py test
+          flake8
