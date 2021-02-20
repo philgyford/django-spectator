@@ -36,17 +36,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           
-      - name: Upgrade pip version, install dependencies
+      - name: Upgrade pip version
         run: |
           python -m pip install -U pip
-          pip install tox django-debug-toolbar flake8 black factory-boy freezegun
 
-      - name: Upgrade django version
+      - name: Install python packages django version
         run: |
-          python -m pip install "Django~=${{ matrix.django-version }}.0"
+          python -m pip install "Django~=${{ matrix.django-version }}.0" tox django-debug-toolbar flake8 black factory-boy freezegun
 
       - name: Run tests
         env:
           DJANGO_SETTINGS_MODULE: tests.settings
         run: |
-          python ./manage.py test
+          python ./web/manage.py test
