@@ -1,0 +1,52 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        # python-version: [3.6, 3.7, 3.8, 3.9]
+        # django-version: [2.2, 3.0, 3.1]
+        python-version: [3.8]
+        django-version: [3.1]
+        # If we wanted to exclude combinations, we could add them here:
+        # exclude:
+          # - python-version: "3.5"
+          #   django-version: "3.0"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          
+      - name: Upgrade pip version, install dependencies
+        run: |
+          python -m pip install -U pip
+          pip install tox django-debug-toolbar flake8 black factory-boy freezegun
+
+      - name: Upgrade django version
+        run: |
+          python -m pip install "Django~=${{ matrix.django-version }}.0"
+
+      - name: Run tests
+        env:
+          DJANGO_SETTINGS_MODULE: tests.settings
+        run: |
+          python ./manage.py test
