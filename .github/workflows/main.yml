@@ -35,15 +35,21 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install python packages django version
+     
+      # pip install "Django~=${{ matrix.django-version }}.0" tox django-debug-toolbar flake8 black factory-boy freezegun
+      - name: Install python packages
         run: |
           python -m pip install --upgrade pip
-          pip install "Django~=${{ matrix.django-version }}.0" tox django-debug-toolbar flake8 black factory-boy freezegun
+          pip install tox tox-gh-actions
 
-      - name: Run tests
-        env:
-          DJANGO_SETTINGS_MODULE: tests.settings
-        run: |
-          django-admin.py test
-          flake8
+      - name: Test with tox
+        run: tox
+        #env:
+        #  PLATFORM: ${{ matrix.platform }}
+          
+ #     - name: Run tests
+ #       env:
+ #         DJANGO_SETTINGS_MODULE: tests.settings
+ #       run: |
+ #         django-admin.py test
+ #         flake8
