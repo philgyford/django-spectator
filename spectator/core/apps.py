@@ -51,4 +51,7 @@ class Apps(object):
         return apps.is_installed("spectator.%s" % app_name)
 
 
+
+
+
 spectator_apps = Apps()
