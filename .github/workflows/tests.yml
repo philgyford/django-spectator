@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      matri:
+      matrix:
         toxenv:
           - flake8
 
