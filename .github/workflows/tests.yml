@@ -109,9 +109,9 @@ jobs:
       - name: Send Slack notification
         uses: 8398a7/action-slack@v2
         # if: env.WORKFLOW_CONCLUSION == 'failure'
-        # with:
-        #   status: ${{ env.WORKFLOW_CONCLUSION }} # neutral, success, skipped, cancelled, timed_out, action_required, failure
-        #   status: failure
-        #   author_name: ${{ github.actor }}
+        with:
+          # One of:
+          # neutral, success, skipped, cancelled, timed_out, action_required, failure
+          status: ${{ env.WORKFLOW_CONCLUSION }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTIONS_CI_SLACK_HOOK }}
