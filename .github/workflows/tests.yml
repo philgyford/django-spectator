@@ -89,4 +89,4 @@ jobs:
           python -m pip install --upgrade tox tox-gh-actions
 
       - name: Run ${{ matrix.toxenv }}
-        run: tox -v -e ${{ matrix.toxenv }}
+        run: python -m tox -v -e ${{ matrix.toxenv }}
