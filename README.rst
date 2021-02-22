@@ -2,8 +2,8 @@
  Django Spectator
 ==================
 
-.. image:: https://travis-ci.org/philgyford/django-spectator.svg?branch=main
-  :target: https://travis-ci.org/philgyford/django-spectator?branch=main
+.. image:: https://github.com/philgyford/django-spectator/actions/workflows/tests.yml/badge.svg
+  :target: https://github.com/philgyford/django-spectator/actions/workflows/tests.yml
 
 .. image:: https://coveralls.io/repos/github/philgyford/django-spectator/badge.svg?branch=main
   :target: https://coveralls.io/github/philgyford/django-spectator?branch=main
@@ -16,7 +16,7 @@ Two Django apps:
   classical), including date, venue (with maps), people/organisations involved,
   and images of tickets.
 
-For Django 2.2 to Django 3.1, running on Python 3.6 to 3.8.
+For Django 2.2 to Django 3.1, running on Python 3.6 to 3.9.
 
 It has URLs, views and templates to create a site displaying all the data, and
 Django admin screens to add and edit them. The templates use `Bootstrap v4 <https://getbootstrap.com>`_.
