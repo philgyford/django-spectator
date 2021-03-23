@@ -1,14 +1,14 @@
 Changelog (Django Spectator)
 ============================
 
-NOTE: 2020-06-20: Renamed ``master`` branch to ``main``
--------------------------------------------------------
-
 
 Unreleased
 ----------
 
-- None
+- Update development project dependencies.
+
+- Update included Bootstrap CSS from 4.5.3 to 4.6.0.
+
 
 
 11.4.0 - 2020-12-21
