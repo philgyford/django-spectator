@@ -253,6 +253,7 @@ associated with it, or else any Creators associated with it.
 
 See `spectator/events/models.py <https://github.com/philgyford/django-spectator/blob/main/spectator/events/models.py>`_ for these models.
 
+There is a Django management command (``generate_letterboxd_export``) that will generate a CSV file of movies seen (Works of kind "movie") suitable for importing into a Letterboxd.com account.
 
 *************
 Template tags

@@ -5,10 +5,12 @@ Changelog (Django Spectator)
 Unreleased
 ----------
 
+- Add a management command (`generate_letterboxd_export`) that generates a CSV
+  file of movies seen, suitable for importing into a Letterboxd.com account.
+
 - Update development project dependencies.
 
 - Update included Bootstrap CSS from 4.5.3 to 4.6.0.
-
 
 
 11.4.0 - 2020-12-21
