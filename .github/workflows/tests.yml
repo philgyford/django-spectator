@@ -59,7 +59,7 @@ jobs:
 
   # The flake8 test in tox.ini won't run with the test job so we need to add it here.
   lint:
-    name: ${{ matrix.toxenv }}
+    name: "Lint: ${{ matrix.toxenv }}"
     runs-on: ubuntu-latest
 
     strategy:
@@ -110,8 +110,8 @@ jobs:
         uses: 8398a7/action-slack@v2
         # if: env.WORKFLOW_CONCLUSION == 'failure'
         with:
-          # One of:
-          # neutral, success, skipped, cancelled, timed_out, action_required, failure
           status: ${{ env.WORKFLOW_CONCLUSION }}
+          # fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+          fields: repo,message,commit,author,action,took
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTIONS_CI_SLACK_HOOK }}
