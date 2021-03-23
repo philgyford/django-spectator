@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import path
 
 from .. import views
 
@@ -9,5 +9,5 @@ from .. import views
 app_name = "core"
 
 urlpatterns = [
-    url(regex=r"^$", view=views.HomeView.as_view(), name="home"),
+    path("", view=views.HomeView.as_view(), name="home"),
 ]

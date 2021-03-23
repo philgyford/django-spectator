@@ -1,4 +1,4 @@
-from django.conf.urls import include, url
+from django.urls import include, path
 
 from ..apps import spectator_apps
 
@@ -10,16 +10,16 @@ from ..apps import spectator_apps
 app_name = "spectator"
 
 urlpatterns = [
-    url(r"^", include("spectator.core.urls.core")),
-    url(r"^creators/", include("spectator.core.urls.creators")),
+    path("", include("spectator.core.urls.core")),
+    path("creators/", include("spectator.core.urls.creators")),
 ]
 
 if spectator_apps.is_enabled("events"):
     urlpatterns.append(
-        url(r"^events/", include("spectator.events.urls", namespace="events")),
+        path("events/", include("spectator.events.urls", namespace="events")),
     )
 
 if spectator_apps.is_enabled("reading"):
     urlpatterns.append(
-        url(r"^reading/", include("spectator.reading.urls", namespace="reading")),
+        path("reading/", include("spectator.reading.urls", namespace="reading")),
     )

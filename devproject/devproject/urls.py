@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.conf.urls import include, static, url
+from django.conf.urls.static import static
+from django.urls import include, path
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 
@@ -28,10 +29,10 @@ if spectator_apps.is_enabled("reading"):
 
 
 urlpatterns = [
-    url(r"^admin/", admin.site.urls),
-    url(r"^", include("spectator.core.urls")),
-    url(
-        r"^sitemap\.xml$",
+    path("admin/", admin.site.urls),
+    path("", include("spectator.core.urls")),
+    path(
+        "sitemap.xml",
         sitemap,
         {"sitemaps": sitemaps},
         name="django.contrib.sitemaps.views.sitemap",
@@ -44,11 +45,9 @@ if settings.DEBUG:
     import debug_toolbar
 
     urlpatterns += [
-        url(r"^__debug__/", include(debug_toolbar.urls)),
+        path("__debug__/", include(debug_toolbar.urls)),
     ]
 
-    urlpatterns += static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-    urlpatterns += static.static(
-        settings.STATIC_URL, document_root=settings.STATIC_ROOT
-    )
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
