@@ -119,7 +119,7 @@ class CreatorManagerByReadingsTestCase(TestCase):
     def test_has_count_field(self):
         pub = PublicationFactory()
         PublicationRoleFactory(publication=pub, role_name="")
-        ReadingFactory(publication=pub, start_date=d, end_date=d)
+        ReadingFactory(publication=pub, start_date=d, end_date=d, is_finished=True)
 
         creators = Creator.objects.by_readings()
 
@@ -130,8 +130,8 @@ class CreatorManagerByReadingsTestCase(TestCase):
         "Not just publications"
         pub = PublicationFactory()
         PublicationRoleFactory(publication=pub, role_name="")
-        ReadingFactory(publication=pub, start_date=d, end_date=d)
-        ReadingFactory(publication=pub, start_date=d, end_date=d)
+        ReadingFactory(publication=pub, start_date=d, end_date=d, is_finished=True)
+        ReadingFactory(publication=pub, start_date=d, end_date=d, is_finished=True)
 
         creators = Creator.objects.by_readings()
 
@@ -144,8 +144,8 @@ class CreatorManagerByReadingsTestCase(TestCase):
         read_pub = PublicationFactory()
         PublicationRoleFactory(publication=read_pub, role_name="")
 
-        ReadingFactory(publication=read_pub, start_date=d, end_date=d)
-        ReadingFactory(publication=read_pub, start_date=d, end_date=d)
+        ReadingFactory(publication=read_pub, start_date=d, end_date=d, is_finished=True)
+        ReadingFactory(publication=read_pub, start_date=d, end_date=d, is_finished=True)
 
         creators = Creator.objects.by_readings()
 
@@ -161,8 +161,8 @@ class CreatorManagerByReadingsTestCase(TestCase):
         pub2 = PublicationFactory()
         PublicationRoleFactory(publication=pub2, creator=bob, role_name="")
 
-        ReadingFactory(publication=pub2, start_date=d, end_date=d)
-        ReadingFactory(publication=pub1, start_date=d, end_date=d)
+        ReadingFactory(publication=pub2, start_date=d, end_date=d, is_finished=True)
+        ReadingFactory(publication=pub1, start_date=d, end_date=d, is_finished=True)
 
         creators = Creator.objects.by_readings()
 
@@ -175,15 +175,15 @@ class CreatorManagerByReadingsTestCase(TestCase):
 
         pub = PublicationFactory()
         PublicationRoleFactory(publication=pub, role_name="")
-        ReadingFactory(publication=pub, start_date=d, end_date=d)
+        ReadingFactory(publication=pub, start_date=d, end_date=d, is_finished=True)
 
         pub = PublicationFactory()
         PublicationRoleFactory(publication=pub, role_name="")
-        ReadingFactory(publication=pub, start_date=d, end_date=d)
+        ReadingFactory(publication=pub, start_date=d, end_date=d, is_finished=True)
 
         pub = PublicationFactory()
         PublicationRoleFactory(publication=pub, role_name="Translator")
-        ReadingFactory(publication=pub, start_date=d, end_date=d)
+        ReadingFactory(publication=pub, start_date=d, end_date=d, is_finished=True)
 
         creators = Creator.objects.by_readings()
 
@@ -194,19 +194,38 @@ class CreatorManagerByReadingsTestCase(TestCase):
 
         pub = PublicationFactory()
         PublicationRoleFactory(publication=pub, role_name="Author")
-        ReadingFactory(publication=pub, start_date=d, end_date=d)
+        ReadingFactory(publication=pub, start_date=d, end_date=d, is_finished=True)
 
         pub = PublicationFactory()
         PublicationRoleFactory(publication=pub, role_name="Author")
-        ReadingFactory(publication=pub, start_date=d, end_date=d)
+        ReadingFactory(publication=pub, start_date=d, end_date=d, is_finished=True)
 
         pub = PublicationFactory()
         PublicationRoleFactory(publication=pub, role_name="Translator")
-        ReadingFactory(publication=pub, start_date=d, end_date=d)
+        ReadingFactory(publication=pub, start_date=d, end_date=d, is_finished=True)
 
         creators = Creator.objects.by_readings()
 
         self.assertEqual(len(creators), 2)
+
+    def test_only_counts_finished_readings(self):
+        "It should not count unfinished readings"
+        # A finished reading
+        c1 = IndividualCreatorFactory()
+        pub1 = PublicationFactory()
+        PublicationRoleFactory(publication=pub1, creator=c1, role_name="")
+        ReadingFactory(publication=pub1, start_date=d, end_date=d, is_finished=True)
+
+        # An finished reading
+        c2 = IndividualCreatorFactory()
+        pub2 = PublicationFactory()
+        PublicationRoleFactory(publication=pub2, creator=c2, role_name="")
+        ReadingFactory(publication=pub2, start_date=d, end_date=d, is_finished=False)
+
+        creators = Creator.objects.by_readings()
+
+        self.assertEqual(len(creators), 1)
+        self.assertEqual(creators[0], c1)
 
 
 class CreatorManagerByEventsTestCase(TestCase):
