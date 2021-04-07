@@ -5,6 +5,9 @@ Changelog (Django Spectator)
 Unreleased
 ----------
 
+- None
+
+
 11.6.0 - 2021-04-07
 -------------------
 
