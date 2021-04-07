@@ -110,7 +110,7 @@ class MostReadCreatorsTestCase(TestCase):
             c = IndividualCreatorFactory()
             pub = PublicationFactory()
             PublicationRoleFactory(publication=pub, creator=c, role_name="")
-            ReadingFactory(publication=pub, start_date=d, end_date=d)
+            ReadingFactory(publication=pub, start_date=d, end_date=d, is_finished=True)
 
         creators = most_read_creators()
 
@@ -124,11 +124,32 @@ class MostReadCreatorsTestCase(TestCase):
             c = IndividualCreatorFactory()
             pub = PublicationFactory()
             PublicationRoleFactory(publication=pub, creator=c, role_name="")
-            ReadingFactory(publication=pub, start_date=d, end_date=d)
+            ReadingFactory(publication=pub, start_date=d, end_date=d, is_finished=True)
 
         creators = most_read_creators(num=3)
 
         self.assertEqual(len(creators), 3)
+
+    def test_finished(self):
+        "It should only return finished readings"
+        d = make_date("2017-02-15")
+
+        # A finished reading
+        c1 = IndividualCreatorFactory()
+        pub1 = PublicationFactory()
+        PublicationRoleFactory(publication=pub1, creator=c1, role_name="")
+        ReadingFactory(publication=pub1, start_date=d, end_date=d, is_finished=True)
+
+        # An unfinished reading
+        c2 = IndividualCreatorFactory()
+        pub2 = PublicationFactory()
+        PublicationRoleFactory(publication=pub2, creator=c2, role_name="")
+        ReadingFactory(publication=pub2, start_date=d, end_date=d, is_finished=False)
+
+        creators = most_read_creators()
+
+        self.assertEqual(len(creators), 1)
+        self.assertEqual(creators[0], c1)
 
 
 class MostReadCreatorsCardTestCase(TestCase):
@@ -140,7 +161,9 @@ class MostReadCreatorsCardTestCase(TestCase):
             pub = PublicationFactory()
             PublicationRoleFactory(publication=pub, creator=c, role_name="")
             # It'll cut off any with only 1 reading, so:
-            ReadingFactory.create_batch(i, publication=pub, start_date=d, end_date=d)
+            ReadingFactory.create_batch(
+                i, publication=pub, start_date=d, end_date=d, is_finished=True
+            )
 
         data = most_read_creators_card()
 
@@ -161,12 +184,52 @@ class MostReadCreatorsCardTestCase(TestCase):
             pub = PublicationFactory()
             PublicationRoleFactory(publication=pub, creator=c, role_name="")
             # It'll cut off any with only 1 reading, so:
-            ReadingFactory.create_batch(i, publication=pub, start_date=d, end_date=d)
+            ReadingFactory.create_batch(
+                i, publication=pub, start_date=d, end_date=d, is_finished=True
+            )
 
         data = most_read_creators_card(num=3)
 
         self.assertIn("object_list", data)
         self.assertEqual(len(data["object_list"]), 3)
+
+    def test_finished(self):
+        "It should only return finished readings"
+        d = make_date("2017-02-15")
+
+        # A finished reading
+        c1 = IndividualCreatorFactory()
+        pub1 = PublicationFactory()
+        PublicationRoleFactory(publication=pub1, creator=c1, role_name="")
+        # It'll cut off any with only 1 reading, so:
+        ReadingFactory.create_batch(
+            3, publication=pub1, start_date=d, end_date=d, is_finished=True
+        )
+
+        # Another finished reading (so there's a chart)
+        c2 = IndividualCreatorFactory()
+        pub2 = PublicationFactory()
+        PublicationRoleFactory(publication=pub2, creator=c2, role_name="")
+        # It'll cut off any with only 1 reading, so:
+        ReadingFactory.create_batch(
+            2, publication=pub2, start_date=d, end_date=d, is_finished=True
+        )
+
+        # An unfinished reading
+        c3 = IndividualCreatorFactory()
+        pub3 = PublicationFactory()
+        PublicationRoleFactory(publication=pub3, creator=c3, role_name="")
+        # It'll cut off any with only 1 reading, so:
+        ReadingFactory.create_batch(
+            2, publication=pub3, start_date=d, end_date=d, is_finished=False
+        )
+
+        data = most_read_creators_card()
+
+        self.assertIn("object_list", data)
+        self.assertEqual(len(data["object_list"]), 2)
+        self.assertEqual(data["object_list"][0], c1)
+        self.assertEqual(data["object_list"][1], c2)
 
 
 class MostVisitedVenuesTestCase(TestCase):

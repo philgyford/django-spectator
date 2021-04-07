@@ -50,6 +50,7 @@ class CreatorManager(models.Manager):
         qs = (
             qs.filter(publication_roles__role_name__in=role_names)
             .exclude(publications__reading__isnull=True)
+            .exclude(publications__reading__is_finished=False)
             .annotate(num_readings=Count("publications__reading"))
             .order_by("-num_readings", "name_sort")
         )
