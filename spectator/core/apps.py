@@ -6,6 +6,9 @@ class SpectatorCoreAppConfig(AppConfig):
     name = "spectator.core"
     verbose_name = "Spectator Core"
 
+    # Maintain pre Django 3.2 default behaviour:
+    default_auto_field = "django.db.models.AutoField"
+
 
 class Apps(object):
     """Methods for seeing which Spectator apps are installed/enabled.
