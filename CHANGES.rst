@@ -5,6 +5,13 @@ Changelog (Django Spectator)
 Unreleased
 ----------
 
+11.6.0 - 2021-04-07
+-------------------
+
+- Include support for Django 3.2.
+
+- Fix: Stop the "Most Read Authors" card counting unfinished Readings.
+
 
 11.5.0 - 2021-03-23
 -------------------

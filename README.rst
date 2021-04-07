@@ -21,7 +21,7 @@ For Django 2.2 to Django 3.2, running on Python 3.6 to 3.9.
 It has URLs, views and templates to create a site displaying all the data, and
 Django admin screens to add and edit them. The templates use `Bootstrap v4 <https://getbootstrap.com>`_.
 
-There are also template tags for displaying data in your own templates (see
+There are also template ta for displaying data in your own templates (see
 below).
 
 This is used on my personal website (with custom templates): `reading <https://www.gyford.com/phil/reading/>`__ and `events <https://www.gyford.com/phil/events/>`__.
