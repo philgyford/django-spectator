@@ -139,6 +139,8 @@ class MostReadCreatorsTestCase(TestCase):
         pub1 = PublicationFactory()
         PublicationRoleFactory(publication=pub1, creator=c1, role_name="")
         ReadingFactory(publication=pub1, start_date=d, end_date=d, is_finished=True)
+        ReadingFactory(publication=pub1, start_date=d, end_date=d, is_finished=True)
+        ReadingFactory(publication=pub1, start_date=d, end_date=d, is_finished=False)
 
         # An unfinished reading
         c2 = IndividualCreatorFactory()
@@ -150,6 +152,7 @@ class MostReadCreatorsTestCase(TestCase):
 
         self.assertEqual(len(creators), 1)
         self.assertEqual(creators[0], c1)
+        self.assertEqual(creators[0].num_readings, 2)
 
 
 class MostReadCreatorsCardTestCase(TestCase):
@@ -214,6 +217,9 @@ class MostReadCreatorsCardTestCase(TestCase):
         ReadingFactory.create_batch(
             2, publication=pub2, start_date=d, end_date=d, is_finished=True
         )
+        # An unfinished reading for the same author - they should still be in the
+        # chart though, because they have one finished reading.
+        ReadingFactory(publication=pub2, start_date=d, end_date=d, is_finished=False)
 
         # An unfinished reading
         c3 = IndividualCreatorFactory()
@@ -229,7 +235,9 @@ class MostReadCreatorsCardTestCase(TestCase):
         self.assertIn("object_list", data)
         self.assertEqual(len(data["object_list"]), 2)
         self.assertEqual(data["object_list"][0], c1)
+        self.assertEqual(data["object_list"][0].num_readings, 3)
         self.assertEqual(data["object_list"][1], c2)
+        self.assertEqual(data["object_list"][1].num_readings, 2)
 
 
 class MostVisitedVenuesTestCase(TestCase):

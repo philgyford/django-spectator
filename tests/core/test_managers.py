@@ -243,6 +243,8 @@ class CreatorManagerByReadingsTestCase(TestCase):
         pub1 = PublicationFactory()
         PublicationRoleFactory(publication=pub1, creator=c1, role_name="")
         ReadingFactory(publication=pub1, start_date=d, end_date=d, is_finished=True)
+        ReadingFactory(publication=pub1, start_date=d, end_date=d, is_finished=True)
+        ReadingFactory(publication=pub1, start_date=d, end_date=d, is_finished=False)
 
         # An finished reading
         c2 = IndividualCreatorFactory()
@@ -254,6 +256,7 @@ class CreatorManagerByReadingsTestCase(TestCase):
 
         self.assertEqual(len(creators), 1)
         self.assertEqual(creators[0], c1)
+        self.assertEqual(creators[0].num_readings, 2)
 
 
 class CreatorManagerByEventsTestCase(TestCase):
