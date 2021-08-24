@@ -62,7 +62,7 @@ if sys.argv[-1] == "testpublish":
     )
     sys.exit()
 
-dev_require = ["django-debug-toolbar>=2.0,<4.0", "flake8>=3.8,<4.0", "black==20.8b1"]
+dev_require = ["django-debug-toolbar>=2.0,<4.0", "flake8>=3.8,<4.0", "black==21.7b0"]
 tests_require = dev_require + [
     "factory-boy>=2.12.0,<4.0",
     "freezegun>=0.3.12,<2.0",
@@ -91,7 +91,7 @@ setup(
     author_email=get_author_email(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
-        "Environment :: Web Environment",
+        "Enviroment :: Web Environment",
         "Framework :: Django",
         "Framework :: Django :: 2.2",
         "Framework :: Django :: 3.1",
