@@ -8,6 +8,15 @@ Unreleased
 - None
 
 
+11.6.1 - 2021-08-24
+-------------------
+
+- Fix: The 'Most read authors' card and other lists was omitting any Creators
+  who had a Publication with a currently unfinished Reading.
+
+- Update development project dependencies.
+
+
 11.6.0 - 2021-04-07
 -------------------
 
