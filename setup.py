@@ -91,7 +91,7 @@ setup(
     author_email=get_author_email(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
-        "Enviroment :: Web Environment",
+        "Environment :: Web Environment",
         "Framework :: Django",
         "Framework :: Django :: 2.2",
         "Framework :: Django :: 3.1",
