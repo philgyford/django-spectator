@@ -7,6 +7,7 @@ from django.urls import reverse
 from hashids import Hashids
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFit
+import piexif
 
 from . import app_settings
 from .fields import NaturalSortField
@@ -131,8 +132,16 @@ class ThumbnailModelMixin(models.Model):
     class Meta:
         abstract = True
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # So we can see if it changed in save():
+        self.__original_thumbnail = self.thumbnail
+
     def save(self, *args, **kwargs):
         """
+        Move thumbnail file to correct location, and remove any location EXIF data.
+
         Ensure the uploaded thumbnail is in a directory for this object, with
         self.slug in the path.
 
@@ -147,32 +156,60 @@ class ThumbnailModelMixin(models.Model):
         super().save(*args, **kwargs)
 
         sep = os.path.sep
-        if self.thumbnail and f"{sep}{self.slug}{sep}" not in self.thumbnail.path:
-            # There's a thumbnail but it's not in a directory with the slug name.
+
+        if (
+            self.thumbnail
+            and f"{sep}{self.slug}{sep}" not in self.thumbnail.path
+        ):
+            # There's a new thumbnail but it's not in a directory with the slug name.
             # So we're going to move it, update the thumbnail property and then
             # re-save the model.
             # We have to do this AFTER the initial save, which generates the slug.
-            initial_path = self.thumbnail.path
-            filename = os.path.basename(initial_path)
-
-            new_name = thumbnail_upload_path(self, filename)
-            new_path = os.path.join(settings.MEDIA_ROOT, new_name)
-
-            if not os.path.exists(os.path.dirname(new_path)):
-                os.makedirs(os.path.dirname(new_path))
-
-            # Move the file:
-            os.rename(initial_path, new_path)
-
-            # Need to change both the field's name, and that for its
-            # File object. Otherwise we get an error if we're using
-            # django-imagekit's Optimistic cache strategy, trying to
-            # generate the cache files on save.
-            self.thumbnail.name = new_name
-            self.thumbnail.file.name = new_path
+            self._move_uploaded_thumbnail()
 
             kwargs["force_insert"] = False
             super().save(*args, **kwargs)
+
+        if self.thumbnail and self.thumbnail != self.__original_thumbnail:
+            # Thumbnail has changed, so remove location data, if any.
+            self.sanitize_thumbnail_exif_data()
+            self.__original_thumbnail = self.thumbnail
+
+    def sanitize_thumbnail_exif_data(self):
+        """
+        If the thumbnail has any GPS data in its EXIF data, remove it.
+        """
+        exif_dict = piexif.load(self.thumbnail.path)
+
+        if "GPS" in exif_dict:
+            del exif_dict["GPS"]
+            exif_bytes = piexif.dump(exif_dict)
+            piexif.insert(exif_bytes, self.thumbnail.path)
+
+    def _move_uploaded_thumbnail(self):
+        """
+        Move the thumbnail file from its original location, not in a slug directory,
+        to a new slug-named directory. Then update the properties to point to the new
+        location.
+        """
+        initial_path = self.thumbnail.path
+        filename = os.path.basename(initial_path)
+
+        new_name = thumbnail_upload_path(self, filename)
+        new_path = os.path.join(settings.MEDIA_ROOT, new_name)
+
+        if not os.path.exists(os.path.dirname(new_path)):
+            os.makedirs(os.path.dirname(new_path))
+
+        # Move the file:
+        os.rename(initial_path, new_path)
+
+        # Need to change both the field's name, and that for its
+        # File object. Otherwise we get an error if we're using
+        # django-imagekit's Optimistic cache strategy, trying to
+        # generate the cache files on save.
+        self.thumbnail.name = new_name
+        self.thumbnail.file.name = new_path
 
 
 class BaseRole(TimeStampedModelMixin, models.Model):

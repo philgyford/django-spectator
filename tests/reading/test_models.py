@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
+import piexif
 
 from .. import make_date
 from spectator.core.factories import IndividualCreatorFactory
@@ -148,6 +149,19 @@ class PublicationTestCase(TestCase):
         )
         self.assertEqual(pub.detail_thumbnail_2x.width, 640)
         self.assertEqual(pub.detail_thumbnail_2x.height, 640)
+
+    def test_exif_data_removed_from_thumbnail(self):
+        "An image with GPS EXIF data should have it stripped out"
+        path = "tests/core/fixtures/images/tester_exif_gps.jpg"
+
+        # Double-check the original image does have some GPS data:
+        exif_dict = piexif.load(path)
+        self.assertEqual(len(exif_dict["GPS"].keys()), 15)
+
+        pub = PublicationFactory(thumbnail__from_path=path)
+
+        exif_dict = piexif.load(pub.thumbnail.path)
+        self.assertEqual(exif_dict["GPS"], {})
 
     def test_roles(self):
         "It can have multiple PublicationRoles."

@@ -1,4 +1,5 @@
 from django.test import override_settings, TestCase
+import piexif
 
 from .. import make_date
 from spectator.core.factories import GroupCreatorFactory, IndividualCreatorFactory
@@ -456,6 +457,21 @@ class EventTestCase(TestCase):
         )
         self.assertEqual(event.detail_thumbnail_2x.width, 640)
         self.assertEqual(event.detail_thumbnail_2x.height, 640)
+
+    def test_exif_data_removed_from_thumbnail(self):
+        "An image with GPS EXIF data should have it stripped out"
+        path = "tests/core/fixtures/images/tester_exif_gps.jpg"
+
+        # Double-check the original image does have some GPS data:
+        exif_dict = piexif.load(path)
+        self.assertEqual(len(exif_dict["GPS"].keys()), 15)
+
+        event = CinemaEventFactory(
+            thumbnail__from_path=path
+        )
+
+        exif_dict = piexif.load(event.thumbnail.path)
+        self.assertEqual(exif_dict["GPS"], {})
 
     def test_get_works(self):
         event = CinemaEventFactory()
