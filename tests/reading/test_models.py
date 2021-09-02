@@ -61,49 +61,90 @@ class PublicationTestCase(TestCase):
         pub = PublicationFactory(pk=123)
         self.assertEqual(pub.get_absolute_url(), "/reading/publications/9g5o8/")
 
-    def test_thumbnail_url(self):
-        "By default it should use reading/publications/ as the path."
+    @override_settings(
+        IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
+    )
+    def test_thumbnail(self):
+        """
+        By default it should use reading/publications/{pub.slug}/ as the path.
+        Ensure it works with the Optimistic cachefile strategy.
+        """
         pub = PublicationFactory(thumbnail__filename="tester.jpg")
+        self.assertEqual(
+            pub.thumbnail.url, f"/media/reading/publications/{pub.slug}/tester.jpg"
+        )
         self.assertTrue(
-            pub.thumbnail.url.startswith("/media/reading/publications/tester")
+            pub.thumbnail.path.endswith, f"/reading/publications/{pub.slug}/test.jpg"
         )
 
+    @override_settings(
+        IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
+    )
     def test_list_thumbnail(self):
+        "It should save a correctly-sized thumbnail to the correct location."
         pub = PublicationFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             pub.list_thumbnail.url.startswith(
-                "/media/CACHE/images/reading/publications/tester_"
+                f"/media/CACHE/images/reading/publications/{pub.slug}/tester/"
             )
+        )
+        self.assertIn(
+            f"/CACHE/images/reading/publications/{pub.slug}/tester/",
+            pub.list_thumbnail.path,
         )
         self.assertEqual(pub.list_thumbnail.width, 80)
         self.assertEqual(pub.list_thumbnail.height, 80)
 
+    @override_settings(
+        IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
+    )
     def test_list_thumbnail_2x(self):
+        "It should save a correctly-sized thumbnail to the correct location."
         pub = PublicationFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             pub.list_thumbnail_2x.url.startswith(
-                "/media/CACHE/images/reading/publications/tester_"
+                f"/media/CACHE/images/reading/publications/{pub.slug}/tester/"
             )
+        )
+        self.assertIn(
+            f"/CACHE/images/reading/publications/{pub.slug}/tester/",
+            pub.list_thumbnail_2x.path,
         )
         self.assertEqual(pub.list_thumbnail_2x.width, 160)
         self.assertEqual(pub.list_thumbnail_2x.height, 160)
 
+    @override_settings(
+        IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
+    )
     def test_detail_thumbnail(self):
+        "It should save a correctly-sized thumbnail to the correct location."
         pub = PublicationFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             pub.detail_thumbnail.url.startswith(
-                "/media/CACHE/images/reading/publications/tester/"
+                f"/media/CACHE/images/reading/publications/{pub.slug}/tester/"
             )
+        )
+        self.assertIn(
+            f"/CACHE/images/reading/publications/{pub.slug}/tester/",
+            pub.detail_thumbnail.path,
         )
         self.assertEqual(pub.detail_thumbnail.width, 320)
         self.assertEqual(pub.detail_thumbnail.height, 320)
 
+    @override_settings(
+        IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
+    )
     def test_detail_thumbnail_2x(self):
+        "It should save a correctly-sized thumbnail to the correct location."
         pub = PublicationFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             pub.detail_thumbnail_2x.url.startswith(
-                "/media/CACHE/images/reading/publications/tester_"
+                f"/media/CACHE/images/reading/publications/{pub.slug}/tester/"
             )
+        )
+        self.assertIn(
+            f"/CACHE/images/reading/publications/{pub.slug}/tester/",
+            pub.detail_thumbnail_2x.path,
         )
         self.assertEqual(pub.detail_thumbnail_2x.width, 640)
         self.assertEqual(pub.detail_thumbnail_2x.height, 640)
