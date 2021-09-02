@@ -76,6 +76,7 @@ setup(
     install_requires=[
         "django-imagekit>=4.0,<4.1",
         "hashids>=1.2.0,<1.4",
+        "piexif>=1.1.3,<2.0",
         "pillow>=7.0.0,<9.0",
     ],
     dependency_links=[],

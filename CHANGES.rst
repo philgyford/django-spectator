@@ -8,6 +8,9 @@ Unreleased
 - Fix: Thumbnail images for brand new Events and Publications are now saved to
   a directory named after the object's ``slug``. (#67)
 
+- New feature: Any images uploaded as thumbnails that have GPS info in their
+  EXIF data will have it stripped out, for added security. (#64)
+
 
 11.6.1 - 2021-08-24
 -------------------
