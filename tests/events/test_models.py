@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import override_settings, TestCase
 
 from .. import make_date
 from spectator.core.factories import GroupCreatorFactory, IndividualCreatorFactory
@@ -367,47 +367,92 @@ class EventTestCase(TestCase):
         event = TheatreEventFactory(pk=123)
         self.assertEqual(event.get_absolute_url(), "/events/9g5o8/")
 
-    def test_thumbnail_url(self):
-        "By default it should use events/events/ as the path."
+    @override_settings(
+        IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
+    )
+    def test_thumbnail(self):
+        """
+        By default it should use reading/publications/{pub.slug}/ as the path.
+        Ensure it works with the Optimistic cachefile strategy.
+        """
         event = CinemaEventFactory(thumbnail__filename="tester.jpg")
-        self.assertTrue(event.thumbnail.url.startswith("/media/events/events/tester"))
 
+        self.assertEqual(
+            event.thumbnail.url, f"/media/events/events/{event.slug}/tester.jpg"
+        )
+        self.assertTrue(
+            event.thumbnail.path.endswith,
+            f"/evens/events/{event.slug}/test.jpg",
+        )
+
+    @override_settings(
+        IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
+    )
     def test_list_thumbnail(self):
+        "It should save a correctly-sized thumbnail to the correct location."
         event = CinemaEventFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             event.list_thumbnail.url.startswith(
-                "/media/CACHE/images/events/events/tester_"
+                f"/media/CACHE/images/events/events/{event.slug}/tester/"
             )
+        )
+        self.assertIn(
+            f"/CACHE/images/events/events/{event.slug}/tester/",
+            event.list_thumbnail.path,
         )
         self.assertEqual(event.list_thumbnail.width, 80)
         self.assertEqual(event.list_thumbnail.height, 80)
 
+    @override_settings(
+        IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
+    )
     def test_list_thumbnail_2x(self):
+        "It should save a correctly-sized thumbnail to the correct location."
         event = CinemaEventFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             event.list_thumbnail_2x.url.startswith(
-                "/media/CACHE/images/events/events/tester_"
+                f"/media/CACHE/images/events/events/{event.slug}/tester/"
             )
+        )
+        self.assertIn(
+            f"/CACHE/images/events/events/{event.slug}/tester/",
+            event.list_thumbnail_2x.path,
         )
         self.assertEqual(event.list_thumbnail_2x.width, 160)
         self.assertEqual(event.list_thumbnail_2x.height, 160)
 
+    @override_settings(
+        IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
+    )
     def test_detail_thumbnail(self):
+        "It should save a correctly-sized thumbnail to the correct location."
         event = CinemaEventFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             event.detail_thumbnail.url.startswith(
-                "/media/CACHE/images/events/events/tester/"
+                f"/media/CACHE/images/events/events/{event.slug}/tester/"
             )
+        )
+        self.assertIn(
+            f"/CACHE/images/events/events/{event.slug}/tester/",
+            event.detail_thumbnail.path,
         )
         self.assertEqual(event.detail_thumbnail.width, 320)
         self.assertEqual(event.detail_thumbnail.height, 320)
 
+    @override_settings(
+        IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
+    )
     def test_detail_thumbnail_2x(self):
+        "It should save a correctly-sized thumbnail to the correct location."
         event = CinemaEventFactory(thumbnail__filename="tester.jpg")
         self.assertTrue(
             event.detail_thumbnail_2x.url.startswith(
-                "/media/CACHE/images/events/events/tester_"
+                f"/media/CACHE/images/events/events/{event.slug}/tester/"
             )
+        )
+        self.assertIn(
+            f"/CACHE/images/events/events/{event.slug}/tester/",
+            event.detail_thumbnail_2x.path,
         )
         self.assertEqual(event.detail_thumbnail_2x.width, 640)
         self.assertEqual(event.detail_thumbnail_2x.height, 640)

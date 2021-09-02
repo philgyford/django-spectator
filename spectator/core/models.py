@@ -1,3 +1,6 @@
+import os
+
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -75,7 +78,7 @@ def thumbnail_upload_path(instance, filename):
     else:
         raise NotImplementedError("No base directory set for this app's thumbnails")
 
-    return "/".join([path, folder, instance.slug, filename])
+    return os.path.join(path, folder, instance.slug, filename)
 
 
 class ThumbnailModelMixin(models.Model):
@@ -118,7 +121,7 @@ class ThumbnailModelMixin(models.Model):
 
     detail_thumbnail = ImageSpecField(
         processors=[ResizeToFit(*app_settings.THUMBNAIL_DETAIL_SIZE)],
-        **thumbnail_kwargs
+        **thumbnail_kwargs,
     )
 
     detail_thumbnail_2x = ImageSpecField(
@@ -127,6 +130,49 @@ class ThumbnailModelMixin(models.Model):
 
     class Meta:
         abstract = True
+
+    def save(self, *args, **kwargs):
+        """
+        Ensure the uploaded thumbnail is in a directory for this object, with
+        self.slug in the path.
+
+        If adding a new object, e.g. in Admin's add screen, then the thumbnail
+        is uploaded and saved BEFORE the object is saved. Saving the object gives
+        it a pk, on which the slug is based. So the order needs to be:
+
+        1. Save image to a path that won't have the slug in it
+        2. Save the object, generating a pk and a slug
+        3. Move image from its original location to a new directory in correct location.
+        """
+        super().save(*args, **kwargs)
+
+        sep = os.path.sep
+        if self.thumbnail and f"{sep}{self.slug}{sep}" not in self.thumbnail.path:
+            # There's a thumbnail but it's not in a directory with the slug name.
+            # So we're going to move it, update the thumbnail property and then
+            # re-save the model.
+            # We have to do this AFTER the initial save, which generates the slug.
+            initial_path = self.thumbnail.path
+            filename = os.path.basename(initial_path)
+
+            new_name = thumbnail_upload_path(self, filename)
+            new_path = os.path.join(settings.MEDIA_ROOT, new_name)
+
+            if not os.path.exists(os.path.dirname(new_path)):
+                os.makedirs(os.path.dirname(new_path))
+
+            # Move the file:
+            os.rename(initial_path, new_path)
+
+            # Need to change both the field's name, and that for its
+            # File object. Otherwise we get an error if we're using
+            # django-imagekit's Optimistic cache strategy, trying to
+            # generate the cache files on save.
+            self.thumbnail.name = new_name
+            self.thumbnail.file.name = new_path
+
+            kwargs["force_insert"] = False
+            super().save(*args, **kwargs)
 
 
 class BaseRole(TimeStampedModelMixin, models.Model):
