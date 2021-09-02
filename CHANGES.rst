@@ -5,14 +5,15 @@ Changelog (Django Spectator)
 Unreleased
 ----------
 
-- None
+- Fix: Thumbnail images for brand new Events and Publications are now saved to
+  a directory named after the object's ``slug``. (#67)
 
 
 11.6.1 - 2021-08-24
 -------------------
 
 - Fix: The 'Most read authors' card and other lists was omitting any Creators
-  who had a Publication with a currently unfinished Reading.
+  who had a Publication with a currently unfinished Reading. (#65)
 
 - Update development project dependencies.
 
@@ -22,7 +23,7 @@ Unreleased
 
 - Include support for Django 3.2.
 
-- Fix: Stop the "Most Read Authors" card counting unfinished Readings.
+- Fix: Stop the "Most Read Authors" card counting unfinished Readings. (#59)
 
 
 11.5.0 - 2021-03-23
