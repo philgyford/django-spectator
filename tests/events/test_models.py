@@ -1,3 +1,6 @@
+import os
+
+from django.core.files import File
 from django.test import override_settings, TestCase
 import piexif
 
@@ -458,20 +461,58 @@ class EventTestCase(TestCase):
         self.assertEqual(event.detail_thumbnail_2x.width, 640)
         self.assertEqual(event.detail_thumbnail_2x.height, 640)
 
-    def test_exif_data_removed_from_thumbnail(self):
-        "An image with GPS EXIF data should have it stripped out"
+    def test_exif_data_removed_from_added_thumbnail(self):
+        """An image with GPS EXIF data should have it stripped out with a new object.
+        Testing the image when added to a brand new publication.
+        """
+
+        # The image that has GPS data:
         path = "tests/core/fixtures/images/tester_exif_gps.jpg"
 
         # Double-check the original image does have some GPS data:
         exif_dict = piexif.load(path)
         self.assertEqual(len(exif_dict["GPS"].keys()), 15)
 
-        event = CinemaEventFactory(
-            thumbnail__from_path=path
-        )
+        event = CinemaEventFactory(thumbnail__from_path=path)
 
         exif_dict = piexif.load(event.thumbnail.path)
         self.assertEqual(exif_dict["GPS"], {})
+
+        # Tidy up:
+        event.thumbnail.delete()
+
+    def test_exif_data_removed_from_updated_thumbnail(self):
+        """A replacement thumbnail should have its GPS data removed.
+        i.e. an image that's added to an existing event, not a brand new one.
+        """
+
+        # The image that has GPS data:
+        path = "tests/core/fixtures/images/tester_exif_gps.jpg"
+
+        # Double-check it does have some GPS data:
+        exif_dict = piexif.load(path)
+        self.assertEqual(len(exif_dict["GPS"].keys()), 15)
+
+        # Add an initial image that nas no GPS data:
+        event = CinemaEventFactory(thumbnail__filename="tester.jpg")
+        # Double-check that:
+        exif_dict = piexif.load(event.thumbnail.path)
+        self.assertEqual(exif_dict["GPS"], {})
+
+        # Change the thumbnail to the one with GPS EXIF data:
+        event.thumbnail.save(os.path.basename(path), File(open(path, "rb")))
+
+        event.refresh_from_db()
+
+        # Check it does have the new image that had GPS data:
+        self.assertEqual(os.path.basename(event.thumbnail.name), os.path.basename(path))
+
+        # Check the GPS data has now gone:
+        exif_dict = piexif.load(event.thumbnail.path)
+        self.assertEqual(exif_dict["GPS"], {})
+
+        # Tidy up:
+        event.thumbnail.delete()
 
     def test_get_works(self):
         event = CinemaEventFactory()
