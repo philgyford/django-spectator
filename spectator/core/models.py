@@ -138,11 +138,7 @@ class ThumbnailModelMixin(models.Model):
         So we can tell whether it's changed in save().
         """
         super().__init__(*args, **kwargs)
-
-        if self.thumbnail:
-            self.__original_thumbnail_name = self.thumbnail.name
-        else:
-            self.__original_thumbnail_name = None
+        self.__original_thumbnail_name = self.thumbnail.name
 
     def save(self, *args, **kwargs):
         """
