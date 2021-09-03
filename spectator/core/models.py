@@ -132,6 +132,18 @@ class ThumbnailModelMixin(models.Model):
     class Meta:
         abstract = True
 
+    def __init__(self, *args, **kwargs):
+        """
+        Overridden so that we can save the original thumbnail.
+        So we can tell whether it's changed in save().
+        """
+        super().__init__(*args, **kwargs)
+
+        if self.thumbnail:
+            self.__original_thumbnail_name = self.thumbnail.name
+        else:
+            self.__original_thumbnail_name = None
+
     def save(self, *args, **kwargs):
         """
         Move thumbnail file to correct location, and remove any location EXIF data.
@@ -155,7 +167,7 @@ class ThumbnailModelMixin(models.Model):
             self.thumbnail
             and f"{sep}{self.slug}{sep}" not in self.thumbnail.path
         ):
-            # There's a new thumbnail but it's not in a directory with the slug name.
+            # There's a thumbnail but it's not in a directory with the slug name.
             # So we're going to move it, update the thumbnail property and then
             # re-save the model.
             # We have to do this AFTER the initial save, which generates the slug.
@@ -164,11 +176,13 @@ class ThumbnailModelMixin(models.Model):
             kwargs["force_insert"] = False
             super().save(*args, **kwargs)
 
-        # Remove GPS EXIF data.
-        # Ideally we'd only bother doing this if the thumbnail has changed.
-        # BUT I can't work out how to detect that if we've replaced one image
-        # with a new one. So, for now, we're doing it on each save.
-        self.sanitize_thumbnail_exif_data()
+        if self.thumbnail and self.__original_thumbnail_name != self.thumbnail.name:
+            # New thumbnail; remove GPS data.
+            self.sanitize_thumbnail_exif_data()
+
+        # Set the original to whatever the current thumbnail is, so we
+        # can tell if it changes again.
+        self.__original_thumbnail_name = self.thumbnail.name
 
     def sanitize_thumbnail_exif_data(self):
         """
