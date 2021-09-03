@@ -1,4 +1,7 @@
+import os
+
 from django.core.exceptions import ValidationError
+from django.core.files import File
 from django.test import TestCase, override_settings
 import piexif
 
@@ -150,8 +153,12 @@ class PublicationTestCase(TestCase):
         self.assertEqual(pub.detail_thumbnail_2x.width, 640)
         self.assertEqual(pub.detail_thumbnail_2x.height, 640)
 
-    def test_exif_data_removed_from_thumbnail(self):
-        "An image with GPS EXIF data should have it stripped out"
+    def test_exif_data_removed_from_added_thumbnail(self):
+        """An image with GPS EXIF data should have it stripped out with a new object.
+        Testing the image when added to a brand new publication.
+        """
+
+        # The image that has GPS data:
         path = "tests/core/fixtures/images/tester_exif_gps.jpg"
 
         # Double-check the original image does have some GPS data:
@@ -162,6 +169,42 @@ class PublicationTestCase(TestCase):
 
         exif_dict = piexif.load(pub.thumbnail.path)
         self.assertEqual(exif_dict["GPS"], {})
+
+        # Tidy up:
+        pub.thumbnail.delete()
+
+    def test_exif_data_removed_from_updated_thumbnail(self):
+        """A replacement thumbnail should have its GPS data removed.
+        i.e. an image that's added to an existing publication, not a brand new one.
+        """
+
+        # The image that has GPS data:
+        path = "tests/core/fixtures/images/tester_exif_gps.jpg"
+
+        # Double-check it does have some GPS data:
+        exif_dict = piexif.load(path)
+        self.assertEqual(len(exif_dict["GPS"].keys()), 15)
+
+        # Add an initial image that nas no GPS data:
+        pub = PublicationFactory(thumbnail__filename="tester.jpg")
+        # Double-check that:
+        exif_dict = piexif.load(pub.thumbnail.path)
+        self.assertEqual(exif_dict["GPS"], {})
+
+        # Change the thumbnail to the one with GPS EXIF data:
+        pub.thumbnail.save(os.path.basename(path), File(open(path, "rb")))
+
+        pub.refresh_from_db()
+
+        # Check it does have the new image that had GPS data:
+        self.assertEqual(os.path.basename(pub.thumbnail.name), os.path.basename(path))
+
+        # Check the GPS data has now gone:
+        exif_dict = piexif.load(pub.thumbnail.path)
+        self.assertEqual(exif_dict["GPS"], {})
+
+        # Tidy up:
+        pub.thumbnail.delete()
 
     def test_roles(self):
         "It can have multiple PublicationRoles."

@@ -132,12 +132,6 @@ class ThumbnailModelMixin(models.Model):
     class Meta:
         abstract = True
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # So we can see if it changed in save():
-        self.__original_thumbnail = self.thumbnail
-
     def save(self, *args, **kwargs):
         """
         Move thumbnail file to correct location, and remove any location EXIF data.
@@ -170,21 +164,23 @@ class ThumbnailModelMixin(models.Model):
             kwargs["force_insert"] = False
             super().save(*args, **kwargs)
 
-        if self.thumbnail and self.thumbnail != self.__original_thumbnail:
-            # Thumbnail has changed, so remove location data, if any.
-            self.sanitize_thumbnail_exif_data()
-            self.__original_thumbnail = self.thumbnail
+        # Remove GPS EXIF data.
+        # Ideally we'd only bother doing this if the thumbnail has changed.
+        # BUT I can't work out how to detect that if we've replaced one image
+        # with a new one. So, for now, we're doing it on each save.
+        self.sanitize_thumbnail_exif_data()
 
     def sanitize_thumbnail_exif_data(self):
         """
         If the thumbnail has any GPS data in its EXIF data, remove it.
         """
-        exif_dict = piexif.load(self.thumbnail.path)
+        if self.thumbnail:
+            exif_dict = piexif.load(self.thumbnail.path)
 
-        if "GPS" in exif_dict:
-            del exif_dict["GPS"]
-            exif_bytes = piexif.dump(exif_dict)
-            piexif.insert(exif_bytes, self.thumbnail.path)
+            if "GPS" in exif_dict:
+                del exif_dict["GPS"]
+                exif_bytes = piexif.dump(exif_dict)
+                piexif.insert(exif_bytes, self.thumbnail.path)
 
     def _move_uploaded_thumbnail(self):
         """
