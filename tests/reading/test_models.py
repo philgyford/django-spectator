@@ -78,8 +78,11 @@ class PublicationTestCase(TestCase):
             pub.thumbnail.url, f"/media/reading/publications/{pub.slug}/tester.jpg"
         )
         self.assertTrue(
-            pub.thumbnail.path.endswith, f"/reading/publications/{pub.slug}/test.jpg"
+            pub.thumbnail.path.endswith, f"/reading/publications/{pub.slug}/tester.jpg"
         )
+
+        # Tidy up:
+        pub.thumbnail.delete()
 
     @override_settings(
         IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
@@ -99,6 +102,9 @@ class PublicationTestCase(TestCase):
         self.assertEqual(pub.list_thumbnail.width, 80)
         self.assertEqual(pub.list_thumbnail.height, 80)
 
+        # Tidy up:
+        pub.thumbnail.delete()
+
     @override_settings(
         IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
     )
@@ -116,6 +122,9 @@ class PublicationTestCase(TestCase):
         )
         self.assertEqual(pub.list_thumbnail_2x.width, 160)
         self.assertEqual(pub.list_thumbnail_2x.height, 160)
+
+        # Tidy up:
+        pub.thumbnail.delete()
 
     @override_settings(
         IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
@@ -135,6 +144,9 @@ class PublicationTestCase(TestCase):
         self.assertEqual(pub.detail_thumbnail.width, 320)
         self.assertEqual(pub.detail_thumbnail.height, 320)
 
+        # Tidy up:
+        pub.thumbnail.delete()
+
     @override_settings(
         IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
     )
@@ -152,6 +164,9 @@ class PublicationTestCase(TestCase):
         )
         self.assertEqual(pub.detail_thumbnail_2x.width, 640)
         self.assertEqual(pub.detail_thumbnail_2x.height, 640)
+
+        # Tidy up:
+        pub.thumbnail.delete()
 
     def test_exif_data_removed_from_added_thumbnail(self):
         """An image with GPS EXIF data should have it stripped out with a new object.
@@ -191,6 +206,9 @@ class PublicationTestCase(TestCase):
         exif_dict = piexif.load(pub.thumbnail.path)
         self.assertEqual(exif_dict["GPS"], {})
 
+        # Save the path so we can delete the file at the end:
+        old_thumbnail_path = pub.thumbnail.path
+
         # Change the thumbnail to the one with GPS EXIF data:
         pub.thumbnail.save(os.path.basename(path), File(open(path, "rb")))
 
@@ -205,6 +223,7 @@ class PublicationTestCase(TestCase):
 
         # Tidy up:
         pub.thumbnail.delete()
+        os.remove(old_thumbnail_path)
 
     def test_roles(self):
         "It can have multiple PublicationRoles."

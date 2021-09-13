@@ -386,8 +386,11 @@ class EventTestCase(TestCase):
         )
         self.assertTrue(
             event.thumbnail.path.endswith,
-            f"/evens/events/{event.slug}/test.jpg",
+            f"/evens/events/{event.slug}/tester.jpg",
         )
+
+        # Tidy up:
+        event.thumbnail.delete()
 
     @override_settings(
         IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
@@ -407,6 +410,9 @@ class EventTestCase(TestCase):
         self.assertEqual(event.list_thumbnail.width, 80)
         self.assertEqual(event.list_thumbnail.height, 80)
 
+        # Tidy up:
+        event.thumbnail.delete()
+
     @override_settings(
         IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
     )
@@ -424,6 +430,9 @@ class EventTestCase(TestCase):
         )
         self.assertEqual(event.list_thumbnail_2x.width, 160)
         self.assertEqual(event.list_thumbnail_2x.height, 160)
+
+        # Tidy up:
+        event.thumbnail.delete()
 
     @override_settings(
         IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
@@ -443,6 +452,9 @@ class EventTestCase(TestCase):
         self.assertEqual(event.detail_thumbnail.width, 320)
         self.assertEqual(event.detail_thumbnail.height, 320)
 
+        # Tidy up:
+        event.thumbnail.delete()
+
     @override_settings(
         IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY="imagekit.cachefiles.strategies.Optimistic"
     )
@@ -460,6 +472,9 @@ class EventTestCase(TestCase):
         )
         self.assertEqual(event.detail_thumbnail_2x.width, 640)
         self.assertEqual(event.detail_thumbnail_2x.height, 640)
+
+        # Tidy up:
+        event.thumbnail.delete()
 
     def test_exif_data_removed_from_added_thumbnail(self):
         """An image with GPS EXIF data should have it stripped out with a new object.
@@ -499,6 +514,9 @@ class EventTestCase(TestCase):
         exif_dict = piexif.load(event.thumbnail.path)
         self.assertEqual(exif_dict["GPS"], {})
 
+        # Save the path so we can delete the file at the end:
+        old_thumbnail_path = event.thumbnail.path
+
         # Change the thumbnail to the one with GPS EXIF data:
         event.thumbnail.save(os.path.basename(path), File(open(path, "rb")))
 
@@ -513,6 +531,7 @@ class EventTestCase(TestCase):
 
         # Tidy up:
         event.thumbnail.delete()
+        os.remove(old_thumbnail_path)
 
     def test_get_works(self):
         event = CinemaEventFactory()

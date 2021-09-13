@@ -1,6 +1,5 @@
 import os
 
-from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -149,28 +148,22 @@ class ThumbnailModelMixin(models.Model):
 
         If adding a new object, e.g. in Admin's add screen, then the thumbnail
         is uploaded and saved BEFORE the object is saved. Saving the object gives
-        it a pk, on which the slug is based. So the order needs to be:
-
-        1. Save image to a path that won't have the slug in it
-        2. Save the object, generating a pk and a slug
-        3. Move image from its original location to a new directory in correct location.
+        it a pk, on which the slug is based. So we ensure the thumbnail is eventually
+        saved the correct path here.
         """
-        super().save(*args, **kwargs)
 
-        sep = os.path.sep
-
-        if (
-            self.thumbnail
-            and f"{sep}{self.slug}{sep}" not in self.thumbnail.path
-        ):
-            # There's a thumbnail but it's not in a directory with the slug name.
-            # So we're going to move it, update the thumbnail property and then
-            # re-save the model.
-            # We have to do this AFTER the initial save, which generates the slug.
-            self._move_uploaded_thumbnail()
-
-            kwargs["force_insert"] = False
+        if self.pk is None and self.thumbnail:
+            # The thumbnail will have been saved to a directory that doesn't have the
+            # slug name, because the slug hasn't been created yet.
+            # So, grab the thumbnail, save the model without it, and put the thumbnail
+            # back. So when we save again, it will be put in the correct place.
+            saved_thumbnail = self.thumbnail
+            self.thumbnail = None
             super().save(*args, **kwargs)
+            self.thumbnail = saved_thumbnail
+            kwargs["force_insert"] = False
+
+        super().save(*args, **kwargs)
 
         if self.thumbnail and self.__original_thumbnail_name != self.thumbnail.name:
             # New thumbnail; remove GPS data.
@@ -191,31 +184,6 @@ class ThumbnailModelMixin(models.Model):
                 del exif_dict["GPS"]
                 exif_bytes = piexif.dump(exif_dict)
                 piexif.insert(exif_bytes, self.thumbnail.path)
-
-    def _move_uploaded_thumbnail(self):
-        """
-        Move the thumbnail file from its original location, not in a slug directory,
-        to a new slug-named directory. Then update the properties to point to the new
-        location.
-        """
-        initial_path = self.thumbnail.path
-        filename = os.path.basename(initial_path)
-
-        new_name = thumbnail_upload_path(self, filename)
-        new_path = os.path.join(settings.MEDIA_ROOT, new_name)
-
-        if not os.path.exists(os.path.dirname(new_path)):
-            os.makedirs(os.path.dirname(new_path))
-
-        # Move the file:
-        os.rename(initial_path, new_path)
-
-        # Need to change both the field's name, and that for its
-        # File object. Otherwise we get an error if we're using
-        # django-imagekit's Optimistic cache strategy, trying to
-        # generate the cache files on save.
-        self.thumbnail.name = new_name
-        self.thumbnail.file.name = new_path
 
 
 class BaseRole(TimeStampedModelMixin, models.Model):
