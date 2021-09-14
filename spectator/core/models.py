@@ -1,5 +1,8 @@
+import io
 import os
 
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.db import models
 from django.urls import reverse
 
@@ -151,7 +154,6 @@ class ThumbnailModelMixin(models.Model):
         it a pk, on which the slug is based. So we ensure the thumbnail is eventually
         saved the correct path here.
         """
-
         if self.pk is None and self.thumbnail:
             # The thumbnail will have been saved to a directory that doesn't have the
             # slug name, because the slug hasn't been created yet.
@@ -178,12 +180,34 @@ class ThumbnailModelMixin(models.Model):
         If the thumbnail has any GPS data in its EXIF data, remove it.
         """
         if self.thumbnail:
-            exif_dict = piexif.load(self.thumbnail.path)
+            # We can't just do piexif.load(self.thumbnail.path) in case files are
+            # stored on S3 or similar, where that doesn't work.
+            # So, we use default_storage:
+            file = default_storage.open(self.thumbnail.name, mode="rb")
+            file_data = file.read()
+            file.close()
+
+            # Get the EXIF data from the file contents as a dict:
+            exif_dict = piexif.load(file_data)
 
             if "GPS" in exif_dict:
-                del exif_dict["GPS"]
+                exif_dict["GPS"] = {}
                 exif_bytes = piexif.dump(exif_dict)
-                piexif.insert(exif_bytes, self.thumbnail.path)
+
+                # Create a temporary file with existing data:
+                temp_file = io.BytesIO(file_data)
+                # Insert our updated exif data into it:
+                piexif.insert(exif_bytes, file_data, temp_file)
+
+                # Remove existing image from disk (or else, when we save the new one,
+                # we'll end up with both files, the new one with a different name):
+                filename = os.path.basename(self.thumbnail.name)
+                self.thumbnail.delete(save=False)
+
+                # Finally, save the temporary file as the new thumbnail:
+                self.thumbnail.save(
+                    filename, ContentFile(temp_file.getvalue()), save=False
+                )
 
 
 class BaseRole(TimeStampedModelMixin, models.Model):
