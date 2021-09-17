@@ -87,6 +87,7 @@ setup(
     description="A Django app to track book reading, movie viewing, "
     "gig going, play watching, etc.",
     long_description=read(os.path.join(os.path.dirname(__file__), "README.md")),
+    long_description_content_type="text/markdown",
     url="https://github.com/philgyford/django-spectator",
     author=get_author(),
     author_email=get_author_email(),
