@@ -29,7 +29,7 @@ Contents
     - [Core template tags](#core-template-tags)
     - [Reading template tags](#reading-template-tags)
     - [Events template tags](#events-template-tags)
-4. [Local development](#local-development)  
+4. [Local development](#local-development)
     - [Making a new release](#making-a-new-release)
     - [Adding a new Event kind](#adding-a-new-event-kind)
     - [Adding a new Work kind](#adding-a-new-work-kind)
