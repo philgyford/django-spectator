@@ -190,7 +190,7 @@ class ThumbnailModelMixin(models.Model):
             # Get the EXIF data from the file contents as a dict:
             exif_dict = piexif.load(file_data)
 
-            if "GPS" in exif_dict:
+            if "GPS" in exif_dict and len(exif_dict["GPS"]) > 0:
                 exif_dict["GPS"] = {}
                 exif_bytes = piexif.dump(exif_dict)
 
