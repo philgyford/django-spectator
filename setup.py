@@ -4,7 +4,7 @@ import re
 import sys
 from setuptools import setup
 
-with open(os.path.join(os.path.dirname(__file__), "README.rst")) as readme:
+with open(os.path.join(os.path.dirname(__file__), "README.md")) as readme:
     README = readme.read()
 
 # allow setup.py to be run from any path
@@ -86,7 +86,7 @@ setup(
     license=get_license(),
     description="A Django app to track book reading, movie viewing, "
     "gig going, play watching, etc.",
-    long_description=read(os.path.join(os.path.dirname(__file__), "README.rst")),
+    long_description=read(os.path.join(os.path.dirname(__file__), "README.md")),
     url="https://github.com/philgyford/django-spectator",
     author=get_author(),
     author_email=get_author_email(),
@@ -113,7 +113,7 @@ setup(
         "Blog posts": "https://www.gyford.com/phil/writing/tags/django-spectator/",
         "Bug Reports": "https://github.com/philgyford/django-spectator/issues",
         "Documentation": (
-            "https://github.com/philgyford/django-spectator/blob/master/README.rst"
+            "https://github.com/philgyford/django-spectator/blob/master/README.md"
         ),
         "Source": "https://github.com/philgyford/django-spectator",
     },
