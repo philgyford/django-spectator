@@ -11,7 +11,7 @@
 
 ### Changed
 - Fix: Thumbnail images for brand new Events and Publications are now saved to a directory named after the object's `slug`. (#67)
-- Change CHANGEDLOG and README to Markdown files from Re-structured Text.
+- Change CHANGEDLOG and README files from Re-structured Text to Markdown.
 
 ## [11.6.1] - 2021-08-24
 
