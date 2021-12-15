@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Nothing
 
+## [12.0.0] - 2021-12-15
+- Dropped support for Django 2.2.
+- Added support for Django 4.0.
+- Added support for python 3.10.
+
 ## [11.7.0] - 2021-09-17
 
 ### Added

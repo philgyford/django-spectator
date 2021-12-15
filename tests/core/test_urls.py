@@ -15,16 +15,14 @@ class CoreUrlsTestCase(TestCase):
 
     def test_home_view(self):
         "Should use the correct view."
-        self.assertEqual(resolve("/").func.__name__, views.HomeView.__name__)
+        self.assertEqual(resolve("/").func.view_class, views.HomeView)
 
     def test_creator_list_url(self):
         self.assertEqual(reverse("spectator:creators:creator_list"), "/creators/")
 
     def test_creator_list_view(self):
         "Should use the correct view."
-        self.assertEqual(
-            resolve("/creators/").func.__name__, views.CreatorListView.__name__
-        )
+        self.assertEqual(resolve("/creators/").func.view_class, views.CreatorListView)
 
     def test_creator_list_group_url(self):
         self.assertEqual(
@@ -34,7 +32,7 @@ class CoreUrlsTestCase(TestCase):
     def test_creator_list_group_view(self):
         "Should use the correct view."
         self.assertEqual(
-            resolve("/creators/groups/").func.__name__, views.CreatorListView.__name__
+            resolve("/creators/groups/").func.view_class, views.CreatorListView
         )
 
     def test_creator_detail_url(self):
@@ -48,5 +46,5 @@ class CoreUrlsTestCase(TestCase):
         "Should use the correct view."
         IndividualCreatorFactory(pk=123)
         self.assertEqual(
-            resolve("/creators/9g5o8/").func.__name__, views.CreatorDetailView.__name__
+            resolve("/creators/9g5o8/").func.view_class, views.CreatorDetailView
         )

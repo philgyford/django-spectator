@@ -15,9 +15,7 @@ class ReadingUrlsTestCase(TestCase):
 
     def test_reading_home_view(self):
         "Should use the correct view."
-        self.assertEqual(
-            resolve("/reading/").func.__name__, views.ReadingHomeView.__name__
-        )
+        self.assertEqual(resolve("/reading/").func.view_class, views.ReadingHomeView)
 
     def test_publicationseries_list_home_url(self):
         self.assertEqual(
@@ -27,8 +25,7 @@ class ReadingUrlsTestCase(TestCase):
     def test_publicationseries_list_view(self):
         "Should use the correct view."
         self.assertEqual(
-            resolve("/reading/series/").func.__name__,
-            views.PublicationSeriesListView.__name__,
+            resolve("/reading/series/").func.view_class, views.PublicationSeriesListView
         )
 
     def test_publicationseries_detail_url(self):
@@ -45,8 +42,8 @@ class ReadingUrlsTestCase(TestCase):
         "Should use the correct view."
         PublicationSeriesFactory(title="My Series")
         self.assertEqual(
-            resolve("/reading/series/my-series/").func.__name__,
-            views.PublicationSeriesDetailView.__name__,
+            resolve("/reading/series/my-series/").func.view_class,
+            views.PublicationSeriesDetailView,
         )
 
     def test_publication_list_url(self):
@@ -57,8 +54,7 @@ class ReadingUrlsTestCase(TestCase):
     def test_publication_list_view(self):
         "Should use the correct view."
         self.assertEqual(
-            resolve("/reading/publications/").func.__name__,
-            views.PublicationListView.__name__,
+            resolve("/reading/publications/").func.view_class, views.PublicationListView
         )
 
     def test_publication_list_periodical_url(self):
@@ -70,8 +66,8 @@ class ReadingUrlsTestCase(TestCase):
     def test_publication_list_periodical_view(self):
         "Should use the correct view."
         self.assertEqual(
-            resolve("/reading/publications/periodicals/").func.__name__,
-            views.PublicationListView.__name__,
+            resolve("/reading/publications/periodicals/").func.view_class,
+            views.PublicationListView,
         )
 
     def test_publication_detail_url(self):
@@ -85,8 +81,8 @@ class ReadingUrlsTestCase(TestCase):
         "Should use the correct view."
         PublicationFactory(title="My Book")
         self.assertEqual(
-            resolve("/reading/publications/my-book/").func.__name__,
-            views.PublicationDetailView.__name__,
+            resolve("/reading/publications/my-book/").func.view_class,
+            views.PublicationDetailView,
         )
 
     def test_reading_year_archive_url(self):
@@ -100,6 +96,5 @@ class ReadingUrlsTestCase(TestCase):
         "Should use the correct view."
         ReadingFactory(end_date=("2017-02-15"))
         self.assertEqual(
-            resolve("/reading/2017/").func.__name__,
-            views.ReadingYearArchiveView.__name__,
+            resolve("/reading/2017/").func.view_class, views.ReadingYearArchiveView
         )

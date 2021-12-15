@@ -1,7 +1,7 @@
 from django.db.models import Min
 from django.http import Http404
-from django.utils.encoding import force_text
-from django.utils.translation import ugettext as _
+from django.utils.encoding import force_str
+from django.utils.translation import gettext as _
 from django.views.generic import DetailView, YearArchiveView
 from django.views.generic.detail import SingleObjectMixin
 
@@ -126,7 +126,7 @@ class EventYearArchiveView(YearArchiveView):
                 raise Http404(
                     _("No %(verbose_name_plural)s available")
                     % {
-                        "verbose_name_plural": force_text(
+                        "verbose_name_plural": force_str(
                             qs.model._meta.verbose_name_plural
                         )
                     }
