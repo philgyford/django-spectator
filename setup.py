@@ -62,7 +62,7 @@ if sys.argv[-1] == "testpublish":
     )
     sys.exit()
 
-dev_require = ["django-debug-toolbar>=2.0,<4.0", "flake8>=3.8,<4.0", "black==21.7b0"]
+dev_require = ["django-debug-toolbar>=2.0,<4.0", "flake8>=3.8,<4.1", "black==21.12b0"]
 tests_require = dev_require + [
     "factory-boy>=2.12.0,<4.0",
     "freezegun>=0.3.12,<2.0",
@@ -74,14 +74,14 @@ setup(
     version=get_version(),
     packages=["spectator"],
     install_requires=[
-        "django-imagekit>=4.0,<4.1",
+        "django-imagekit>=4.0,<4.2",
         "hashids>=1.2.0,<1.4",
         "piexif>=1.1.3,<2.0",
         "pillow>=7.0.0,<9.0",
     ],
     dependency_links=[],
     tests_require=tests_require,
-    extras_require={"dev": dev_require + ["Django>=3.1,<=3.2"], "test": tests_require},
+    extras_require={"dev": dev_require + ["Django>=4.0,<=4.1"], "test": tests_require},
     include_package_data=True,
     license=get_license(),
     description="A Django app to track book reading, movie viewing, "
@@ -95,9 +95,9 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Framework :: Django",
-        "Framework :: Django :: 2.2",
         "Framework :: Django :: 3.1",
         "Framework :: Django :: 3.2",
+        "Framework :: Django :: 4.0",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
@@ -106,6 +106,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],

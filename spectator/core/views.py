@@ -1,6 +1,6 @@
 from django.core.paginator import InvalidPage
 from django.http import Http404
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.generic import DetailView, ListView, TemplateView
 
 from .apps import spectator_apps

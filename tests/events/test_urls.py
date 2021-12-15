@@ -15,9 +15,7 @@ class EventsUrlsTestCase(TestCase):
 
     def test_events_home_view(self):
         "Should use the correct view."
-        self.assertEqual(
-            resolve("/events/").func.__name__, views.EventListView.__name__
-        )
+        self.assertEqual(resolve("/events/").func.view_class, views.EventListView)
 
     # VENUES
 
@@ -27,7 +25,7 @@ class EventsUrlsTestCase(TestCase):
     def test_venue_list_view(self):
         "Should use the correct view."
         self.assertEqual(
-            resolve("/events/venues/").func.__name__, views.VenueListView.__name__
+            resolve("/events/venues/").func.view_class, views.VenueListView
         )
 
     def test_venue_detail_url(self):
@@ -39,8 +37,7 @@ class EventsUrlsTestCase(TestCase):
     def test_venue_detail_view(self):
         "Should use the correct view."
         self.assertEqual(
-            resolve("/events/venues/my-venue/").func.__name__,
-            views.VenueDetailView.__name__,
+            resolve("/events/venues/my-venue/").func.view_class, views.VenueDetailView
         )
 
     # YEARS
@@ -56,7 +53,7 @@ class EventsUrlsTestCase(TestCase):
         "Should use the correct view."
         GigEventFactory(date=("2017-02-15"))
         self.assertEqual(
-            resolve("/events/2017/").func.__name__, views.EventYearArchiveView.__name__
+            resolve("/events/2017/").func.view_class, views.EventYearArchiveView
         )
 
     # EVENTS
@@ -70,7 +67,7 @@ class EventsUrlsTestCase(TestCase):
     def test_event_list_view(self):
         "Should use the correct view."
         self.assertEqual(
-            resolve("/events/types/gigs/").func.__name__, views.EventListView.__name__
+            resolve("/events/types/gigs/").func.view_class, views.EventListView
         )
 
     def test_event_detail_url(self):
@@ -82,7 +79,7 @@ class EventsUrlsTestCase(TestCase):
     def test_event_detail_view(self):
         "Should use the correct view."
         self.assertEqual(
-            resolve("/events/my-event/").func.__name__, views.EventDetailView.__name__
+            resolve("/events/my-event/").func.view_class, views.EventDetailView
         )
 
     # WORKS
@@ -95,9 +92,7 @@ class EventsUrlsTestCase(TestCase):
 
     def test_work_list_view(self):
         "Should use the correct view."
-        self.assertEqual(
-            resolve("/events/movies/").func.__name__, views.WorkListView.__name__
-        )
+        self.assertEqual(resolve("/events/movies/").func.view_class, views.WorkListView)
 
     def test_work_detail_url(self):
         self.assertEqual(
@@ -111,6 +106,5 @@ class EventsUrlsTestCase(TestCase):
     def test_work_detail_view(self):
         "Should use the correct view."
         self.assertEqual(
-            resolve("/events/movies/my-work/").func.__name__,
-            views.WorkDetailView.__name__,
+            resolve("/events/movies/my-work/").func.view_class, views.WorkDetailView
         )
