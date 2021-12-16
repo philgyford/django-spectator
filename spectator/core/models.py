@@ -282,10 +282,9 @@ class Creator(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             print(role.work, role.creator, role.role_name)
     """
 
-    KIND_CHOICES = (
-        ("individual", "Individual"),
-        ("group", "Group"),
-    )
+    class Kind(models.TextChoices):
+        INDIVIDUAL = "individual", "Individual"
+        GROUP = "group", "Group"
 
     name = models.CharField(
         max_length=255, help_text="e.g. 'Douglas Adams' or 'The Long Blondes'."
@@ -299,7 +298,9 @@ class Creator(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         "'adams, douglas'.",
     )
 
-    kind = models.CharField(max_length=20, choices=KIND_CHOICES, default="individual")
+    kind = models.CharField(
+        max_length=20, choices=Kind.choices, default=Kind.INDIVIDUAL
+    )
 
     objects = CreatorManager()
 

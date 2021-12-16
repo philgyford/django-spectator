@@ -102,32 +102,33 @@ class Event(
         print(role.role_order)
     """
 
-    KIND_CHOICES = (
-        ("cinema", "Cinema"),
-        ("concert", "Concert"),
-        ("comedy", "Comedy"),
-        ("dance", "Dance"),
-        ("museum", "Gallery/Museum"),
-        ("gig", "Gig"),
-        ("theatre", "Theatre"),
-        ("misc", "Other"),
-    )
+    class Kind(models.TextChoices):
+        CINEMA = "cinema", "Cinema"
+        CONCERT = "concert", "Concert"
+        COMEDY = "comedy", "Comedy"
+        DANCE = "dance", "Dance"
+        MUSEUM = "museum", "Gallery/Museum"
+        GIG = "gig", "Gig"
+        THEATRE = "theatre", "Theatre"
+        MISC = "misc", "Other"
 
-    # Mapping keys from KIND_CHOICES to the slugs we'll use in URLs:
-    KIND_SLUGS = {
-        "comedy": "comedy",
-        "concert": "concerts",
-        "dance": "dance",
-        "museum": "gallery-museum",
-        "gig": "gigs",
-        "misc": "misc",
-        "cinema": "cinema",
-        "theatre": "theatre",
-    }
+        @classmethod
+        def slugs(cls):
+            # Mapping keys from the choices to the slugs we'll use in URLs:
+            return {
+                cls.COMEDY: "comedy",
+                cls.CONCERT: "concerts",
+                cls.DANCE: "dance",
+                cls.MUSEUM: "gallery-museum",
+                cls.GIG: "gigs",
+                cls.MISC: "misc",
+                cls.CINEMA: "cinema",
+                cls.THEATRE: "theatre",
+            }
 
     kind = models.CharField(
         max_length=20,
-        choices=KIND_CHOICES,
+        choices=Kind.choices,
         blank=False,
         help_text="Used to categorise event. But any kind of Work can "
         "be added to any kind of Event.",
@@ -187,7 +188,7 @@ class Event(
         return self.make_title()
 
     def save(self, *args, **kwargs):
-        self.kind_slug = self.KIND_SLUGS[self.kind]
+        self.kind_slug = self.Kind.slugs()[self.kind]
 
         if self.venue_name == "" and self.venue is not None:
             # Set the venue_name, if it's not already set and there's a Venue.
@@ -276,7 +277,7 @@ class Event(
     @property
     def kind_name(self):
         "e.g. 'Gig' or 'Movie'."
-        return {k: v for (k, v) in self.KIND_CHOICES}[self.kind]
+        return self.get_kind_display()
 
     @property
     def kind_name_plural(self):
@@ -292,35 +293,35 @@ class Event(
         """
         return self.make_title()
 
-    @staticmethod
-    def get_kind_name_plural(kind):
+    @classmethod
+    def get_kind_name_plural(cls, kind):
         "e.g. 'Gigs' or 'Movies'."
         if kind in ["comedy", "cinema", "dance", "theatre"]:
             return kind.title()
         elif kind == "museum":
             return "Galleries/Museums"
         else:
-            return "{}s".format(Event.get_kind_name(kind))
+            return "{}s".format(cls.get_kind_name(kind))
 
-    @staticmethod
-    def get_kind_name(kind):
-        return {k: v for (k, v) in Event.KIND_CHOICES}[kind]
+    @classmethod
+    def get_kind_name(cls, kind):
+        return {k: v for (k, v) in cls.Kind.choices}[kind]
 
-    @staticmethod
-    def get_kinds():
+    @classmethod
+    def get_kinds(cls):
         """
         Returns a list of the kind values ['gig', 'play', etc] in the order in
         which they're listed in `KIND_CHOICES`.
         """
-        return [k for k, v in Event.KIND_CHOICES]
+        return cls.Kind.values
 
-    @staticmethod
-    def get_valid_kind_slugs():
+    @classmethod
+    def get_valid_kind_slugs(cls):
         "Returns a list of the slugs that different kinds of Events can have."
-        return list(Event.KIND_SLUGS.values())
+        return list(cls.Kind.slugs().values())
 
-    @staticmethod
-    def get_kinds_data():
+    @classmethod
+    def get_kinds_data(cls):
         """
         Returns a dict of all the data about the kinds, keyed to the kind
         value. e.g:
@@ -333,10 +334,10 @@ class Event(
                 # etc
             }
         """
-        kinds = {k: {"name": v} for k, v in Event.KIND_CHOICES}
+        kinds = {k: {"name": v} for k, v in cls.Kind.choices}
         for k, data in kinds.items():
-            kinds[k]["slug"] = Event.KIND_SLUGS[k]
-            kinds[k]["name_plural"] = Event.get_kind_name_plural(k)
+            kinds[k]["slug"] = cls.Kind.slugs()[k]
+            kinds[k]["name_plural"] = cls.get_kind_name_plural(k)
         return kinds
 
 
@@ -362,27 +363,28 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             print(ev.venue, ev.date)
     """
 
-    KIND_CHOICES = (
-        ("classicalwork", "Classical work"),
-        ("dancepiece", "Dance piece"),
-        ("exhibition", "Exhibition"),
-        ("movie", "Movie"),
-        ("play", "Play"),
-    )
+    class Kind(models.TextChoices):
+        CLASSICAL_WORK = "classicalwork", "Classical work"
+        DANCE_PIECE = "dancepiece", "Dance piece"
+        EXHIBITION = "exhibition", "Exhibition"
+        MOVIE = "movie", "Movie"
+        PLAY = "play", "Play"
 
-    # Mapping keys from KIND_CHOICES to the slugs we'll use in URLs:
-    KIND_SLUGS = {
-        "classicalwork": "classical-works",
-        "dancepiece": "dance-pieces",
-        "exhibition": "exhibitions",
-        "movie": "movies",
-        "play": "plays",
-    }
+        @classmethod
+        def slugs(cls):
+            # Mapping keys from thie choices to the slugs we'll use in URLs:
+            return {
+                cls.CLASSICAL_WORK: "classical-works",
+                cls.DANCE_PIECE: "dance-pieces",
+                cls.EXHIBITION: "exhibitions",
+                cls.MOVIE: "movies",
+                cls.PLAY: "plays",
+            }
 
     YEAR_CHOICES = [(r, r) for r in range(1888, datetime.date.today().year + 1)]
     YEAR_CHOICES.insert(0, ("", "Select…"))
 
-    kind = models.CharField(max_length=20, choices=KIND_CHOICES, blank=False)
+    kind = models.CharField(max_length=20, choices=Kind.choices, blank=False)
 
     title = models.CharField(null=False, blank=False, max_length=255)
 
@@ -430,7 +432,7 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         verbose_name = "work"
 
     def get_absolute_url(self):
-        kind_slug = self.KIND_SLUGS[self.kind]
+        kind_slug = self.Kind.slugs()[self.kind]
         return reverse(
             "spectator:events:work_detail",
             kwargs={"kind_slug": kind_slug, "slug": self.slug},
@@ -444,7 +446,7 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         views, at least.)
         """
         if kind_slug is None:
-            kind_slug = self.KIND_SLUGS[self.kind]
+            kind_slug = self.Kind.slugs()[self.kind]
         return reverse("spectator:events:work_list", kwargs={"kind_slug": kind_slug})
 
     @property
@@ -454,18 +456,19 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         else:
             return ""
 
-    @staticmethod
-    def get_valid_kind_slugs():
+    @classmethod
+    def get_valid_kind_slugs(cls):
         "Returns a list of the slugs that different kinds of Works can have."
-        return list(Work.KIND_SLUGS.values())
+        return list(cls.Kind.slugs().values())
 
-    @staticmethod
-    def get_kind_name(kind):
-        return {k: v for (k, v) in Work.KIND_CHOICES}[kind]
+    @classmethod
+    def get_kind_name(cls, kind):
+        kinds = {k: v for k, v in cls.Kind.choices}
+        return kinds[kind]
 
-    @staticmethod
-    def get_kind_name_plural(kind):
-        return "{}s".format(Work.get_kind_name(kind))
+    @classmethod
+    def get_kind_name_plural(cls, kind):
+        return "{}s".format(cls.get_kind_name(kind))
 
 
 class WorkRole(BaseRole):
@@ -850,6 +853,6 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         else:
             return ""
 
-    @staticmethod
-    def get_country_name(country_code):
-        return Venue.COUNTRIES.get(country_code, None)
+    @classmethod
+    def get_country_name(cls, country_code):
+        return cls.COUNTRIES.get(country_code, None)

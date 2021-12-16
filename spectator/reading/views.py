@@ -134,8 +134,8 @@ class ReadingYearArchiveView(YearArchiveView):
         objects = context["object_list"]
         if len(objects) > 1:
             if (
-                objects.first().end_granularity == Reading.DATE_GRANULARITY_YEAR
-                and objects.last().end_granularity == Reading.DATE_GRANULARITY_YEAR
+                objects.first().end_granularity == Reading.DateGranularity.YEAR
+                and objects.last().end_granularity == Reading.DateGranularity.YEAR
             ):
                 # If the first and last publications only have year-based
                 # granularity, assume everything does, so we shouldn't

@@ -112,7 +112,9 @@ class Publication(ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin)
             print(reading.start_date, reading.end_date)
     """
 
-    KIND_CHOICES = (("book", "Book"), ("periodical", "Periodical"))
+    class Kind(models.TextChoices):
+        BOOK = "book", "Book"
+        PERIODICAL = "periodical", "Periodical"
 
     title = models.CharField(
         null=False,
@@ -135,7 +137,7 @@ class Publication(ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin)
         on_delete=models.SET_NULL,
     )
 
-    kind = models.CharField(max_length=20, choices=KIND_CHOICES, default="book")
+    kind = models.CharField(max_length=20, choices=Kind.choices, default=Kind.BOOK)
 
     official_url = models.URLField(
         null=False,
@@ -251,18 +253,13 @@ class Reading(TimeStampedModelMixin, models.Model):
     A period when a Publication was read.
     """
 
-    DATE_GRANULARITY_DAY = 3
-    DATE_GRANULARITY_MONTH = 4
-    DATE_GRANULARITY_YEAR = 6
-
-    # Via https://www.flickr.com/services/api/misc.dates.html
-    DATE_GRANULARITIES = (
-        # (0, 'Y-m-d H:i:s'),
-        (DATE_GRANULARITY_DAY, "Y-m-d"),
-        (DATE_GRANULARITY_MONTH, "Y-m"),
-        (DATE_GRANULARITY_YEAR, "Y"),
-        # (8, 'Circa...'),
-    )
+    class DateGranularity(models.IntegerChoices):
+        # Via https://www.flickr.com/services/api/misc.dates.html
+        # SECOND = 0, "Y-m-d H:i:s"
+        DAY = 3, "Y-m-d"
+        MONTH = 4, "Y-m"
+        YEAR = 6, "Y"
+        # CIRCA = 8, "Circa..."
 
     publication = models.ForeignKey(
         "spectator_reading.Publication",
@@ -273,11 +270,17 @@ class Reading(TimeStampedModelMixin, models.Model):
 
     start_date = models.DateField(null=True, blank=True)
     start_granularity = models.PositiveSmallIntegerField(
-        null=False, blank=False, default=3, choices=DATE_GRANULARITIES
+        null=False,
+        blank=False,
+        default=DateGranularity.DAY,
+        choices=DateGranularity.choices,
     )
     end_date = models.DateField(null=True, blank=True)
     end_granularity = models.PositiveSmallIntegerField(
-        null=False, blank=False, default=3, choices=DATE_GRANULARITIES
+        null=False,
+        blank=False,
+        default=DateGranularity.DAY,
+        choices=DateGranularity.choices,
     )
     is_finished = models.BooleanField(
         default=False, help_text="Did you finish the publication?"

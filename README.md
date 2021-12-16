@@ -8,7 +8,7 @@ Two Django apps:
 -   One to track book and periodical reading, including start and end dates, authors, and cover images.
 -   One to track events attended (movie, plays, gigs, exhibitions, comedy, dance, classical), including date, venue (with maps), people/organisations involved, and images of tickets.
 
-For Django 2.2 to Django 3.2, running on Python 3.6 to 3.9.
+For Django 3.1 to Django 4.0, running on Python 3.6 to 3.9.
 
 It has URLs, views and templates to create a site displaying all the data, and Django admin screens to add and edit them. The templates use [Bootstrap v4](https://getbootstrap.com).
 
@@ -479,7 +479,7 @@ So I don't forget...
 
 If it's simple (like, Gigs, Comedy, etc.) and doesn't require any specific kind of Works, then:
 
-- In `spectator.events.models.Event` add it in `KIND_CHOICES` and `KIND_SLUGS`.
+- In `spectator.events.models.Event` add it in `Kind` and `Kind.slugs()`.
 - Possibly add a special case for it in `Event.get_kind_name_plural()`.
 - Add a simple factory for it in `spectator.events.factories`.
 - In `tests.events.test_models.EventTestCase`:
@@ -494,7 +494,7 @@ If it's simple (like, Gigs, Comedy, etc.) and doesn't require any specific kind 
 
 ### Adding a new Work kind
 
-- In `spectator.events.models.Work` add it in `KIND_CHOICES` and `KIND_SLUGS`.
+- In `spectator.events.models.Work` add it in `Kind` and `Kind.slugs()`.
 - On the `Event` model add a new method similar to `get_classical_works()` for this new kind of `Work`.
 - On the `spectator.core.models.Creator` model add a new method similar to `get_classical_works()` for this new kind of `Work`.
 - Add a simple factory for it in `spectator.events.factories`.

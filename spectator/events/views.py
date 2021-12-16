@@ -63,9 +63,9 @@ class EventListView(PaginatedListView):
             "all": Event.objects.count(),
         }
 
-        for k, v in Event.KIND_CHOICES:
+        for val in Event.Kind.values:
             # e.g. 'movie_count':
-            counts[k] = Event.objects.filter(kind=k).count()
+            counts[val] = Event.objects.filter(kind=val).count()
 
         return {
             "counts": counts,
@@ -80,7 +80,7 @@ class EventListView(PaginatedListView):
         if slug is None:
             return None  # Front page; showing all Event kinds.
         else:
-            slugs_to_kinds = {v: k for k, v in Event.KIND_SLUGS.items()}
+            slugs_to_kinds = {v: k for k, v in Event.Kind.slugs().items()}
             return slugs_to_kinds.get(slug, None)
 
     def get_queryset(self):
@@ -159,7 +159,7 @@ class WorkMixin:
         We'll have a kind_slug like 'movies'.
         We need to translate that into a work `kind` like 'movie'.
         """
-        slugs_to_kinds = {v: k for k, v in Work.KIND_SLUGS.items()}
+        slugs_to_kinds = {v: k for k, v in Work.Kind.slugs().items()}
         return slugs_to_kinds.get(self.kind_slug, None)
 
 
