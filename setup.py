@@ -77,11 +77,11 @@ setup(
         "django-imagekit>=4.0,<4.2",
         "hashids>=1.2.0,<1.4",
         "piexif>=1.1.3,<2.0",
-        "pillow>=7.0.0,<9.0",
+        "pillow>=8.0.0,<10.0",
     ],
     dependency_links=[],
     tests_require=tests_require,
-    extras_require={"dev": dev_require + ["Django>=4.0,<=4.1"], "test": tests_require},
+    extras_require={"dev": dev_require + ["Django>=4.0,<=4.3"], "test": tests_require},
     include_package_data=True,
     license=get_license(),
     description="A Django app to track book reading, movie viewing, "
