@@ -1,12 +1,30 @@
 # Changelog (Django Spectator)
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+
 
 ## [Unreleased]
 - Nothing
 
+
+## [12.0.1] - 2021-03-25
+
+### Security
+- Allowed for use of Pillow > 9.0.0, to include 9.0.1 security bugfix release
+
+
 ## [12.0.0] - 2021-12-15
+
+### Removed
 - Dropped support for Django 2.2.
+
+### Added
 - Added support for Django 4.0.
 - Added support for python 3.10.
+
 
 ## [11.7.0] - 2021-09-17
 
@@ -18,11 +36,13 @@
 - Fix: Thumbnail images for brand new Events and Publications are now saved to a directory named after the object's `slug`. (#67)
 - Change CHANGEDLOG and README files from Re-structured Text to Markdown.
 
+
 ## [11.6.1] - 2021-08-24
 
 ### Changed
 - The 'Most read authors' card and other lists was omitting any Creators who had a Publication with a currently unfinished Reading. (#65)
 - Update development project dependencies.
+
 
 ## [11.6.0] - 2021-04-07
 
@@ -32,6 +52,7 @@
 ### Changed
 - Fix: Stop the "Most Read Authors" card counting unfinished Readings. (#59)
 
+
 ## [11.5.0] - 2021-03-23
 
 ### Added
@@ -40,6 +61,7 @@
 ### Changed
 - Update development project dependencies.
 - Update included Bootstrap CSS from 4.5.3 to 4.6.0.
+
 
 ## [11.4.0] - 2020-12-21
 
@@ -53,15 +75,18 @@
 - Change text "Publication Series" to "Series" in the `reading/includes/card_nav.html` template.
 - Make counts in .nav-tabs consistently `<small>` in templates.
 
+
 ## [11.3.0] - 2020-08-22
 
 ### Added
 - Allow usage of Factory Boy v3
 
+
 ## [11.2.0] - 2020-08-10
 
 ### Changed
 - Move Bootstrap CSS files from `/static/css/` to `/static/spectator-core/css/`.
+
 
 ## [11.1.0] - 2020-08-10
 
@@ -75,10 +100,12 @@
 ### Removed
 - Drop official support for python 3.5.
 
+
 ## [11.0.1]
 
 ### Changed
 - Fix display of thumbnails in templates.
+
 
 ## [11.0.0]
 
@@ -95,6 +122,7 @@
 
 ###
 - Drop support for Django 1.11 and 2.1
+
 
 ## [10.0.1]
 
