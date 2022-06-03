@@ -7,7 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
-- Nothing
+
+### Removed
+- Dropped support for Django 3.1.
+
+### Added
+- Add the latest "tip" of Django to the tox testing matrix.
+
+### Fixed
+- Fixed ValueError in `Event.make_title()` in Django 4.1.
+- Fixed handling of titles starting with "l'" when creating a sortable string from them (#81).
+
+### Changed
+- Update development project depenencies
+- Update included Bootstrap CSS from 4.6.0 to 4.6.1.
 
 
 ## [12.0.1] - 2021-03-25
@@ -120,7 +133,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Boostrap CSS files from v4.3.1 to v4.4.1
 - Make devproject's python dependencies a little laxer
 
-###
+### Removed
 - Drop support for Django 1.11 and 2.1
 
 
