@@ -213,7 +213,9 @@ class Event(
                 # Can't get the works/roles relationships if self has no PK.
 
                 # We only need their titles:
-                work_titles = [str(sel.work.title) for sel in self.work_selections.all()]
+                work_titles = [
+                    str(sel.work.title) for sel in self.work_selections.all()
+                ]
 
                 if len(work_titles) > 0:
                     if len(work_titles) == 1:
