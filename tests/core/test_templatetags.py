@@ -1,7 +1,5 @@
-from distutils.version import StrictVersion
 from unittest.mock import Mock, patch
 
-from django import get_version
 from django.http import QueryDict
 from django.test import TestCase
 
@@ -66,12 +64,9 @@ class ChangeObjectLinkCardTestCase(TestCase):
 
         result = change_object_link_card(creator, perms)
         self.assertTrue(result["display_link"])
-        if get_version() < StrictVersion("1.9.0"):
-            self.assertEqual(result["change_url"], "/admin/spectator_core/creator/5/")
-        else:
-            self.assertEqual(
-                result["change_url"], "/admin/spectator_core/creator/5/change/"
-            )
+        self.assertEqual(
+            result["change_url"], "/admin/spectator_core/creator/5/change/"
+        )
 
 
 class QueryStringTestCase(TestCase):
