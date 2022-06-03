@@ -203,16 +203,19 @@ class Event(
         return reverse("spectator:events:event_detail", kwargs={"slug": self.slug})
 
     def make_title(self, html=False):
-        if self.title == "":
+        if self.title != "":
+            title = self.title
+        else:
             title_start = Event.get_kind_name_plural(self.kind)
             title = "{} #{}".format(title_start, self.pk)
 
-            # We only need their titles:
-            work_titles = [str(sel.work.title) for sel in self.work_selections.all()]
+            if self.pk:
+                # Can't get the works/roles relationships if self has no PK.
 
-            if len(work_titles) > 0:
-                if self.pk:
-                    # (If it hasn't been saved it has no works yet.)
+                # We only need their titles:
+                work_titles = [str(sel.work.title) for sel in self.work_selections.all()]
+
+                if len(work_titles) > 0:
                     if len(work_titles) == 1:
                         title = work_titles[0]
                         if html is True:
@@ -229,19 +232,17 @@ class Event(
                             title = "{} and {}".format(
                                 ", ".join(work_titles[:-1]), work_titles[-1]
                             )
-            else:
-                # It's like a Gig or Comedy; no works.
-                roles = list(self.roles.all())
-                if len(roles) == 1:
-                    title = str(roles[0].creator.name)
-                elif len(roles) == 0:
-                    title = "Event #{}".format(self.pk)
                 else:
-                    roles = [r.creator.name for r in roles]
-                    # Join with commas but 'and' for the last one:
-                    title = "{} and {}".format(", ".join(roles[:-1]), roles[-1])
-        else:
-            title = self.title
+                    # It's like a Gig or Comedy; no works.
+                    roles = list(self.roles.all())
+                    if len(roles) == 1:
+                        title = str(roles[0].creator.name)
+                    elif len(roles) == 0:
+                        title = "Event #{}".format(self.pk)
+                    else:
+                        roles = [r.creator.name for r in roles]
+                        # Join with commas but 'and' for the last one:
+                        title = "{} and {}".format(", ".join(roles[:-1]), roles[-1])
 
         if html is False:
             title = truncate_string(title, chars=255, at_word_boundary=True)
