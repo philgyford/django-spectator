@@ -173,8 +173,6 @@ class NaturalSortField(models.CharField):
             "le",
             "la",
             "les",
-            "l'",
-            "l’",
             "ein",
             "eine",
             "der",
@@ -186,14 +184,33 @@ class NaturalSortField(models.CharField):
             "las",
         ]
 
+        # Need to keep these articles separate initially, because they
+        # won't have a space after them:
+        articles_apos = [
+            "l'",
+            "l’",
+        ]
+
         parentheses = ""  # (1)
 
         sort_string = string
         parts = string.split(" ")
 
+        # Now we've split on spaces, see if we need to split an apostrophe
+        # article off the front of the first part:
+        for article in articles_apos:
+            if parts[0].startswith(article):
+                part1 = parts[0][: len(article)]
+                part2 = parts[0][len(article) :]
+                parts[0] = part1
+                parts.insert(1, part2)
+
         if parts[-1].startswith("("):
             # Remove so we can add it back at the end.
             parentheses = parts.pop()
+
+        # Now add the apostrophe articles onto the main list of articles:
+        articles += articles_apos
 
         if len(parts) > 1 and parts[0] in articles:
             if parts[0] != parts[1]:
