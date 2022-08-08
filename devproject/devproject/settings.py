@@ -12,26 +12,19 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 
-from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def get_env_variable(var_name, default=None):
-    """Get the environment variable or return exception."""
-    try:
-        return os.environ[var_name]
-    except KeyError:
-        if default is None:
-            error_msg = "Set the %s environment variable" % var_name
-            raise ImproperlyConfigured(error_msg)
-        else:
-            return default
+# Loads env variables from .env:
+load_dotenv()
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env_variable("SECRET_KEY", "1234567890")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "secret-key-for-dev-only")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

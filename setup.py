@@ -68,6 +68,7 @@ dev_require = [
     "flake8>=4.0,<5.1",
     "black==22.6.0",
     "pre-commit",
+    "python-dotenv",
 ]
 tests_require = dev_require + [
     "factory-boy>=2.12.0,<4.0",
