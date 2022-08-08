@@ -2,6 +2,7 @@ devproject/db*.sqlite3
 devproject/media
 devproject/static
 devproject/.env
+devproject/venv
 django_spectator.egg-info
 htmlcov
 .coverage

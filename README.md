@@ -438,12 +438,25 @@ This will exclude any Works with only 1 Event.
 
 ## 4. Local development
 
-`devproject/` is a basic Django project to use the app locally. Use it like this, installing requirements with pipenv:
+`devproject/` is a basic Django project to use the app locally.
+
+I set things up locally, having installed virtualenv and pyenv, like this:
+
+Use it like this, installing requirements with pip (probably in a virtualenv of some kind):
 
     $ cd devproject
-    $ pipenv install
-    $ pipenv run ./manage.py migrate
-    $ pipenv run ./manage.py runserver
+    $ virtualenv --prompt spectator-devproject venv
+    $ source venv/bin/activate
+    (spectator-devproject)$ pyenv local 3.10.5
+    (spectator-devproject)$ python -m pip install -r requirements.txt
+
+Then run migrations and start the server:
+
+    (spectator-devproject)$ ./manage.py migrate
+    (spectator-devproject)$ ./manage.py runserver
+
+
+### Running tests locally
 
 Run tests with tox, from the top-level directory (containing setup.py). Install it with:
 
@@ -464,6 +477,7 @@ To run a specific test, add its path after `--`, eg:
 Running the tests in all environments will generate coverage output. There will also be an `htmlcov/` directory containing an HTML report. You can also generate these reports without running all the other tests:
 
     $ tox -e coverage
+
 
 ### Making a new release
 
