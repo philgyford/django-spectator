@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add the latest master branch Django to the tox testing matrix.
 - Added support for Django 4.1.
+- Added `.pre-commit-config.yaml`
 
 ### Fixed
 - Fixed ValueError in `Event.make_title()` in Django 4.1.
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update development project depenencies
 - Update included Bootstrap CSS from 4.6.0 to 4.6.1.
+- For the `devproject`, stopped using pipenv in favour of pip.
 
 
 ## [12.0.1] - 2021-03-25
