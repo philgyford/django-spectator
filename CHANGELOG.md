@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add the latest master branch Django to the tox testing matrix.
+- Added support for Django 4.1.
 
 ### Fixed
 - Fixed ValueError in `Event.make_title()` in Django 4.1.
