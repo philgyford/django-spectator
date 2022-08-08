@@ -14,6 +14,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="event", name="movie",),
-        migrations.RemoveField(model_name="event", name="play",),
+        migrations.RemoveField(
+            model_name="event",
+            name="movie",
+        ),
+        migrations.RemoveField(
+            model_name="event",
+            name="play",
+        ),
     ]

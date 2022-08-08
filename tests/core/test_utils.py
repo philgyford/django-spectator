@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from spectator.core.utils import chartify
 from spectator.core.factories import IndividualCreatorFactory
+from spectator.core.utils import chartify
 
 
 class ChartifyTestCase(TestCase):

@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import include, path
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
+from django.urls import include, path
 
 from spectator.core.apps import spectator_apps
 from spectator.core.sitemaps import CreatorSitemap
@@ -11,7 +11,7 @@ if spectator_apps.is_enabled("events"):
     from spectator.events.sitemaps import EventSitemap, VenueSitemap, WorkSitemap
 
 if spectator_apps.is_enabled("reading"):
-    from spectator.reading.sitemaps import PublicationSitemap, PublicationSeriesSitemap
+    from spectator.reading.sitemaps import PublicationSeriesSitemap, PublicationSitemap
 
 
 sitemaps = {

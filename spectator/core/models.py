@@ -1,15 +1,14 @@
 import io
 import os
 
+import piexif
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.db import models
 from django.urls import reverse
-
 from hashids import Hashids
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFit
-import piexif
 
 from . import app_settings
 from .fields import NaturalSortField

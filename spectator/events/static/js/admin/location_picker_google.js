@@ -17,7 +17,7 @@
  *  Including the Google Maps JavaScript API.
  *  Using CSS to give div.setloc-map a width and height.
  */
-(function($) {
+(function ($) {
   // We'll insert the map after this element:
   var prev_el_selector = ".form-row.field-country";
 
@@ -89,7 +89,7 @@
     map = new google.maps.Map(mapEl, {
       zoom: initial_zoom,
       center: { lat: initial_lat, lng: initial_lon },
-      mapTypeId: tileStyle
+      mapTypeId: tileStyle,
     });
 
     geocoder = new google.maps.Geocoder();
@@ -97,7 +97,7 @@
     // Create but don't position the marker:
     marker = new google.maps.Marker({
       map: map,
-      draggable: true
+      draggable: true,
     });
 
     if (has_initial_loc) {
@@ -105,12 +105,12 @@
       setMarkerPosition(initial_lat, initial_lon);
     }
 
-    google.maps.event.addListener(map, "click", function(ev) {
+    google.maps.event.addListener(map, "click", function (ev) {
       setMarkerPosition(ev.latLng.lat(), ev.latLng.lng());
       setInputValues(ev.latLng.lat(), ev.latLng.lng());
     });
 
-    google.maps.event.addListener(marker, "dragend", function() {
+    google.maps.event.addListener(marker, "dragend", function () {
       setInputValues(marker.getPosition().lat(), marker.getPosition().lng());
     });
   }
@@ -130,7 +130,7 @@
     setLatLonInputValue($lat, lat);
     setLatLonInputValue($lon, lon);
 
-    geoCode(lat, lon, function(geocoded) {
+    geoCode(lat, lon, function (geocoded) {
       if (geocoded["address"]) {
         $address.val(geocoded["address"]);
       }
@@ -171,48 +171,48 @@
   function geoCode(lat, lon, callback) {
     var geocoded = { address: "", country: "" };
 
-    geocoder.geocode({ location: { lat: lat, lng: lon } }, function(
-      results,
-      status
-    ) {
-      if (status === "OK") {
-        if (results[0]) {
-          var components = results[0].address_components;
-          var address_parts = [];
-          // The elements we want to get from the components:
-          var wanted = [
-            "postal_town",
-            "locality",
-            "administrative_area_level_2",
-            "administrative_area_level_1"
-          ];
+    geocoder.geocode(
+      { location: { lat: lat, lng: lon } },
+      function (results, status) {
+        if (status === "OK") {
+          if (results[0]) {
+            var components = results[0].address_components;
+            var address_parts = [];
+            // The elements we want to get from the components:
+            var wanted = [
+              "postal_town",
+              "locality",
+              "administrative_area_level_2",
+              "administrative_area_level_1",
+            ];
 
-          for (var n = 0; n < components.length; n++) {
-            var name = components[n].long_name;
-            var type = components[n].types[0];
-            if (
-              $.inArray(type, wanted) >= 0 &&
-              $.inArray(name, address_parts) == -1
-            ) {
-              address_parts.push(name);
+            for (var n = 0; n < components.length; n++) {
+              var name = components[n].long_name;
+              var type = components[n].types[0];
+              if (
+                $.inArray(type, wanted) >= 0 &&
+                $.inArray(name, address_parts) == -1
+              ) {
+                address_parts.push(name);
+              }
+              if (type == "country") {
+                geocoded["country"] = components[n].short_name;
+              }
             }
-            if (type == "country") {
-              geocoded["country"] = components[n].short_name;
-            }
+
+            geocoded["address"] = address_parts.join(", ");
+          } else {
+            alert("No geocoding results found");
           }
-
-          geocoded["address"] = address_parts.join(", ");
         } else {
-          alert("No geocoding results found");
+          alert("Geocoding failed due to: " + status);
         }
-      } else {
-        alert("Geocoding failed due to: " + status);
+        callback(geocoded);
       }
-      callback(geocoded);
-    });
+    );
   }
 
-  $(document).ready(function() {
+  $(document).ready(function () {
     initMap();
   });
 })(django.jQuery);

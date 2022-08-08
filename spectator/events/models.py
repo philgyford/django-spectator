@@ -8,16 +8,17 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
-from . import managers
+from spectator.core.fields import NaturalSortField
 from spectator.core.models import (
     BaseRole,
     SluggedModelMixin,
     ThumbnailModelMixin,
-    thumbnail_upload_path,
     TimeStampedModelMixin,
+    thumbnail_upload_path,
 )
-from spectator.core.fields import NaturalSortField
 from spectator.core.utils import truncate_string
+
+from . import managers
 
 
 def event_upload_path(instance, filename):

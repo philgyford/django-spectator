@@ -1,8 +1,9 @@
-from ..core.test_admin import AdminTestCase
 from spectator.core.factories import IndividualCreatorFactory
 from spectator.reading.admin import PublicationAdmin
 from spectator.reading.factories import PublicationFactory, PublicationRoleFactory
 from spectator.reading.models import Publication
+
+from ..core.test_admin import AdminTestCase
 
 
 class PublicationAdminTestCase(AdminTestCase):

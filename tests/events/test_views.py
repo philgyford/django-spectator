@@ -1,10 +1,6 @@
 from django.http.response import Http404
-
 from freezegun import freeze_time
 
-
-from .. import make_date, override_app_settings
-from ..core.test_views import ViewTestCase
 from spectator.events import views
 from spectator.events.factories import (
     CinemaEventFactory,
@@ -16,6 +12,9 @@ from spectator.events.factories import (
     TheatreEventFactory,
     VenueFactory,
 )
+
+from .. import make_date, override_app_settings
+from ..core.test_views import ViewTestCase
 
 
 class EventListViewTestCase(ViewTestCase):

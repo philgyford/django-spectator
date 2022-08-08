@@ -1,8 +1,8 @@
 # coding: utf-8
 from django.test import TestCase
 
-from .. import make_date
 from spectator.core.factories import IndividualCreatorFactory
+from spectator.core.models import Creator
 from spectator.events.factories import (
     CinemaEventFactory,
     ComedyEventFactory,
@@ -19,8 +19,8 @@ from spectator.reading.factories import (
     PublicationRoleFactory,
     ReadingFactory,
 )
-from spectator.core.models import Creator
 
+from .. import make_date
 
 # The dates make no difference to these tests, so just define one:
 d = make_date("2017-02-15")

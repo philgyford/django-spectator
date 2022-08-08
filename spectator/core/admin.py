@@ -17,10 +17,26 @@ class CreatorAdmin(admin.ModelAdmin):
     )
 
     fieldsets = (
-        (None, {"fields": ("name", "name_sort", "slug", "kind",)}),
+        (
+            None,
+            {
+                "fields": (
+                    "name",
+                    "name_sort",
+                    "slug",
+                    "kind",
+                )
+            },
+        ),
         (
             "Times",
-            {"classes": ("collapse",), "fields": ("time_created", "time_modified",)},
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "time_created",
+                    "time_modified",
+                ),
+            },
         ),
     )
 

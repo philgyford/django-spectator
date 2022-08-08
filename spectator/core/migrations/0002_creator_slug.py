@@ -13,6 +13,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="creator", name="slug", field=models.SlugField(null=True),
+            model_name="creator",
+            name="slug",
+            field=models.SlugField(null=True),
         ),
     ]

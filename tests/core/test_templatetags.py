@@ -3,27 +3,27 @@ from unittest.mock import Mock, patch
 from django.http import QueryDict
 from django.test import TestCase
 
-from .. import make_date
-
 from spectator.core.apps import Apps
+from spectator.core.factories import IndividualCreatorFactory
 from spectator.core.templatetags.spectator_core import (
+    change_object_link_card,
     domain_urlize,
     get_enabled_apps,
     get_item,
-    change_object_link_card,
     most_read_creators,
     most_read_creators_card,
     most_visited_venues,
     most_visited_venues_card,
     query_string,
 )
-from spectator.core.factories import IndividualCreatorFactory
 from spectator.events.factories import MiscEventFactory, VenueFactory
 from spectator.reading.factories import (
     PublicationFactory,
     PublicationRoleFactory,
     ReadingFactory,
 )
+
+from .. import make_date
 
 
 class GetEnabledAppsTestCase(TestCase):

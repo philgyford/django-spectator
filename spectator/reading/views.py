@@ -6,6 +6,7 @@ from django.views.generic import DetailView, ListView, YearArchiveView
 from django.views.generic.detail import SingleObjectMixin
 
 from spectator.core.views import PaginatedListView
+
 from .models import Publication, PublicationSeries, Reading
 
 

@@ -1,9 +1,9 @@
 from django.test import TestCase
 
-from .. import make_date
 from spectator.reading.factories import PublicationFactory, ReadingFactory
-
 from spectator.reading.utils import annual_reading_counts
+
+from .. import make_date
 
 
 class AnnualReadingCountsTestCase(TestCase):

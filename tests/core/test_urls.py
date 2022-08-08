@@ -4,7 +4,6 @@ from django.urls import resolve, reverse
 from spectator.core import views
 from spectator.core.factories import IndividualCreatorFactory
 
-
 # Testing that the named URLs map the correct name to URL,
 # and that the correct views are called.
 

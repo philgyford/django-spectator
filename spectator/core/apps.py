@@ -1,4 +1,4 @@
-from django.apps import apps, AppConfig
+from django.apps import AppConfig, apps
 
 
 class SpectatorCoreAppConfig(AppConfig):

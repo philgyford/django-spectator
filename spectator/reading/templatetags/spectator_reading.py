@@ -3,9 +3,9 @@ from django.db.models import Q
 from django.utils.html import format_html
 
 from spectator.core import app_settings
-from ..models import Publication, Reading
-from .. import utils
 
+from .. import utils
+from ..models import Publication, Reading
 
 register = template.Library()
 

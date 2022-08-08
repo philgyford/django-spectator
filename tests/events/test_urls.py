@@ -1,9 +1,10 @@
 from django.test import TestCase
 from django.urls import resolve, reverse
 
-from .. import make_date
 from spectator.events import views
 from spectator.events.factories import GigEventFactory
+
+from .. import make_date
 
 
 class EventsUrlsTestCase(TestCase):

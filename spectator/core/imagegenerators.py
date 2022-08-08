@@ -3,7 +3,6 @@ from imagekit.processors import ResizeToFit
 
 from spectator.core import app_settings
 
-
 # NOTE: All of these generators are deprecated.
 # Use the thumbnail properties on Publication and Reading models instead.
 

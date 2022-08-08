@@ -16,12 +16,18 @@ class Migration(migrations.Migration):
             new_name="work",
         ),
         migrations.RenameField(
-            model_name="dancepieceselection", old_name="dance_piece", new_name="work",
+            model_name="dancepieceselection",
+            old_name="dance_piece",
+            new_name="work",
         ),
         migrations.RenameField(
-            model_name="movieselection", old_name="movie", new_name="work",
+            model_name="movieselection",
+            old_name="movie",
+            new_name="work",
         ),
         migrations.RenameField(
-            model_name="playselection", old_name="play", new_name="work",
+            model_name="playselection",
+            old_name="play",
+            new_name="work",
         ),
     ]

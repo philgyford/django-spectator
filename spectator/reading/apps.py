@@ -7,4 +7,4 @@ class SpectatorReadingAppConfig(AppConfig):
     verbose_name = "Spectator Reading"
 
     # Maintain pre Django 3.2 default behaviour:
-    default_auto_field = 'django.db.models.AutoField'
+    default_auto_field = "django.db.models.AutoField"

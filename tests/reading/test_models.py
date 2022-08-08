@@ -1,11 +1,10 @@
 import os
 
+import piexif
 from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.test import TestCase, override_settings
-import piexif
 
-from .. import make_date
 from spectator.core.factories import IndividualCreatorFactory
 from spectator.reading.factories import (
     PublicationFactory,
@@ -14,6 +13,8 @@ from spectator.reading.factories import (
     ReadingFactory,
 )
 from spectator.reading.models import Publication
+
+from .. import make_date
 
 
 class PublicationRoleTestCase(TestCase):

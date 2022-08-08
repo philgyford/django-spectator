@@ -1,8 +1,9 @@
 from django.test import TestCase
 
-from .. import make_date
 from spectator.reading.factories import PublicationFactory, ReadingFactory
 from spectator.reading.models import Publication, Reading
+
+from .. import make_date
 
 
 class PublicationManagersTestCase(TestCase):

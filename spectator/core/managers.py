@@ -23,8 +23,7 @@ class CreatorManager(models.Manager):
         qs = self.get_queryset()
 
         qs = (
-            qs
-            .exclude(publications__reading__isnull=True)
+            qs.exclude(publications__reading__isnull=True)
             .exclude(publications__reading__is_finished=False)
             .annotate(num_publications=Count("publications"))
             .order_by("-num_publications", "name_sort")

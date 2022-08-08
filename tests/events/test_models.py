@@ -1,10 +1,9 @@
 import os
 
-from django.core.files import File
-from django.test import override_settings, TestCase
 import piexif
+from django.core.files import File
+from django.test import TestCase, override_settings
 
-from .. import make_date
 from spectator.core.factories import GroupCreatorFactory, IndividualCreatorFactory
 from spectator.events.factories import (
     CinemaEventFactory,
@@ -26,6 +25,8 @@ from spectator.events.factories import (
     WorkSelectionFactory,
 )
 from spectator.events.models import Event, Venue, Work
+
+from .. import make_date
 
 
 class EventStrTestCase(TestCase):

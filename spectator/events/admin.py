@@ -1,12 +1,10 @@
 from django.contrib import admin
 from django.db.models import Count
 from django.templatetags.l10n import unlocalize
-
 from imagekit.admin import AdminThumbnail
 
 from ..core import app_settings
-from .models import Event, EventRole, Work, WorkRole, WorkSelection, Venue
-
+from .models import Event, EventRole, Venue, Work, WorkRole, WorkSelection
 
 # INLINES
 

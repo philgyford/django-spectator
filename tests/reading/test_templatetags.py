@@ -2,7 +2,6 @@ from unittest.mock import patch
 
 from django.test import TestCase
 
-from .. import make_date
 from spectator.reading.factories import PublicationFactory, ReadingFactory
 from spectator.reading.templatetags.spectator_reading import (
     annual_reading_counts,
@@ -11,6 +10,8 @@ from spectator.reading.templatetags.spectator_reading import (
     reading_dates,
     reading_years,
 )
+
+from .. import make_date
 
 # from spectator.reading import utils
 

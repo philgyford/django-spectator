@@ -1,7 +1,8 @@
 import factory
 
-from . import models
 from spectator.core.factories import IndividualCreatorFactory
+
+from . import models
 
 
 class PublicationSeriesFactory(factory.django.DjangoModelFactory):

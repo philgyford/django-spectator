@@ -19,7 +19,7 @@
  *  Using CSS to give .spectator-marker an image, size and other styles.
  *  Setting mapboxgl.accessToken to your api key value.
  */
-(function($) {
+(function ($) {
   // We'll insert the map after this element:
   var prev_el_selector = ".form-row.field-country";
 
@@ -97,7 +97,7 @@
       container: mapEl,
       center: position,
       style: tileStyle,
-      zoom: initial_zoom
+      zoom: initial_zoom,
     });
 
     map.addControl(new mapboxgl.NavigationControl());
@@ -109,7 +109,7 @@
       draggable: true,
       // This is because of the shape of our custom marker icon.
       // We want the chosen point to be at the middle bottom of the pin.
-      anchor: "bottom"
+      anchor: "bottom",
     });
 
     if (has_initial_loc) {
@@ -120,7 +120,7 @@
       markerIsAddedToMap = true;
     }
 
-    map.on("click", function(ev) {
+    map.on("click", function (ev) {
       setMarkerPosition(ev.lngLat.lat, ev.lngLat.lng);
       if (!markerIsAddedToMap) {
         // There was no previous location so we haven't already done addTo()
@@ -131,7 +131,7 @@
       setInputValues(ev.lngLat.lat, ev.lngLat.lng);
     });
 
-    marker.on("dragend", function() {
+    marker.on("dragend", function () {
       var lngLat = marker.getLngLat();
       setInputValues(lngLat.lat, lngLat.lng);
     });
@@ -152,7 +152,7 @@
     setLatLonInputValue($lat, lat);
     setLatLonInputValue($lon, lon);
 
-    geoCode(lat, lon, function(geocoded) {
+    geoCode(lat, lon, function (geocoded) {
       if (geocoded["address"]) {
         $address.val(geocoded["address"]);
       }
@@ -200,7 +200,7 @@
         lat +
         ".json?limit=1&access_token=" +
         mapConfig.api_key,
-      function(data) {
+      function (data) {
         var components = data.features[0].context;
         var address_parts = [];
         var wanted = ["place", "district", "region"];
@@ -223,12 +223,12 @@
 
         callback(geocoded);
       }
-    ).fail(function(jqXHR, textStatus, errorThrown) {
+    ).fail(function (jqXHR, textStatus, errorThrown) {
       alert("There was an error while geocoding: " + errorThrown);
     });
   }
 
-  $(document).ready(function() {
+  $(document).ready(function () {
     initMap();
   });
 })(django.jQuery);

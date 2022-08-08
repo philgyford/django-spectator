@@ -1,14 +1,13 @@
 from django import template
-
 from django.db.models import Count
 from django.db.models.functions import TruncYear
 from django.utils.html import format_html
 
+from spectator.core import app_settings
 from spectator.core.models import Creator
 from spectator.core.utils import chartify
-from spectator.core import app_settings
-from ..models import Event, Work
 
+from ..models import Event, Work
 
 register = template.Library()
 

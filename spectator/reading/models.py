@@ -3,15 +3,16 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 
-from . import managers
 from spectator.core.fields import NaturalSortField
 from spectator.core.models import (
     BaseRole,
     SluggedModelMixin,
     ThumbnailModelMixin,
-    thumbnail_upload_path,
     TimeStampedModelMixin,
+    thumbnail_upload_path,
 )
+
+from . import managers
 
 
 def publication_upload_path(instance, filename):

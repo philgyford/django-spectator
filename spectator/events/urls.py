@@ -3,7 +3,6 @@ from django.urls import path, re_path
 from . import views
 from .models import Event, Work
 
-
 app_name = "events"
 
 # Will be like 'movies|plays|concerts' etc:

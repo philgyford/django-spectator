@@ -56,12 +56,12 @@ function spectatorInitMap() {
     map = new google.maps.Map(mapEl, {
       zoom: 12,
       center: position,
-      mapTypeId: tileStyle
+      mapTypeId: tileStyle,
     });
 
     new google.maps.Marker({
       map: map,
-      position: position
+      position: position,
     });
   } else if (mapConfig.library == "mapbox") {
     var position = [parseFloat(lon), parseFloat(lat)];
@@ -75,7 +75,7 @@ function spectatorInitMap() {
       container: mapEl,
       center: position,
       style: tileStyle,
-      zoom: 11
+      zoom: 11,
     });
 
     map.addControl(new mapboxgl.NavigationControl());
@@ -83,6 +83,8 @@ function spectatorInitMap() {
     // Create and add marker
     var el = document.createElement("div");
     el.className = "spectator-marker"; // The CSS classname
-    new mapboxgl.Marker(el, {anchor: "bottom"}).setLngLat(position).addTo(map);
+    new mapboxgl.Marker(el, { anchor: "bottom" })
+      .setLngLat(position)
+      .addTo(map);
   }
 }

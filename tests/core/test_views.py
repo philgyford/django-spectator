@@ -1,11 +1,12 @@
 from django.http.response import Http404
 from django.test import RequestFactory, TestCase
 
-from .. import make_date
 from spectator.core import views
 from spectator.core.factories import GroupCreatorFactory, IndividualCreatorFactory
-from spectator.events.factories import GigEventFactory, CinemaEventFactory
+from spectator.events.factories import CinemaEventFactory, GigEventFactory
 from spectator.reading.factories import ReadingFactory
+
+from .. import make_date
 
 
 class ViewTestCase(TestCase):

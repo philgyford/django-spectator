@@ -1,14 +1,13 @@
 from django.test import TestCase
 
-from .. import make_date
 from spectator.core.factories import IndividualCreatorFactory
 from spectator.events.factories import (
+    CinemaEventFactory,
     EventRoleFactory,
     GigEventFactory,
-    CinemaEventFactory,
-    TheatreEventFactory,
     MovieFactory,
     PlayFactory,
+    TheatreEventFactory,
     WorkRoleFactory,
     WorkSelectionFactory,
 )
@@ -21,14 +20,16 @@ from spectator.events.templatetags.spectator_events import (
     events_years,
     events_years_card,
     most_seen_creators,
-    most_seen_creators_card,
     most_seen_creators_by_works,
     most_seen_creators_by_works_card,
+    most_seen_creators_card,
     most_seen_works,
     most_seen_works_card,
     recent_events,
     recent_events_card,
 )
+
+from .. import make_date
 
 
 class AnnualEventCountsTestCase(TestCase):

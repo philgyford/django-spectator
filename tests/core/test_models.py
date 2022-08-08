@@ -1,21 +1,22 @@
 # coding: utf-8
 from django.test import TestCase
 
-from .. import override_app_settings
 from spectator.core.factories import GroupCreatorFactory, IndividualCreatorFactory
+from spectator.core.models import Creator
 from spectator.events.factories import (
     ClassicalWorkFactory,
     DancePieceFactory,
-    GigEventFactory,
     EventRoleFactory,
     ExhibitionFactory,
+    GigEventFactory,
     MovieFactory,
     PlayFactory,
-    WorkRoleFactory,
     TheatreEventFactory,
+    WorkRoleFactory,
 )
 from spectator.reading.factories import PublicationFactory, PublicationRoleFactory
-from spectator.core.models import Creator
+
+from .. import override_app_settings
 
 
 class SluggedModelMixinTestCase(TestCase):

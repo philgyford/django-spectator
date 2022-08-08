@@ -7,6 +7,7 @@ from django.views.generic.detail import SingleObjectMixin
 
 from spectator.core import app_settings
 from spectator.core.views import PaginatedListView
+
 from .models import Event, Venue, Work
 
 
