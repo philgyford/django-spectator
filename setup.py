@@ -63,11 +63,16 @@ if sys.argv[-1] == "testpublish":
     )
     sys.exit()
 
-dev_require = ["django-debug-toolbar>=2.0,<4.0", "flake8>=4.0,<5.1", "black==22.6.0"]
+dev_require = [
+    "django-debug-toolbar>=2.0,<4.0",
+    "flake8>=4.0,<5.1",
+    "black==22.6.0",
+    "pre-commit",
+]
 tests_require = dev_require + [
     "factory-boy>=2.12.0,<4.0",
     "freezegun>=0.3.12,<2.0",
-    "coverage",
+    "coverage[toml]",
 ]
 
 setup(

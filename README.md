@@ -455,6 +455,12 @@ Then run migrations and start the server:
     (spectator-devproject)$ ./manage.py migrate
     (spectator-devproject)$ ./manage.py runserver
 
+### pre-commit
+
+pre-commit will run flake8, black, isort and prettier across all files on commit.
+I think you just need to do this first:
+
+  $ pre-commit install
 
 ### Running tests locally
 
