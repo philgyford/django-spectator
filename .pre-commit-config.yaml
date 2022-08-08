@@ -4,7 +4,7 @@ default_language_version:
 exclude: |
   (?x)^(
     dist/.*
-    spectator/core/static/spectator-core/css/bootstrap.*
+    |spectator/core/static/spectator-core/css/bootstrap.*
   )$
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
