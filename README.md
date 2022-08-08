@@ -459,6 +459,15 @@ Then run migrations and start the server:
     (spectator-devproject)$ ./manage.py migrate
     (spectator-devproject)$ ./manage.py runserver
 
+### Environment variables
+
+You can add a `.env` file in `devproject/` and its environment variables will be
+read in `devproject/devproject/settings.py`. e.g.:
+
+  SPECTATOR_MAPBOX_API_KEY="your-api-key-here"
+  DJANGO_SECRET_KEY="your-secret-key"
+  DJANGO_LOG_LEVEL="INFO"
+
 ### pre-commit
 
 pre-commit will run flake8, black, isort and prettier across all files on commit.
