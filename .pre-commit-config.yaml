@@ -3,6 +3,7 @@ default_language_version:
 
 exclude: |
   (?x)^(
+    dist/.*
     spectator/core/static/spectator-core/css/bootstrap.*
   )$
 repos:
