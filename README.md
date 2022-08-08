@@ -34,6 +34,9 @@ Contents
     - [Reading template tags](#reading-template-tags)
     - [Events template tags](#events-template-tags)
 4. [Local development](#local-development)
+    - [Environment variables](#environment-variables)
+    - [pre-commit](#pre-commit)
+    - [Running tests locally](#running-tests-locally)
     - [Making a new release](#making-a-new-release)
     - [Adding a new Event kind](#adding-a-new-event-kind)
     - [Adding a new Work kind](#adding-a-new-work-kind)
@@ -496,7 +499,6 @@ To run a specific test, add its path after `--`, eg:
 Running the tests in all environments will generate coverage output. There will also be an `htmlcov/` directory containing an HTML report. You can also generate these reports without running all the other tests:
 
     $ tox -e coverage
-
 
 ### Making a new release
 
