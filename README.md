@@ -449,8 +449,6 @@ This will exclude any Works with only 1 Event.
 
 I set things up locally, having installed virtualenv and pyenv, like this:
 
-Use it like this, installing requirements with pip (probably in a virtualenv of some kind):
-
     $ cd devproject
     $ virtualenv --prompt spectator-devproject venv
     $ source venv/bin/activate
