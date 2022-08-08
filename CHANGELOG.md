@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update development project depenencies
-- Update included Bootstrap CSS from 4.6.0 to 4.6.1.
+- Update included Bootstrap CSS from 4.6.0 to 4.6.2.
 - For the `devproject`, stopped using pipenv in favour of pip.
 
 
