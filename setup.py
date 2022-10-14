@@ -66,7 +66,7 @@ if sys.argv[-1] == "testpublish":
 dev_require = [
     "django-debug-toolbar>=2.0,<4.0",
     "flake8>=4.0,<5.1",
-    "black==22.6.0",
+    "black",
     "pre-commit",
     "python-dotenv",
 ]
