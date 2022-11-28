@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- None
+
+
+## [13.0.1] - 2022-12-28
+
+### Added
+
+- Add support for python 3.11. (No changes required.)
+
+### Changed
+
 - Remove black version requirement
 
 

@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
         django-version: ["3.2", "4.0", "4.1", "main"]
         # If we want to exclude combinations, we add them here:
         exclude:
@@ -58,7 +58,7 @@ jobs:
           python -m pip install --upgrade coverage[toml] tox tox-gh-actions
 
       - name: Test with Tox
-        run: tox -v
+        run: tox --verbose --parallel auto
         env:
           DJANGO: ${{ matrix.django-version }}
 
