@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Removed
+- Dropped support for Python 3.6. (Nothing changed, but removed from tests.)
 - Dropped support for Django 4.0. (Nothing changed, but removed from tests.)
 
 ### Added
