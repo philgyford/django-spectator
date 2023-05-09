@@ -18,39 +18,50 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
-        django-version: ["3.2", "4.0", "4.1", "main"]
-        # If we want to exclude combinations, we add them here:
+        django-version: ["3.2", "4.1", "4.2", "main"]
+        # Django 4.x aren't compatible with python 3.6 and 3.7:
         exclude:
           - python-version: "3.6"
-            django-version: "4.0"
-          - python-version: "3.6"
             django-version: "4.1"
+          - python-version: "3.6"
+            django-version: "4.2"
           - python-version: "3.6"
             django-version: "main"
 
           - python-version: "3.7"
-            django-version: "4.0"
-          - python-version: "3.7"
             django-version: "4.1"
           - python-version: "3.7"
+            django-version: "4.2"
+          - python-version: "3.7"
             django-version: "main"
+
+          # Django 5.0 isn't compatible with python < 3.10
+          - python-version: "3.8"
+            django-version: "main"
+          - python-version: "3.9"
+            django-version: "main"
+
     steps:
       - name: Git clone
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Get pip cache dir
+        id: pip-cache
+        run: echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
+
       - name: Pip cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
-          path: ~/.cache/pip
+          path: ${{ steps.pip-cache.outputs.dir }}
           key:
-            ${{ runner.os }}-pip-${{ matrix.python-version }}-v1-${{ hashFiles('tox.ini', 'setup.py') }}
+            ${{ matrix.python-version }}-v2-${{ hashFiles('**/pyproject.toml') }}-${{ hashFiles('**/tox.ini') }}
           restore-keys: |
-            ${{ runner.os }}-pip-${{ matrix.python-version }}-v1-
+            ${{ matrix.python-version }}-v2-
 
       - name: Install python packages
         run: |
@@ -63,7 +74,7 @@ jobs:
           DJANGO: ${{ matrix.django-version }}
 
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
 
   # The flake8 test in tox.ini won't run with the test job so we need to add it here.
   lint:
@@ -77,21 +88,25 @@ jobs:
 
     steps:
       - name: Git clone
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up Python ${{ env.default_python }}
-        uses: actions/setup-python@v2
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: ${{ env.default_python }}
+          python-version: "3.10"
+
+      - name: Get pip cache dir
+        id: pip-cache
+        run: echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
 
       - name: Pip cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
-          path: ~/.cache/pip
+          path: ${{ steps.pip-cache.outputs.dir }}
           key:
-            ${{ runner.os }}-pip-${{ matrix.toxenv }}-v1-${{ hashFiles('tox.ini', 'setup.py') }}
+            ${{ matrix.python-version }}-v2-${{ hashFiles('**/pyproject.toml') }}-${{ hashFiles('**/tox.ini') }}
           restore-keys: |
-            ${{ runner.os }}-pip-${{ matrix.toxenv }}-v1-
+            ${{ matrix.python-version }}-v2-
 
       - name: Install dependencies
         run: |
@@ -99,7 +114,7 @@ jobs:
           python -m pip install --upgrade tox tox-gh-actions
 
       - name: Run ${{ matrix.toxenv }}
-        run: python -m tox -v -e ${{ matrix.toxenv }}
+        run: python -m tox -e ${{ matrix.toxenv }}
 
   slack:
     # https://github.com/8398a7/action-slack/issues/72#issuecomment-649910353
