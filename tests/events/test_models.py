@@ -730,5 +730,35 @@ class VenueTestCase(TestCase):
         venue = VenueFactory(cinema_treasures_id=None)
         self.assertEqual(venue.cinema_treasures_url, "")
 
+    def test_all_names(self):
+        "Should include all names from events, not duplicating own name"
+        venue = VenueFactory(name="D")
+        CinemaEventFactory(venue=venue, venue_name="D", date=make_date("2023-04-01"))
+        CinemaEventFactory(venue=venue, venue_name="A", date=make_date("2023-01-01"))
+        CinemaEventFactory(venue=venue, venue_name="C", date=make_date("2023-03-01"))
+        CinemaEventFactory(venue=venue, venue_name="B", date=make_date("2023-02-01"))
+
+        self.assertEqual(venue.all_names, ["A", "B", "C", "D"])
+
+    def test_all_names_plus_current(self):
+        "If own name is not in event names, it should be added to all_names"
+        venue = VenueFactory(name="E")
+        CinemaEventFactory(venue=venue, venue_name="D", date=make_date("2023-04-01"))
+        CinemaEventFactory(venue=venue, venue_name="A", date=make_date("2023-01-01"))
+        CinemaEventFactory(venue=venue, venue_name="C", date=make_date("2023-03-01"))
+        CinemaEventFactory(venue=venue, venue_name="B", date=make_date("2023-02-01"))
+
+        self.assertEqual(venue.all_names, ["A", "B", "C", "D", "E"])
+
+    def test_previous_names(self):
+        "Should not include the venue's own, current, name"
+        venue = VenueFactory(name="D")
+        CinemaEventFactory(venue=venue, venue_name="D", date=make_date("2023-04-01"))
+        CinemaEventFactory(venue=venue, venue_name="A", date=make_date("2023-01-01"))
+        CinemaEventFactory(venue=venue, venue_name="C", date=make_date("2023-03-01"))
+        CinemaEventFactory(venue=venue, venue_name="B", date=make_date("2023-02-01"))
+
+        self.assertEqual(venue.previous_names, ["A", "B", "C"])
+
     def test_get_country_name(self):
         self.assertEqual(Venue.get_country_name("CH"), "Switzerland")

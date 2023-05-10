@@ -43,6 +43,12 @@
     {{ venue.address }}{% if venue.address and venue.country_name %}, {% endif %}{% if venue.country_name %}{{ venue.country_name }}{% endif %}
   </p>
 
+  {% with names=venue.previous_names %}
+    {% if names|length > 0 %}
+      <p>Previously visited as: {{ names|join:", " }}.</p>
+    {% endif %}
+  {% endwith %}
+
   {% if venue.note %}
     {{ venue.note|safe|linebreaks }}
   {% endif %}

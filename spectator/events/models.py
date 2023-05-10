@@ -857,6 +857,33 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
         else:
             return ""
 
+    @property
+    def all_names(self):
+        """
+        A list of all the names the venue has had at events, in date order.
+        Each name only appears once.
+        The venue's own, current, name is added if it's not included in the names used
+        for events.
+        """
+        names = self.event_set.values_list("venue_name", flat=True).order_by("date")
+        names = list(dict.fromkeys(names))
+        if self.name not in names:
+            names.append(self.name)
+        return names
+
+    @property
+    def previous_names(self):
+        """
+        A list of all the names the venue has previously had at events, in date order.
+        Each name only appears once.
+        Does not include the venue's own, current ,name.
+        """
+        all_names = self.all_names
+        if all_names[-1] == self.name:
+            return all_names[:-1]
+        else:
+            return all_names
+
     @classmethod
     def get_country_name(cls, country_code):
         return cls.COUNTRIES.get(country_code, None)
