@@ -7,12 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- None
+
+
+## [13.1.0] - 2023-05-10
+
 ### Removed
 - Dropped support for Python 3.6. (Nothing changed, but removed from tests.)
 - Dropped support for Django 4.0. (Nothing changed, but removed from tests.)
 
 ### Added
 - Added support for Django 4.2. (Nothing changed, but added to tests.)
+- `Venue` model has two new property methods `all_names` and `previous_names`.
+- Any previous names of a `Venue` are displayed on the default venue detail page.
 
 
 ## [13.0.1] - 2022-12-28
