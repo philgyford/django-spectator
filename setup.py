@@ -69,6 +69,7 @@ dev_require = [
     "black",
     "pre-commit",
     "python-dotenv",
+    "unittest-parametrize",
 ]
 tests_require = dev_require + [
     "factory-boy>=2.12.0,<4.0",
