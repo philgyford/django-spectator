@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- None
+### Added
+- Added general tests for Admin classes
 
 
 ## [13.1.0] - 2023-05-10
