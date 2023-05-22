@@ -1,8 +1,7 @@
 from http import HTTPStatus
 
-from django.contrib.admin.sites import AdminSite, all_sites
+from django.contrib.admin.sites import all_sites
 from django.contrib.auth.models import User
-from django.db.models import Model
 from django.test import TestCase
 from django.urls import reverse
 from unittest_parametrize import ParametrizedTestCase, param, parametrize
@@ -39,7 +38,7 @@ class ModelAdminTests(ParametrizedTestCase, TestCase):
     def setUp(self):
         self.client.force_login(self.user)
 
-    def make_url(self, site: AdminSite, model: type[Model], page: str) -> str:
+    def make_url(self, site, model, page):
         return reverse(
             f"{site.name}:{model._meta.app_label}_{model._meta.model_name}_{page}"
         )
