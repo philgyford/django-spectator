@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- None
+
+
+## [13.2.0] - 2023-05-10
+
 ### Added
+- Added support for Python 3.12. (Nothing changed.)
 - Added general tests for Admin classes
 
 
