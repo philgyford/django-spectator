@@ -1,4 +1,3 @@
-# coding: utf-8
 import datetime
 
 from django.core.validators import RegexValidator
@@ -208,7 +207,7 @@ class Event(
             title = self.title
         else:
             title_start = Event.get_kind_name_plural(self.kind)
-            title = "{} #{}".format(title_start, self.pk)
+            title = f"{title_start} #{self.pk}"
 
             if self.pk:
                 # Can't get the works/roles relationships if self has no PK.
@@ -241,7 +240,7 @@ class Event(
                     if len(roles) == 1:
                         title = str(roles[0].creator.name)
                     elif len(roles) == 0:
-                        title = "Event #{}".format(self.pk)
+                        title = f"Event #{self.pk}"
                     else:
                         roles = [r.creator.name for r in roles]
                         # Join with commas but 'and' for the last one:
@@ -305,7 +304,7 @@ class Event(
         elif kind == "museum":
             return "Galleries/Museums"
         else:
-            return "{}s".format(cls.get_kind_name(kind))
+            return f"{cls.get_kind_name(kind)}s"
 
     @classmethod
     def get_kind_name(cls, kind):
@@ -456,7 +455,7 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     @property
     def imdb_url(self):
         if self.imdb_id:
-            return "http://www.imdb.com/title/{}/".format(self.imdb_id)
+            return f"http://www.imdb.com/title/{self.imdb_id}/"
         else:
             return ""
 
@@ -472,7 +471,7 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     @classmethod
     def get_kind_name_plural(cls, kind):
-        return "{}s".format(cls.get_kind_name(kind))
+        return f"{cls.get_kind_name(kind)}s"
 
 
 class WorkRole(BaseRole):
@@ -525,7 +524,7 @@ class WorkSelection(models.Model):
         verbose_name = "work selection"
 
     def __str__(self):
-        return "Event #{}: {}".format(self.event.pk, self.work)
+        return f"Event #{self.event.pk}: {self.work}"
 
 
 class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):

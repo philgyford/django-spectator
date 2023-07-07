@@ -54,9 +54,9 @@ def change_object_link_card(obj, perms):
     """
     # eg: 'movie' or 'classicalwork':
     name = obj.__class__.__name__.lower()
-    permission = "spectator.can_edit_{}".format(name)
+    permission = f"spectator.can_edit_{name}"
     # eg: 'admin:events_classicalwork_change':
-    change_url_name = "admin:{}_{}_change".format(obj._meta.app_label, name)
+    change_url_name = f"admin:{obj._meta.app_label}_{name}_change"
 
     return {
         "display_link": (permission in perms),
@@ -78,7 +78,7 @@ def domain_urlize(value):
         <a href="http://www.example.org/foo/" rel="nofollow">example.org</a>
     """
     parsed_uri = urlparse(value)
-    domain = "{uri.netloc}".format(uri=parsed_uri)
+    domain = f"{parsed_uri.netloc}"
 
     if domain.startswith("www."):
         domain = domain[4:]

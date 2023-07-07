@@ -14,7 +14,7 @@ work_kind_slugs = "|".join(Work.get_valid_kind_slugs())
 urlpatterns = [
     path("", view=views.EventListView.as_view(), name="home"),
     re_path(
-        r"^types/(?P<kind_slug>{})/$".format(event_kind_slugs),
+        rf"^types/(?P<kind_slug>{event_kind_slugs})/$",
         view=views.EventListView.as_view(),
         name="event_list",
     ),
@@ -34,12 +34,12 @@ urlpatterns = [
         name="event_year_archive",
     ),
     re_path(
-        r"^(?P<kind_slug>{})/$".format(work_kind_slugs),
+        rf"^(?P<kind_slug>{work_kind_slugs})/$",
         view=views.WorkListView.as_view(),
         name="work_list",
     ),
     re_path(
-        r"^(?P<kind_slug>{})/(?P<slug>[\w-]+)/$".format(work_kind_slugs),
+        rf"^(?P<kind_slug>{work_kind_slugs})/(?P<slug>[\w-]+)/$",
         view=views.WorkDetailView.as_view(),
         name="work_detail",
     ),

@@ -8,14 +8,14 @@ from .utils import truncate_string
 logger = logging.getLogger(__name__)
 
 
-class UniqueFieldMixin(object):
+class UniqueFieldMixin:
     """
     Taken from https://github.com/django-extensions/django-extensions/blob/b5404a4a5ed3a5893727b3be3d6a50bc21c534e3/django_extensions/db/fields/__init__.py  # noqa: E501
     """
 
     def check_is_bool(self, attrname):
         if not isinstance(getattr(self, attrname), bool):
-            raise ValueError("'{}' argument must be True or False".format(attrname))
+            raise ValueError(f"'{attrname}' argument must be True or False")
 
     @staticmethod
     def _get_fields(model_cls):
@@ -112,7 +112,7 @@ class NaturalSortField(models.CharField):
         # For use in pre_save()
         self.max_length = kwargs["max_length"]
 
-        super(NaturalSortField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
@@ -220,7 +220,7 @@ class NaturalSortField(models.CharField):
 
         if parentheses:
             # Add it back on.
-            sort_string = "{} {}".format(sort_string, parentheses)
+            sort_string = f"{sort_string} {parentheses}"
 
         sort_string = self._naturalize_numbers(sort_string)
 
@@ -274,11 +274,11 @@ class NaturalSortField(models.CharField):
 
         if suffix:
             # Add it back on.
-            sort_string = "{} {}".format(sort_string, suffix)
+            sort_string = f"{sort_string} {suffix}"
 
         if parentheses:
             # Add it back on.
-            sort_string = "{} {}".format(sort_string, parentheses)
+            sort_string = f"{sort_string} {parentheses}"
 
         # In case this name has any numbers in it.
         sort_string = self._naturalize_numbers(sort_string)

@@ -49,7 +49,7 @@ def annual_event_counts_card(kind="all", current_year=None):
     if kind == "all":
         card_title = "Events per year"
     else:
-        card_title = "{} per year".format(Event.get_kind_name_plural(kind))
+        card_title = f"{Event.get_kind_name_plural(kind)} per year"
 
     return {
         "card_title": card_title,
@@ -139,7 +139,7 @@ def day_events_card(date):
     `date` is a date object.
     """
     d = date.strftime(app_settings.DATE_FORMAT)
-    card_title = "Events on {}".format(d)
+    card_title = f"Events on {d}"
     return {
         "card_title": card_title,
         "event_list": day_events(date=date),
@@ -219,7 +219,7 @@ def most_seen_creators_by_works_card(work_kind=None, role_name=None, num=10):
 
     if role_name:
         # Yes, this pluralization is going to break at some point:
-        creators_name = "{}s".format(role_name.capitalize())
+        creators_name = f"{role_name.capitalize()}s"
     else:
         creators_name = "People/groups"
 
@@ -228,7 +228,7 @@ def most_seen_creators_by_works_card(work_kind=None, role_name=None, num=10):
     else:
         works_name = "works"
 
-    card_title = "{} with most {}".format(creators_name, works_name)
+    card_title = f"{creators_name} with most {works_name}"
 
     return {
         "card_title": card_title,
@@ -255,7 +255,7 @@ def most_seen_works_card(kind=None, num=10):
     object_list = chartify(object_list, "num_views", cutoff=1)
 
     if kind:
-        card_title = "Most seen {}".format(Work.get_kind_name_plural(kind).lower())
+        card_title = f"Most seen {Work.get_kind_name_plural(kind).lower()}"
     else:
         card_title = "Most seen works"
 

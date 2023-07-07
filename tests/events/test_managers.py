@@ -1,4 +1,3 @@
-# coding: utf-8
 from django.test import TestCase
 
 from spectator.events.factories import (

@@ -44,7 +44,7 @@ def get_author_email():
 
 # Do `python setup.py tag` to tag with the current version number.
 if sys.argv[-1] == "tag":
-    os.system("git tag -a %s -m 'version %s'" % (get_version(), get_version()))
+    os.system(f"git tag -a {get_version()} -m 'version {get_version()}'")
     os.system("git push --tags")
     sys.exit()
 
@@ -58,8 +58,9 @@ if sys.argv[-1] == "publish":
 if sys.argv[-1] == "testpublish":
     os.system("python setup.py sdist")
     os.system(
-        "twine upload --repository-url https://test.pypi.org/legacy/ dist/django-spectator-%s.tar.gz"  # noqa: E501
-        % (get_version())
+        f"twine upload "
+        f"--repository-url https://test.pypi.org/legacy/ "
+        f"dist/django-spectator-{get_version()}.tar.gz"
     )
     sys.exit()
 
@@ -109,8 +110,7 @@ setup(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
