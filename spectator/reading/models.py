@@ -207,7 +207,7 @@ class Publication(ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin)
     def amazon_uk_url(self):
         url = ""
         if self.isbn_uk:
-            url = "https://www.amazon.co.uk/gp/product/{}/".format(self.isbn_uk)
+            url = f"https://www.amazon.co.uk/gp/product/{self.isbn_uk}/"
             if (
                 hasattr(settings, "SPECTATOR_AMAZON")
                 and "uk" in settings.SPECTATOR_AMAZON
@@ -219,7 +219,7 @@ class Publication(ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin)
     def amazon_us_url(self):
         url = ""
         if self.isbn_us:
-            url = "https://www.amazon.com/dp/{}/".format(self.isbn_us)
+            url = f"https://www.amazon.com/dp/{self.isbn_us}/"
             if (
                 hasattr(settings, "SPECTATOR_AMAZON")
                 and "us" in settings.SPECTATOR_AMAZON
@@ -291,7 +291,7 @@ class Reading(TimeStampedModelMixin, models.Model):
     objects_desc = managers.EndDateDescendingReadingsManager()
 
     def __str__(self):
-        return "{} ({} to {})".format(self.publication, self.start_date, self.end_date)
+        return f"{self.publication} ({self.start_date} to {self.end_date})"
 
     def clean(self):
         if self.start_date and self.end_date and self.start_date > self.end_date:

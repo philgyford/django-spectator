@@ -249,7 +249,7 @@ class VenueAdmin(admin.ModelAdmin):
         """
         extra = extra_context or {}
         extra["SPECTATOR_MAPS"] = app_settings.MAPS
-        return super(VenueAdmin, self).add_view(request, form_url, extra_context=extra)
+        return super().add_view(request, form_url, extra_context=extra)
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         """
@@ -259,6 +259,4 @@ class VenueAdmin(admin.ModelAdmin):
         """
         extra = extra_context or {}
         extra["SPECTATOR_MAPS"] = app_settings.MAPS
-        return super(VenueAdmin, self).change_view(
-            request, object_id, form_url, extra_context=extra
-        )
+        return super().change_view(request, object_id, form_url, extra_context=extra)

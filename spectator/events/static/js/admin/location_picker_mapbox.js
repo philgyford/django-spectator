@@ -222,7 +222,7 @@
         geocoded["address"] = address_parts.join(", ");
 
         callback(geocoded);
-      }
+      },
     ).fail(function (jqXHR, textStatus, errorThrown) {
       alert("There was an error while geocoding: " + errorThrown);
     });

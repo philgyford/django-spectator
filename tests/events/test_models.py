@@ -42,7 +42,7 @@ class EventStrTestCase(TestCase):
     def test_with_no_title_or_creators(self):
         "With no title or creator names, it still has a __str__"
         event = GigEventFactory(title="")
-        self.assertEqual(str(event), "Event #{}".format(event.pk))
+        self.assertEqual(str(event), f"Event #{event.pk}")
 
     def test_with_no_title_one_creator(self):
         event = GigEventFactory(title="")
@@ -100,7 +100,7 @@ class EventStrTestCase(TestCase):
         selection = WorkSelectionFactory(
             event=event, work=ClassicalWorkFactory(title="My Work")
         )
-        self.assertEqual(str(selection), "Event #{}: My Work".format(event.pk))
+        self.assertEqual(str(selection), f"Event #{event.pk}: My Work")
 
 
 class EventTitleHtmlTestCase(TestCase):
@@ -116,7 +116,7 @@ class EventTitleHtmlTestCase(TestCase):
     def test_with_no_title_or_creators(self):
         "With no title or creator names, it still has a title"
         event = GigEventFactory(title="")
-        self.assertEqual(event.title_html, "Event #{}".format(event.pk))
+        self.assertEqual(event.title_html, f"Event #{event.pk}")
 
     def test_with_no_title_one_creator(self):
         event = GigEventFactory(title="")

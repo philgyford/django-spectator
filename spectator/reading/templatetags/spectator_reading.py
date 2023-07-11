@@ -101,7 +101,7 @@ def day_publications_card(date):
     `date` is a date tobject.
     """
     d = date.strftime(app_settings.DATE_FORMAT)
-    card_title = "Reading on {}".format(d)
+    card_title = f"Reading on {d}"
     return {
         "card_title": card_title,
         "publication_list": day_publications(date=date),
@@ -266,21 +266,21 @@ def reading_dates(reading):
         # Only an end_date.
         if end_gran == 3:
             # Finished on 1 February 2017
-            output = "Finished on {}".format(end_str)
+            output = f"Finished on {end_str}"
         else:
             # Finished in February 2017
             # Finished in 2017
-            output = "Finished in {}".format(end_str)
+            output = f"Finished in {end_str}"
 
     else:
         # No end_date: the reading has started, but not ended.
         if start_gran == 3:
             # Started on 1 February 2017
-            output = "Started on {}".format(start_str)
+            output = f"Started on {start_str}"
 
         else:
             # Started in February 2017
             # Started in 2017
-            output = "Started in {}".format(start_str)
+            output = f"Started in {start_str}"
 
     return format_html(output)

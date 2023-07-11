@@ -70,7 +70,7 @@ def thumbnail_upload_path(instance, filename):
     e.g. '[MEDIA_ROOT]reading/publications/pok2d/my_cover_image.jpg'
     """
     # e.g. "publications" or "events":
-    folder = "{}s".format(instance.__class__.__name__).lower()
+    folder = f"{instance.__class__.__name__}s".lower()
 
     # This is kludgy, but...
     if folder == "publications":
@@ -246,7 +246,7 @@ class BaseRole(TimeStampedModelMixin, models.Model):
 
     def __str__(self):
         if self.role_name:
-            return "{} ({})".format(self.creator, self.role_name)
+            return f"{self.creator} ({self.role_name})"
         else:
             return str(self.creator)
 

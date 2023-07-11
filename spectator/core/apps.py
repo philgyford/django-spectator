@@ -10,7 +10,7 @@ class SpectatorCoreAppConfig(AppConfig):
     default_auto_field = "django.db.models.AutoField"
 
 
-class Apps(object):
+class Apps:
     """Methods for seeing which Spectator apps are installed/enabled.
     At the moment installed is the same as enabled, but in future we may add
     conditions that mean an installed app can be disabled.

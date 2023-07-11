@@ -113,7 +113,7 @@ class ReadingYearArchiveView(YearArchiveView):
         elif kind == "books":
             self.publication_kind = "book"
         elif kind is not None:
-            raise Http404("'{}' is not a valid publication kind".format(kind))
+            raise Http404(f"'{kind}' is not a valid publication kind")
 
         return super().get(request, *args, **kwargs)
 

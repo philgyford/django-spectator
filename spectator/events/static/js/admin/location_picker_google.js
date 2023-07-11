@@ -208,7 +208,7 @@
           alert("Geocoding failed due to: " + status);
         }
         callback(geocoded);
-      }
+      },
     );
   }
 
