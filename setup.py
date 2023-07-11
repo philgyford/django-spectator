@@ -70,6 +70,7 @@ dev_require = [
     "black",
     "pre-commit",
     "python-dotenv",
+    "pyupgrade",
     "unittest-parametrize",
 ]
 tests_require = dev_require + [
