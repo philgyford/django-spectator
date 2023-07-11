@@ -65,8 +65,8 @@ if sys.argv[-1] == "testpublish":
     sys.exit()
 
 dev_require = [
-    "django-debug-toolbar>=2.0,<5.0",
-    "flake8>=4.0,<7.0",
+    "django-debug-toolbar",
+    "flake8",
     "black",
     "pre-commit",
     "python-dotenv",
@@ -74,8 +74,8 @@ dev_require = [
     "unittest-parametrize",
 ]
 tests_require = dev_require + [
-    "factory-boy>=2.12.0,<4.0",
-    "freezegun>=0.3.12,<2.0",
+    "factory-boy",
+    "freezegun",
     "coverage[toml]",
 ]
 
@@ -112,7 +112,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
