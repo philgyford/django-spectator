@@ -1,42 +1,50 @@
 # Changelog (Django Spectator)
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [Unreleased]
 
-- None
+### Added
 
+- Added support for Django 5.0
+
+### Changed
+
+- Switched from using flake8 and black for linting and formatting to ruff
+- Allowed use of Pillow v10 and django-imagekit v5.0
 
 ## [14.0.0] - 2023-07-11
 
 ### Removed
+
 - Dropped support for Python 3.7. (Nothing changed.)
 
 ### Changed
-- Updated code after dropping support for Python 3.6 (Thanks @aqeelat)
 
+- Updated code after dropping support for Python 3.6 (Thanks @aqeelat)
 
 ## [13.2.0] - 2023-05-10
 
 ### Added
+
 - Added support for Python 3.12. (Nothing changed.)
 - Added general tests for Admin classes
-
 
 ## [13.1.0] - 2023-05-10
 
 ### Removed
+
 - Dropped support for Python 3.6. (Nothing changed, but removed from tests.)
 - Dropped support for Django 4.0. (Nothing changed, but removed from tests.)
 
 ### Added
+
 - Added support for Django 4.2. (Nothing changed, but added to tests.)
 - `Venue` model has two new property methods `all_names` and `previous_names`.
 - Any previous names of a `Venue` are displayed on the default venue detail page.
-
 
 ## [13.0.1] - 2022-12-28
 
@@ -48,140 +56,151 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove black version requirement
 
-
 ## [13.0.0] - 2022-08-08
 
 ### Removed
+
 - Dropped support for Django 3.1.
 
 ### Added
+
 - Add the latest master branch Django to the tox testing matrix.
 - Added support for Django 4.1.
 - Added `.pre-commit-config.yaml`
 
 ### Fixed
+
 - Fixed ValueError in `Event.make_title()` in Django 4.1.
 - Fixed handling of titles starting with "l'" when creating a sortable string from them (#81).
 
 ### Changed
+
 - Update development project depenencies
 - Update included Bootstrap CSS from 4.6.0 to 4.6.2.
 - For the `devproject`, stopped using pipenv in favour of pip.
 
-
 ## [12.0.1] - 2021-03-25
 
 ### Security
-- Allowed for use of Pillow > 9.0.0, to include 9.0.1 security bugfix release
 
+- Allowed for use of Pillow > 9.0.0, to include 9.0.1 security bugfix release
 
 ## [12.0.0] - 2021-12-15
 
 ### Removed
+
 - Dropped support for Django 2.2.
 
 ### Added
+
 - Added support for Django 4.0.
 - Added support for python 3.10.
-
 
 ## [11.7.0] - 2021-09-17
 
 ### Added
+
 - Any images uploaded as thumbnails that have GPS info in their EXIF data will have it stripped out, for added security. (#64)
 - Due to the above, [Piexif](https://piexif.readthedocs.io/en/latest/) is now a dependency.
 
 ### Changed
+
 - Fix: Thumbnail images for brand new Events and Publications are now saved to a directory named after the object's `slug`. (#67)
 - Change CHANGEDLOG and README files from Re-structured Text to Markdown.
-
 
 ## [11.6.1] - 2021-08-24
 
 ### Changed
+
 - The 'Most read authors' card and other lists was omitting any Creators who had a Publication with a currently unfinished Reading. (#65)
 - Update development project dependencies.
-
 
 ## [11.6.0] - 2021-04-07
 
 ### Added
+
 - Include support for Django 3.2.
 
 ### Changed
-- Fix: Stop the "Most Read Authors" card counting unfinished Readings. (#59)
 
+- Fix: Stop the "Most Read Authors" card counting unfinished Readings. (#59)
 
 ## [11.5.0] - 2021-03-23
 
 ### Added
+
 - Add a management command (`generate_letterboxd_export`) that generates a CSV file of movies seen, suitable for importing into a Letterboxd.com account.
 
 ### Changed
+
 - Update development project dependencies.
 - Update included Bootstrap CSS from 4.5.3 to 4.6.0.
-
 
 ## [11.4.0] - 2020-12-21
 
 ### Added
+
 - Add missing migrations
 
 ### Changed
+
 - Update python dependencies, including allowing django-debug-toolbar v3, frezegun up to v2, pillow up to v9.
 - Update Mapbox GL for Venue maps from v1.6.1 to v2.0.0. See the [Mapbox GL Changelog](https://github.com/mapbox/mapbox-gl-js/blob/main/CHANGELOG.md).
 - Update included Bootstrap CSS from 4.5.2 to 4.5.3.
 - Change text "Publication Series" to "Series" in the `reading/includes/card_nav.html` template.
 - Make counts in .nav-tabs consistently `<small>` in templates.
 
-
 ## [11.3.0] - 2020-08-22
 
 ### Added
-- Allow usage of Factory Boy v3
 
+- Allow usage of Factory Boy v3
 
 ## [11.2.0] - 2020-08-10
 
 ### Changed
-- Move Bootstrap CSS files from `/static/css/` to `/static/spectator-core/css/`.
 
+- Move Bootstrap CSS files from `/static/css/` to `/static/spectator-core/css/`.
 
 ## [11.1.0] - 2020-08-10
 
 ### Added
+
 - Add flake8 to tests.
 - Allow usage of Django 3.1, Pillow 7.2, hashids 1.3.
 
 ### Changed
+
 - Upgrade included Bootstrap CSS from v4.4 to v4.5.
 
 ### Removed
-- Drop official support for python 3.5.
 
+- Drop official support for python 3.5.
 
 ## [11.0.1]
 
 ### Changed
-- Fix display of thumbnails in templates.
 
+- Fix display of thumbnails in templates.
 
 ## [11.0.0]
 
 ### Added
+
 - Allow use of Pillow up to v7.2 (from v6.3)
 
 ### Changed
+
 - Switch from using django-imagekit specs in `spectator/core/imagegenerators.py` to adding `ImageSpecField`s directly on the `Publication` and `Event` models.
-  -   The `spectator_core/includes/thumbnail_*.html` templates have been updated.
-  -   The old image specs in `imagegenerators.py` are deprecated and should no longer be used. They will be removed in a future release.
+  - The `spectator_core/includes/thumbnail_*.html` templates have been updated.
+  - The old image specs in `imagegenerators.py` are deprecated and should no longer be used. They will be removed in a future release.
   - This change means working with models' thumbnails is a little easier. e.g. if django-imagekit's "Optimistic" cache file strategy is used, all of a model's thumbnail sizes will have cached files generated when its thumbnail is added or changed.
 - Update Boostrap CSS files from v4.3.1 to v4.4.1
 - Make devproject's python dependencies a little laxer
 
 ### Removed
-- Drop support for Django 1.11 and 2.1
 
+- Drop support for Django 1.11 and 2.1
 
 ## [10.0.1]
 
@@ -263,9 +282,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Events
 
 - Turn Exhibitions into a new kind of Work:
-  -   Renamed `"exhibition"` Events to be `"museum"` (Museum/Gallery) Events.
-  -   Added `"exhibition"` as a new Work kind.
-  -   Added a migration to add an Exhibition Work to every Museum/Gallery Event, and move any Creator(s) over to that Work.
+  - Renamed `"exhibition"` Events to be `"museum"` (Museum/Gallery) Events.
+  - Added `"exhibition"` as a new Work kind.
+  - Added a migration to add an Exhibition Work to every Museum/Gallery Event, and move any Creator(s) over to that Work.
 - Add optional settings to customise the format of Event dates in templates.
 - Display the number of Events on a Venue detail page.
 
