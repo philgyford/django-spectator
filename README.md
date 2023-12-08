@@ -3,14 +3,13 @@
 [![Tests](https://github.com/philgyford/django-spectator/actions/workflows/tests.yml/badge.svg)](https://github.com/philgyford/django-spectator/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/philgyford/django-spectator/branch/main/graph/badge.svg?token=T7TIJ5XNWH)](https://codecov.io/gh/philgyford/django-spectator)
 [![Code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 Two Django apps:
 
--   One to track book and periodical reading, including start and end dates, authors, and cover images.
--   One to track events attended (movie, plays, gigs, exhibitions, comedy, dance, classical), including date, venue (with maps), people/organisations involved, and images of tickets.
+- One to track book and periodical reading, including start and end dates, authors, and cover images.
+- One to track events attended (movie, plays, gigs, exhibitions, comedy, dance, classical), including date, venue (with maps), people/organisations involved, and images of tickets.
 
 For Django 3.2, 4.1, and 4.2, running on Python 3.8 upwards.
 
@@ -20,26 +19,25 @@ There are also template tags for displaying data in your own templates (see belo
 
 This is used on my personal website (with custom templates): [reading](https://www.gyford.com/phil/reading/) and [events](https://www.gyford.com/phil/events/).
 
-Contents
---------
+## Contents
 
 1. [Installation](#installation)
-    - [Settings](#settings)
+   - [Settings](#settings)
 2. [Overview](#overview)
-    - [Creators](#creators)
-    - [Reading](#reading)
-    - [Events](#events)
+   - [Creators](#creators)
+   - [Reading](#reading)
+   - [Events](#events)
 3. [Template tags](#template-tags)
-    - [Core template tags](#core-template-tags)
-    - [Reading template tags](#reading-template-tags)
-    - [Events template tags](#events-template-tags)
+   - [Core template tags](#core-template-tags)
+   - [Reading template tags](#reading-template-tags)
+   - [Events template tags](#events-template-tags)
 4. [Local development](#local-development)
-    - [Environment variables](#environment-variables)
-    - [pre-commit](#pre-commit)
-    - [Running tests locally](#running-tests-locally)
-    - [Making a new release](#making-a-new-release)
-    - [Adding a new Event kind](#adding-a-new-event-kind)
-    - [Adding a new Work kind](#adding-a-new-work-kind)
+   - [Environment variables](#environment-variables)
+   - [pre-commit](#pre-commit)
+   - [Running tests locally](#running-tests-locally)
+   - [Making a new release](#making-a-new-release)
+   - [Adding a new Event kind](#adding-a-new-event-kind)
+   - [Adding a new Work kind](#adding-a-new-work-kind)
 5. [Contact](#contact)
 
 ## 1. Installation
@@ -122,13 +120,14 @@ To use [Mapbox](https://www.mapbox.com) sign up and get an API key for [Mapbox G
         "tile_style": "mapbox://styles/mapbox/streets-v11",
         "api_key": "YOUR-API-KEY"
     }
+
 The `tile_style` value can be one of the pre-defined map styles, [listed under options.styles](https://docs.mapbox.com/mapbox-gl-js/api/#map).
 
 Setting `"enable"` to `False` in the above dicts will prevent maps appearing.
 
 #### Slug settings
 
-URLs for all objects include automatically-generated slugs, which are based on [Hashids](<http://hashids.org>) of the object's ID. You can change which characters are used in these slugs with this setting. e.g.:
+URLs for all objects include automatically-generated slugs, which are based on [Hashids](http://hashids.org) of the object's ID. You can change which characters are used in these slugs with this setting. e.g.:
 
     SPECTATOR_SLUG_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 
@@ -193,7 +192,7 @@ Each Event can have zero or more Creators associated directly with it. e.g. the 
   - Order: 1
 - Buffalo Tom
   - Role: "Support"
-  -  Order: 2
+  - Order: 2
 
 Events can be different kinds, e.g. "gig", "cinema", "theatre". This is only used for categorising Events into different lists - it doesn't restrict the kinds of Works that can be associated with it. You could have a "cinema" Event that has a movie, play and dance piece associated with it.
 
@@ -452,7 +451,7 @@ I set things up locally, having installed virtualenv and pyenv, like this:
     $ cd devproject
     $ virtualenv --prompt spectator-devproject venv
     $ source venv/bin/activate
-    (spectator-devproject)$ pyenv local 3.10.5
+    (spectator-devproject)$ pyenv local 3.11
     (spectator-devproject)$ python -m pip install -r requirements.txt
 
 Then run migrations and start the server:
@@ -465,16 +464,16 @@ Then run migrations and start the server:
 You can add a `.env` file in `devproject/` and its environment variables will be
 read in `devproject/devproject/settings.py`. e.g.:
 
-  SPECTATOR_MAPBOX_API_KEY="your-api-key-here"
-  DJANGO_SECRET_KEY="your-secret-key"
-  DJANGO_LOG_LEVEL="INFO"
+SPECTATOR_MAPBOX_API_KEY="your-api-key-here"
+DJANGO_SECRET_KEY="your-secret-key"
+DJANGO_LOG_LEVEL="INFO"
 
 ### pre-commit
 
 pre-commit will run flake8, black, isort and prettier across all files on commit.
 I think you just need to do this first:
 
-  $ pre-commit install
+$ pre-commit install
 
 ### Running tests locally
 

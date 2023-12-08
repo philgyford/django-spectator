@@ -21,9 +21,10 @@ def get_entity(package, entity):
     eg, get_entity('spectator', 'version') returns `__version__` value in
     `__init__.py`.
     """
-    init_py = open(os.path.join(package, "__init__.py")).read()
-    find = "__%s__ = ['\"]([^'\"]+)['\"]" % entity
-    return re.search(find, init_py).group(1)
+    with open(os.path.join(package, "__init__.py")) as f:
+        init_py = f.read()
+        find = "__%s__ = ['\"]([^'\"]+)['\"]" % entity
+        return re.search(find, init_py).group(1)
 
 
 def get_version():
@@ -66,11 +67,10 @@ if sys.argv[-1] == "testpublish":
 
 dev_require = [
     "django-debug-toolbar",
-    "flake8",
-    "black",
     "pre-commit",
     "python-dotenv",
     "pyupgrade",
+    "ruff",
     "unittest-parametrize",
 ]
 tests_require = dev_require + [
