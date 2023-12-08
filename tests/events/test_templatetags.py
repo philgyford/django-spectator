@@ -28,8 +28,7 @@ from spectator.events.templatetags.spectator_events import (
     recent_events,
     recent_events_card,
 )
-
-from .. import make_date
+from tests import make_date
 
 
 class AnnualEventCountsTestCase(TestCase):
@@ -145,7 +144,7 @@ class EventsYearsCardTestCase(TestCase):
 class MostSeenCreatorsTestCase(TestCase):
     def test_returns_queryset(self):
         "It should return 10 items by default."
-        for i in range(11):
+        for _i in range(11):
             EventRoleFactory()
 
         creators = most_seen_creators()
@@ -154,7 +153,7 @@ class MostSeenCreatorsTestCase(TestCase):
 
     def test_num(self):
         "It should return `num` items."
-        for i in range(4):
+        for _i in range(4):
             EventRoleFactory()
 
         creators = most_seen_creators(num=3)
@@ -236,7 +235,7 @@ class MostSeenCreatorsCardTestCase(TestCase):
 class MostSeenCreatorsByWorksTestCase(TestCase):
     def test_returns_queryset(self):
         "It should return 10 items by default."
-        for i in range(11):
+        for _i in range(11):
             WorkRoleFactory()
 
         creators = most_seen_creators_by_works()
@@ -245,7 +244,7 @@ class MostSeenCreatorsByWorksTestCase(TestCase):
 
     def test_num(self):
         "It should return `num` items."
-        for i in range(4):
+        for _i in range(4):
             WorkRoleFactory()
 
         creators = most_seen_creators_by_works(num=3)
@@ -440,7 +439,7 @@ class MostSeenCreatorsByWorksCardTestCase(TestCase):
 class MostSeenWorksTestCase(TestCase):
     def test_returns_queryset(self):
         "It should return 10 items by default."
-        for i in range(11):
+        for _i in range(11):
             WorkSelectionFactory()
 
         works = most_seen_works()
@@ -449,7 +448,7 @@ class MostSeenWorksTestCase(TestCase):
 
     def test_num(self):
         "It should return `num` items."
-        for i in range(4):
+        for _i in range(4):
             WorkSelectionFactory()
 
         works = most_seen_works(num=3)

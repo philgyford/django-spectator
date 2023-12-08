@@ -6,8 +6,7 @@ from django.utils.html import format_html
 from spectator.core import app_settings
 from spectator.core.models import Creator
 from spectator.core.utils import chartify
-
-from ..models import Event, Work
+from spectator.events.models import Event, Work
 
 register = template.Library()
 
@@ -70,10 +69,7 @@ def display_date(d):
     stamp = d.strftime("%Y-%m-%d")
     visible_date = d.strftime(app_settings.DATE_FORMAT)
 
-    return format_html(
-        '<time datetime="%(stamp)s">%(visible)s</time>'
-        % {"stamp": stamp, "visible": visible_date}
-    )
+    return format_html('<time datetime="%s">%s</time>', stamp, visible_date)
 
 
 @register.inclusion_tag("spectator_events/includes/event_list_tabs.html")
@@ -217,16 +213,10 @@ def most_seen_creators_by_works_card(work_kind=None, role_name=None, num=10):
 
     # Attempt to create a sensible card title...
 
-    if role_name:
-        # Yes, this pluralization is going to break at some point:
-        creators_name = f"{role_name.capitalize()}s"
-    else:
-        creators_name = "People/groups"
+    # Yes, this pluralization is going to break at some point:
+    creators_name = f"{role_name.capitalize()}s" if role_name else "People/groups"
 
-    if work_kind:
-        works_name = Work.get_kind_name_plural(work_kind).lower()
-    else:
-        works_name = "works"
+    works_name = Work.get_kind_name_plural(work_kind).lower() if work_kind else "works"
 
     card_title = f"{creators_name} with most {works_name}"
 

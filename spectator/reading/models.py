@@ -243,7 +243,7 @@ class Publication(ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin)
     @property
     def has_urls(self):
         "Handy for templates."
-        if self.isbn_uk or self.isbn_us or self.official_url or self.notes_url:
+        if self.isbn_uk or self.isbn_us or self.official_url or self.notes_url:  # noqa: SIM103
             return True
         else:
             return False
@@ -295,6 +295,5 @@ class Reading(TimeStampedModelMixin, models.Model):
 
     def clean(self):
         if self.start_date and self.end_date and self.start_date > self.end_date:
-            raise ValidationError(
-                "A Reading's end date can't be before its start date."
-            )
+            msg = "A Reading's end date can't be before its start date."
+            raise ValidationError(msg)

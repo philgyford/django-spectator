@@ -18,8 +18,7 @@ from spectator.reading.factories import (
     PublicationRoleFactory,
     ReadingFactory,
 )
-
-from .. import make_date
+from tests import make_date
 
 # The dates make no difference to these tests, so just define one:
 d = make_date("2017-02-15")

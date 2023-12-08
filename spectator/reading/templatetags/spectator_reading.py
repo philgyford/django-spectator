@@ -3,9 +3,8 @@ from django.db.models import Q
 from django.utils.html import format_html
 
 from spectator.core import app_settings
-
-from .. import utils
-from ..models import Publication, Reading
+from spectator.reading import utils
+from spectator.reading.models import Publication, Reading
 
 register = template.Library()
 
@@ -173,13 +172,12 @@ def reading_dates(reading):
     same_month = False
     same_year = False
 
-    if start_date and end_date:
-        if start_date.strftime("%Y") == end_date.strftime("%Y"):
-            same_year = True
-            if start_date.strftime("%m%Y") == end_date.strftime("%m%Y"):
-                same_month = True
-                if start_date.strftime("%d%m%Y") == end_date.strftime("%d%m%Y"):
-                    same_day = True
+    if start_date and end_date and start_date.strftime("%Y") == end_date.strftime("%Y"):
+        same_year = True
+        if start_date.strftime("%m%Y") == end_date.strftime("%m%Y"):
+            same_month = True
+            if start_date.strftime("%d%m%Y") == end_date.strftime("%d%m%Y"):
+                same_day = True
 
     start_str = ""
     end_str = ""
@@ -206,7 +204,6 @@ def reading_dates(reading):
     # Now make the final strings we'll return:
 
     if start_date and end_date:
-
         # A default which will be overridden in many cases. This covers:
         # 1 February 2017 to 3 March 2018
         # 1 February 2017 to March 2018
@@ -243,12 +240,11 @@ def reading_dates(reading):
                     output = period_format_long.format(
                         start_date.strftime(day_month_format), end_str
                     )
-            elif end_gran == 4:
-                if same_year:
-                    # 1 February to March 2017
-                    output = period_format_long.format(
-                        start_date.strftime(day_month_format), end_str
-                    )
+            elif end_gran == 4 and same_year:
+                # 1 February to March 2017
+                output = period_format_long.format(
+                    start_date.strftime(day_month_format), end_str
+                )
         elif start_gran == 4:
             if end_gran == 3:
                 if same_year:
@@ -256,15 +252,14 @@ def reading_dates(reading):
                     output = period_format_long.format(
                         start_date.strftime(month_format), end_str
                     )
-            elif end_gran == 4:
-                if same_year:
-                    # February to March 2017
-                    output = period_format_long.format(
-                        start_date.strftime(month_format), end_str
-                    )
+            elif end_gran == 4 and same_year:
+                # February to March 2017
+                output = period_format_long.format(
+                    start_date.strftime(month_format), end_str
+                )
     elif end_date:
         # Only an end_date.
-        if end_gran == 3:
+        if end_gran == 3:  # noqa: SIM108
             # Finished on 1 February 2017
             output = f"Finished on {end_str}"
         else:

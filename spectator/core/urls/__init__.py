@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from ..apps import spectator_apps
+from spectator.core.apps import spectator_apps
 
 # The aim of this is to:
 # a) Make it easy to include Spectator's URLs in a project with a single line.

@@ -12,9 +12,8 @@ from spectator.events.factories import (
     TheatreEventFactory,
     VenueFactory,
 )
-
-from .. import make_date, override_app_settings
-from ..core.test_views import ViewTestCase
+from tests import make_date, override_app_settings
+from tests.core.test_views import ViewTestCase
 
 
 class EventListViewTestCase(ViewTestCase):

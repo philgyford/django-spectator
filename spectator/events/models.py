@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone
 
 from django.core.validators import RegexValidator
 from django.db import models
@@ -202,7 +202,7 @@ class Event(
     def get_absolute_url(self):
         return reverse("spectator:events:event_detail", kwargs={"slug": self.slug})
 
-    def make_title(self, html=False):
+    def make_title(self, *, html=False):
         if self.title != "":
             title = self.title
         else:
@@ -338,7 +338,7 @@ class Event(
             }
         """
         kinds = {k: {"name": v} for k, v in cls.Kind.choices}
-        for k, data in kinds.items():
+        for k, _data in kinds.items():
             kinds[k]["slug"] = cls.Kind.slugs()[k]
             kinds[k]["name_plural"] = cls.get_kind_name_plural(k)
         return kinds
@@ -384,7 +384,10 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
                 cls.PLAY: "plays",
             }
 
-    YEAR_CHOICES = [(r, r) for r in range(1888, datetime.date.today().year + 1)]
+    YEAR_CHOICES = [
+        (r, r)
+        for r in range(1888, datetime.now(tz=timezone.utc).date().year + 1)  # noqa: UP017
+    ]
     YEAR_CHOICES.insert(0, ("", "Select…"))
 
     kind = models.CharField(max_length=20, choices=Kind.choices, blank=False)
@@ -427,12 +430,12 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
 
     objects = managers.WorkManager()
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         ordering = ("title_sort",)
         verbose_name = "work"
+
+    def __str__(self):
+        return self.title
 
     def get_absolute_url(self):
         kind_slug = self.Kind.slugs()[self.kind]
@@ -850,9 +853,7 @@ class Venue(TimeStampedModelMixin, SluggedModelMixin, models.Model):
     @property
     def cinema_treasures_url(self):
         if self.cinema_treasures_id is not None:
-            return "http://cinematreasures.org/theaters/{}".format(
-                self.cinema_treasures_id
-            )
+            return f"http://cinematreasures.org/theaters/{self.cinema_treasures_id}"
         else:
             return ""
 

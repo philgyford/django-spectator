@@ -25,8 +25,7 @@ from spectator.events.factories import (
     WorkSelectionFactory,
 )
 from spectator.events.models import Event, Venue, Work
-
-from .. import make_date
+from tests import make_date
 
 
 class EventStrTestCase(TestCase):
@@ -519,7 +518,8 @@ class EventTestCase(TestCase):
         old_thumbnail_path = event.thumbnail.path
 
         # Change the thumbnail to the one with GPS EXIF data:
-        event.thumbnail.save(os.path.basename(path), File(open(path, "rb")))
+        with open(path, "rb") as f:
+            event.thumbnail.save(os.path.basename(path), File(f))
 
         event.refresh_from_db()
 

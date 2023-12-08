@@ -17,6 +17,7 @@ from .managers import CreatorManager
 
 class TimeStampedModelMixin(models.Model):
     "Should be mixed in to all models."
+
     time_created = models.DateTimeField(
         auto_now_add=True, help_text="The time this item was created in the database."
     )
@@ -78,7 +79,8 @@ def thumbnail_upload_path(instance, filename):
     elif folder == "events":
         path = app_settings.EVENTS_DIR_BASE
     else:
-        raise NotImplementedError("No base directory set for this app's thumbnails")
+        msg = "No base directory set for this app's thumbnails"
+        raise NotImplementedError(msg)
 
     return os.path.join(path, folder, instance.slug, filename)
 
@@ -133,14 +135,6 @@ class ThumbnailModelMixin(models.Model):
     class Meta:
         abstract = True
 
-    def __init__(self, *args, **kwargs):
-        """
-        Overridden so that we can save the original thumbnail.
-        So we can tell whether it's changed in save().
-        """
-        super().__init__(*args, **kwargs)
-        self.__original_thumbnail_name = self.thumbnail.name
-
     def save(self, *args, **kwargs):
         """
         Move thumbnail file to correct location, and remove any location EXIF data.
@@ -172,6 +166,14 @@ class ThumbnailModelMixin(models.Model):
 
         # Set the original to whatever the current thumbnail is, so we
         # can tell if it changes again.
+        self.__original_thumbnail_name = self.thumbnail.name
+
+    def __init__(self, *args, **kwargs):
+        """
+        Overridden so that we can save the original thumbnail.
+        So we can tell whether it's changed in save().
+        """
+        super().__init__(*args, **kwargs)
         self.__original_thumbnail_name = self.thumbnail.name
 
     def sanitize_thumbnail_exif_data(self):

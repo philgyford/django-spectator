@@ -25,7 +25,8 @@ class Command(BaseCommand):
         rows = self.make_rows()
 
         if len(rows) == 0:
-            raise CommandError("No movies were found.")
+            msg = "No movies were found."
+            raise CommandError(msg)
 
         self.write_csv_file(rows)
 

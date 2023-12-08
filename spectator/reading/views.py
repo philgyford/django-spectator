@@ -113,7 +113,8 @@ class ReadingYearArchiveView(YearArchiveView):
         elif kind == "books":
             self.publication_kind = "book"
         elif kind is not None:
-            raise Http404(f"'{kind}' is not a valid publication kind")
+            msg = f"'{kind}' is not a valid publication kind"
+            raise Http404(msg)
 
         return super().get(request, *args, **kwargs)
 
@@ -133,15 +134,15 @@ class ReadingYearArchiveView(YearArchiveView):
         context["show_months"] = True
 
         objects = context["object_list"]
-        if len(objects) > 1:
-            if (
-                objects.first().end_granularity == Reading.DateGranularity.YEAR
-                and objects.last().end_granularity == Reading.DateGranularity.YEAR
-            ):
-                # If the first and last publications only have year-based
-                # granularity, assume everything does, so we shouldn't
-                # show the months in the template.
-                context["show_months"] = False
+        if (
+            len(objects) > 1
+            and objects.first().end_granularity == Reading.DateGranularity.YEAR
+            and objects.last().end_granularity == Reading.DateGranularity.YEAR
+        ):
+            # If the first and last publications only have year-based
+            # granularity, assume everything does, so we shouldn't
+            # show the months in the template.
+            context["show_months"] = False
 
         return context
 

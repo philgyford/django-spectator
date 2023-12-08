@@ -10,12 +10,13 @@ logger = logging.getLogger(__name__)
 
 class UniqueFieldMixin:
     """
-    Taken from https://github.com/django-extensions/django-extensions/blob/b5404a4a5ed3a5893727b3be3d6a50bc21c534e3/django_extensions/db/fields/__init__.py  # noqa: E501
+    Taken from https://github.com/django-extensions/django-extensions/blob/b5404a4a5ed3a5893727b3be3d6a50bc21c534e3/django_extensions/db/fields/__init__.py
     """
 
     def check_is_bool(self, attrname):
         if not isinstance(getattr(self, attrname), bool):
-            raise ValueError(f"'{attrname}' argument must be True or False")
+            msg = f"'{attrname}' argument must be True or False"
+            raise ValueError(msg)
 
     @staticmethod
     def _get_fields(model_cls):
@@ -127,10 +128,12 @@ class NaturalSortField(models.CharField):
             # to any of its methods. So we can't access, for example,
             # the @property Event.title_to_sort()
             logger.error(
-                "Error in NaturalSortField.pre_save(): {}: "
-                "The value of the '{}' field will not be changed.".format(
-                    e, self.attname
-                )
+                (
+                    "Error in NaturalSortField.pre_save(): %s: "
+                    "The value of the '%s' field will not be changed."
+                ),
+                e,
+                self.attname,
             )
 
             string = getattr(model_instance, self.attname)
@@ -212,11 +215,10 @@ class NaturalSortField(models.CharField):
         # Now add the apostrophe articles onto the main list of articles:
         articles += articles_apos
 
-        if len(parts) > 1 and parts[0] in articles:
-            if parts[0] != parts[1]:
-                # Don't do this if the name is 'The The' or 'La La Land'.
-                # Makes 'long blondes, the':
-                sort_string = "{}, {}".format(" ".join(parts[1:]), parts[0])
+        if len(parts) > 1 and parts[0] in articles and parts[0] != parts[1]:
+            # Don't do this if the name is 'The The' or 'La La Land'.
+            # Makes 'long blondes, the':
+            sort_string = "{}, {}".format(" ".join(parts[1:]), parts[0])
 
         if parentheses:
             # Add it back on.
@@ -263,7 +265,6 @@ class NaturalSortField(models.CharField):
             sort_string = " ".join(parts)
 
         if len(parts) > 1:
-
             if parts[-2] in particles:
                 # From ['Alan', 'Barry', 'Le', 'Carré']
                 # to   ['Alan', 'Barry', 'Le Carré']:

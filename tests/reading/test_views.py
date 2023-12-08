@@ -6,9 +6,8 @@ from spectator.reading.factories import (
     PublicationSeriesFactory,
     ReadingFactory,
 )
-
-from .. import make_date
-from ..core.test_views import ViewTestCase
+from tests import make_date
+from tests.core.test_views import ViewTestCase
 
 
 class ReadingHomeViewTestCase(ViewTestCase):

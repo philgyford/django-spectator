@@ -14,8 +14,7 @@ from spectator.events.factories import (
     WorkRoleFactory,
 )
 from spectator.reading.factories import PublicationFactory, PublicationRoleFactory
-
-from .. import override_app_settings
+from tests import override_app_settings
 
 
 class SluggedModelMixinTestCase(TestCase):
@@ -49,7 +48,7 @@ class CreatorTestCase(TestCase):
         We test it by using lots of numbers which will be expanded by
         NaturalSortField, so it should get truncated.
         """
-        old_maxDiff = self.maxDiff
+        old_max_diff = self.maxDiff
         self.maxDiff = 1000
 
         creator = GroupCreatorFactory(
@@ -62,7 +61,7 @@ class CreatorTestCase(TestCase):
             "00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 00000001…",  # noqa: E501
         )
 
-        self.maxDiff = old_maxDiff
+        self.maxDiff = old_max_diff
 
     def test_ordering(self):
         # Will have a name_sort of 'peaness':

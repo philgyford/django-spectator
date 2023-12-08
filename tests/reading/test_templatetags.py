@@ -10,8 +10,7 @@ from spectator.reading.templatetags.spectator_reading import (
     reading_dates,
     reading_years,
 )
-
-from .. import make_date
+from tests import make_date
 
 # from spectator.reading import utils
 
@@ -144,7 +143,6 @@ class ReadingYearsTestCase(TestCase):
 
 
 class ReadingDatesTestCase(TestCase):
-
     # Both start_date AND end_date.
 
     # Granularity both 3.

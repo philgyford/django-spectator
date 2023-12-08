@@ -3,7 +3,7 @@ from django.utils.text import Truncator
 
 
 def truncate_string(
-    text, strip_html=True, chars=255, truncate="…", at_word_boundary=False
+    text, *, strip_html=True, chars=255, truncate="…", at_word_boundary=False
 ):
     """Truncate a string to a certain length, removing line breaks and mutliple
     spaces, optionally removing HTML, and appending a 'truncate' string.
@@ -27,7 +27,7 @@ def truncate_string(
     return text
 
 
-def chartify(qs, score_field, cutoff=0, ensure_chartiness=True):
+def chartify(qs, score_field, *, cutoff=0, ensure_chartiness=True):
     """
     Given a QuerySet it will go through and add a `chart_position` property to
     each object returning a list of the objects.
@@ -66,8 +66,11 @@ def chartify(qs, score_field, cutoff=0, ensure_chartiness=True):
 
         prev_obj = obj
 
-    if ensure_chartiness and len(chart) > 0:
-        if getattr(chart[0], score_field) == getattr(chart[-1], score_field):
-            chart = []
+    if (
+        ensure_chartiness
+        and len(chart) > 0
+        and getattr(chart[0], score_field) == getattr(chart[-1], score_field)
+    ):
+        chart = []
 
     return chart

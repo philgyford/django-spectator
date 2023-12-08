@@ -22,8 +22,7 @@ from spectator.reading.factories import (
     PublicationRoleFactory,
     ReadingFactory,
 )
-
-from .. import make_date
+from tests import make_date
 
 
 class GetEnabledAppsTestCase(TestCase):
@@ -101,7 +100,7 @@ class MostReadCreatorsTestCase(TestCase):
         "It should return 10 items by default."
         d = make_date("2017-02-15")
 
-        for i in range(11):
+        for _i in range(11):
             c = IndividualCreatorFactory()
             pub = PublicationFactory()
             PublicationRoleFactory(publication=pub, creator=c, role_name="")
@@ -115,7 +114,7 @@ class MostReadCreatorsTestCase(TestCase):
         "It should return `num` items."
         d = make_date("2017-02-15")
 
-        for i in range(4):
+        for _i in range(4):
             c = IndividualCreatorFactory()
             pub = PublicationFactory()
             PublicationRoleFactory(publication=pub, creator=c, role_name="")
@@ -238,7 +237,7 @@ class MostReadCreatorsCardTestCase(TestCase):
 class MostVisitedVenuesTestCase(TestCase):
     def test_returns_queryset(self):
         "It should return 10 items by default."
-        for i in range(11):
+        for _i in range(11):
             MiscEventFactory(venue=VenueFactory())
 
         venues = most_visited_venues()
@@ -247,7 +246,7 @@ class MostVisitedVenuesTestCase(TestCase):
 
     def test_num(self):
         "It should return `num` items."
-        for i in range(4):
+        for _i in range(4):
             MiscEventFactory(venue=VenueFactory())
 
         venues = most_visited_venues(num=3)

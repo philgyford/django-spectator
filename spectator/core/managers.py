@@ -15,10 +15,11 @@ class CreatorManager(models.Manager):
         Each Creator will have a `num_publications` attribute.
         """
         if not spectator_apps.is_enabled("reading"):
-            raise ImproperlyConfigured(
+            msg = (
                 "To use the CreatorManager.by_publications() method, "
                 "'spectator.reading' must by in INSTALLED_APPS."
             )
+            raise ImproperlyConfigured(msg)
 
         qs = self.get_queryset()
 
@@ -31,7 +32,7 @@ class CreatorManager(models.Manager):
 
         return qs
 
-    def by_readings(self, role_names=["", "Author"]):
+    def by_readings(self, role_names=None):
         """
         The Creators who have been most-read, ordered by number of readings.
 
@@ -40,11 +41,15 @@ class CreatorManager(models.Manager):
 
         Each Creator will have a `num_readings` attribute.
         """
+        if role_names is None:
+            role_names = ["", "Author"]
+
         if not spectator_apps.is_enabled("reading"):
-            raise ImproperlyConfigured(
+            msg = (
                 "To use the CreatorManager.by_readings() method, 'spectator.reading' "
                 "must by in INSTALLED_APPS."
             )
+            raise ImproperlyConfigured(msg)
 
         qs = self.get_queryset()
 
@@ -70,10 +75,11 @@ class CreatorManager(models.Manager):
         kind - If supplied, only Events with that `kind` value will be counted.
         """
         if not spectator_apps.is_enabled("events"):
-            raise ImproperlyConfigured(
+            msg = (
                 "To use the CreatorManager.by_events() method, 'spectator.events' "
                 "must by in INSTALLED_APPS."
             )
+            raise ImproperlyConfigured(msg)
 
         qs = self.get_queryset()
 
@@ -98,10 +104,11 @@ class CreatorManager(models.Manager):
             Creator.objects.by_works(kind='movie', role_name='Director')
         """
         if not spectator_apps.is_enabled("events"):
-            raise ImproperlyConfigured(
+            msg = (
                 "To use the CreatorManager.by_works() method, 'spectator.events' "
                 "must by in INSTALLED_APPS."
             )
+            raise ImproperlyConfigured(msg)
 
         qs = self.get_queryset()
 

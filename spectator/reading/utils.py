@@ -21,10 +21,7 @@ def annual_reading_counts(kind="all"):
 
     kind is one of 'book', 'periodical' or 'all', for both.
     """
-    if kind == "all":
-        kinds = ["book", "periodical"]
-    else:
-        kinds = [kind]
+    kinds = ["book", "periodical"] if kind == "all" else [kind]
 
     # This will have keys of years (strings) and dicts of data:
     # {
@@ -55,7 +52,7 @@ def annual_reading_counts(kind="all"):
     # when they have no Readings for that year.
     counts_list = []
 
-    for year_str, data in counts.items():
+    for _year_str, data in counts.items():
         year_data = {
             "year": data["year"],
         }

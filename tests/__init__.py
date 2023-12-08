@@ -1,11 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from spectator.core import app_settings
 
 
 def make_date(d):
     "For convenience."
-    return datetime.strptime(d, "%Y-%m-%d").date()
+    return datetime.strptime(d, "%Y-%m-%d").astimezone(timezone.utc).date()  # noqa: UP017
 
 
 def override_app_settings(**test_settings):
@@ -39,7 +39,7 @@ def override_app_settings(**test_settings):
 
             result = func(*args, **kwargs)
 
-            for key, value in test_settings.items():
+            for key, _value in test_settings.items():
                 setattr(app_settings, key, old_values[key])
 
             return result

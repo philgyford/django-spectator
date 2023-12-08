@@ -3,12 +3,10 @@ from django.urls import resolve, reverse
 
 from spectator.events import views
 from spectator.events.factories import GigEventFactory
-
-from .. import make_date
+from tests import make_date
 
 
 class EventsUrlsTestCase(TestCase):
-
     # HOME
 
     def test_events_home_url(self):

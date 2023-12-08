@@ -2,8 +2,7 @@ from django.test import TestCase
 
 from spectator.reading.factories import PublicationFactory, ReadingFactory
 from spectator.reading.models import Publication, Reading
-
-from .. import make_date
+from tests import make_date
 
 
 class PublicationManagersTestCase(TestCase):

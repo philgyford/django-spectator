@@ -3,7 +3,8 @@ from django.db.models import Count
 from django.templatetags.l10n import unlocalize
 from imagekit.admin import AdminThumbnail
 
-from ..core import app_settings
+from spectator.core import app_settings
+
 from .models import Event, EventRole, Venue, Work, WorkRole, WorkSelection
 
 # INLINES
@@ -35,7 +36,6 @@ class WorkSelectionInline(admin.TabularInline):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-
     list_display = ("__str__", "date", "list_thumbnail", "kind_name", "venue")
     list_filter = ("kind", "date")
     search_fields = ("title",)
@@ -216,7 +216,6 @@ class VenueAdmin(admin.ModelAdmin):
         """
 
         if app_settings.MAPS["enable"] is True:
-
             # Add the CSS and JS for Google or Mapbox maps and geocoding.
             library_css = ()
             library_js = ()

@@ -13,8 +13,7 @@ from spectator.reading.factories import (
     ReadingFactory,
 )
 from spectator.reading.models import Publication
-
-from .. import make_date
+from tests import make_date
 
 
 class PublicationRoleTestCase(TestCase):
@@ -211,7 +210,8 @@ class PublicationTestCase(TestCase):
         old_thumbnail_path = pub.thumbnail.path
 
         # Change the thumbnail to the one with GPS EXIF data:
-        pub.thumbnail.save(os.path.basename(path), File(open(path, "rb")))
+        with open(path, "rb") as f:
+            pub.thumbnail.save(os.path.basename(path), File(f))
 
         pub.refresh_from_db()
 

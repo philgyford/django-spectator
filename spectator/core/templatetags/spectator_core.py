@@ -5,9 +5,9 @@ from django.http import QueryDict
 from django.urls import reverse
 from django.utils.html import format_html
 
-from ..apps import spectator_apps
-from ..models import Creator
-from ..utils import chartify
+from spectator.core.apps import spectator_apps
+from spectator.core.models import Creator
+from spectator.core.utils import chartify
 
 if spectator_apps.is_enabled("events"):
     from spectator.events.models import Venue
@@ -152,7 +152,6 @@ def most_read_creators_card(num=10):
     used on core pages, even if spectator_reading isn't installed.
     """
     if spectator_apps.is_enabled("reading"):
-
         object_list = most_read_creators(num=num)
 
         object_list = chartify(object_list, "num_readings", cutoff=1)
@@ -181,7 +180,6 @@ def most_visited_venues_card(num=10):
     used on core pages, even if spectator_events isn't installed.
     """
     if spectator_apps.is_enabled("events"):
-
         object_list = most_visited_venues(num=num)
 
         object_list = chartify(object_list, "num_visits", cutoff=1)
