@@ -1,6 +1,6 @@
 # Django Spectator
 
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/:django-spectator)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django-spectator)
 [![Tests](https://github.com/philgyford/django-spectator/actions/workflows/tests.yml/badge.svg)](https://github.com/philgyford/django-spectator/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/philgyford/django-spectator/branch/main/graph/badge.svg?token=T7TIJ5XNWH)](https://codecov.io/gh/philgyford/django-spectator)
 [![Code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
