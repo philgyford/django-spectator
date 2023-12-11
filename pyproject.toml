@@ -1,5 +1,5 @@
 [project]
-requires-python = ">=3.8"
+
 
 [tool.coverage.report]
 omit = ["*/migrations/*"]
@@ -38,6 +38,7 @@ select = [
   "RUF100", # unused-noqa
   "RUF200", # invalid-pyproject-toml
 ]
+target-version = ">=3.8"
 
 [tool.ruff.lint]
 ignore = []
