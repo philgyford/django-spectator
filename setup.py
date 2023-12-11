@@ -91,7 +91,7 @@ setup(
     ],
     dependency_links=[],
     tests_require=tests_require,
-    extras_require={"dev": dev_require + ["Django>=4.0,<=5.0"], "test": tests_require},
+    extras_require={"dev": dev_require + ["Django>=4.1,<=5.0"], "test": tests_require},
     include_package_data=True,
     license=get_license(),
     description="A Django app to track book reading, movie viewing, "
