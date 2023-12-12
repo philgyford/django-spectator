@@ -385,8 +385,7 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             }
 
     YEAR_CHOICES = [
-        (r, r)
-        for r in range(1888, datetime.now(tz=timezone.utc).date().year + 1)  # noqa: UP017
+        (r, r) for r in range(1888, datetime.now(tz=timezone.utc).date().year + 1)
     ]
     YEAR_CHOICES.insert(0, ("", "Select…"))
 

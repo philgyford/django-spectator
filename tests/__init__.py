@@ -5,7 +5,7 @@ from spectator.core import app_settings
 
 def make_date(d):
     "For convenience."
-    return datetime.strptime(d, "%Y-%m-%d").astimezone(timezone.utc).date()  # noqa: UP017
+    return datetime.strptime(d, "%Y-%m-%d").astimezone(timezone.utc).date()
 
 
 def override_app_settings(**test_settings):
