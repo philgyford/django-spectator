@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - None
 
+## [14.1.1] - 2023-12-19
+
+### Fixed
+
+- Fixed error when rendering dates of events
+
 ## [14.1.0] - 2023-12-10
 
 ### Added
