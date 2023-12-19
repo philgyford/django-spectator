@@ -69,7 +69,7 @@ def display_date(d):
     stamp = d.strftime("%Y-%m-%d")
     visible_date = d.strftime(app_settings.DATE_FORMAT)
 
-    return format_html('<time datetime="%s">%s</time>', stamp, visible_date)
+    return format_html('<time datetime="{}">{}</time>', stamp, visible_date)
 
 
 @register.inclusion_tag("spectator_events/includes/event_list_tabs.html")

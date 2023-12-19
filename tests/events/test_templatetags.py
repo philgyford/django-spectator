@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from django.test import TestCase
 
 from spectator.core.factories import IndividualCreatorFactory
@@ -16,6 +18,7 @@ from spectator.events.templatetags.spectator_events import (
     annual_event_counts,
     day_events,
     day_events_card,
+    display_date,
     event_list_tabs,
     events_years,
     events_years_card,
@@ -56,6 +59,20 @@ class AnnualEventCountsTestCase(TestCase):
         self.assertEqual(len(qs), 2)
         self.assertEqual(qs[0], {"year": make_date("2015-01-01"), "total": 2})
         self.assertEqual(qs[1], {"year": make_date("2018-01-01"), "total": 1})
+
+
+class DisplayDateTestCase(TestCase):
+    def test_date(self):
+        d = make_date("2023-12-09")
+        self.assertEqual(
+            display_date(d), '<time datetime="2023-12-09">9 Dec 2023</time>'
+        )
+
+    def test_datetime(self):
+        dt = datetime(2023, 12, 9, 13, 30, 00).astimezone(timezone.utc)
+        self.assertEqual(
+            display_date(dt), '<time datetime="2023-12-09">9 Dec 2023</time>'
+        )
 
 
 class EventListTabsTestCase(TestCase):
