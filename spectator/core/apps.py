@@ -36,7 +36,7 @@ class Apps:
 
     def is_installed(self, app_name):
         "Is this Spectator app installed?"
-        return apps.is_installed("spectator.%s" % app_name)
+        return apps.is_installed(f"spectator.{app_name}")
 
     def is_enabled(self, app_name):
         """Determine if a particular Spectator app is installed and enabled.
@@ -51,7 +51,7 @@ class Apps:
         other conditions in future, like being able to enable/disable installed
         apps.
         """
-        return apps.is_installed("spectator.%s" % app_name)
+        return apps.is_installed(f"spectator.{app_name}")
 
 
 spectator_apps = Apps()

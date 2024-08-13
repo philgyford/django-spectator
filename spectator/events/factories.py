@@ -9,46 +9,46 @@ class VenueFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Venue
 
-    name = factory.Sequence(lambda n: "Venue %s" % n)
+    name = factory.Sequence(lambda n: f"Venue {n}")
 
 
 class WorkFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Work
 
-    title = factory.Sequence(lambda n: "Work %s" % n)
+    title = factory.Sequence(lambda n: f"Work {n}")
 
 
 class ClassicalWorkFactory(WorkFactory):
     kind = "classicalwork"
-    title = factory.Sequence(lambda n: "Classical Work %s" % n)
+    title = factory.Sequence(lambda n: f"Classical Work {n}")
 
 
 class DancePieceFactory(WorkFactory):
     kind = "dancepiece"
-    title = factory.Sequence(lambda n: "Dance Piece %s" % n)
+    title = factory.Sequence(lambda n: f"Dance Piece {n}")
 
 
 class ExhibitionFactory(WorkFactory):
     kind = "exhibition"
-    title = factory.Sequence(lambda n: "Exhibition %s" % n)
+    title = factory.Sequence(lambda n: f"Exhibition {n}")
 
 
 class MovieFactory(WorkFactory):
     kind = "movie"
-    title = factory.Sequence(lambda n: "Movie %s" % n)
+    title = factory.Sequence(lambda n: f"Movie {n}")
 
 
 class PlayFactory(WorkFactory):
     kind = "play"
-    title = factory.Sequence(lambda n: "Play %s" % n)
+    title = factory.Sequence(lambda n: f"Play {n}")
 
 
 class WorkRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.WorkRole
 
-    role_name = factory.Sequence(lambda n: "Role %s" % n)
+    role_name = factory.Sequence(lambda n: f"Role {n}")
     creator = factory.SubFactory(IndividualCreatorFactory)
     work = factory.SubFactory(WorkFactory)
 
@@ -57,7 +57,7 @@ class EventFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Event
 
-    title = factory.Sequence(lambda n: "Event %s" % n)
+    title = factory.Sequence(lambda n: f"Event {n}")
     venue = factory.SubFactory(VenueFactory)
     # Bigger width/height than default detail_thumbnail_2x size:
     thumbnail = factory.django.ImageField(color="blue", width=800, height=800)
@@ -99,7 +99,7 @@ class EventRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.EventRole
 
-    role_name = factory.Sequence(lambda n: "Role %s" % n)
+    role_name = factory.Sequence(lambda n: f"Role {n}")
     creator = factory.SubFactory(IndividualCreatorFactory)
     event = factory.SubFactory(MiscEventFactory)
 

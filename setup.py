@@ -23,7 +23,7 @@ def get_entity(package, entity):
     """
     with open(os.path.join(package, "__init__.py")) as f:
         init_py = f.read()
-        find = "__%s__ = ['\"]([^'\"]+)['\"]" % entity
+        find = f"__{entity}__ = ['\"]([^'\"]+)['\"]"
         return re.search(find, init_py).group(1)
 
 
@@ -52,7 +52,7 @@ if sys.argv[-1] == "tag":
 # Do `python setup.py publish` to send current version to PyPI.
 if sys.argv[-1] == "publish":
     os.system("python setup.py sdist")
-    os.system("twine upload dist/django-spectator-%s.tar.gz" % (get_version()))
+    os.system(f"twine upload dist/django-spectator-{get_version()}.tar.gz")
     sys.exit()
 
 # Do `python setup.py testpublish` to send current version to Test PyPI.

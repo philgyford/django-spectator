@@ -28,7 +28,8 @@ class EventListView(PaginatedListView):
     def get(self, request, *args, **kwargs):
         slug = self.kwargs.get("kind_slug", None)
         if slug is not None and slug not in Event.get_valid_kind_slugs():
-            raise Http404("Invalid kind_slug: '%s'" % slug)
+            msg = f"Invalid kind_slug: '{slug}'"
+            raise Http404(msg)
 
         return super().get(request, *args, **kwargs)
 
@@ -82,7 +83,7 @@ class EventListView(PaginatedListView):
             return None  # Front page; showing all Event kinds.
         else:
             slugs_to_kinds = {v: k for k, v in Event.Kind.slugs().items()}
-            return slugs_to_kinds.get(slug, None)
+            return slugs_to_kinds.get(slug)
 
     def get_queryset(self):
         "Restrict to a single kind of event, if any, and include Venue data."
@@ -149,7 +150,8 @@ class WorkMixin:
     def get(self, request, *args, **kwargs):
         slug = self.kwargs.get("kind_slug", None)
         if slug is not None and slug not in Work.get_valid_kind_slugs():
-            raise Http404("Invalid kind_slug: '%s'" % slug)
+            msg = f"Invalid kind_slug: '{slug}'"
+            raise Http404(msg)
         else:
             self.kind_slug = slug
 

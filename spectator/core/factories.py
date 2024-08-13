@@ -9,7 +9,7 @@ class IndividualCreatorFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Creator
 
-    name = factory.Sequence(lambda n: "Individual %s" % n)
+    name = factory.Sequence(lambda n: f"Individual {n}")
     kind = "individual"
 
 
@@ -19,5 +19,5 @@ class GroupCreatorFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Creator
 
-    name = factory.Sequence(lambda n: "Group %s" % n)
+    name = factory.Sequence(lambda n: f"Group {n}")
     kind = "group"
