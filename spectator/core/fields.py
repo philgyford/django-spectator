@@ -293,7 +293,8 @@ class NaturalSortField(models.CharField):
         """
 
         def naturalize_int_match(match):
-            return "%08d" % (int(match.group(0)),)
+            num = int(match.group(0))
+            return f"{num:08}"
 
         string = re.sub(r"\d+", naturalize_int_match, string)
 
