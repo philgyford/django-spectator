@@ -91,7 +91,7 @@ setup(
     ],
     dependency_links=[],
     tests_require=tests_require,
-    extras_require={"dev": dev_require + ["Django>=4.1,<=5.0"], "test": tests_require},
+    extras_require={"dev": dev_require + ["Django>=4.2,<=5.1"], "test": tests_require},
     include_package_data=True,
     license=get_license(),
     description="A Django app to track book reading, movie viewing, "
@@ -116,6 +116,7 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
