@@ -87,7 +87,7 @@ setup(
         "django-imagekit>=4.0,<6.0",
         "hashids>=1.2.0,<1.4",
         "piexif>=1.1.3,<2.0",
-        "pillow>=9.0.0,<11.0",
+        "pillow>=9.0.0,<12.0",
     ],
     dependency_links=[],
     tests_require=tests_require,
