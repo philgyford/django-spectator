@@ -9,12 +9,14 @@ from spectator.core import app_settings
 
 class Thumbnail(ImageSpec):
     "Base class"
+
     format = "JPEG"
     options = {"quality": 80}
 
 
 class ListThumbnail(Thumbnail):
     "For displaying in lists of Publications, Events, etc."
+
     processors = [ResizeToFit(*app_settings.THUMBNAIL_LIST_SIZE)]
 
 
@@ -29,6 +31,7 @@ class ListThumbnail2x(ListThumbnail):
 
 class DetailThumbnail(Thumbnail):
     "For displaying on the detail pages of Publication, Event, etc"
+
     processors = [ResizeToFit(*app_settings.THUMBNAIL_DETAIL_SIZE)]
 
 
