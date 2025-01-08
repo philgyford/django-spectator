@@ -155,3 +155,21 @@ deps = ["https://github.com/django/django/archive/master.tar.gz"]
 skip_install = true
 deps = ["ruff"]
 commands = [["ruff", "check", "--output-format=full", "."]]
+
+[tool.tox.gh-actions]
+# Maps GitHub Actions python version numbers to tox env vars
+python = """
+	3.9: py39
+	3.10: py310
+	3.11: py311
+	3.12: py312
+	3.13: py313
+	"""
+
+[tool.tox.gh-actions.env]
+# Maps GitHub Actions DJANGO version env var to tox env vars
+DJANGO = """
+  4.2: django42
+  5.1: django51
+  main: djangomain
+  """
