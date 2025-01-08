@@ -77,6 +77,16 @@ source = ["spectator"]
 [tool.setuptools.dynamic]
 version = { attr = "src.spectator.__version__" }
 
+# [tool.setuptools]
+# package-dir = { "" = "src" }
+
+# [tool.setuptools.packages.find]
+# where = ["."]
+# include = ["src*"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 # Tox ##########################################################################
 
 [tool.tox]
