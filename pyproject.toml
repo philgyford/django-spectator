@@ -84,8 +84,8 @@ version = { attr = "src.spectator.__version__" }
 # where = ["."]
 # include = ["src*"]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+# [tool.setuptools.packages.find]
+# where = ["src"]
 
 # Tox ##########################################################################
 
