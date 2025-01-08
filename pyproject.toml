@@ -1,39 +1,157 @@
-[tool.coverage.report]
-omit = ["*/migrations/*"]
+# Project ######################################################################
+
+[project]
+authors = [{ "name" = "Phil Gyford", "email" = "phil@gyford.com" }]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.0",
+  "Framework :: Django :: 5.1",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+  "Django>=4.2",
+  "django-imagekit>=4.0,<6.0",
+  "hashids>=1.2.0,<1.4",
+  "piexif>=1.1.3,<2.0",
+  "pillow>=9.0.0,<12.0",
+]
+description = "A Django app to track book reading, movie viewing, gig going, play watching, etc."
+dynamic = ["version"]
+license = { file = "LICENSE" }
+name = "django-spectator"
+readme = "README.md"
+requires-python = ">=3.9"
+
+[project.urls]
+"Changelog" = "https://github.com/philgyford/django-spectator/CHANGELOG.md"
+"Documentation" = "https://github.com/philgyford/django-spectator/README.md"
+"Issues" = "https://github.com/philgyford/django-spectator/issues"
+"Source Code" = "https://github.com/philgyford/django-spectator"
+
+# Dependency groups ############################################################
+
+[dependency-groups]
+dev = [
+  "coverage[toml]",
+  "factory-boy",
+  "freezegun",
+  "pre-commit",
+  "python-dotenv",
+  "pyupgrade",
+  "ruff",
+  "unittest-parametrize",
+]
+
+# Coverage #####################################################################
+
+[tool.coverage.paths]
+# Reduce length of paths in the report
+# via https://hynek.me/articles/testing-packaging/
+source = ["src", ".tox/py*/**/site-packages"]
 
 [tool.coverage.run]
 branch = true
-include = ["spectator/*"]
+parallel = true
 omit = ["*/migrations/*.py"]
+source = ["spectator"]
 
-[tool.ruff]
-extend-exclude = ["*/migrations/*"]
-line-length = 88
-target-version = "py39"
+# Setuptools ###################################################################
 
-[tool.ruff.lint]
-ignore = []
-select = [
-  # Reference: https://docs.astral.sh/ruff/rules/
-  "B",      # flake8-bugbear
-  "E",      # pycodestyle
-  "F",      # Pyflakes
-  "G",      # flake8-logging-format
-  "I",      # isort
-  "N",      # pip8-naming
-  "Q",      # flake8-quotes
-  "BLE",    # flake8-blind-except
-  "DJ",     # flake8-django
-  "DTZ",    # flake8-datetimez
-  "EM",     # flake8-errmsg
-  "INP",    # flake8-no-pep420
-  "FBT",    # flake8-boolean-trap
-  "PIE",    # flake8-pie
-  "RSE",    # flake-raise
-  "SIM",    # flake8-simplify
-  "T20",    # flake8-print
-  "TID",    # flake8-tidy-imports
-  "UP",     # pyupgrade
-  "RUF100", # unused-noqa
-  "RUF200", # invalid-pyproject-toml
+[tool.setuptools.dynamic]
+version = { attr = "src.spectator.__version__" }
+
+# Tox ##########################################################################
+
+[tool.tox]
+requires = ["tox>=4.0"]
+# Can't use a generative environment list
+# (https://tox.wiki/en/4.23.2/config.html#generative-environment-list)
+# in pyproject.toml, so:
+env_list = [
+  "ruff",
+  # Django 4.2
+  "py39-django42",
+  "py310-django42",
+  "py311-django42",
+  "py312-django42",
+  # Django 5.1
+  "py310-django51",
+  "py311-django51",
+  "py312-django51",
+  "py313-django51",
+  # Current main Django
+  "py310-djangomain",
+  "py311-djangomain",
+  "py312-djangomain",
+  "py313-djangomain",
 ]
+
+[tool.tox.env_run_base]
+setenv = { "DJANGO_SETTINGS_MODULE" = "tests.settings", "PYTHONPATH" = "{toxinidir}" }
+dependency_groups = ["dev"]
+commands = [
+  [
+    "coverage",
+    "run",
+    "{envbindir}/django-admin",
+    "test",
+  ],
+  [
+    "coverage",
+    "combine",
+  ],
+  [
+    "coverage",
+    "report",
+  ],
+]
+
+
+[tool.tox.env.py39-django42]
+deps = ["Django >= 4.2, < 4.3"]
+[tool.tox.env.py310-django42]
+deps = ["Django >= 4.2, < 4.3"]
+[tool.tox.env.py311-django42]
+deps = ["Django >= 4.2, < 4.3"]
+[tool.tox.env.py312-django42]
+deps = ["Django >= 4.2, < 4.3"]
+
+[tool.tox.env.py310-django51]
+deps = ["Django >= 5.1, < 5.2"]
+[tool.tox.env.py311-django51]
+deps = ["Django >= 5.1, < 5.2"]
+[tool.tox.env.py312-django51]
+deps = ["Django >= 5.1, < 5.2"]
+[tool.tox.env.py313-django51]
+deps = ["Django >= 5.1, < 5.2"]
+
+[tool.tox.env.py310-djangomain]
+deps = ["https://github.com/django/django/archive/master.tar.gz"]
+[tool.tox.env.py311-djangomain]
+deps = ["https://github.com/django/django/archive/master.tar.gz"]
+[tool.tox.env.py312-djangomain]
+deps = ["https://github.com/django/django/archive/master.tar.gz"]
+[tool.tox.env.py313-djangomain]
+deps = ["https://github.com/django/django/archive/master.tar.gz"]
+
+[tool.tox.env.ruff]
+skip_install = true
+deps = ["ruff"]
+commands = [["ruff", "check", "--output-format=full", "."]]

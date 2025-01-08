@@ -1,10 +1,8 @@
 include LICENSE
 include README.md
 include tox.ini
-recursive-include devproject/devproject *.py
-recursive-include spectator *
+recursive-include src/spectator *
 
-recursive-exclude devproject *
 recursive-exclude tests *
 
 recursive-exclude * *.pyc *.pyo *.sw* *.sv* *.un~ *.DS_Store
