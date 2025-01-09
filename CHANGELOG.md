@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - None
 
+## [15.0.1] - 2025-01-09
+
+### Changed
+
+- Fixed URLs for Changelog and README in `pyproject.toml`
+
 ## [15.0.0] - 2025-01-09
 
 ### Removed
