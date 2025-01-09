@@ -122,15 +122,11 @@ commands = [
     "run",
     "{envbindir}/django-admin",
     "test",
+    # Allow us to optionally pass in args like "-- tests.core.test_models":
+    { replace = "posargs", default = [], extend = true },
   ],
-  [
-    "coverage",
-    "combine",
-  ],
-  [
-    "coverage",
-    "report",
-  ],
+  ["coverage", "combine"],
+  ["coverage", "report"],
 ]
 
 
