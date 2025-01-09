@@ -135,6 +135,14 @@ class ThumbnailModelMixin(models.Model):
     class Meta:
         abstract = True
 
+    def __init__(self, *args, **kwargs):
+        """
+        Overridden so that we can save the original thumbnail.
+        So we can tell whether it's changed in save().
+        """
+        super().__init__(*args, **kwargs)
+        self.__original_thumbnail_name = self.thumbnail.name
+
     def save(self, *args, **kwargs):
         """
         Move thumbnail file to correct location, and remove any location EXIF data.
@@ -166,14 +174,6 @@ class ThumbnailModelMixin(models.Model):
 
         # Set the original to whatever the current thumbnail is, so we
         # can tell if it changes again.
-        self.__original_thumbnail_name = self.thumbnail.name
-
-    def __init__(self, *args, **kwargs):
-        """
-        Overridden so that we can save the original thumbnail.
-        So we can tell whether it's changed in save().
-        """
-        super().__init__(*args, **kwargs)
         self.__original_thumbnail_name = self.thumbnail.name
 
     def sanitize_thumbnail_exif_data(self):
