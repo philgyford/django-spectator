@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [14.3.0] - 2025-01-06 - NOT YET RELEASED
 
+### Removed
+
+- Removed the `devproject` folder.
+
+### Added
+
+- Added instructions for creating an equivalent to the deleted `devproject` folder.
+
 ### Changed
 
 - Add Python 3.13 to tests (no code changes required)
