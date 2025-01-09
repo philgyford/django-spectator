@@ -33,6 +33,7 @@ This is used on my personal website (with custom templates): [reading](https://w
    - [Reading template tags](#reading-template-tags)
    - [Events template tags](#events-template-tags)
 4. [Local development](#local-development)
+   - [Creating a Django project](#creating-a-django-project)
    - [Environment variables](#environment-variables)
    - [pre-commit](#pre-commit)
    - [Running tests locally](#running-tests-locally)
@@ -45,19 +46,29 @@ This is used on my personal website (with custom templates): [reading](https://w
 
 Install [Pillow](https://python-pillow.org) or [PIL](http://www.pythonware.com/products/pil/) (used by [ImageKit](https://django-imagekit.readthedocs.io/en/latest/) to create thumbnail images).
 
-Install with pip:
+Install with uv:
 
-    pip install django-spectator
+```shell
+uv add django-spectator
+```
+
+Or pip:
+
+```shell
+pip install django-spectator
+```
 
 Add these apps to your project's `INSTALLED_APPS` in `settings.py`:
 
-    INSTALLED_APPS = [
-        ...
-        "imagekit",
-        "spectator.core",
-        "spectator.events",
-        "spectator.reading",
-    ]
+```python
+INSTALLED_APPS = [
+    ...
+    "imagekit",
+    "spectator.core",
+    "spectator.events",
+    "spectator.reading",
+]
+```
 
 While `spectator.core` is required, you can omit either `spectator.events` or `spectator.reading` if you only want to use one of them.
 
@@ -65,14 +76,18 @@ While `spectator.core` is required, you can omit either `spectator.events` or `s
 
 Run migrations:
 
-    ./manage.py migrate
+```shell
+./manage.py migrate
+```
 
 Add to your project's `urls.py`:
 
-    urlpatterns = [
-        # ...
-        path("spectator/", include("spectator.core.urls")),
-    ]
+```python
+urlpatterns = [
+    # ...
+    path("spectator/", include("spectator.core.urls")),
+]
+```
 
 You can change the initial path (`"spectator/"`) to whatever suits you. e.g. use `""` to have Spectator's home page be the front page of your site.
 
@@ -82,21 +97,23 @@ Then, go to Django Admin to add your data.
 
 There are a few optional settings that can be used in your project's `settings.py` file. This is the full list, with their defaults. Descriptions of each are below:
 
-    SPECTATOR_MAPS = {"enable": False}
+```python
+SPECTATOR_MAPS = {"enable": False}
 
-    SPECTATOR_SLUG_ALPHABET = "abcdefghijkmnopqrstuvwxyz23456789"
+SPECTATOR_SLUG_ALPHABET = "abcdefghijkmnopqrstuvwxyz23456789"
 
-    SPECTATOR_SLUG_SALT = "Django Spectator"
+SPECTATOR_SLUG_SALT = "Django Spectator"
 
-    SPECTATOR_DATE_FORMAT = "%-d %b %Y"
+SPECTATOR_DATE_FORMAT = "%-d %b %Y"
 
-    SPECTATOR_THUMBNAIL_DETAIL_SIZE = (320, 320)
+SPECTATOR_THUMBNAIL_DETAIL_SIZE = (320, 320)
 
-    SPECTATOR_THUMBNAIL_LIST_SIZE = (80, 160)
+SPECTATOR_THUMBNAIL_LIST_SIZE = (80, 160)
 
-    SPECTATOR_EVENTS_DIR_BASE = "events"
+SPECTATOR_EVENTS_DIR_BASE = "events"
 
-    SPECTATOR_READING_DIR_BASE = "reading"
+SPECTATOR_READING_DIR_BASE = "reading"
+```
 
 #### Map Settings
 
@@ -104,23 +121,27 @@ Venues can have their location displayed on a map and, in the Admin, have their 
 
 To use Google, get a [Google Maps JavaScript API key](https://developers.google.com/maps/documentation/javascript/get-api-key) and create a billing account. Then set `SPECTATOR_MAPS` to this:
 
-    SPECTATOR_MAPS = {
-        "enable": True,
-        "library": "google",
-        "tile_style": "roadmap",
-        "api_key": "YOUR-API-KEY"
-    }
+```python
+SPECTATOR_MAPS = {
+    "enable": True,
+    "library": "google",
+    "tile_style": "roadmap",
+    "api_key": "YOUR-API-KEY"
+}
+```
 
 The `tile_style` value can be one of the basic [map styles](https://developers.google.com/maps/documentation/javascript/maptypes).
 
 To use [Mapbox](https://www.mapbox.com) sign up and get an API key for [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/). Then set `SPECTATOR_MAPS` to this:
 
-    SPECTATOR_MAPS = {
-        "enable": True,
-        "library": "mapbox",
-        "tile_style": "mapbox://styles/mapbox/streets-v11",
-        "api_key": "YOUR-API-KEY"
-    }
+```python
+SPECTATOR_MAPS = {
+    "enable": True,
+    "library": "mapbox",
+    "tile_style": "mapbox://styles/mapbox/streets-v11",
+    "api_key": "YOUR-API-KEY"
+}
+```
 
 The `tile_style` value can be one of the pre-defined map styles, [listed under options.styles](https://docs.mapbox.com/mapbox-gl-js/api/#map).
 
@@ -130,31 +151,41 @@ Setting `"enable"` to `False` in the above dicts will prevent maps appearing.
 
 URLs for all objects include automatically-generated slugs, which are based on [Hashids](http://hashids.org) of the object's ID. You can change which characters are used in these slugs with this setting. e.g.:
 
-    SPECTATOR_SLUG_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+```python
+SPECTATOR_SLUG_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+```
 
 You can also change the salt value used to encode the slugs. While the slugs don't provide complete security (i.e. it's not impossible to determine the ID on which a slug is based), using your own salt value can't hurt. e.g.:
 
-    SPECTATOR_SLUG_SALT = "My special salt value is here"
+```python
+SPECTATOR_SLUG_SALT = "My special salt value is here"
+```
 
 #### Date settings
 
 You can change the format used for the dates of Events and for the titles of some sidebar cards in templates, using [strftime](http://strftime.org) formatting:
 
-    SPECTATOR_DATE_FORMAT = "%Y-%m-%d"
+```python
+SPECTATOR_DATE_FORMAT = "%Y-%m-%d"
+```
 
 #### Thumbnail settings
 
 There are two sizes of thumbnail images used throughout the site and admin pages: those used on "detail" pages (e.g. showing information about a single publication) and those used on "list" pages (e.g. listing many Publications). Each thumbnail's maximum size is defined as a tuple of width and height. The original image will be resized to fit within these limits, without being cropped. To make them both bigger than the default you might use:
 
-    SPECTATOR_THUMBNAIL_DETAIL_SIZE = (400, 400)
+```python
+SPECTATOR_THUMBNAIL_DETAIL_SIZE = (400, 400)
 
-    SPECTATOR_THUMBNAIL_LIST_SIZE = (150, 200)
+SPECTATOR_THUMBNAIL_LIST_SIZE = (150, 200)
+```
 
 When images are uploaded for Publications and Events (see below), they are stored within named directories within your Django project's `MEDIA_ROOT`. e.g. a Publication with a `slug` of `pzov6` would have its cover uploaded to a path like `/media/reading/publications/pzov6/my_cover.jpg`. The `reading` part is defined by the `SPECTATOR_READING_DIR_BASE` setting. You could change the defaults like this:
 
-    SPECTATOR_EVENTS_DIR_BASE = "my-events"
+```python
+SPECTATOR_EVENTS_DIR_BASE = "my-events"
 
-    SPECTATOR_READING_DIR_BASE = "my-reading"
+SPECTATOR_READING_DIR_BASE = "my-reading"
+```
 
 ## 2. Overview
 
@@ -213,19 +244,25 @@ Each app, core, events and reading, has some template tags.
 
 To use any of these in a template, first:
 
-    {% load spectator_core %}
+```jinja
+{% load spectator_core %}
+```
 
 #### Most Read Creators
 
 To get a QuerySet of Creators with the most Readings associated with them:
 
-    {% most_read_creators num=10 %}
+```jinja
+{% most_read_creators num=10 %}
+```
 
 Each Creator will have a `num_readings` attribute. It will only include Creators whose role on a publication was "Author" or was left blank. i.e. Creators who were "Illustrator" or "Translator" will not be included.
 
 To display this as a chart in a Bootstrap card:
 
-    {% most_read_creators_card num=10 %}
+```jinja
+{% most_read_creators_card num=10 %}
+```
 
 This will exclude any Creators with only 1 Reading.
 
@@ -233,13 +270,17 @@ This will exclude any Creators with only 1 Reading.
 
 To get a QuerySet of Venues with the most Events associated with them:
 
-    {% most_visited_venues num=10 %}
+```jinja
+{% most_visited_venues num=10 %}
+```
 
 Each Venue will have a `num_visits` attribute.
 
 To display this as a chart in a Bootstrap card:
 
-    {% most_visited_venues_card num=10 %}
+```jinja
+{% most_visited_venues_card num=10 %}
+```
 
 This will exclude any Venues with only 1 Event.
 
@@ -247,53 +288,67 @@ This will exclude any Venues with only 1 Event.
 
 To use any of these in a template, first:
 
-    {% load spectator_reading %}
+```jinja
+{% load spectator_reading %}
+```
 
 #### In-progress Publications
 
 To get a QuerySet of Publications currently being read use `in_progress_publications`:
 
-    {% in_progress_publications as publications %}
+```jinja
+{% in_progress_publications as publications %}
 
-    {% for pub in publications %}
-      <p>{{ pub }}<br>
-        {% for role in pub.roles.all %}
-          {{ role.creator.name }}
-          {% if role.role_name %}({{ role.role_name }}){% endif %}
-          <br>
-        {% endfor %}
-      </p>
+{% for pub in publications %}
+  <p>{{ pub }}<br>
+    {% for role in pub.roles.all %}
+      {{ role.creator.name }}
+      {% if role.role_name %}({{ role.role_name }}){% endif %}
+      <br>
     {% endfor %}
+  </p>
+{% endfor %}
+```
 
 Or to display as a Bootstrap 4 card:
 
-    {% in_progress_publications_card %}
+```jinja
+{% in_progress_publications_card %}
+```
 
 #### Publications being read on a day
 
 To get a QuerySet of Publications that were being read on a particular day use `day_publications`. If `my_date` is a python `date` object:
 
-    {% day_publications date=my_date as publications %}
+```jinja
+{% day_publications date=my_date as publications %}
+```
 
 And display the results as in the above example.
 
 Or to display as a Bootstrap 4 card:
 
-    {% day_publications_card date=my_date %}
+```jinja
+{% day_publications_card date=my_date %}
+```
 
 #### Years of reading
 
 To get a QuerySet of the years in which Publications were being read:
 
-    {% reading_years as years %}
+```jinja
+{% reading_years as years %}
 
-    {% for year in years %}
-      {{ year|date:"Y" }}<br>
-    {% endfor %}
+{% for year in years %}
+  {{ year|date:"Y" }}<br>
+{% endfor %}
+```
 
 Or to display as a Bootstrap 4 card, with each year linking to the `ReadingYearArchiveView`:
 
-    {% reading_years_card current_year=year %}
+```jinja
+{% reading_years_card current_year=year %}
+```
 
 Here, `year` is a date object indicating a year which shouldn't be linked.
 
@@ -301,18 +356,22 @@ Here, `year` is a date object indicating a year which shouldn't be linked.
 
 For more detail than the `reading_years` tag, use this to get the number of Books, and Periodicals (and the total) finished per year:
 
-    {% annual_reading_counts as years %}
+```jinja
+{% annual_reading_counts as years %}
 
-    {% for year_data in years %}
-      {{ year_data.year }}:
-      {{ year_data.book }} book(s),
-      {{ year_data.periodical }} periodical(s),
-      {{ year_data.total }} total.<br>
-    {% endfor %}
+{% for year_data in years %}
+  {{ year_data.year }}:
+  {{ year_data.book }} book(s),
+  {{ year_data.periodical }} periodical(s),
+  {{ year_data.total }} total.<br>
+{% endfor %}
+```
 
 Or to display as a Bootstrap 4 card, with each year linking to `ReadingYearArchiveView`:
 
-    {% annual_reading_counts_card current_year=year kind='all' %}
+```jinja
+{% annual_reading_counts_card current_year=year kind='all' %}
+```
 
 Here, `year` is a date object indicating a year which shouldn't be linked.
 
@@ -322,52 +381,66 @@ And `kind` can be one of "all" (default), "book" or "periodical". If it's "all",
 
 To use any of these in a template, first:
 
-    {% load spectator_events %}
+```jinja
+{% load spectator_events %}
+```
 
 #### Recent Events
 
 To get a QuerySet of Events that happened recently:
 
-    {% recent_events num=3 as events %}
+```jinja
+{% recent_events num=3 as events %}
 
-    {% for event in events %}
-      <p>
-        {{ event }}<br>
-        {{ event.venue.name }}
-      </p>
-    {% endfor %}
+{% for event in events %}
+  <p>
+    {{ event }}<br>
+    {{ event.venue.name }}
+  </p>
+{% endfor %}
+```
 
 If `num` is not specified, 10 are returned by default.
 
 Or to display as a Boostrap card:
 
-    {% recent_events_card num=3 %}
+```jinja
+{% recent_events_card num=3 %}
+```
 
 #### Events on a day
 
 To get a QuerySet of Events that happened on a particular day, use `day_events`. If `my_date` is a python `date` object:
 
-    {% day_events date=my_date as events %}
+```jinja
+{% day_events date=my_date as events %}
+```
 
 And display the results as in the above example.
 
 Or to display as a Bootstrap 4 card:
 
-    {% day_events_card date=my_date %}
+```jinja
+{% day_events_card date=my_date %}
+```
 
 #### Years of Events
 
 To get a QuerySet of the years in which Events happened:
 
-    {% events_years as years %}
+```jinja
+{% events_years as years %}
 
-    {% for year in years %}
-      {{ year|date:"Y" }}<br>
-    {% endfor %}
+{% for year in years %}
+  {{ year|date:"Y" }}<br>
+{% endfor %}
+```
 
 Or to display as a Bootstrap 4 card, with each year linking to the `EventYearArchiveView`:
 
-    {% events_years_card current_year=year %}
+```jinja
+{% events_years_card current_year=year %}
+```
 
 Here, `year` is a date object indicating a year which shouldn't be linked.
 
@@ -375,19 +448,25 @@ Here, `year` is a date object indicating a year which shouldn't be linked.
 
 To include counts of Events per year:
 
-    {% annual_event_counts as years %}
+```jinja
+{% annual_event_counts as years %}
 
-    {% for year_data in years %}
-      {{ year_data.year|date:"Y" }}: {{ year_data.total }} event(s)<br>
-    {% endfor %}
+{% for year_data in years %}
+  {{ year_data.year|date:"Y" }}: {{ year_data.total }} event(s)<br>
+{% endfor %}
+```
 
 Restrict to one kind of Event:
 
-    {% annual_event_counts kind='cinema' as years %}
+```jinja
+{% annual_event_counts kind='cinema' as years %}
+```
 
 Or to display as a Bootstrap 4 card, with each year linking to `EventYearArchiveView`:
 
-    {% annual_event_counts_card current_year=year kind='all' %}
+```jinja
+{% annual_event_counts_card current_year=year kind='all' %}
+```
 
 Here, `year` is a date object indicating a year which shouldn't be linked.
 
@@ -395,7 +474,9 @@ Here, `year` is a date object indicating a year which shouldn't be linked.
 
 To get a QuerySet of Creators involved with the most Events:
 
-    {% most_seen_creators num=10 event_kind='gig' %}
+```jinja
+{% most_seen_creators num=10 event_kind='gig' %}
+```
 
 Each Creator will have a `num_events` attribute.
 
@@ -403,7 +484,9 @@ Each Creator will have a `num_events` attribute.
 
 To display this as a chart in a Bootstrap card:
 
-    {% most_seen_creators_card num=10 event_kind='gig' %}
+```jinja
+{% most_seen_creators_card num=10 event_kind='gig' %}
+```
 
 This will exclude any Creators with only 1 Event.
 
@@ -411,7 +494,9 @@ This will exclude any Creators with only 1 Event.
 
 To get a QuerySet of Creators that have the most Works (e.g, movies, plays, etc):
 
-    {% most_seen_creators_by_works num=10 work_kind='movie', role_name='Director' %}
+```jinja
+{% most_seen_creators_by_works num=10 work_kind='movie', role_name='Director' %}
+```
 
 Each Creator will have a `num_works` attribute.
 
@@ -423,7 +508,9 @@ The above example would, for each Creator, only count movie Works on which their
 
 To display this as a chart in a Bootstrap card:
 
-    {% most_seen_creators_by_works_card num=10 work_kind='movie', role_name='Director' %}
+```jinja
+{% most_seen_creators_by_works_card num=10 work_kind='movie', role_name='Director' %}
+```
 
 This will exclude any Creators with only 1 Work.
 
@@ -431,7 +518,9 @@ This will exclude any Creators with only 1 Work.
 
 To get a QuerySet of Works involved with the most Events:
 
-    {% most_seen_works num=10 kind='movie' %}
+```jinja
+{% most_seen_works num=10 kind='movie' %}
+```
 
 Each Work will have a `num_views` attribute.
 
@@ -439,71 +528,136 @@ Each Work will have a `num_views` attribute.
 
 To display this as a chart in a Bootstrap card:
 
-    {% most_seen_works_card num=10 kind='movie' %}
+```jinja
+{% most_seen_works_card num=10 kind='movie' %}
+```
 
 This will exclude any Works with only 1 Event.
 
 ## 4. Local development
 
-`devproject/` is a basic Django project to use the app locally.
+### Creating a Django project
 
-I set things up locally, having installed virtualenv and pyenv, like this:
+How I would create a new project to work on django-spectator's code.
 
-    $ cd devproject
-    $ virtualenv --prompt spectator-devproject venv
-    $ source venv/bin/activate
-    (spectator-devproject)$ pyenv local 3.11
-    (spectator-devproject)$ python -m pip install -r requirements.txt
+1. Check out django-spectator
+2. Create an empty directory at the same level as django-spectator, like `django-spectator-devproject`.
+3. On the command line do the following:
+   ```shell
+   cd django-spectator-devproject
+   uv init
+   rm hello.py  # Created by uv init but we don't need it
+   uv add --editable ./../django-spectator
+   uv run django-admin startproject devsite .
+   ```
+4. In `devsite/settings.py` add these to `INSTALLED_APPS`:
+   ```python
+   "imagekit",
+   "spectator.core",
+   "spectator.events",
+   "spectator.reading",
+   ```
+5. On the command line o:
+   ```shell
+   uv run manage.py migrate
+   ```
+6. Change the contents of `devproject/urls.py` to:
 
-Then run migrations and start the server:
+   ```python
+   from django.conf import settings
+   from django.conf.urls.static import static
+   from django.contrib import admin
+   from django.contrib.sitemaps.views import sitemap
+   from django.urls import include, path
 
-    (spectator-devproject)$ ./manage.py migrate
-    (spectator-devproject)$ ./manage.py runserver
+   from spectator.core.apps import spectator_apps
+   from spectator.core.sitemaps import CreatorSitemap
 
-### Environment variables
+   if spectator_apps.is_enabled("events"):
+       from spectator.events.sitemaps import EventSitemap, VenueSitemap, WorkSitemap
 
-You can add a `.env` file in `devproject/` and its environment variables will be
-read in `devproject/devproject/settings.py`. e.g.:
+   if spectator_apps.is_enabled("reading"):
+       from spectator.reading.sitemaps import PublicationSeriesSitemap, PublicationSitemap
 
-SPECTATOR_MAPBOX_API_KEY="your-api-key-here"
-DJANGO_SECRET_KEY="your-secret-key"
-DJANGO_LOG_LEVEL="INFO"
+   sitemaps = {
+       "creators": CreatorSitemap,
+   }
+
+   if spectator_apps.is_enabled("events"):
+       sitemaps["events"] = EventSitemap
+       sitemaps["works"] = WorkSitemap
+       sitemaps["venues"] = VenueSitemap
+
+   if spectator_apps.is_enabled("reading"):
+       sitemaps["publications"] = PublicationSitemap
+       sitemaps["publicationseries"] = PublicationSeriesSitemap
+
+   urlpatterns = [
+       path("admin/", admin.site.urls),
+       path("", include("spectator.core.urls")),
+       path(
+           "sitemap.xml",
+           sitemap,
+           {"sitemaps": sitemaps},
+           name="django.contrib.sitemaps.views.sitemap",
+       ),
+   ]
+
+   if settings.DEBUG:
+       urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+       urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+   ```
+
+7. On the command line do:
+   ```shell
+   uv run manage.py runserver
+   ```
+8. You can then visit http://127.0.0.1:8000 to view the Django-spectator front page. Use `uv run manage.py createsuperuser` as normal with a Django project to create a superuser so you can visit `/admin/` and add content.
 
 ### pre-commit
 
 pre-commit will run flake8, black, isort and prettier across all files on commit.
 I think you just need to do this first:
 
-$ pre-commit install
+```shell
+pre-commit install
+```
 
 ### Running tests locally
 
-Run tests with tox, from the top-level directory (containing setup.py). Install it with:
+Run tests with tox, from the top-level directory (containing setup.py). Install it with ONE of:
 
-    $ pip install tox
+```shell
+uv tool install tox
+python -m pip install --user tox
+```
 
 Run all tests in all environments like:
 
-    $ tox
+```
+tox
+```
 
 To run tests in only one environment, specify it. In this case, Python 3.11 and Django 5.1:
 
-    $ tox -e py311-django51
+```shell
+tox -e py311-django51
+```
 
 To run a specific test, add its path after `--`, eg:
 
-    $ tox -e py311-django51 -- tests.core.test\_models.CreatorTestCase.test\_ordering
+```shell
+tox -e py311-django51 -- tests.core.test_models.CreatorTestCase.test_ordering
+```
 
-Running the tests in all environments will generate coverage output. There will also be an `htmlcov/` directory containing an HTML report. You can also generate these reports without running all the other tests:
-
-    $ tox -e coverage
+Running the tests in all environments will generate coverage output. There will also be an `htmlcov/` directory containing an HTML report.
 
 ### Making a new release
 
 So I don't forget...
 
 1. Put new changes on `main`.
-2. Update the `__version__` in `spectator.__init__.py`.
+2. Update the version in `src/spectator/__init__.py`
 3. Update `CHANGELOG.md`.
 4. Do `python setup.py tag`.
 5. Do `python setup.py publish`.
