@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - None
 
-## [14.3.0] - 2025-01-06 - NOT YET RELEASED
+## [15.0.0] - 2025-01-09
 
 ### Removed
 
@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Move main code within an `src/` directory
+- Move `tox` config into `pyproject.toml`, instead of `tox.ini`
+- Move much of old `setup.py` into `pyproject.toml`
 - Add Python 3.13 to tests (no code changes required)
 - Allow for use of Pillow v11
 
