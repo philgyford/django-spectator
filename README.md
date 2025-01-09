@@ -654,7 +654,7 @@ Running the tests in all environments will generate coverage output. There will 
 
 ### Making a new release
 
-So I don't forget...
+So I don't forget (replace `14.3.0` with current version number)...
 
 1. Put new changes on `main`.
 2. Update the version in `src/spectator/__init__.py`
@@ -663,7 +663,7 @@ So I don't forget...
 5. `git tag -a 14.3.0 -m 'version 14.3.0'`
 6. `git push --tags`
 7. `uv build`
-8. `uv publish`
+8. `uv publish dist/django_spectator-14.4.0*`
 
 ### Adding a new Event kind
 
