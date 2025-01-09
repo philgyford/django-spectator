@@ -625,10 +625,10 @@ pre-commit install
 
 ### Running tests locally
 
-Run tests with tox, from the top-level directory (containing setup.py). Install it with ONE of:
+Run tests with tox, from the top-level directory (containing setup.py). Install it with:
 
 ```shell
-uv tool install tox
+uv tool install tox --with-uv
 python -m pip install --user tox
 ```
 
@@ -659,8 +659,11 @@ So I don't forget...
 1. Put new changes on `main`.
 2. Update the version in `src/spectator/__init__.py`
 3. Update `CHANGELOG.md`.
-4. Do `python setup.py tag`.
-5. Do `python setup.py publish`.
+4. Commit code
+5. `git tag -a 14.3.0 -m 'version 14.3.0'`
+6. `git push --tags`
+7. `uv build`
+8. `uv publish`
 
 ### Adding a new Event kind
 
