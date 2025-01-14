@@ -34,6 +34,15 @@ dependencies = [
 ]
 description = "A Django app to track book reading, movie viewing, gig going, play watching, etc."
 dynamic = ["version"]
+keywords = [
+  "spectator",
+  "books",
+  "reading",
+  "cinema",
+  "gigs",
+  "theatre",
+  "theater",
+]
 license = { file = "LICENSE" }
 name = "django-spectator"
 readme = "README.md"
