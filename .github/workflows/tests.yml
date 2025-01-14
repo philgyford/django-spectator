@@ -11,7 +11,7 @@ on:
 jobs:
   test:
     name: "Python ${{ matrix.python-version }}, Django ${{ matrix.django-version}}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false
