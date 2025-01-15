@@ -38,7 +38,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv pip install --system tox tox-gh-actions tox-uv
+        run: uv pip install tox tox-gh-actions tox-uv
 
       - name: Test with Tox
         run: tox --parallel auto
@@ -64,7 +64,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: uv pip install --system ruff tox tox-gh-actions tox-uv
+        run: uv pip install ruff tox tox-gh-actions tox-uv
 
       - name: Run ruff
         run: tox -e ruff
