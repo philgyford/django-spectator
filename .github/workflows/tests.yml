@@ -41,7 +41,7 @@ jobs:
         run: uv pip install tox tox-gh-actions tox-uv
 
       - name: Test with Tox
-        run: tox
+        run: tox --parallel auto
         env:
           DJANGO: ${{ matrix.django-version }}
 
