@@ -33,15 +33,15 @@ jobs:
       - name: Install uv and set Python version
         uses: astral-sh/setup-uv@v5
         with:
-          enable-cache: false
+          # enable-cache: false
           # cache-dependency-glob: "uv.lock"
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: uv pip install tox tox-gh-actions tox-uv
+      - name: Sync uv
+        run: uv sync --dev
 
       - name: Test with Tox
-        run: tox --parallel auto
+        run: uv run --with 'django~=${{ matrix.django-version }}.0' tox --parallel auto
         env:
           DJANGO: ${{ matrix.django-version }}
 
