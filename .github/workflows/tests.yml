@@ -8,6 +8,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   test:
     name: "Python ${{ matrix.python-version }}, Django ${{ matrix.django-version}}"
