@@ -50,7 +50,7 @@ jobs:
         run: uv sync --dev
 
       - name: Test with Tox
-        run: uv run --with tox --with tox-uv --with tox-gh-actions --with 'django~=${{ matrix.django-version }}.0' tox
+        run: uv run --with tox --with tox-uv --with tox-gh-actions tox
         env:
           DJANGO: ${{ matrix.django-version }}
 
