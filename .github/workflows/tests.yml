@@ -56,7 +56,7 @@ jobs:
           python -m pip install --upgrade tox tox-gh-actions
 
       - name: Test with Tox
-        run: tox --verbose --parallel auto
+        run: tox --verbose
         env:
           DJANGO: ${{ matrix.django-version }}
 
