@@ -629,6 +629,11 @@ Run tests with tox, from the top-level directory (containing setup.py). Install 
 
 ```shell
 uv tool install tox --with-uv
+```
+
+OR:
+
+```shell
 python -m pip install --user tox
 ```
 
@@ -663,7 +668,7 @@ So I don't forget (replace `14.3.0` with current version number)...
 5. `git tag -a 14.3.0 -m 'version 14.3.0'`
 6. `git push --tags`
 7. `uv build`
-8. `uv publish dist/django_spectator-14.4.0*`
+8. `uv publish dist/django_spectator-14.3.0*`
 
 ### Adding a new Event kind
 
