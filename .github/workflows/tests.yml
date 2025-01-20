@@ -71,6 +71,11 @@ jobs:
     name: Run ruff
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        toxenv:
+          - ruff
+
     steps:
       - name: Git clone
         uses: actions/checkout@v4
