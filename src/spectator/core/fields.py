@@ -296,7 +296,7 @@ class NaturalSortField(models.CharField):
             num = int(match.group(0))
             return f"{num:08}"
 
-        string = re.sub(r"\d+", naturalize_int_match, string)
+        string = re.sub(r"[0-9]+", naturalize_int_match, string)
 
         return string
 

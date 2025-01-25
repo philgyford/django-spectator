@@ -413,7 +413,7 @@ class Work(TimeStampedModelMixin, SluggedModelMixin, models.Model):
             From <a href="https://www.imdb.com">IMDb</a>.""",
         validators=[
             RegexValidator(
-                regex=r"^tt\d{7,10}$",
+                regex=r"^tt[0-9]{7,10}$",
                 message='IMDb ID should be like "tt1234567"',
                 code="invalid_imdb_id",
             )
