@@ -12,7 +12,7 @@ Two Django apps:
 - One to track book and periodical reading, including start and end dates, authors, and cover images.
 - One to track events attended (movie, plays, gigs, exhibitions, comedy, dance, classical), including date, venue (with maps), people/organisations involved, and images of tickets.
 
-For Django 4.2, 5.0, and 5.1 running on Python 3.9 upwards.
+For Django 4.2, 5.1, and 5.2 running on Python 3.9 upwards.
 
 It has URLs, views and templates to create a site displaying all the data, and Django admin screens to add and edit them. The templates use [Bootstrap v4](https://getbootstrap.com).
 

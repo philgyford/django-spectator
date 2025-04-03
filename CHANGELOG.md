@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - None
 
+## [15.1.0] - 2025-04-03
+
+### Changed
+
+- Support Django 5.2 (no code changes were required)
+
 ## [15.0.1] - 2025-01-09
 
 ### Changed
