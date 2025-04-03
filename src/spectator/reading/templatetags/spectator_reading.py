@@ -1,6 +1,5 @@
 from django import template
 from django.db.models import Q
-from django.utils.html import format_html
 
 from spectator.core import app_settings
 from spectator.reading import utils
@@ -278,4 +277,4 @@ def reading_dates(reading):
             # Started in 2017
             output = f"Started in {start_str}"
 
-    return format_html(output)
+    return output
