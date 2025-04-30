@@ -1,6 +1,7 @@
 from unittest.mock import patch
 
 from django.test import TestCase
+from django.utils.safestring import SafeString
 
 from spectator.reading.factories import PublicationFactory, ReadingFactory
 from spectator.reading.templatetags.spectator_reading import (
@@ -143,6 +144,11 @@ class ReadingYearsTestCase(TestCase):
 
 
 class ReadingDatesTestCase(TestCase):
+    def test_is_marked_safe(self):
+        "Returned string should be marked safe so HTML renders in templates"
+        r = ReadingFactory(start_date=make_date("2016-12-30"))
+        self.assertIsInstance(reading_dates(r), SafeString)
+
     # Both start_date AND end_date.
 
     # Granularity both 3.

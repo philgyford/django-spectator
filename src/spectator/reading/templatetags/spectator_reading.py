@@ -1,5 +1,6 @@
 from django import template
 from django.db.models import Q
+from django.utils.safestring import mark_safe
 
 from spectator.core import app_settings
 from spectator.reading import utils
@@ -277,4 +278,4 @@ def reading_dates(reading):
             # Started in 2017
             output = f"Started in {start_str}"
 
-    return output
+    return mark_safe(output)
