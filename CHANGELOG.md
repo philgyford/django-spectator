@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - None
 
+## [15.2.1] - 2025-04-30
+
+### Fixed
+
+- Fixed rendering of reading dates' HTML.
+
 ## [15.2.0] - 2025-04-22
 
 ### Fixed
