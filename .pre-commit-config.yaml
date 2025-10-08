@@ -1,5 +1,5 @@
 default_language_version:
-  python: python3.13
+  python: python3.14
 
 exclude: |
   (?x)^(
@@ -32,4 +32,4 @@ repos:
     rev: v3.19.1
     hooks:
       - id: pyupgrade
-        args: [--py38-plus]
+        args: [--py310-plus]
