@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [15.3.0] - 2025-10-22
+
 ### Changed
 
 - Drop support for Python 3.9.
 - Add support for Python 3.14 (no code changes required)
+- Allow for new versions of django-imagekit and pillow
 
 ## [15.2.1] - 2025-04-30
 
