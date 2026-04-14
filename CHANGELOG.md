@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- None
+
+## [15.3.1] - 2026-04-14
+
+### Fixed
+
+- The 2x image thumbnail is now displayed in lists of reading (#92)
+
 ## [15.3.0] - 2025-10-22
 
 ### Changed
