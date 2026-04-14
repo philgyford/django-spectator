@@ -163,7 +163,7 @@ class WorkMixin:
         We need to translate that into a work `kind` like 'movie'.
         """
         slugs_to_kinds = {v: k for k, v in Work.Kind.slugs().items()}
-        return slugs_to_kinds.get(self.kind_slug, None)
+        return slugs_to_kinds.get(self.kind_slug)
 
 
 class WorkListView(WorkMixin, PaginatedListView):
