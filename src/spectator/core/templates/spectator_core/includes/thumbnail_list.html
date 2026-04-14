@@ -8,6 +8,6 @@ Expects:
 
 {% with link_url=url|default:obj.thumbnail.url %}
   <a href="{{ link_url }}">
-    <img src="{{ obj.list_thumbnail.url }}" srcset="{{ obj.list_thumbnail.url }} 1x, {{ ob.list_thumbnail_2x.url }} 2x" width="{{ obj.list_thumbnail.width }}" height="{{ obj.list_thumbnail.height }}" alt="{{ alt_text }}" class="align-top border mr-3" loading="lazy">
+    <img src="{{ obj.list_thumbnail.url }}" srcset="{{ obj.list_thumbnail.url }} 1x, {{ obj.list_thumbnail_2x.url }} 2x" width="{{ obj.list_thumbnail.width }}" height="{{ obj.list_thumbnail.height }}" alt="{{ alt_text }}" class="align-top border mr-3" loading="lazy">
   </a>
 {% endwith %}
