@@ -48,20 +48,23 @@ class UnreadPublicationsManager(models.Manager):
                     )
                 ),
             )
-            .values("created_date", "first_reading_date")
+            .values("kind", "created_date", "first_reading_date")
         )
+        book = self.model.Kind.BOOK
+        periodical = self.model.Kind.PERIODICAL
 
-        events = defaultdict(int)
+        events = defaultdict(lambda: {book: 0, periodical: 0})
 
-        for publication in publications:
-            events[publication["created_date"]] += 1
+        for pub in publications:
+            kind = pub["kind"]
+            events[pub["created_date"]][kind] += 1
 
-            if publication["first_reading_date"] is not None:
-                events[publication["first_reading_date"]] -= 1
+            if pub["first_reading_date"] is not None:
+                events[pub["first_reading_date"]][kind] -= 1
 
         counts = {}
-
-        running_count = 0
+        book_count = 0
+        periodical_count = 0
         event_dates = sorted(events.items())
         event_index = 0
 
@@ -70,10 +73,16 @@ class UnreadPublicationsManager(models.Manager):
                 event_index < len(event_dates)
                 and event_dates[event_index][0] <= target_date
             ):
-                _, change = event_dates[event_index]
-                running_count += change
+                _, changes = event_dates[event_index]
+                book_count += changes[book]
+                periodical_count += changes[periodical]
                 event_index += 1
-            counts[target_date] = running_count
+
+            counts[target_date] = {
+                "book": book_count,
+                "periodical": periodical_count,
+                "total": book_count + periodical_count,
+            }
 
         return counts
 
