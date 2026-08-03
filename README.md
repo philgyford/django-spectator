@@ -12,7 +12,7 @@ Two Django apps:
 - One to track book and periodical reading, including start and end dates, authors, and cover images.
 - One to track events attended (movie, plays, gigs, exhibitions, comedy, dance, classical), including date, venue (with maps), people/organisations involved, and images of tickets.
 
-For Django 4.2, 5.1, and 5.2 running on Python 3.10 upwards.
+For Django 5.2 and 6.0 on Python 3.10 upwards.
 
 It has URLs, views and templates to create a site displaying all the data, and Django admin screens to add and edit them. The templates use [Bootstrap v4](https://getbootstrap.com).
 
@@ -643,16 +643,16 @@ Run all tests in all environments like:
 tox
 ```
 
-To run tests in only one environment, specify it. In this case, Python 3.11 and Django 5.1:
+To run tests in only one environment, specify it. In this case, Python 3.14 and Django 6.0:
 
 ```shell
-tox -e py311-django51
+tox -e py314-django60
 ```
 
 To run a specific test, add its path after `--`, eg:
 
 ```shell
-tox -e py311-django51 -- tests.core.test_models.CreatorTestCase.test_ordering
+tox -e py314-django60 -- tests.core.test_models.CreatorTestCase.test_ordering
 ```
 
 Running the tests in all environments will generate coverage output. There will also be an `htmlcov/` directory containing an HTML report.
