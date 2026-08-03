@@ -701,4 +701,4 @@ If it's simple (like, Gigs, Comedy, etc.) and doesn't require any specific kind 
 
 - Phil Gyford
 - <phil@gyford.com>
-- @philgyford on Twitter
+- https://www.gyford.com
