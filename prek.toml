@@ -21,31 +21,6 @@ hooks = [
 ]
 
 [[repos]]
-repo = "https://github.com/rbubley/mirrors-prettier"
-rev = "v3.9.6"
-hooks = [
-  {
-    id = "prettier",
-    types_or = [
-      "css",
-      "javascript",
-      "json"
-    ]
-  }
-]
-
-[[repos]]
-repo = "https://github.com/astral-sh/ruff-pre-commit"
-rev = "v0.16.1"
-hooks = [
-  {
-    id = "ruff-check",
-    args = ["--fix"]
-  },
-  { id = "ruff-format" }
-]
-
-[[repos]]
 repo = "https://github.com/asottile/pyupgrade"
 rev = "v3.21.2"
 hooks = [
@@ -63,4 +38,28 @@ hooks = [
     id =  "django-upgrade",
     args = ["--target-version", "5.2"]
   }
+]
+
+
+[[repos]]
+repo = "local"
+hooks = [
+  {
+    id = "local-biome-check",
+    name = "biome check",
+    entry = "npx biome check --write --files-ignore-unknown=true --no-errors-on-unmatched",
+    language = "system",
+    types = ["text"]
+  }
+]
+
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.16.1"
+hooks = [
+  {
+    id = "ruff-check",
+    args = ["--fix"]
+  },
+  { id = "ruff-format" }
 ]
