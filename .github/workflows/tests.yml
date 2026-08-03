@@ -20,21 +20,21 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
-        django-version: ["4.2", "5.1", "5.2", "main"]
+        django-version: ["5.2", "6.0", "main"]
         exclude:
-          - python-version: "3.13"
-            django-version: "4.2"
-          - python-version: "3.14"
-            django-version: "4.2"
           - python-version: "3.14"
             django-version: "5.1"
+          - python-version: "3.10"
+            django-version: "6.0"
+          - python-version: "3.11"
+            django-version: "6.0"
 
     steps:
       - name: Git clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -43,7 +43,7 @@ jobs:
         run: echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
 
       - name: Set up pip cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ matrix.python-version }}-v2-${{ hashFiles('**/pyproject.toml') }}
@@ -61,7 +61,7 @@ jobs:
           DJANGO: ${{ matrix.django-version }}
 
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           flags: ${{ matrix.python-version }}
           name: Python ${{ matrix.python-version }}
@@ -78,19 +78,19 @@ jobs:
 
     steps:
       - name: Git clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Get pip cache dir
         id: pip-cache
         run: echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
 
       - name: Set up pip cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ matrix.python-version }}-v2-${{ hashFiles('**/pyproject.toml') }}
