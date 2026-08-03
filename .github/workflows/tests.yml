@@ -106,23 +106,34 @@ jobs:
         run: python -m tox -e ruff
 
   slack:
-    # https://github.com/8398a7/action-slack/issues/72#issuecomment-649910353
-    name: Slack notification
-    runs-on: ubuntu-latest
-    needs: [test, ruff]
-
-    # this is required, otherwise it gets skipped if any needed jobs fail.
-    # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idneeds
+    needs:
+      - test
+      - ruff
     if: always() # Pick up events even if the job fails or is cancelled.
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: technote-space/workflow-conclusion-action@v3
-
-      - name: Send Slack notification
-        uses: 8398a7/action-slack@v3
+      - name: Slack notification
+        uses: slackapi/slack-github-action@v4
         with:
-          status: ${{ job.status }}
-          # fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
-          fields: repo,message,commit,author,action
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.ACTIONS_CI_SLACK_HOOK }}
+          webhook: ${{ secrets.ACTIONS_CI_SLACK_HOOK }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*GitHub Action build result*: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: |
+                    ${{ needs.test.result == 'success' && needs.ruff.result == 'success'
+                      && '✅ All checks passed'
+                      || '❌ One or more checks failed' }}
+
+                    **Tests:** ${{ needs.test.result }}
+                    **Ruff:** ${{ needs.ruff.result }}
+
+                    **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
