@@ -131,11 +131,11 @@
     setLatLonInputValue($lon, lon);
 
     geoCode(lat, lon, function (geocoded) {
-      if (geocoded["address"]) {
-        $address.val(geocoded["address"]);
+      if (geocoded.address) {
+        $address.val(geocoded.address);
       }
-      if (geocoded["country"]) {
-        $country.val(geocoded["country"]);
+      if (geocoded.country) {
+        $country.val(geocoded.country);
       }
     });
   }
@@ -150,7 +150,7 @@
     var dec_places = 0;
 
     if (step) {
-      if (step.split(".").length == 2) {
+      if (step.split(".").length === 2) {
         dec_places = step.split(".")[1].length;
       }
 
@@ -174,33 +174,37 @@
     geocoder.geocode(
       { location: { lat: lat, lng: lon } },
       function (results, status) {
+        var components;
+        var address_parts;
+        var wanted;
+
         if (status === "OK") {
           if (results[0]) {
-            var components = results[0].address_components;
-            var address_parts = [];
+            components = results[0].address_components;
+            address_parts = [];
             // The elements we want to get from the components:
-            var wanted = [
+            wanted = [
               "postal_town",
               "locality",
               "administrative_area_level_2",
               "administrative_area_level_1",
             ];
 
-            for (var n = 0; n < components.length; n++) {
-              var name = components[n].long_name;
-              var type = components[n].types[0];
+            for (let n = 0; n < components.length; n++) {
+              const name = components[n].long_name;
+              const type = components[n].types[0];
               if (
                 $.inArray(type, wanted) >= 0 &&
-                $.inArray(name, address_parts) == -1
+                $.inArray(name, address_parts) === -1
               ) {
                 address_parts.push(name);
               }
-              if (type == "country") {
-                geocoded["country"] = components[n].short_name;
+              if (type === "country") {
+                geocoded.country = components[n].short_name;
               }
             }
 
-            geocoded["address"] = address_parts.join(", ");
+            geocoded.address = address_parts.join(", ");
           } else {
             alert("No geocoding results found");
           }

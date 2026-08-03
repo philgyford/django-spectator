@@ -47,7 +47,7 @@
   var markerIsAddedToMap = false;
 
   // Global variables. Nice.
-  var mapConfig, geocoder, map, marker, $lat, $lon, $address, $country;
+  var mapConfig, map, marker, $lat, $lon, $address, $country;
 
   /**
    * Create HTML elements, display map, set up event listenerss.
@@ -153,11 +153,11 @@
     setLatLonInputValue($lon, lon);
 
     geoCode(lat, lon, function (geocoded) {
-      if (geocoded["address"]) {
-        $address.val(geocoded["address"]);
+      if (geocoded.address) {
+        $address.val(geocoded.address);
       }
-      if (geocoded["country"]) {
-        $country.val(geocoded["country"]);
+      if (geocoded.country) {
+        $country.val(geocoded.country);
       }
     });
   }
@@ -172,7 +172,7 @@
     var dec_places = 0;
 
     if (step) {
-      if (step.split(".").length == 2) {
+      if (step.split(".").length === 2) {
         dec_places = step.split(".")[1].length;
       }
 
@@ -205,25 +205,25 @@
         var address_parts = [];
         var wanted = ["place", "district", "region"];
 
-        for (var n = 0; n < components.length; n++) {
-          var name = components[n].text;
-          var type = components[n].id.split(".")[0];
+        for (let n = 0; n < components.length; n++) {
+          const name = components[n].text;
+          const type = components[n].id.split(".")[0];
           if (
             $.inArray(type, wanted) >= 0 &&
-            $.inArray(name, address_parts) == -1
+            $.inArray(name, address_parts) === -1
           ) {
             address_parts.push(name);
           }
-          if (type == "country") {
-            geocoded["country"] = components[n].short_code.toUpperCase();
+          if (type === "country") {
+            geocoded.country = components[n].short_code.toUpperCase();
           }
         }
 
-        geocoded["address"] = address_parts.join(", ");
+        geocoded.address = address_parts.join(", ");
 
         callback(geocoded);
       },
-    ).fail(function (jqXHR, textStatus, errorThrown) {
+    ).fail(function (_jqXHR, _textStatus, errorThrown) {
       alert("There was an error while geocoding: " + errorThrown);
     });
   }

@@ -24,6 +24,7 @@
  *    "tile_style": "mapbox://styles/mapbox/light-v10"
  *  }
  */
+// biome-ignore lint: correctness/noUnusedVariables
 function spectatorInitMap() {
   var lat =
     typeof spectator_map_latitude !== "undefined" ? spectator_map_latitude : "";
@@ -33,6 +34,10 @@ function spectatorInitMap() {
       : "";
   var mapConfig =
     typeof spectator_map_config !== "undefined" ? spectator_map_config : false;
+
+  var position;
+  var tileStyle;
+  var el;
 
   if (!lat || !lon || !mapConfig) {
     return;
@@ -49,9 +54,9 @@ function spectatorInitMap() {
   // Create the map and marker depending on which library we're using...
 
   if (mapConfig.library === "google") {
-    var position = { lat: parseFloat(lat), lng: parseFloat(lon) };
+    position = { lat: parseFloat(lat), lng: parseFloat(lon) };
 
-    var tileStyle = mapConfig.tile_style ? mapConfig.tile_style : "roadmap";
+    tileStyle = mapConfig.tile_style ? mapConfig.tile_style : "roadmap";
 
     map = new google.maps.Map(mapEl, {
       zoom: 12,
@@ -63,10 +68,10 @@ function spectatorInitMap() {
       map: map,
       position: position,
     });
-  } else if (mapConfig.library == "mapbox") {
-    var position = [parseFloat(lon), parseFloat(lat)];
+  } else if (mapConfig.library === "mapbox") {
+    position = [parseFloat(lon), parseFloat(lat)];
 
-    var tilesStyle = "mapbox://styles/mapbox/streets-v11";
+    tilesStyle = "mapbox://styles/mapbox/streets-v11";
     if (mapConfig.tile_style) {
       tileStyle = mapConfig.tile_style;
     }
@@ -81,7 +86,7 @@ function spectatorInitMap() {
     map.addControl(new mapboxgl.NavigationControl());
 
     // Create and add marker
-    var el = document.createElement("div");
+    el = document.createElement("div");
     el.className = "spectator-marker"; // The CSS classname
     new mapboxgl.Marker(el, { anchor: "bottom" })
       .setLngLat(position)

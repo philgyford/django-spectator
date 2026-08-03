@@ -2,7 +2,7 @@
   // See: https://biomejs.dev/reference/configuration/
   "$schema": "https://biomejs.dev/schemas/2.5.6/schema.json",
   "files": {
-    "includes": ["src/spectator/events/static/js/*.js", "!**/*.min.js"],
+    "includes": ["src/spectator/events/static/**/*.js", "!**/*.min.js"],
     "ignoreUnknown": true
   },
   "formatter": {
