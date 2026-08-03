@@ -37,6 +37,17 @@ class UnreadPublicationsManager(models.Manager):
         """
         Get the number of Publications that were unread on each of a list of dates.
 
+        e.g.
+            from datetime import date
+
+            dates = (
+                date(2026, 6, 1),
+                date(2026, 7, 1),
+                date(2026, 8, 1),
+            )
+
+            counts = Publication.unread_objects.get_counts_for_dates(dates)
+
         Returns a dict like:
 
             {
@@ -48,7 +59,10 @@ class UnreadPublicationsManager(models.Manager):
                 ...
             }
 
-        It will ignore
+        It will ignore any Publications that were added to the database after
+        their first Reading dates (which can happen if adding historical
+        data to the database).
+
         Args:
         - dates - a list of date objects to get counts for.
         """

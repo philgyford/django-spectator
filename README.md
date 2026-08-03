@@ -211,6 +211,8 @@ Both `start_date` and `end_date` indicates a specific day by default. If you don
 
 See [spectator/reading/models.py](https://github.com/philgyford/django-spectator/blob/main/spectator/reading/models.py) for these models.
 
+To get data about how the number of unread Publications has changed over time use the [`UnreadPublicationsManager.get_counts_for_dates()`](https://github.com/philgyford/django-spectator/blob/main/src/spectator/reading/managers.py) method.
+
 ### Events
 
 An Event specifies a date on which you saw a thing at a particular Venue.
