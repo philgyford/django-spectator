@@ -104,14 +104,13 @@ class PublicationAdmin(admin.ModelAdmin):
 
     inlines = [PublicationRoleInline, ReadingInline]
 
+    @admin.display(description="Creators")
     def show_creators(self, instance):
         names = [str(r.creator) for r in instance.roles.all()]
         if names:
             return ", ".join(names)
         else:
             return "-"
-
-    show_creators.short_description = "Creators"
 
     detail_thumbnail = AdminThumbnail(
         image_field="thumbnail", template="spectator_core/admin/detail_thumbnail.html"

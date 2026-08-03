@@ -114,14 +114,13 @@ class WorkAdmin(admin.ModelAdmin):
     readonly_fields = ("title_sort", "slug", "time_created", "time_modified")
     inlines = [WorkRoleInline]
 
+    @admin.display(description="Year")
     def tidy_year(self, obj):
         "Stop the year appearing like '2,018' when USE_THOUSAND_SEPARATOR=True"
         if obj.year:
             return unlocalize(obj.year)
         else:
             return "-"
-
-    tidy_year.short_description = "Year"
 
 
 class CountryListFilter(admin.SimpleListFilter):
