@@ -1,11 +1,12 @@
 # Django Spectator
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django-spectator)
+
 [![Tests](https://github.com/philgyford/django-spectator/actions/workflows/tests.yml/badge.svg)](https://github.com/philgyford/django-spectator/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/philgyford/django-spectator/branch/main/graph/badge.svg?token=T7TIJ5XNWH)](https://codecov.io/gh/philgyford/django-spectator)
 [![Code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![prek](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/j178/prek/master/docs/assets/badge-v0.json)](https://github.com/j178/prek)
 
 Two Django apps:
 
@@ -614,15 +615,11 @@ How I would create a new project to work on django-spectator's code.
    ```
 8. You can then visit http://127.0.0.1:8000 to view the Django-spectator front page. Use `uv run manage.py createsuperuser` as normal with a Django project to create a superuser so you can visit `/admin/` and add content.
 
-### pre-commit
+### prek
 
-pre-commit will run flake8, black, isort and prettier across all files on commit.
-I think you just need to do this first:
+[prek](https://prek.j178.dev) will run various hooks across relevant files on commit. See its docs for installation instructions.
 
 ```shell
-pre-commit install
-```
-
 ### Running tests locally
 
 Run tests with tox, from the top-level directory (containing setup.py). Install it with:
