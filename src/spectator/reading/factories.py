@@ -22,6 +22,14 @@ class PublicationFactory(factory.django.DjangoModelFactory):
     thumbnail = factory.django.ImageField(color="blue", width=800, height=800)
 
 
+class BookFactory(PublicationFactory):
+    kind = models.Publication.Kind.BOOK
+
+
+class PeriodicalFactory(PublicationFactory):
+    kind = models.Publication.Kind.PERIODICAL
+
+
 class PublicationRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.PublicationRole

@@ -8,6 +8,11 @@ def make_date(d):
     return datetime.strptime(d, "%Y-%m-%d").astimezone(timezone.utc).date()
 
 
+def make_datetime(dt):
+    "For convenience."
+    return datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").astimezone(timezone.utc)
+
+
 def override_app_settings(**test_settings):
     """
     A decorator for overriding settings that takes uses our core.app_settings
