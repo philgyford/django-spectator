@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- None
+
+## [15.4.0] - 2026-08-03
+
 ### Added
 
 - Add `UnreadPublicationsManager.get_counts_for_dates()` method.
@@ -17,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for Django 6.0
 - Switch from using pre-commit to prek
 - Add django-upgrade to prek hooks
+- Switch from Prettier to Biome for JS formatting
 
 ## [15.3.1] - 2026-04-14
 
