@@ -1,7 +1,7 @@
 from datetime import date
 
+import time_machine
 from django.test import TestCase
-from freezegun import freeze_time
 
 from spectator.reading.factories import (
     BookFactory,
@@ -71,7 +71,7 @@ class PublicationManagersTestCase(TestCase):
         self.assertEqual(pubs[0], self.unread_pub)
 
 
-@freeze_time("2026-07-15 12:00:00")
+@time_machine.travel("2026-07-15 12:00:00", tick=False)
 class UnreadPublicationsManagerGetCountsForDatesTestCase(TestCase):
     "Testing the UnreadPublicationsManager.get_counts_for_dates() method only"
 

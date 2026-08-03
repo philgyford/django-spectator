@@ -1,5 +1,5 @@
+import time_machine
 from django.http.response import Http404
-from freezegun import freeze_time
 
 from spectator.events import views
 from spectator.events.factories import (
@@ -167,7 +167,7 @@ class EventYearArchiveViewTestCase(ViewTestCase):
         self.assertIn("year", response.context_data)
         self.assertEqual(response.context_data["year"], make_date("2017-01-01"))
 
-    @freeze_time("2017-06-01 12:00:00")
+    @time_machine.travel("2017-06-01 12:00:00", tick=False)
     def test_context_next_prev_years(self):
         "Context should include date objects representing next/prev years."
         GigEventFactory(date=make_date("2016-07-15"))
