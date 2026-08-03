@@ -35,7 +35,7 @@ This is used on my personal website (with custom templates): [reading](https://w
 4. [Local development](#local-development)
    - [Creating a Django project](#creating-a-django-project)
    - [Environment variables](#environment-variables)
-   - [pre-commit](#pre-commit)
+   - [prek](#prek)
    - [Running tests locally](#running-tests-locally)
    - [Making a new release](#making-a-new-release)
    - [Adding a new Event kind](#adding-a-new-event-kind)
@@ -618,7 +618,7 @@ How I would create a new project to work on django-spectator's code.
 
 [prek](https://prek.j178.dev) will run various hooks across relevant files on commit. See its docs for installation instructions.
 
-```shell
+
 ### Running tests locally
 
 Run tests with tox, from the top-level directory (containing setup.py). Install it with:
