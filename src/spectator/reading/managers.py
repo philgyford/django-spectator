@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import date
 
 from django.db import models
 from django.db.models import Case, Min, When
@@ -33,34 +34,82 @@ class UnreadPublicationsManager(models.Manager):
         return super().get_queryset().filter(reading__isnull=True)
 
     def get_counts_for_dates(self, dates):
+        """
+        Get the number of Publications that were unread on each of a list of dates.
+
+        Returns a dict like:
+
+            {
+                date(2026, 8, 3): {
+                    "book": 34,
+                    "periodical": 7,
+                    "total": 41
+                },
+                ...
+            }
+
+        It will ignore
+        Args:
+        - dates - a list of date objects to get counts for.
+        """
+        if isinstance(dates, list) is False:
+            msg = "The dates argument should be a list"
+            raise TypeError(msg)
+
+        if len(dates) > 0 and isinstance(dates[0], date) is False:
+            msg = f"""The dates argument should be a list of date
+                objects; the first item is of type {type(dates[0])}"""
+            raise TypeError(msg)
+
+        # First, for every Publication, we get the date it was created
+        # and the first date it was read (or started to be read), if any.
         publications = (
             super()
             .get_queryset()
             .annotate(
                 created_date=TruncDate("time_created"),
+                # Get earliest time it was read, allowing for empty start/end:
                 first_reading_date=Min(
                     Case(
                         When(
-                            reading__start_date__isnull=True,
+                            reading__start_date__isnull=False,
+                            then="reading__start_date",
+                        ),
+                        When(
+                            reading__end_date__isnull=False,
                             then="reading__end_date",
                         ),
-                        default="reading__start_date",
                     )
                 ),
             )
             .values("kind", "created_date", "first_reading_date")
         )
+
         book = self.model.Kind.BOOK
         periodical = self.model.Kind.PERIODICAL
 
+        # Now we go through those Publications and create a count of when
+        # each Publication was unread. Usually it counts (+1) from the date
+        # it was created, until (-1) it was first read.
         events = defaultdict(lambda: {book: 0, periodical: 0})
 
-        for pub in publications:
-            kind = pub["kind"]
-            events[pub["created_date"]][kind] += 1
+        for publication in publications:
+            kind = publication["kind"]
+            created_date = publication["created_date"]
+            reading_date = publication["first_reading_date"]
 
-            if pub["first_reading_date"] is not None:
-                events[pub["first_reading_date"]][kind] -= 1
+            if reading_date is None:
+                # This hasn't been read at all, so +1 from the date it was created
+                events[created_date][kind] += 1
+            elif reading_date > created_date:
+                # It has been read, so +1 for when it was created,
+                # and -1 at the point it was read.
+                events[created_date][kind] += 1
+                events[reading_date][kind] -= 1
+            # Else, if it was read before it was added (eg this was
+            # data added from some offline source), then we don't count it at
+            # all because we don't know when it would have been 'created'
+            # before it was read.
 
         counts = {}
         book_count = 0
@@ -68,6 +117,9 @@ class UnreadPublicationsManager(models.Manager):
         event_dates = sorted(events.items())
         event_index = 0
 
+        # Finally, for each of our chosen dates, we look at the events.
+        # We add up all the points up until the chosen date, then record
+        # that total for books, periodicals, and total, for each date.
         for target_date in sorted(dates):
             while (
                 event_index < len(event_dates)

@@ -75,6 +75,14 @@ class PublicationManagersTestCase(TestCase):
 class UnreadPublicationsManagerGetCountsForDatesTestCase(TestCase):
     "Testing the UnreadPublicationsManager.get_counts_for_dates() method only"
 
+    def test_dates_is_not_a_list(self):
+        with self.assertRaises(TypeError):
+            Publication.unread_objects.get_counts_for_dates("oops")
+
+    def test_dates_does_not_contain_dates(self):
+        with self.assertRaises(TypeError):
+            Publication.unread_objects.get_counts_for_dates(["oops"])
+
     def test_past_readings(self):
         "It should not count Pubs with Readings in the past"
         pub = BookFactory()
@@ -90,8 +98,33 @@ class UnreadPublicationsManagerGetCountsForDatesTestCase(TestCase):
             counts, {date(2025, 1, 15): {"book": 0, "periodical": 0, "total": 0}}
         )
 
-    def test_in_progress_readings(self):
-        "It should not count Pubs with in-progress Readings"
+    def test_past_dates(self):
+        "It should not count Pubs added after the chosen date"
+        pub = BookFactory()
+        pub.time_created = make_datetime("2025-01-01 12:00:00")
+        pub.save()
+        counts = Publication.unread_objects.get_counts_for_dates([date(2015, 1, 15)])
+        self.assertDictEqual(
+            counts, {date(2015, 1, 15): {"book": 0, "periodical": 0, "total": 0}}
+        )
+
+    def test_past_dates_with_readings(self):
+        "It should not count Pubs added after the chosen date"
+        pub = BookFactory()
+        pub.time_created = make_datetime("2025-01-01 12:00:00")
+        pub.save()
+        ReadingFactory(
+            publication=pub,
+            start_date=make_date("2018-01-02"),
+            end_date=make_date("2018-01-05"),
+        )
+        counts = Publication.unread_objects.get_counts_for_dates([date(2015, 1, 15)])
+        self.assertDictEqual(
+            counts, {date(2015, 1, 15): {"book": 0, "periodical": 0, "total": 0}}
+        )
+
+    def test_in_progress_readings_on_date(self):
+        "It should not count Pubs with Readings that were in-progress on date"
         pub = BookFactory()
         pub.time_created = make_datetime("2025-01-01 12:00:00")
         pub.save()
@@ -103,6 +136,21 @@ class UnreadPublicationsManagerGetCountsForDatesTestCase(TestCase):
         counts = Publication.unread_objects.get_counts_for_dates([date(2025, 1, 15)])
         self.assertDictEqual(
             counts, {date(2025, 1, 15): {"book": 0, "periodical": 0, "total": 0}}
+        )
+
+    def test_in_progress_readings(self):
+        "It should not count Pubs that were actually in progress"
+        pub = BookFactory()
+        pub.time_created = make_datetime("2026-01-01 12:00:00")
+        pub.save()
+        ReadingFactory(
+            publication=pub,
+            start_date=make_date("2026-07-01"),  # Started before chosen date
+            end_date=None,  # No end date; in progress
+        )
+        counts = Publication.unread_objects.get_counts_for_dates([date(2026, 7, 15)])
+        self.assertDictEqual(
+            counts, {date(2026, 7, 15): {"book": 0, "periodical": 0, "total": 0}}
         )
 
     def test_future_readings(self):
@@ -242,6 +290,36 @@ class UnreadPublicationsManagerGetCountsForDatesTestCase(TestCase):
         counts = Publication.unread_objects.get_counts_for_dates([date(2025, 1, 15)])
         self.assertDictEqual(
             counts, {date(2025, 1, 15): {"book": 1, "periodical": 1, "total": 2}}
+        )
+
+    def test_inconsistent_created_dates(self):
+        "Pubs might have been added with back-dated Readings"
+        pub = BookFactory()
+        pub.time_created = make_datetime("2016-01-01 12:00:00")
+        pub.save()
+        ReadingFactory(
+            publication=pub,
+            start_date=make_date("2014-01-01"),
+            end_date=make_date("2014-01-15"),  # Read before Pub was created
+        )
+        counts = Publication.unread_objects.get_counts_for_dates([date(2015, 1, 15)])
+        self.assertDictEqual(
+            counts, {date(2015, 1, 15): {"book": 0, "periodical": 0, "total": 0}}
+        )
+
+    def test_identical_created_and_reading_dates(self):
+        "It should not count a publication read on the day it was added."
+        pub = BookFactory()
+        pub.time_created = make_datetime("2025-01-01 12:00:00")
+        pub.save()
+        ReadingFactory(
+            publication=pub,
+            start_date=make_date("2025-01-01"),
+            end_date=make_date("2025-01-01"),  # Read same day Pub created
+        )
+        counts = Publication.unread_objects.get_counts_for_dates([date(2025, 1, 1)])
+        self.assertDictEqual(
+            counts, {date(2025, 1, 1): {"book": 0, "periodical": 0, "total": 0}}
         )
 
 
