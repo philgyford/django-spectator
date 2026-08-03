@@ -106,11 +106,11 @@ jobs:
         run: python -m tox -e ruff
 
   slack:
+    if: always()  # Pick up events even if the job fails or is cancelled.
+    runs-on: ubuntu-latest
     needs:
       - test
       - ruff
-    if: always() # Pick up events even if the job fails or is cancelled.
-    runs-on: ubuntu-latest
 
     steps:
       - name: Slack notification
@@ -124,7 +124,8 @@ jobs:
               - type: "section"
                 text:
                   type: "mrkdwn"
-                  text: "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                  text: |
+                    GitHub Action build result: ${{ job.status }}
               - type: "section"
                 text:
                   type: "mrkdwn"
@@ -133,7 +134,11 @@ jobs:
                       && '✅ All checks passed'
                       || '❌ One or more checks failed' }}
 
-                    **Tests:** ${{ needs.test.result }}
-                    **Ruff:** ${{ needs.ruff.result }}
-
-                    **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+                    ${{ needs.test.result == 'success' && '✅' || '❌' }} *Tests*
+                    ${{ needs.ruff.result == 'success' && '✅' || '❌' }} *Ruff*
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: |
+                    *PR/Commit:* ${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                    *Run:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
