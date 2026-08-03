@@ -3,8 +3,10 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django-spectator)
 [![Tests](https://github.com/philgyford/django-spectator/actions/workflows/tests.yml/badge.svg)](https://github.com/philgyford/django-spectator/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/philgyford/django-spectator/branch/main/graph/badge.svg?token=T7TIJ5XNWH)](https://codecov.io/gh/philgyford/django-spectator)
-[![Code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
+[![Linted with Biome](https://img.shields.io/badge/Linted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
+[![Checked with Biome](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
 [![prek](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/j178/prek/master/docs/assets/badge-v0.json)](https://github.com/j178/prek)
 
 Two Django apps:
