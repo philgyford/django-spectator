@@ -117,13 +117,13 @@ jobs:
           webhook: ${{ secrets.ACTIONS_CI_SLACK_HOOK }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*Build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}*"
+            text: "*Result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}*"
             blocks:
               - type: "section"
                 text:
                   type: "mrkdwn"
                   text: |
-                    GitHub Action build result: ${{ job.status }}
+                    GitHub Action result: ${{ job.status }}
               - type: "section"
                 text:
                   type: "mrkdwn"
