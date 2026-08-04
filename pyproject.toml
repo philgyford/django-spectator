@@ -41,7 +41,7 @@ keywords = [
   "theatre",
   "theater",
 ]
-license-files [ "LICENSE" ]
+license-files = [ "LICENSE" ]
 name = "django-spectator"
 readme = "README.md"
 requires-python = ">=3.10"
