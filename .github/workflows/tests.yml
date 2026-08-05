@@ -119,23 +119,36 @@ jobs:
           payload: |
             text: "*Result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}*"
             blocks:
+              # Name of workflow
               - type: "section"
                 text:
                   type: "mrkdwn"
                   text: |
-                    GitHub Action result: ${{ job.status }}
+                    *Workflow:* ${{ github.workflow }}
+              # Did the 2 jobs succeed?
               - type: "section"
                 text:
                   type: "mrkdwn"
                   text: |
                     *${{ needs.test.result == 'success' && needs.ruff.result == 'success'
-                      && '✅ All checks passed' || '❌ One or more checks failed' }}*
+                      && '✅ Every job succeeded' || '❌ One or more jobs failed' }}*
 
                     ${{ needs.test.result == 'success' && '✅' || '❌' }} Tests
                     ${{ needs.ruff.result == 'success' && '✅' || '❌' }} Ruff
+              # Outputs links to the PR, or Commit, if any.
               - type: "section"
                 text:
                   type: "mrkdwn"
                   text: |
-                    *${{ github.event.pull_request.html_url && 'PR' || 'Commit' }}:* ${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-                    *Run:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+                    *${{
+                      github.event.pull_request.html_url && 'PR'
+                      || github.event.head_commit.url && 'Commit'
+                      || 'Source'
+                    }}:* ${{
+                      github.event.pull_request.html_url &&
+                        format('<{0}|#{1}>', github.event.pull_request.html_url, github.event.pull_request.number)
+                      || github.event.head_commit.url &&
+                          format('<{0}|{1}>', github.event.head_commit.url, github.event.head_commit.id)
+                      || 'none'
+                    }}
+                    *Run:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|${{ github.run_id }}>
