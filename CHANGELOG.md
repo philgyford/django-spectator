@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - None
 
+## [15.5.0] - 2026-08-06
+
+- Add support for Django 6.1 (no code changes required)
+
 ## [15.4.0] - 2026-08-03
 
 ### Added
@@ -18,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Drop support for Django 4.2 and 5.1
-- Add support for Django 6.0
+- Add support for Django 6.0 (no code changes required)
 - Switch from using pre-commit to prek
 - Add django-upgrade to prek hooks
 - Switch from Prettier to Biome for JS formatting
