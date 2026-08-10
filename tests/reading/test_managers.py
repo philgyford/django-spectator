@@ -70,6 +70,13 @@ class PublicationManagersTestCase(TestCase):
         self.assertEqual(len(pubs), 1)
         self.assertEqual(pubs[0], self.unread_pub)
 
+    def test_unread_manager_removed_from_unread_date(self):
+        "Should not return Pubs with removed_from_unread_date set"
+        BookFactory(removed_from_unread_date=make_date("2017-02-15"))
+        pubs = Publication.unread_objects.all()
+        self.assertEqual(len(pubs), 1)
+        self.assertEqual(pubs[0], self.unread_pub)
+
 
 @time_machine.travel("2026-07-15 12:00:00", tick=False)
 class UnreadPublicationsManagerGetCountsForDatesTestCase(TestCase):
@@ -321,6 +328,35 @@ class UnreadPublicationsManagerGetCountsForDatesTestCase(TestCase):
         self.assertDictEqual(
             counts, {date(2025, 1, 1): {"book": 0, "periodical": 0, "total": 0}}
         )
+
+    def test_removed_from_unread_date(self):
+        pub = BookFactory(removed_from_unread_date=make_date("2025-01-03"))
+        pub.time_created = make_datetime("2025-01-02 12:00:00")
+        pub.save()
+        counts = Publication.unread_objects.get_counts_for_dates(
+            [date(2025, 1, 1), date(2025, 1, 2), date(2025, 1, 3)]
+        )
+        expected = {
+            # Book doesn't exist:
+            date(2025, 1, 1): {
+                "book": 0,
+                "periodical": 0,
+                "total": 0,
+            },
+            # Book has been added:
+            date(2025, 1, 2): {
+                "book": 1,
+                "periodical": 0,
+                "total": 1,
+            },
+            # Book had removed_from_unread_date set, so should not be in 'unread':
+            date(2025, 1, 3): {
+                "book": 0,
+                "periodical": 0,
+                "total": 0,
+            },
+        }
+        self.assertDictEqual(counts, expected)
 
 
 class ReadingManagersTestCase(TestCase):

@@ -63,6 +63,8 @@
           </li>
         {% endfor %}
       </ul>
+    {% elif publication.removed_from_unread_date %}
+      <p>Discarded unread on <time datetime="{{ publication.removed_from_unread_date|date:'Y-m-d' }}">{{ publication.removed_from_unread_date|date:'j F Y' }}</time>.
     {% else %}
       <p>Unread.</p>
     {% endif %}
