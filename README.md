@@ -381,6 +381,28 @@ Here, `year` is a date object indicating a year which shouldn't be linked.
 
 And `kind` can be one of "all" (default), "book" or "periodical". If it's "all", then the result is rendered as a table, with a column each for year, book count, periodical count and total count. Otherwise it's a list of years with the book/periodical counts in parentheses.
 
+#### Counts of unread publications over time
+
+Use the `unread_counts_for_dates` tag to get a count of the quantity of books and publications that were not yet read for either every month (1st of each month) or every day between two dates.
+
+```jinja
+{% unread_counts_for_dates start_date="2020-01-01" end_date="2023-12-31" frequency="month" as unread_counts %}
+
+<table>
+  <tr><th>Date</th><th>Books</th><th>Periodicals</th><th>Total</th></tr>
+  {% for date, counts in unread_counts.items %}
+    <tr>
+      <td>{{ date|date:"Y-m-d" }}</td>
+      <td>{{ counts.book }}</td>
+      <td>{{ counts.periodical}}</td>
+      <td>{{ counts.total }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+`frequency` can be either "month" or "day".
+```
+
 ### Events template tags
 
 To use any of these in a template, first:

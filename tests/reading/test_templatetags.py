@@ -1,17 +1,19 @@
 from unittest.mock import patch
 
+from django.template import TemplateSyntaxError
 from django.test import TestCase
 from django.utils.safestring import SafeString
 
-from spectator.reading.factories import PublicationFactory, ReadingFactory
+from spectator.reading.factories import BookFactory, PublicationFactory, ReadingFactory
 from spectator.reading.templatetags.spectator_reading import (
     annual_reading_counts,
     day_publications,
     in_progress_publications,
     reading_dates,
     reading_years,
+    unread_counts_for_dates,
 )
-from tests import make_date
+from tests import make_date, make_datetime
 
 # from spectator.reading import utils
 
@@ -409,4 +411,76 @@ class ReadingDatesTestCase(TestCase):
         r = ReadingFactory(start_date=make_date("2017-02-01"), start_granularity=6)
         self.assertEqual(
             reading_dates(r), 'Started in <time datetime="2017">2017</time>'
+        )
+
+
+class UnreadCountsForDatesTestCase(TestCase):
+    """Leaving more in-depth testing of counts to
+    UnreadPublicationsManager.get_counts_for_dates()
+    """
+
+    def test_invalid_start_date(self):
+        with self.assertRaises(TemplateSyntaxError):
+            unread_counts_for_dates(start_date="invalid", end_date="2020-01-01")
+
+    def test_invalid_end_date(self):
+        with self.assertRaises(TemplateSyntaxError):
+            unread_counts_for_dates(start_date="2020-01-01", end_date="invalid")
+
+    def test_start_date_after_end_date(self):
+        with self.assertRaises(TemplateSyntaxError):
+            unread_counts_for_dates(start_date="2020-01-01", end_date="2019-01-01")
+
+    def test_invalid_frequency(self):
+        with self.assertRaises(TemplateSyntaxError):
+            unread_counts_for_dates(
+                start_date="2020-01-01", end_date="2021-01-01", frequency="invalid"
+            )
+
+    def test_day_frequency(self):
+        "It should return counts for every day between dates"
+        pub = BookFactory()
+        pub.time_created = make_datetime("2020-01-02 12:00:00")
+        pub.save()
+        ReadingFactory(
+            publication=pub,
+            start_date=make_date("2020-01-03"),
+            end_date=make_date("2020-01-03"),
+        )
+
+        counts = unread_counts_for_dates(
+            start_date="2020-01-01", end_date="2020-01-03", frequency="day"
+        )
+
+        self.assertDictEqual(
+            counts,
+            {
+                make_date("2020-01-01"): {"book": 0, "periodical": 0, "total": 0},
+                make_date("2020-01-02"): {"book": 1, "periodical": 0, "total": 1},
+                make_date("2020-01-03"): {"book": 0, "periodical": 0, "total": 0},
+            },
+        )
+
+    def test_month_frequency(self):
+        "It should return counts for the first of each month between dates"
+        pub = BookFactory()
+        pub.time_created = make_datetime("2020-02-01 12:00:00")
+        pub.save()
+        ReadingFactory(
+            publication=pub,
+            start_date=make_date("2020-02-15"),
+            end_date=make_date("2020-02-15"),
+        )
+
+        counts = unread_counts_for_dates(
+            start_date="2020-01-01", end_date="2020-03-01", frequency="month"
+        )
+
+        self.assertDictEqual(
+            counts,
+            {
+                make_date("2020-01-01"): {"book": 0, "periodical": 0, "total": 0},
+                make_date("2020-02-01"): {"book": 1, "periodical": 0, "total": 1},
+                make_date("2020-03-01"): {"book": 0, "periodical": 0, "total": 0},
+            },
         )

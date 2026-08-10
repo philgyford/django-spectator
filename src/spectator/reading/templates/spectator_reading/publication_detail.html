@@ -1,5 +1,5 @@
 {% extends 'spectator_reading/base.html' %}
-{% load spectator_core %}
+{% load spectator_core spectator_reading %}
 
 {% block head_page_title %}
   {% if publication.series %}
@@ -63,11 +63,26 @@
           </li>
         {% endfor %}
       </ul>
+    {% elif publication.removed_from_unread_date %}
+      <p>Discarded unread on <time datetime="{{ publication.removed_from_unread_date|date:'Y-m-d' }}">{{ publication.removed_from_unread_date|date:'j F Y' }}</time>.
     {% else %}
       <p>Unread.</p>
     {% endif %}
   {% endwith %}
 
+
+  {% unread_counts_for_dates start_date="2020-01-01" end_date="2023-12-31" frequency="month" as unread_counts %}
+  <table>
+    <tr><th>Date</th><th>Books</th><th>Periodicals</th><th>Total</th></tr>
+    {% for date, counts in unread_counts.items %}
+      <tr>
+        <td>{{ date|date:"Y-m-d" }}</td>
+        <td>{{ counts.book }}</td>
+        <td>{{ counts.periodical}}</td>
+        <td>{{ counts.total }}</td>
+      </tr>
+    {% endfor %}
+  </table>
 {% endblock content %}
 
 

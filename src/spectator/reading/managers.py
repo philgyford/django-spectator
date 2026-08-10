@@ -27,11 +27,21 @@ class InProgressPublicationsManager(models.Manager):
 
 class UnreadPublicationsManager(models.Manager):
     """
-    Returns Publications that haven't been started (have no Readings).
+    Returns Publications that are unread.
+
+    A Publication that is "unread" either:
+        1. Has no Readings (whether finished or only started)
+        2. Has its removed_from_unread_date set (because it was disposed of, unread)
     """
 
     def get_queryset(self):
-        return super().get_queryset().filter(reading__isnull=True)
+        "All Publications that count as 'unread' right now"
+        return (
+            super()
+            .get_queryset()
+            .filter(removed_from_unread_date__isnull=True)
+            .filter(reading__isnull=True)
+        )
 
     def get_counts_for_dates(self, dates):
         """
@@ -51,7 +61,7 @@ class UnreadPublicationsManager(models.Manager):
         Returns a dict like:
 
             {
-                date(2026, 8, 3): {
+                date(2026, 6, 1): {
                     "book": 34,
                     "periodical": 7,
                     "total": 41
@@ -92,6 +102,11 @@ class UnreadPublicationsManager(models.Manager):
                         When(
                             reading__end_date__isnull=False,
                             then="reading__end_date",
+                        ),
+                        # It hasn't been read, but was disposed of, so was never read:
+                        When(
+                            removed_from_unread_date__isnull=False,
+                            then="removed_from_unread_date",
                         ),
                     )
                 ),
