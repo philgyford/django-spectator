@@ -1,5 +1,8 @@
+import datetime as dt
+
 from django import template
 from django.db.models import Q
+from django.template import TemplateSyntaxError
 from django.utils.safestring import mark_safe
 
 from spectator.core import app_settings
@@ -279,3 +282,70 @@ def reading_dates(reading):
             output = f"Started in {start_str}"
 
     return mark_safe(output)
+
+
+@register.simple_tag
+def unread_counts_for_dates(start_date, end_date, frequency="month"):
+    """
+    Returns data for the number of Publications that were unread on a sequence of dates.
+    See UnreadPublicationsManager.get_counts_for_dates() for further details.
+
+    start_date - A string like "2026-12-31".
+    end_date - As above.
+    frequency - A string, either "month" or "day". Data will be returned for either
+        every day between start and end, or every 1st of the month between the two.
+
+    Return is a dict like:
+        {
+            date(2026, 6, 1): {
+                "book": 34,
+                "periodical": 7,
+                "total": 41
+            },
+            ...
+        }
+    """
+    try:
+        start_date = (
+            dt.datetime.strptime(start_date, "%Y-%m-%d")
+            .astimezone(dt.timezone.utc)
+            .date()
+        )
+    except ValueError as err:
+        msg = f"start_date should be of the form 'YYYY-MM-DD', not '{start_date}'"
+        raise TemplateSyntaxError(msg) from err
+
+    try:
+        end_date = (
+            dt.datetime.strptime(end_date, "%Y-%m-%d")
+            .astimezone(dt.timezone.utc)
+            .date()
+        )
+    except ValueError as err:
+        msg = f"end_date should be of the form 'YYYY-MM-DD', not '{end_date}'"
+        raise TemplateSyntaxError(msg) from err
+
+    if start_date >= end_date:
+        msg = "start_date must be before end_date"
+        raise TemplateSyntaxError(msg)
+
+    if frequency not in ["day", "month"]:
+        msg = f"frequency should be one of 'day' or 'month', not '{frequency}'"
+        raise TemplateSyntaxError(msg)
+
+    if frequency == "day":
+        # A list of date objects for each day between start and end
+        dates = [
+            start_date + dt.timedelta(days=x)
+            for x in range((end_date - start_date).days + 1)
+        ]
+    else:
+        # A list of date objects for the 1st of each month between start and end
+        dates = [
+            dt.date(year, month, 1)
+            for year in range(start_date.year, end_date.year + 1)
+            for month in range(1, 13)
+            if start_date <= dt.date(year, month, 1) <= end_date
+        ]
+
+    return Publication.unread_objects.get_counts_for_dates(dates)

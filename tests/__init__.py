@@ -1,16 +1,20 @@
-from datetime import datetime, timezone
+import datetime as dt
 
 from spectator.core import app_settings
 
 
-def make_date(d):
+def make_date(date_string):
     "For convenience."
-    return datetime.strptime(d, "%Y-%m-%d").astimezone(timezone.utc).date()
+    return (
+        dt.datetime.strptime(date_string, "%Y-%m-%d").astimezone(dt.timezone.utc).date()
+    )
 
 
-def make_datetime(dt):
+def make_datetime(datetime_string):
     "For convenience."
-    return datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").astimezone(timezone.utc)
+    return dt.datetime.strptime(datetime_string, "%Y-%m-%d %H:%M:%S").astimezone(
+        dt.timezone.utc
+    )
 
 
 def override_app_settings(**test_settings):
