@@ -292,8 +292,9 @@ def unread_counts_for_dates(start_date, end_date, frequency="month"):
 
     start_date - A string like "2026-12-31".
     end_date - As above.
-    frequency - A string, either "month" or "day". Data will be returned for either
-        every day between start and end, or every 1st of the month between the two.
+    frequency - A string, either "month" or "day".
+        - "day": Counts for every day between start and end.
+        - "month": Counts for every 1st of the month between start and end.
 
     Return is a dict like:
         {
