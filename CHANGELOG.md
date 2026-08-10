@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.6.0] - 2026-08-10
 
+## Added
+
 - Add `unread_counts_for_dates` template tag.
 - Add `Publication.removed_from_unread_date` field.
   (If you dispose of a book that you haven't read, setting this date instead
@@ -19,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.5.0] - 2026-08-06
 
+## Added
+
 - Add support for Django 6.1 (no code changes required)
 
 ## [15.4.0] - 2026-08-03
@@ -26,14 +30,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `UnreadPublicationsManager.get_counts_for_dates()` method.
+- Add support for Django 6.0 (no code changes required)
 
 ### Changed
 
-- Drop support for Django 4.2 and 5.1
-- Add support for Django 6.0 (no code changes required)
 - Switch from using pre-commit to prek
 - Add django-upgrade to prek hooks
 - Switch from Prettier to Biome for JS formatting
+
+### Removed
+
+- Drop support for Django 4.2 and 5.1
 
 ## [15.3.1] - 2026-04-14
 
@@ -43,11 +50,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.3.0] - 2025-10-22
 
+### Added
+
+- Add support for Python 3.14 (no code changes required)
+
 ### Changed
 
-- Drop support for Python 3.9.
-- Add support for Python 3.14 (no code changes required)
 - Allow for new versions of django-imagekit and pillow
+
+### Removed
+
+- Drop support for Python 3.9.
 
 ## [15.2.1] - 2025-04-30
 
@@ -63,7 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.1.0] - 2025-04-03
 
-### Changed
+### Added
 
 - Support Django 5.2 (no code changes were required)
 
