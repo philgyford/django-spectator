@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - None
 
+## [15.6.0] - 2026-08-10
+
+- Add `unread_counts_for_dates` template tag.
+- Add `Publication.removed_from_unread_date` field.
+  (If you dispose of a book that you haven't read, setting this date instead
+  of deleting the Publication will ensure it's still included in unread
+  counts while it was 'on the shelf'.)
+
 ## [15.5.0] - 2026-08-06
 
 - Add support for Django 6.1 (no code changes required)
