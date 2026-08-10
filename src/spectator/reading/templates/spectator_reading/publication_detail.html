@@ -70,19 +70,6 @@
     {% endif %}
   {% endwith %}
 
-
-  {% unread_counts_for_dates start_date="2020-01-01" end_date="2023-12-31" frequency="month" as unread_counts %}
-  <table>
-    <tr><th>Date</th><th>Books</th><th>Periodicals</th><th>Total</th></tr>
-    {% for date, counts in unread_counts.items %}
-      <tr>
-        <td>{{ date|date:"Y-m-d" }}</td>
-        <td>{{ counts.book }}</td>
-        <td>{{ counts.periodical}}</td>
-        <td>{{ counts.total }}</td>
-      </tr>
-    {% endfor %}
-  </table>
 {% endblock content %}
 
 
