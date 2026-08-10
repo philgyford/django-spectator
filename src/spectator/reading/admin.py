@@ -84,6 +84,7 @@ class PublicationAdmin(admin.ModelAdmin):
                     "isbn_us",
                     "official_url",
                     "notes_url",
+                    "removed_from_unread_date",
                 )
             },
         ),
@@ -103,6 +104,16 @@ class PublicationAdmin(admin.ModelAdmin):
     )
 
     inlines = [PublicationRoleInline, ReadingInline]
+
+    def get_readonly_fields(self, request, obj=None):
+        """
+        The removed_from_unread_date field should be readonly if this Publication
+        already has one or more Readings.
+        """
+        readonly_fields = super().get_readonly_fields(request, obj)
+        if obj is not None and obj.reading_set.count() > 0:
+            readonly_fields += ("removed_from_unread_date",)
+        return readonly_fields
 
     @admin.display(description="Creators")
     def show_creators(self, instance):

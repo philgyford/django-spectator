@@ -172,6 +172,16 @@ class Publication(ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin)
         help_text="URL of your notes/review.",
     )
 
+    removed_from_unread_date = models.DateField(
+        blank=True,
+        null=True,
+        help_text=(
+            "If this was disposed of unread, set the date it happened. "
+            "Publication will be hidden everywhere, but will count as an unread "
+            "publication for dates up to this."
+        ),
+    )
+
     creators = models.ManyToManyField(
         "spectator_core.Creator", through="PublicationRole", related_name="publications"
     )
