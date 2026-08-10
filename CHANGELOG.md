@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.6.0] - 2026-08-10
 
-## Added
+### Added
 
 - Add `unread_counts_for_dates` template tag.
 - Add `Publication.removed_from_unread_date` field.
@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.5.0] - 2026-08-06
 
-## Added
+### Added
 
 - Add support for Django 6.1 (no code changes required)
 
