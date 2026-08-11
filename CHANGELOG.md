@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - None
 
+## [15.7.0] - 2026-08-11
+
+### Added
+
+- Added `Publication.is_removed` and `Publication.date_removed`.
+  Sorry, realised `removed_from_unread_date` was weird, replaced with this.
+  A "removed" publication will not be visible in the included views and
+  template tags, but will still be included in unread counts, and counts
+  of publications read in a year.
+
+### Removed
+
+- Remove `Publication.removed_from_unread_date` field from 15.6.0.
+
 ## [15.6.1] - 2026-08-10
 
 ### Fixed
