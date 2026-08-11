@@ -49,7 +49,8 @@ class PublicationSeriesDetailView(SingleObjectMixin, PaginatedListView):
 
     def get_queryset(self):
         return (
-            self.object.publication_set.select_related("series")
+            self.object.publication_set.filter(is_removed=False)
+            .select_related("series")
             .prefetch_related("roles__creator")
             .all()
         )
@@ -78,6 +79,7 @@ class PublicationListView(PaginatedListView):
         qs = super().get_queryset()
         qs = (
             qs.filter(kind=self.publication_kind)
+            .filter(is_removed=False)
             .select_related("series")
             .prefetch_related("roles__creator")
         )
@@ -149,6 +151,7 @@ class ReadingYearArchiveView(YearArchiveView):
     def get_queryset(self):
         "Reduce the number of queries and speed things up."
         qs = super().get_queryset()
+        qs = qs.filter(publication__is_removed=False)
 
         qs = qs.select_related("publication__series").prefetch_related(
             "publication__roles__creator"

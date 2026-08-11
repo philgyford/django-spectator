@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 from spectator.core.fields import NaturalSortField
 from spectator.core.models import (
@@ -172,14 +173,18 @@ class Publication(ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin)
         help_text="URL of your notes/review.",
     )
 
-    removed_from_unread_date = models.DateField(
+    is_removed = models.BooleanField(
+        default=False,
+        verbose_name="Is removed?",
+        help_text=(
+            "Removed Publications do not appear in lists and will not have a detail "
+            "page, but they will count towards historical read and unread counts."
+        ),
+    )
+    date_removed = models.DateField(
         blank=True,
         null=True,
-        help_text=(
-            "If this was disposed of unread, set the date it happened. "
-            "Publication will be hidden everywhere, but will count as an unread "
-            "publication for dates up to this."
-        ),
+        help_text="When the Publication was first marked as 'Is removed'.",
     )
 
     creators = models.ManyToManyField(
@@ -196,11 +201,28 @@ class Publication(ThumbnailModelMixin, TimeStampedModelMixin, SluggedModelMixin)
     # Publications that haven't been started (have no Readings):
     unread_objects = managers.UnreadPublicationsManager()
 
+    # Publications that haven't been marked as is_removed:
+    visible_objects = managers.VisiblePublicationsManager()
+
     class Meta:
         ordering = ("title_sort",)
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        """
+        If is_removed is True, set date_removed to now.
+        Unless date_removed was previously set.
+        """
+        if self.is_removed and self.date_removed is None:
+            self.date_removed = timezone.now().date()
+            if (
+                update_fields := kwargs.get("update_fields")
+            ) is not None and "is_removed" in update_fields:
+                kwargs["update_fields"] = {"date_removed"}.union(update_fields)
+
+        return super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse(

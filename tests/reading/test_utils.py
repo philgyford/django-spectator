@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from spectator.reading.factories import PublicationFactory, ReadingFactory
+from spectator.reading.models import Publication
 from spectator.reading.utils import annual_reading_counts
 from tests import make_date
 
@@ -90,3 +91,20 @@ class AnnualReadingCountsTestCase(TestCase):
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0], {"year": make_date("2017-01-01"), "periodical": 2})
         self.assertEqual(result[1], {"year": make_date("2018-01-01"), "periodical": 2})
+
+    def test_counts_removed_publications(self):
+        "It should still count Publications that are 'removed'"
+        # Set one of the existing pubs to removed:
+        pub = Publication.objects.filter(
+            reading__end_date=make_date("2015-01-01")
+        ).first()
+        pub.is_removed = True
+        pub.save()
+
+        result = annual_reading_counts()
+
+        # Should be the same count as in test_all():
+        self.assertEqual(
+            result[0],
+            {"year": make_date("2015-01-01"), "book": 2, "periodical": 0, "total": 2},
+        )

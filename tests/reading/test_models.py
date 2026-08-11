@@ -4,6 +4,7 @@ import piexif
 from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.test import TestCase, override_settings
+from django.utils import timezone
 
 from spectator.core.factories import IndividualCreatorFactory
 from spectator.reading.factories import (
@@ -60,6 +61,24 @@ class PublicationTestCase(TestCase):
         self.assertEqual(pubs[0], b1)
         self.assertEqual(pubs[1], b2)
         self.assertEqual(pubs[2], b3)
+
+    def test_save_is_removed(self):
+        "It should set date_removed"
+        p = PublicationFactory()
+        self.assertEqual(p.is_removed, False)
+        self.assertIsNone(p.date_removed)
+        p.is_removed = True
+        p.save()
+        p.refresh_from_db()
+        self.assertEqual(p.date_removed, timezone.now().date())
+
+    def test_save_is_removed_date_removed_already_set(self):
+        "It should not set date_removed if it's already set"
+        p = PublicationFactory(is_removed=False, date_removed=make_date("2020-01-01"))
+        p.is_removed = True
+        p.save()
+        p.refresh_from_db()
+        self.assertEqual(p.date_removed, make_date("2020-01-01"))
 
     def test_absolute_url(self):
         pub = PublicationFactory(pk=123)
