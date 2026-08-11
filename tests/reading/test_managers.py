@@ -48,6 +48,17 @@ class PublicationManagersTestCase(TestCase):
         self.assertEqual(len(pubs), 1)
         self.assertEqual(pubs[0], self.in_progress_pub)
 
+    def test_in_progress_manager_removed(self):
+        "Should not include removed publications"
+        in_progress_pub_2 = BookFactory(is_removed=True)
+        ReadingFactory(
+            publication=in_progress_pub_2, start_date=make_date("2017-02-15")
+        )
+        pubs = Publication.in_progress_objects.all()
+        # Only the one from setUp():
+        self.assertEqual(len(pubs), 1)
+        self.assertEqual(pubs[0], self.in_progress_pub)
+
     def test_in_progress_manager_ordering(self):
         "Should be ordered by reading start_date ASC."
         earliest_in_progress_pub = PublicationFactory()
@@ -70,12 +81,20 @@ class PublicationManagersTestCase(TestCase):
         self.assertEqual(len(pubs), 1)
         self.assertEqual(pubs[0], self.unread_pub)
 
-    def test_unread_manager_removed_from_unread_date(self):
-        "Should not return Pubs with removed_from_unread_date set"
-        BookFactory(removed_from_unread_date=make_date("2017-02-15"))
+    def test_unread_manager_removed(self):
+        "Should not return Pubs is_removed=True"
+        BookFactory(is_removed=True)
         pubs = Publication.unread_objects.all()
+        # Only the read pub added in setUp():
         self.assertEqual(len(pubs), 1)
         self.assertEqual(pubs[0], self.unread_pub)
+
+    def test_visible_manager(self):
+        "Should not include removed Publications"
+        BookFactory(is_removed=True)
+        pubs = Publication.visible_objects.all()
+        # Only the pubs added in setUp():
+        self.assertEqual(len(pubs), 3)
 
 
 @time_machine.travel("2026-07-15 12:00:00", tick=False)
@@ -329,8 +348,9 @@ class UnreadPublicationsManagerGetCountsForDatesTestCase(TestCase):
             counts, {date(2025, 1, 1): {"book": 0, "periodical": 0, "total": 0}}
         )
 
-    def test_removed_from_unread_date(self):
-        pub = BookFactory(removed_from_unread_date=make_date("2025-01-03"))
+    def test_removed(self):
+        "It should count pubs that were removed"
+        pub = BookFactory(is_removed=True, date_removed=make_date("2025-01-03"))
         pub.time_created = make_datetime("2025-01-02 12:00:00")
         pub.save()
         counts = Publication.unread_objects.get_counts_for_dates(
@@ -349,7 +369,7 @@ class UnreadPublicationsManagerGetCountsForDatesTestCase(TestCase):
                 "periodical": 0,
                 "total": 1,
             },
-            # Book had removed_from_unread_date set, so should not be in 'unread':
+            # Book had date_removed set, so should not be in 'unread':
             date(2025, 1, 3): {
                 "book": 0,
                 "periodical": 0,

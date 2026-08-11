@@ -7,6 +7,7 @@ from spectator.reading.factories import (
     PublicationSeriesFactory,
     ReadingFactory,
 )
+from spectator.reading.models import Publication
 from tests import make_date
 from tests.core.test_views import ViewTestCase
 
@@ -34,6 +35,13 @@ class ReadingHomeViewTestCase(ViewTestCase):
         self.assertEqual(
             context["in_progress_publication_list"][0], in_progress.publication
         )
+
+    def test_no_removed_publications(self):
+        "It should not include removed publications"
+        pub = PublicationFactory(is_removed=True)
+        ReadingFactory(publication=pub, start_date=make_date("2017-02-10"))
+        response = views.ReadingHomeView.as_view()(self.request)
+        self.assertEqual(len(response.context_data["in_progress_publication_list"]), 0)
 
 
 class PublicationSeriesListViewTestCase(ViewTestCase):
@@ -91,6 +99,16 @@ class PublicationSeriesDetailViewTestCase(ViewTestCase):
         self.assertIn("publication_list", response.context_data)
         self.assertEqual(len(response.context_data["publication_list"]), 2)
 
+    def test_no_removed_publications(self):
+        "It should not include removed publications"
+        pub = Publication.objects.first()
+        pub.is_removed = True
+        pub.save()
+        response = views.PublicationSeriesDetailView.as_view()(
+            self.request, slug="9g5o8"
+        )
+        self.assertEqual(len(response.context_data["publication_list"]), 1)
+
 
 class PublicationListViewTestCase(ViewTestCase):
     def test_response_200(self):
@@ -141,6 +159,12 @@ class PublicationListViewTestCase(ViewTestCase):
         response = views.PublicationListView.as_view()(self.request, kind="periodical")
         self.assertEqual(len(response.context_data["publication_list"]), 1)
         self.assertEqual(response.context_data["publication_list"][0], periodical)
+
+    def test_queryset_removed_publications(self):
+        "It should not include removed pubklications"
+        PublicationFactory(is_removed=True)
+        response = views.PublicationListView.as_view()(self.request)
+        self.assertEqual(len(response.context_data["publication_list"]), 0)
 
     def test_non_numeric_page(self):
         """PaginatedListView should raise 404 if we ask for a
@@ -273,6 +297,14 @@ class ReadingYearArchiveViewTestCase(ViewTestCase):
         self.assertEqual(len(context["reading_list"]), 2)
         self.assertEqual(context["reading_list"][0].publication.title, "2017 Pub 2")
         self.assertEqual(context["reading_list"][1].publication.title, "2017 Pub 1")
+
+    def test_context_no_removed_publications(self):
+        "It should not list removed publications"
+        pub = Publication.objects.first()
+        pub.is_removed = True
+        pub.save()
+        response = views.ReadingYearArchiveView.as_view()(self.request, year="2017")
+        self.assertEqual(len(response.context_data["reading_list"]), 0)
 
     def test_context_year(self):
         "Context should include a date object representing the chosen year."

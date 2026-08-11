@@ -80,14 +80,14 @@ def in_progress_publications_card():
 def day_publications(date):
     """
     Returns a QuerySet of Publications that were being read on `date`.
-    `date` is a date tobject.
+    `date` is a date object.
     """
     readings = Reading.objects.filter(start_date__lte=date).filter(
         Q(end_date__gte=date) | Q(end_date__isnull=True)
     )
     if readings:
         return (
-            Publication.objects.filter(reading__in=readings)
+            Publication.visible_objects.filter(reading__in=readings)
             .select_related("series")
             .prefetch_related("roles__creator")
             .distinct()

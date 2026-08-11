@@ -19,7 +19,11 @@ class InProgressPublicationsManager(models.Manager):
         return (
             super()
             .get_queryset()
-            .filter(reading__start_date__isnull=False, reading__end_date__isnull=True)
+            .filter(
+                is_removed=False,
+                reading__start_date__isnull=False,
+                reading__end_date__isnull=True,
+            )
             .annotate(min_start_date=Min("reading__start_date"))
             .order_by("min_start_date")
         )
@@ -28,19 +32,12 @@ class InProgressPublicationsManager(models.Manager):
 class UnreadPublicationsManager(models.Manager):
     """
     Returns Publications that are unread.
-
-    A Publication that is "unread" either:
-        1. Has no Readings (whether finished or only started)
-        2. Has its removed_from_unread_date set (because it was disposed of, unread)
     """
 
     def get_queryset(self):
         "All Publications that count as 'unread' right now"
         return (
-            super()
-            .get_queryset()
-            .filter(removed_from_unread_date__isnull=True)
-            .filter(reading__isnull=True)
+            super().get_queryset().filter(is_removed=False).filter(reading__isnull=True)
         )
 
     def get_counts_for_dates(self, dates):
@@ -86,7 +83,7 @@ class UnreadPublicationsManager(models.Manager):
             raise TypeError(msg)
 
         # First, for every Publication, we get the date it was created
-        # and the first date it was read (or started to be read), if any.
+        # and the first date it was read (or started to be read, or was removed) if any.
         publications = (
             super()
             .get_queryset()
@@ -103,10 +100,10 @@ class UnreadPublicationsManager(models.Manager):
                             reading__end_date__isnull=False,
                             then="reading__end_date",
                         ),
-                        # It hasn't been read, but was disposed of, so was never read:
+                        # It was 'removed' before any readings, so assume never read:
                         When(
-                            removed_from_unread_date__isnull=False,
-                            then="removed_from_unread_date",
+                            date_removed__isnull=False,
+                            then="date_removed",
                         ),
                     )
                 ),
@@ -166,6 +163,12 @@ class UnreadPublicationsManager(models.Manager):
             }
 
         return counts
+
+
+class VisiblePublicationsManager(models.Manager):
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(is_removed=False)
 
 
 class EndDateAscendingReadingsManager(models.Manager):

@@ -15,8 +15,6 @@ from spectator.reading.templatetags.spectator_reading import (
 )
 from tests import make_date, make_datetime
 
-# from spectator.reading import utils
-
 
 class AnnualReadingCountsTestCase(TestCase):
     """
@@ -54,6 +52,13 @@ class InProgressPublicationsTestCase(TestCase):
         qs = in_progress_publications()
         self.assertEqual(len(qs), 1)
         self.assertEqual(qs[0], in_progress.publication)
+
+    def test_no_removed_publications(self):
+        "It should not include pubs that are removed"
+        pub = PublicationFactory(is_removed=True)
+        ReadingFactory(publication=pub, start_date=make_date("2017-02-10"))
+        qs = in_progress_publications()
+        self.assertEqual(len(qs), 0)
 
 
 class DayPublicationsTestCase(TestCase):
@@ -126,6 +131,13 @@ class DayPublicationsTestCase(TestCase):
         )
         qs = day_publications(make_date("2017-01-31"))
         self.assertEqual(len(qs), 1)
+
+    def test_no_removed_publications(self):
+        "It should not include removed publications"
+        pub = PublicationFactory(is_removed=True)
+        ReadingFactory(publication=pub, start_date=make_date("2017-02-10"))
+        qs = day_publications(make_date("2017-02-15"))
+        self.assertEqual(len(qs), 0)
 
 
 class ReadingYearsTestCase(TestCase):
@@ -482,5 +494,27 @@ class UnreadCountsForDatesTestCase(TestCase):
                 make_date("2020-01-01"): {"book": 0, "periodical": 0, "total": 0},
                 make_date("2020-02-01"): {"book": 1, "periodical": 0, "total": 1},
                 make_date("2020-03-01"): {"book": 0, "periodical": 0, "total": 0},
+            },
+        )
+
+    def test_removed_publications(self):
+        "It should count removed publications"
+        pub = BookFactory(is_removed=True)
+        pub.time_created = make_datetime("2020-02-01 12:00:00")
+        pub.save()
+        ReadingFactory(
+            publication=pub,
+            start_date=make_date("2020-02-15"),
+            end_date=make_date("2020-02-15"),
+        )
+
+        counts = unread_counts_for_dates(
+            start_date="2020-02-01", end_date="2020-02-02", frequency="month"
+        )
+
+        self.assertDictEqual(
+            counts,
+            {
+                make_date("2020-02-01"): {"book": 1, "periodical": 0, "total": 1},
             },
         )

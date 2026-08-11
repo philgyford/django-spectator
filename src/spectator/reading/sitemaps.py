@@ -8,7 +8,7 @@ class PublicationSitemap(Sitemap):
     priority = 0.5
 
     def items(self):
-        return Publication.objects.all()
+        return Publication.visible_objects.all()
 
     def lastmod(self, obj):
         return obj.time_modified
@@ -19,7 +19,7 @@ class PublicationSeriesSitemap(Sitemap):
     priority = 0.5
 
     def items(self):
-        return PublicationSeries.objects.all()
+        return PublicationSeries.visible_objects.all()
 
     def lastmod(self, obj):
         return obj.time_modified

@@ -64,7 +64,7 @@ class ReadingsListFilter(admin.SimpleListFilter):
 @admin.register(Publication)
 class PublicationAdmin(admin.ModelAdmin):
     list_display = ("title", "list_thumbnail", "kind", "show_creators", "series")
-    list_filter = (ReadingsListFilter, "kind", "series")
+    list_filter = (ReadingsListFilter, "kind", "is_removed", "series")
     search_fields = ("title",)
     list_select_related = ("series",)
 
@@ -84,13 +84,16 @@ class PublicationAdmin(admin.ModelAdmin):
                     "isbn_us",
                     "official_url",
                     "notes_url",
-                    "removed_from_unread_date",
+                    "is_removed",
                 )
             },
         ),
         (
             "Times",
-            {"classes": ("collapse",), "fields": ("time_created", "time_modified")},
+            {
+                "classes": ("collapse",),
+                "fields": ("time_created", "time_modified", "date_removed"),
+            },
         ),
     )
 
@@ -101,19 +104,10 @@ class PublicationAdmin(admin.ModelAdmin):
         "slug",
         "time_created",
         "time_modified",
+        "date_removed",
     )
 
     inlines = [PublicationRoleInline, ReadingInline]
-
-    def get_readonly_fields(self, request, obj=None):
-        """
-        The removed_from_unread_date field should be readonly if this Publication
-        already has one or more Readings.
-        """
-        readonly_fields = super().get_readonly_fields(request, obj)
-        if obj is not None and obj.reading_set.count() > 0:
-            readonly_fields += ("removed_from_unread_date",)
-        return readonly_fields
 
     @admin.display(description="Creators")
     def show_creators(self, instance):
